@@ -1,0 +1,146 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 3/24/2015
+ * Time: 5:08 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+/**
+ * Created by PhpStorm.
+ * User:NyanTun
+ * Date:3/26/2015
+ * Time:2:04AM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+$title="Payables";
+$this->headTitle($title);
+?>
+<h1><?php echo $title;?></h1>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("[data-toggle=popover]").popover();
+        $("#txtFilter").keydown(function(e){
+            if(e.which==13){
+                var filter=$(this).val();
+                window.location.href='<?php echo $this->url(). '?page=' .$page.'&filter=';?>' + filter + '<?php echo '&sort='.$sort.'&by='.$sortBy;?>'
+            }
+        });
+    });
+</script>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </span>
+                    <input type="text" class="form-control" id="txtFilter" value="<?php echo $filter;?>"/>
+                </div>
+            </div>
+            <div class="col-md-4 col-md-offset-5">
+                <div class="text-right">
+                    <div class="btn-group">
+                        <a href="<?php echo $this->url("account_payable",array('action'=>'request'));?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-file"></span>
+                            New
+                        </a>
+                        <a href="<?php echo $this->url('account_payable',array('action'=>'export'));?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-download"></span>
+                            Export
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="grid">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                <tr>
+                    <th width="100px">
+                        <?php echo $this->gridHeaderCell('Date','voucherDate',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="150px">
+                        <?php echo $this->gridHeaderCell('Voucher No','voucherNo',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th>
+                        <?php echo $this->gridHeaderCell('Description','description',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="180px">
+                        <?php echo $this->gridHeaderCell('Amount','amount',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="80px">
+                        <?php echo $this->gridHeaderCell('Status','status',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($paginator as $payable): ?>
+                    <?php
+                    $status = '';
+                    $class = '';
+                    switch($payable->status){
+                        case 'R':
+                            $status = 'Requested';
+                            break;
+                        case 'A':
+                            $status = 'Approved';
+                            $class = 'info';
+                            break;
+                        case 'C':
+                            $status = 'Canceled';
+                            $class = 'warning';
+                            break;
+                        case 'F':
+                            $staus = 'Finished';
+                            $class = 'success';
+                            break;
+                        default:
+                            $status = 'Error';
+                            break;
+                    }?>
+                    <tr class="<?php echo $class; ?>">
+                        <td>
+                            <?php echo $this->escapeHtml($payable->voucherDate); ?>
+                        </td>
+                        <td>
+                            <a href="<?php echo $this->url('account_payable', array('action' => 'detail', 'id' => $payable->payVoucherId)); ?>" title="edit">
+                                <?php echo $this->escapeHtml($payable->voucherNo); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($payable->description); ?>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($payable->amount) . ' ' . $this->escapeHtml($payable->currencyCode); ?>
+                        </td>
+                        <td>
+                            <?php if($payable->status == 'C') : ?>
+                                <a data-original-title="Reason" href="#" class="btn btn-block btn-warning btn-xs" data-toggle="popover"
+                                   title="Reason" data-content="<?php echo $payable->reason; ?>" role="button" data-placement="bottom">
+                                    Cancel
+                                </a>
+                            <?php else: ?>
+                                <?php echo $this->escapeHtml($status); ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="text-center">
+            <?php echo $this->paginationControl($paginator, 'Sliding', 'shared/paginator.phtml', array('route' => 'account_payable',
+                'filter'=>$filter, 'sort' => $sort, 'sortBy' => $sortBy)); ?>
+        </div>
+    </div>
+</div>
+

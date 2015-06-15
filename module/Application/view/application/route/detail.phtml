@@ -1,0 +1,71 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 3/6/2015
+ * Time: 10:15 AM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+$title = "Routing";
+$this->headTitle($title);
+$this->headLink()->appendStylesheet($this->basePath() . '/codemirror/lib/codemirror.css')
+            ->appendStylesheet($this->basePath() . '/css/treeview.css');
+$this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.js')
+    ->appendFile($this->basePath() . '/codemirror/mode/javascript/javascript.js')
+    ->appendFile($this->basePath() . '/js/treeview.js');
+?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var myEditor = CodeMirror.fromTextArea($('textarea[name="constraints"]').get(0),
+            {
+                lineNumbers: true,
+                indentUnit: 4,
+                smartIndent: true
+            });
+        myEditor.setSize("100%", "120px");
+    });
+</script>
+<h1><?php echo $title; ?></h1>
+<hr />
+<?php
+$form->setAttribute('action', $this->url('route', array('action' => 'detail', 'id' => $id)));
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="row">
+    <div class="col-md-8">
+        <?php
+        echo $this->formHidden($form->get('routeId'));
+        echo $this->formHorizontal($form->get('name'));
+        echo $this->formHorizontal($form->get('route'));
+        echo $this->formHorizontal($form->get('module'));
+        echo $this->formHorizontal($form->get('controller'));
+        echo $this->formHorizontal($form->get('constraints'));
+        ?>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <button type="submit" value="Save" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-floppy-save"></span>
+                    Save
+                </button>
+                <?php if($isEdit): ?>
+                    <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('route', array('action' => 'delete', 'id' => $id)); ?>" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        Remove
+                    </a>
+                <?php endif; ?>
+                <?php echo $this->partial('shared/role_chooser.phtml', array('roles' => $roles, 'name' => 'grant_roles',
+                                                                            'permissions' => $permissions, 'text' => 'Access Roles')); ?>
+                <a href="<?php echo $this->url('route'); ?>" class="btn btn-default">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                    Back to list
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+echo $this->form()->closeTag();
+?>

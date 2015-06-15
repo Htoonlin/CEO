@@ -1,0 +1,113 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 5/26/2015
+ * Time: 6:02 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+$title = 'Account closing';
+$this->headTitle($title);
+
+?>
+<h1><?php echo $title; ?></h1>
+<hr/>
+<script type="text/javascript">
+
+    var processData;
+
+    function closingProcess(process, process_data){
+        if(process == 'end'){
+            return;
+        }
+
+        $.ajax({
+            url:'<?php echo $this->url('account_balance', array('action'=>'close'))?>',
+            data:{req:process, data: process_data},
+            type:'POST',
+            success:function(data){
+                if(data.result.length > 0 && data.columns.length > 0){
+                    createTable(data.result, data.columns);
+                }
+                $('#closingProgress .progress-bar').css('width', data.value).html(data.value);
+                $('#current-process').html(data.message);
+
+                if(data.nextProcess == 'process'){
+                    $('#btnProcess').show();
+                    console.log(data.result);
+                    processData = data.result;
+                }else{
+                    if(data.nextProcess.length > 0){
+                        closingProcess(data.nextProcess, data.result);
+                    }else{
+                        $('#btnProcess').hide();
+                    }
+                }
+            }
+        });
+    }
+    function ucfirst(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    function createTable(data, col)
+    {
+        var html = '<table class="table table-striped table-bordered table-condensed">';
+        html += '<thead><tr>';
+        for(var j = 0; j < col.length; j++)
+        {
+            html += '<th>' + ucfirst(col[j]) + '</th>';
+        }
+        html += '</tr></thead>';
+        for(var i = 0; i < data.length; i++)
+        {
+            var obj = data[i];
+            html += '<tr>';
+            for(var j = 0; j < col.length; j++)
+            {
+                html += '<td>' + obj[col[j]] + '</td>';
+            }
+            html += '</tr>';
+        }
+        html += '</table>';
+        $('#currency-result').html(html);
+    }
+
+    $('document').ready(function()
+    {
+        $('#btnProcess').hide();
+        closingProcess('collecting', null);
+    });
+</script>
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="progress" id="closingProgress">
+                    <div class="progress-bar progress-bar-warning" role="progressbar" style="width: 5%">
+                    5%
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p id="current-process">Collecting data to close by currency ...</p>
+            </div>
+            <div class="col-md-6 text-right">
+                <button type="button" class="btn btn-primary" id="btnProcess" onclick="closingProcess('process', processData)">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Process
+                </button>
+                <a href="<?php echo $this->url('account_balance');?>" class="btn btn-default">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                    Back To List
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div id="currency-result" class="grid">
+        </div>
+    </div>
+</div>

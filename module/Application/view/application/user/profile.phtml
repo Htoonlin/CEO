@@ -1,0 +1,89 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 3/20/2015
+ * Time: 11:09 AM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+$title = 'User Profile';
+$this->headScript($title);
+?>
+<h1><?php echo $title; ?></h1>
+<hr />
+<?php
+$form->setAttribute('action', $this->url('user', array('action' => 'profile')));
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="row">
+    <div class="col-md-3">
+        <script type="text/javascript">
+            $("document").ready(function(){
+                $("button#btnRemoveImage").click(function(){
+                    $("img#imgAvatar").attr('src',"<?php echo $this->url("user", array('action' => 'image', 'id' => 0)); ?>");
+                    $("input#hasImage").val("false");
+                });
+            })
+        </script>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 align="center" class="panel-title">Avatar</h1>
+            </div>
+            <div class="panel-body">
+                <div class="text-center">
+                    <input type="hidden" id="hasImage" name="hasImage" value="true" />
+                    <img id="imgAvatar" src="<?php echo $this->url("user", array('action' => 'image', 'id' => $this->layout()->current_user->userId)); ?>"
+                         alt="No Image" title="User Avatar" style="max-height:150px;max-width:200px;"/>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="text-right">
+                    <button type="button" id="btnRemoveImage" class="btn btn-sm btn-default">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        Remove
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <?php if(!empty($message)) : ?>
+            <div class="alert alert-info alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong><span class="glyphicon glyphicon-info-sign"></span></strong>
+                <?php echo $message; ?>
+            </div>
+        <?php endif;?>
+        <?php
+        $userName = $form->get('userName');
+        $userName->setAttribute('disabled', 'disabled');
+        echo $this->formHorizontal($userName);
+
+        echo $this->formHorizontal($form->get('image'));
+
+        $userRole = $form->get('userRole');
+        $userRole->setAttribute('disabled', 'disabled');
+        echo $this->formHorizontal($userRole);
+        echo $this->formHorizontal($form->get('description'));
+        echo $this->formHorizontal($form->get('status'));
+        ?>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <button type="submit" value="Save" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-floppy-save"></span>
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+echo $this->form()->closeTag();
+?>
+
+
+
+

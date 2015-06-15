@@ -1,0 +1,50 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 3/6/2015
+ * Time: 10:15 AM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+$title = "Voucher Cancel";
+$this->headTitle($title);
+?>
+<h1>
+    <?php echo $title; ?>
+</h1>
+<hr/>
+<div class="col-sm-offset-1 col-sm-10">
+    <div class="alert alert-warning">
+        <h5>
+            Are you sure to cancel this <?php echo $this->escapeHtml($voucher->type); ?> voucher
+            (<strong><?php echo $this->escapeHtml($voucher->voucherNo); ?></strong>)?
+        </h5>
+    </div>
+    <form class="form" role="form" method="post"
+          action="<?php $this->url('account_voucher', array('detail' => 'cancel', 'voucher' => $voucher->voucherNo)); ?>">
+        <?php if(empty($message)): ?>
+            <div class="form-group">
+        <?php else: ?>
+            <div class="form-group has-error">
+        <?php endif; ?>
+            <label class="control-label">
+                Reason to cancel voucher :
+                <span class="label label-danger">
+                    <?php echo (empty($message) ? 'Require' : $message); ?>
+                </span>
+            </label>
+            <textarea class="form-control" name="reason"></textarea>
+        </div>
+        <p class="text-right">
+            <button class="btn btn-warning" type="submit">
+                <span class="glyphicon glyphicon-ok"></span>
+                Yes (Cancel by reason)
+            </button>
+            <a href="<?php echo $this->url('account_voucher', array('action'=>'detail', 'voucher'=>$voucher->voucherNo)); ?>" class="btn btn-default">
+                <span class="glyphicon glyphicon-step-backward"></span>
+                No & (Back to voucher)
+            </a>
+        </p>
+    </form>
+</div>

@@ -1,0 +1,51 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 4/22/2015
+ * Time: 4:09 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+$btnText = isset($text) ? $text : 'Choose Roles';
+?>
+<script type="text/javascript">
+    $('document').ready(function(){
+        var items = $('div#grantRoleModal div.sundew-tree li>div.tree-item');
+        items.children('a').replaceWith(function()
+        {
+            var value = $(this).closest('li').val();
+            var html = '<div class="checkbox" style="display:inline-block;margin-left:5px;" id="chkRole' + value + '" >';
+            html += '<label class="checkbox-custom" data-initialize="checkbox">';
+            html += '<input class="sr-only" type="checkbox" name="<?php echo $name; ?>[]" value="' + value + '" />'
+            html += '<span class="checkbox-label">' + $(this).html() + '</span>';
+            html += '</label>';
+            html += '</div>';
+            return html;
+        });
+
+        <?php foreach($permissions as $grant): ?>
+        $('div#chkRole<?php echo $grant->roleId; ?>').checkbox('check');
+        <?php endforeach; ?>
+    });
+</script>
+<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#grantRoleModal">
+    <span class="glyphicon glyphicon-edit"></span>
+    <?php echo $btnText; ?>
+</button>
+<div class="modal fade" id="grantRoleModal" tabindex="-1" role="dialog" aria-labelledby="grantRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Roles</h4>
+            </div>
+            <div class="modal-body">
+                <?php echo $this->formTreeView($roles); ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnDone" data-dismiss="modal">Done</button>
+            </div>
+        </div>
+    </div>
+</div>

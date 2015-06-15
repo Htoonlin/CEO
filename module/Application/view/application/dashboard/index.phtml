@@ -1,0 +1,63 @@
+<?php
+/**
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+
+$title = 'Dashboard';
+$this->headTitle($title);
+?>
+<h1><?php echo $title; ?></h1>
+<hr />
+<div class="row">
+    <div class="col-sm-8">
+        <?php echo $this->partial('shared/calendar', array('height' => 550, 'name' => 'dashboardCalendar')); ?>
+    </div>
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-pencil"></span>
+                Attendance Board
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p class="text-center">
+                        <span class="glyphicon glyphicon-dashboard"></span>
+                        Arrival
+                        </p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p class="text-center">
+                        <span class="glyphicon glyphicon-dashboard"></span>
+                        Departure
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <button id="btnIn" type="button" class="btn btn-info btn-block">
+                            <?php
+                            if($attendanceIn){
+                                echo substr($attendanceIn->getAttendance(), -8);
+                            }else {
+                                echo '<span class="glyphicon glyphicon-pencil"></span>';
+                            }
+                            ?>
+                        </button>
+                    </div>
+                    <div class="col-sm-6">
+                        <button id="btnOut" type="button" class="btn btn-warning btn-block">
+                            <?php
+                            if($attendanceOut){
+                                echo substr($attendanceOut->getAttendance(), -8);
+                            }else {
+                                echo '<span class="glyphicon glyphicon-pencil"></span>';
+                            }
+                            ?>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

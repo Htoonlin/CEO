@@ -1,0 +1,87 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 3/6/2015
+ * Time: 10:15 AM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+$title = "User";
+$this->headTitle($title);
+?>
+<h1><?php echo $title; ?></h1>
+<hr />
+<?php
+$form->setAttribute('action', $this->url('user', array('action' => 'detail', 'id' => $id)));
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="row">
+    <div class="col-md-3">
+        <script type="text/javascript">
+            $("document").ready(function(){
+                $("button#btnRemoveImage").click(function(){
+                    $("img#imgAvatar").attr('src',"<?php echo $this->url("user", array('action' => 'image', 'id' => 0)); ?>");
+                    $("input#hasImage").val("false");
+                });
+            })
+        </script>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 align="center" class="panel-title">Avatar</h1>
+            </div>
+            <div class="panel-body">
+                <div class="text-center">
+                    <input type="hidden" id="hasImage" name="hasImage" value="<?php echo $hasImage; ?>" />
+                    <img id="imgAvatar" src="<?php echo $this->url("user", array('action' => 'image', 'id' => $id)); ?>"
+                         alt="No Image" title="User Avatar" style="max-height:150px;max-width:200px;"/>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="text-right">
+                    <button type="button" id="btnRemoveImage" class="btn btn-sm btn-default">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        Remove
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <?php
+        echo $this->formHidden($form->get('userId'));
+        echo $this->formHorizontal($form->get('userName'));
+        if(!$isEdit){
+            echo $this->formHorizontal($form->get('password'));
+            echo $this->formHorizontal($form->get('confirmPassword'));
+        }
+        echo $this->formHorizontal($form->get('image'));
+        echo $this->formHorizontal($form->get('userRole'));
+        echo $this->formHorizontal($form->get('description'));
+        echo $this->formHorizontal($form->get('status'));
+        ?>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <button type="submit" value="Save" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-floppy-save"></span>
+                    Save
+                </button>
+                <?php if($isEdit): ?>
+                <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('user', array('action' => 'delete', 'id' => $id)); ?>" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-trash"></span>
+                    Remove
+                </a>
+                <?php endif; ?>
+                <a href="<?php echo $this->url('user'); ?>" class="btn btn-default">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                    Back to list
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+echo $this->form()->closeTag();
+?>

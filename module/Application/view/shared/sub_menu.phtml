@@ -1,0 +1,38 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 3/16/2015
+ * Time: 4:59 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+?>
+<?php foreach($pages as $child): ?>
+    <?php // when using partials we need to manually check for ACL conditions ?>
+    <?php if(!$child->isVisible() || !$this->navigation()->accept($child)) continue; ?>
+    <?php $hasChildren = $child->hasPages() ?>
+    <?php if($hasChildren): ?>
+        <li class="dropdown-submenu">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <?php echo $this->translate($child->getLabel()); ?>
+            </a>
+            <ul class="dropdown-menu" id="page_<?php echo $child->getId(); ?>">
+                <?php echo $this->partial('shared/sub_menu.phtml', array('pages' => $child->getPages())); ?>
+            </ul>
+        </li>
+    <?php else: ?>
+        <li <?php if($child->isActive()) echo 'class="active"'?>>
+            <?php echo $this->navigation()->menu()->htmlify($child, false); ?>
+        </li>
+        <?php
+        $divider = isset($child->getRel()['divider']) ? $child->getRel()['divider'] : false;
+        if($divider){
+            echo '<li class="divider"></li>';
+        }
+        ?>
+    <?php
+        endif;
+        $hasChildren = false;
+    ?>
+<?php endforeach; ?>

@@ -1,0 +1,52 @@
+ <?php
+ /**
+     *@var $this Zend\View\Renderer\PhpRenderer;
+     **/
+ $title="Currency";
+ $this->headTitle($title);
+ ?>
+
+ <h1><?php echo $title; ?></h1>
+ <hr/>
+ <?php
+    $form->setAttribute('action', $this->url('account_currency', array('action'=>'detail', 'id'=>$id)));
+    $form->prepare();
+ echo $this->form()->openTag($form);
+ ?>
+
+ <div class="col-md-8">
+     <?php
+        echo $this->formHidden($form->get('currencyId'));
+        echo $this->formHorizontal($form->get('code'));
+        echo $this->formHorizontal($form->get('name'));
+        echo $this->formHorizontal($form->get('rate'));
+        echo $this->formHorizontal($form->get('status'));
+        if($isEdit){
+            echo $this->formHorizontal($form->get('changedRate'));
+        }
+     ?>
+
+     <div class="form-group">
+         <div class="col-sm-offset-3 col-sm-9">
+             <button type="submit" value="Save" class="btn btn-primary">
+                 <span class="glyphicon glyphicon-floppy-save"></span>
+                 Save
+             </button>
+             <?php if($isEdit):?>
+             <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('account_currency', array('action'=>'delete', 'id'=>$id));?>" class="btn btn-danger">
+                 <span class="glyphicon glyphicon-trash"></span>
+                 Remove
+             </a>
+             <?php endif; ?>
+             <a href="<?php echo $this->url('account_currency');?>" class="btn btn-default">
+                 <span class="glyphicon glyphicon-th-list"></span>
+                 Back To List
+             </a>
+         </div>
+     </div>
+
+     </div>
+
+ <?php
+    echo $this->form()->closeTag();
+ ?>

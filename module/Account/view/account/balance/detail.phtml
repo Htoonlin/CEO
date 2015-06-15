@@ -1,0 +1,149 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 5/25/2015
+ * Time: 4:41 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+
+$title="Balance sheet (Detail)";
+$this->headTitle($title);
+#var_dump($this->getRequest()->getHeader('HTTP_REFERER', $defaultValue))
+?>
+<h1><?php echo $title;?></h1>
+<hr />
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("[data-toggle=popover]").popover();
+        $("#txtFilter").keydown(function(e){
+            if(e.which==13){
+                var filter=$(this).val();
+                window.location.href='<?php echo $this->url('account_balance', array('action' => 'detail','id'=>$id)). '?page=' .$page.'&filter=';?>' + filter + '<?php echo '&sort='.$sort.'&by='.$sortBy;?>'
+            }
+        });
+    });
+</script>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </span>
+                    <input type="text" class="form-control" id="txtFilter" value="<?php echo $filter;?>"/>
+                </div>
+            </div>
+            <div class="col-md-4 col-md-offset-5">
+                <div class="text-right">
+                    <div class="btn-group">
+                        <a href="<?php echo $this->url('account_balance');?>" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-th-list"></span>
+                            Back to list
+                        </a>
+                        <a href="<?php echo $this->url('account_balance',array('action'=>'export', 'id' => $id));?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-download"></span>
+                            Export
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="grid">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                <tr>
+                    <th width="150px">
+                        <?php echo $this->gridHeaderCell('Voucher No','voucherNo',$filter,$page,$sort,$sortBy,
+                            $this->url('account_balance', array('action' => 'detail','id'=>$id)));?>
+                    </th>
+                    <th width="100px">
+                        <?php echo $this->gridHeaderCell('Date','approvedDate',$filter,$page,$sort,$sortBy,
+                            $this->url('account_balance', array('action' => 'detail','id'=>$id)));?>
+                    </th>
+                    <th width="200px">
+                        <?php echo $this->gridHeaderCell('Requester','requester',$filter,$page,$sort,$sortBy,
+                            $this->url('account_balance', array('action' => 'detail','id'=>$id)));?>
+                    </th>
+                    <th>
+                        <?php echo $this->gridHeaderCell('Description','description',$filter,$page,$sort,$sortBy,
+                            $this->url('account_balance', array('action' => 'detail','id'=>$id)));?>
+                    </th>
+                    <th width="180px">
+                        <?php echo $this->gridHeaderCell('Amount','amount',$filter,$page,$sort,$sortBy,
+                            $this->url('account_balance', array('action' => 'detail','id'=>$id)));?>
+                    </th>
+                    <th width="80px">
+                        Status
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($paginator as $voucher):?>
+                    <?php
+                    $status = '';
+                    $class = '';
+                    switch($voucher->status){
+                        case 'A':
+                            $status = 'Approved';
+                            $class = 'info';
+                            break;
+                        case 'C':
+                            $status = 'Canceled';
+                            $class = 'warning';
+                            break;
+                        case 'F':
+                            $staus = 'Finished';
+                            $class = 'success';
+                            break;
+                        default:
+                            $status = 'Error';
+                            break;
+                    }?>
+                    <tr class="<?php echo $class; ?>">
+                        <td>
+                            <a href="<?php echo $this->url('account_voucher', array('action' => 'detail', 'voucher' => $voucher->voucherNo)); ?>" title="edit">
+                                <?php echo $this->escapeHtml($voucher->voucherNo); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?php echo substr($this->escapeHtml($voucher->approvedDate),0,10); ?>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($voucher->requester); ?>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($voucher->description); ?>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($voucher->amount) . ' ' . $this->escapeHtml($voucher->currency); ?>
+                        </td>
+                        <td>
+                            <?php if($voucher->status == 'C') : ?>
+                                <a data-original-title="Reason" href="#" class="btn btn-block btn-warning btn-xs" data-toggle="popover"
+                                   title="Reason" data-content="<?php echo $voucher->reason; ?>" role="button" data-placement="bottom">
+                                    Cancel
+                                </a>
+                            <?php else: ?>
+                                <?php echo $this->escapeHtml($status); ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="text-center">
+            <?php echo $this->paginationControl($paginator, 'Sliding', 'shared/paginator.phtml', array(
+                'url' => $this->url('account_balance', array('action' => 'detail' , 'id' => $id)),
+                'filter' => $filter, 'sort' => $sort, 'sortBy' => $sortBy)); ?>
+        </div>
+    </div>
+</div>
+

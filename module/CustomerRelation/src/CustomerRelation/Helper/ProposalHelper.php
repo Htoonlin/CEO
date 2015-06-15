@@ -1,0 +1,194 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: july
+ * Date: 4/28/2015
+ * Time: 1:37 PM
+ */
+
+namespace CustomerRelation\Helper;
+
+use Zend\Form\Element;
+use Zend\Form\Element\Text;
+use Zend\Form\Form;
+use Zend\InputFilter\FileInput;
+use Zend\InputFilter\Input;
+use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterAwareInterface;
+use Zend\InputFilter\InputFilterInterface;
+use Zend\Validator\Db\NoRecordExists;
+use Zend\Validator\File\IsImage;
+class ProposalHelper extends Form
+{
+    protected $form;
+    public function getForm(array $currencies,array $companies,array $contacts)
+    {
+        if(!$this->form){
+            $hidId=new Element\Hidden();
+            $hidId->setName('proposalId');
+
+            $txtCompanyId=new Element\Select();
+            $txtCompanyId->setLabel('Company Name')
+                ->setName("companyId")
+                ->setAttribute('class','form-control')
+                ->setEmptyOption("--Choose Company--")
+                ->setValueOptions($companies);
+
+            $txtContactId=new Element\Select();
+            $txtContactId->setLabel('Contact Name')
+                ->setName('contactId')
+                ->setAttribute('class','form-control')
+                ->setEmptyOption("--Choose Contact--")
+                ->setValueOptions($contacts);
+
+            $txtCode=new Element\Text();
+            $txtCode->setLabel('Code')
+                ->setName('code')
+                ->setAttribute('class','form-control');
+
+            $txtAmount=new Element\Number();
+            $txtAmount->setName("amount")
+                ->setLabel('Amount')
+                ->setAttribute('class','form-control')
+                ->setAttributes(array(
+                    'min'=>'100',
+                    'max'=>'99999999999',
+                    'step'=>'100'
+                ));
+
+            $selectCurrency=new Element\Select();
+            $selectCurrency->setName('currencyId')
+                ->setLabel('Currency')
+                ->setAttribute('class','form-control')
+                ->setEmptyOption("---Choose Currency---")
+                ->setValueOptions($currencies);
+
+            $txtProposalDate=new Element\Date('proposalDate');
+            $txtProposalDate->setLabel('Date')
+                ->setAttributes(array(
+                    'class'=>'form-control',
+                    'allowPastDates'=>true,
+                    'momentConfig'=>array(
+                        'format'=>'YYYY-MM-DD'
+                    )
+                ));
+
+            $txtProposalFile = new Element\File();
+            $txtProposalFile->setName('proposalFile')
+                ->setLabel('Upload file');
+
+            $txtNodes=new Element\Text();
+            $txtNodes->setLabel('Notes')
+                ->setName('notes')
+                ->setAttribute('class','form-control');
+
+            $txtProposalBy=new Element\Text();
+            $txtProposalBy->setName('proposalBy')
+                ->setLabel('Proposal By')
+                ->setAttribute('class','form-control');
+
+            $txtGroupCode=new Element\Text();
+            $txtGroupCode->setLabel('Group Code')
+                ->setName('group_code')
+                ->setAttribute('class','form-control');
+
+            $txtStatus=new Element\Select();
+            $txtStatus->setName('status')
+                ->setLabel('Status')
+                ->setAttribute('class','form-control')
+                ->setValueOptions(array(
+                    'A'=>'Active',
+                    'D'=>'Inactive',
+                ));
+
+            $form=new Form();
+            $form->setAttribute('class','form-horizontal');
+            $form->setAttribute('enctype','multipart/form-data');
+            $form->add($hidId);
+            $form->add($txtCompanyId);
+            $form->add($txtContactId);
+            $form->add($txtCode);
+            $form->add($txtAmount);
+            $form->add($selectCurrency);
+            $form->add($txtProposalDate);
+            $form->add($txtProposalFile);
+            $form->add($txtNodes);
+            $form->add($txtProposalBy);
+            $form->add($txtGroupCode);
+            $form->add($txtStatus);
+            $this->form=$form;
+        }
+        return $this->form;
+    }
+    public function setForm($form)
+    {
+        $this->form=$form;
+    }
+    public function setInputFilter(InputFilterInterface $filter)
+    {
+        $this->inputFilter=$filter;
+    }
+    protected $inputFilter;
+    public function getInputFilter($proposalId=0,$code=" ")
+    {
+        if(!$this->inputFilter){
+            $inputFilter = new InputFilter();
+            $factory     = new InputFactory();
+            $filter=new InputFilter();
+            $filter->add(array(
+                'name'=>'proposalId',
+                'required'=>true,
+                'filters'=>array(
+                    array('name'=>'Int'),
+                )
+            ));
+
+            $filter->add(array(
+                'name'=>'code',
+                'required'=>true,
+                'validators'=>array(
+                    array(
+                        'name'=>'StringLength',
+                        'options'=>array(
+                            'max'=>50,
+                            'min'=>1,
+                            'encoding'=>'UTF-8',
+                        ),
+                    ),
+                ),
+            ));
+            $filter->add(array(
+                'name'=>'notes',
+                'required'=>true,
+                'validators'=>array(
+                    array(
+                        'name'=>'StringLength',
+                        'options'=>array(
+                            'max'=>500,
+                            'min'=>1,
+                            'encoding'=>'UTF-8',
+                        ),
+                    ),
+                ),
+            ));
+
+            $fileInput = new FileInput('proposalFile');
+            $fileInput->setRequired(false);
+
+            $fileInput->getFilterChain()->attachByName(
+                'filerenameupload',
+                array(
+                    'target' => sprintf('./data/uploads/proposal/%s', $code),
+                    'use_upload_extension' => true,
+                    'overwrite' => true,
+                )
+            );
+
+            $filter->add($fileInput);
+           $this->InputFilter=$filter;
+        }
+        return $this->InputFilter;
+    }
+
+}

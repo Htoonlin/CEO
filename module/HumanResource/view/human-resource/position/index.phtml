@@ -1,0 +1,170 @@
+<?php
+/**
+ * Created by PhpStrom.
+ * User:NyanTun
+ * Date:4/2/2015
+ * Time:2:44 AM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+/**
+ * Created by PhpStrom.
+ * User:NyanTun
+ * Date:4/2/2015
+ * Time:2:44 AM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+$title="Positions";
+$this->headTitle($title);
+?>
+<h1><?php echo $title;?></h1>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#txtFilter").keydown(function(e){
+            if(e.which==13){
+                var filter=$(this).val();
+                window.location.href='<?php echo $this->url(). '?page=' .$page.'&filter=';?>' + filter + '<?php echo '&sort='.$sort.'&by='.$sortBy;?>'
+            }
+        });
+        $("button#btnDelete").click(function(){
+            if(confirm('Are you sure to delete selected records?')){
+                $.ajax({
+                    url:'<?php echo $this->url('hr_position', array('action'=>'jsonDelete'))?>',
+                    data:$('input[name="chkId[]"]:checked'),
+                    type:'POST',
+                    success:function(data){
+                        if(data.message=="success"){
+                            window.location.href="<?php echo $this->url('hr_position');?>"
+                        }else{
+                            alert(data.message);
+                        }
+                    }
+                });
+            }
+        });
+        $("input#chkAll").change(function(){
+            if($(this).checkbox('isChecked')){
+                $('input[name="chkId[]"]').checkbox('check');
+            }else{
+                $('input[name="chkId[]"]').checkbox('uncheck');
+            }
+        });
+        $('input[name="chkId[]"]').change(function(){
+            var total=$('input[name="chkId[]"]').length;
+            var checks=$('input[name="chkId[]"]:checked').length;
+            if(total==checks){
+                $("input#chkAll").checkbox('check');
+            }else{
+                $("input#chkAll").checkbox('uncheck');
+            }
+        });
+    });
+</script>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </span>
+                    <input type="text" class="form-control" id="txtFilter" value="<?php echo $filter;?>"/>
+                </div>
+            </div>
+            <div class="col-md-4 col-md-offset-5">
+                <div class="text-right">
+                    <div class="btn-group">
+                        <a href="<?php echo $this->url("hr_position",array('action'=>'detail','id'=>0));?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-file"></span>
+                            New
+                        </a>
+                        <a href="<?php echo $this->url('hr_position',array('action'=>'export'));?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-download"></span>
+                            Export
+                        </a>
+                        <button type="button" id="btnDelete" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="grid">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                <tr>
+                    <th width="50px">
+                        <div class="checkbox" style="margin: 0">
+                            <label class="checkbox-custom" data-initialize="checkbox">
+                                <input type="checkbox" id="chkAll" />
+                            </label>
+                        </div>
+                    </th>
+                    <th width="160px">
+                        <?php echo $this->gridHeaderCell('Position Name','name',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="160px">
+                        <?php echo $this->gridHeaderCell('Minimun Salary','min_salary',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="160px">
+                        <?php echo $this->gridHeaderCell('Maximun Salary','max_salary',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="160px">
+                        <?php echo $this->gridHeaderCell('IsActive','isActive',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($paginator as $position):?>
+                    <tr>
+                        <td>
+                            <div class="checkbox" style="margin: 0">
+                                <label class="checkbox-custom" data-initialize="checkbox">
+                                    <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($position->positionId);?>" />
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="<?php echo $this->url('hr_position', array('action' => 'detail', 'id' => $position->positionId)); ?>" title="edit">
+                                <?php echo $this->escapeHtml($position->name); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($position->min_salary); ?>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($position->max_salary); ?>
+                        </td>
+                        <td>
+                            <?php
+                            switch($position->status)
+                            {
+                                case'A':
+                                    echo 'Active';
+                                    break;
+                                case 'D':
+                                    echo 'Inactive';
+                                    break;
+                                default:
+                                    echo 'Invalid';
+                                    break;
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="text-center">
+            <?php echo $this->paginationControl($paginator, 'Sliding', 'shared/paginator.phtml', array('route' => 'hr_position',
+                'filter' => $filter, 'sort' => $sort, 'sortBy' => $sortBy)); ?>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,179 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 2/16/2015
+ * Time: 3:53 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+
+$title = "Contracts";
+$this->headTitle($title);
+$flashMesssages = $this->flashMessenger()->getMessages();
+?>
+<h1><?php echo $title; ?></h1>
+<?php if(count($flashMesssages) > 0) : ?>
+    <div class="alert alert-info alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong><span class="glyphicon glyphicon-info-sign"></span></strong>
+        <?php echo $flashMesssages[0]; ?>
+    </div>
+<?php endif;?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#txtFilter").keydown(function(e){
+            if(e.which == 13){
+                var filter = $(this).val();
+                window.location.href = '<?php echo $this->url() . '?page' . $page . '&filter='; ?>' +  filter + '<?php echo '&sort=' . $sort . '&by=' . $sortBy; ?>'
+            }
+        });
+
+        $("button#btnDelete").click(function(){
+            if(confirm('Are you sure to delete selected records?')){
+                $.ajax({
+                    url : '<?php echo $this->url('cr_contract', array('action' => 'jsonDelete')) ?>',
+                    data : $('input[name="chkId[]"]:checked'),
+                    type : 'POST',
+                    success : function(data){
+                        if(data.message == "success"){
+                            window.location.href = "<?php echo $this->url('cr_contract'); ?>"
+                        }else{
+                            alert(data.message);
+                        }
+                    }
+                });
+            }
+        });
+
+        $("input#chkAll").change(function(){
+            if($(this).checkbox('isChecked')){
+                $('input[name="chkId[]"]').checkbox('check');
+            }else{
+                $('input[name="chkId[]"]').checkbox('uncheck');
+            }
+        });
+        $('input[name="chkId[]"]').change(function(){
+            var total = $('input[name="chkId[]"]').length;
+            var checks = $('input[name="chkId[]"]:checked').length;
+            if(total == checks){
+                $("input#chkAll").checkbox('check');
+            }else{
+                $("input#chkAll").checkbox('uncheck');
+            }
+        });
+    });
+</script>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </span>
+                    <input type="text" class="form-control" id="txtFilter" value="<?php echo $filter; ?>"/>
+                </div>
+            </div>
+            <div class="col-md-4 col-md-offset-5">
+                <div class="text-right">
+                    <div class="btn-group">
+                        <a href="<?php echo $this->url("cr_contract", array('action' => 'detail', 'id' => 0)); ?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-file"></span>
+                            New
+                        </a>
+                        <a href="<?php echo $this->url('cr_contract', array('action' => 'export')); ?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-download"></span>
+                            Export
+                        </a>
+                        <button type="button" id="btnDelete" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="grid">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                <tr>
+                    <th width="50px">
+                        <div class="checkbox" style="margin:0">
+                            <label class="checkbox-custom" data-initialize="checkbox">
+                                <input type="checkbox" id="chkAll" />
+                            </label>
+                        </div>
+                    </th>
+                    <th width="160px">
+                        <?php echo $this->gridHeaderCell('Code', 'code', $filter, $page, $sort, $sortBy); ?>
+                    </th>
+                    <th>
+                        Contract File
+                    </th>
+                    <th>
+                        <?php echo $this->gridHeaderCell('Amount', 'amount', $filter, $page, $sort, $sortBy); ?>
+                    </th>
+                    <th width="80px">
+                        <?php echo $this->gridHeaderCell('Notes', 'notes', $filter, $page, $sort, $sortBy); ?>
+                    </th>
+                    <th width="100px">
+                        <?php echo $this->gridHeaderCell('Status', 'status', $filter, $page, $sort, $sortBy); ?>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($paginator as $contract) : ?>
+                    <tr>
+                        <td>
+                            <div class="checkbox" style="margin:0">
+                                <label class="checkbox-custom" data-initialize="checkbox">
+                                    <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($contract->contractId); ?>" />
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="<?php echo $this->url('cr_contract', array('action' => 'detail', 'id' => $contract->contractId)); ?>" title="edit">
+                                <?php echo $this->escapeHtml($contract->code); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <img src="<?php echo $this->url("cr_contract", array('action' => 'contractFile', 'id' => $contract->contractId)); ?>"
+                                 title="<?php echo $this->escapeHtml($contract->code); ?>" />
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($contract->amount); ?>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($contract->notes); ?>
+                        </td>
+                        <td>
+                            <?php
+                            switch($contract->status){
+                                case 'A':
+                                    echo 'Active';
+                                    break;
+                                case 'D':
+                                    echo 'Inactive';
+                                    break;
+                                default:
+                                    echo 'Invalid';
+                                    break;
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <div class="panel-footer">
+        <div class="text-center">
+            <?php echo $this->paginationControl($paginator, 'Sliding', 'shared/paginator.phtml', array('route' => 'cr_contract', 'sort' => $sort, 'sortBy' => $sortBy)); ?>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,108 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 3/6/2015
+ * Time: 10:15 AM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+$title = "Payable Voucher";
+$this->headTitle($title);
+?>
+<h1><?php echo $title; ?></h1>
+<div class="panel panel-default">
+    <div class="form-horizontal panel-heading">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label col-sm-3">
+                        Code
+                    </label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control text-center" disabled="disabled"
+                            value="<?php echo $voucher['voucherNo'];?>"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-offset-4 col-sm-4">
+                <div class="form-group">
+                    <label class="control-label col-sm-4">
+                        Date
+                    </label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control text-center"
+                            value="<?php echo $voucher['voucherDate'];?>"
+                            disabled="disabled"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body" role="form">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>
+                        Type
+                    </label>
+                    <input type="text" class="form-control" disabled="disabled"
+                           value="<?php echo $voucher['type']; ?>"/>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="form-group">
+                    <label>
+                        Amount
+                    </label>
+                    <input type="text" class="form-control" disabled="disabled"
+                           value="<?php echo $voucher['amount'] . ' ' . $voucher['currencyCode']; ?>"/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label>
+                        Description
+                    </label>
+                    <textarea class="form-control" disabled="disabled"><?php echo $voucher['description'];?></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label>
+                        Group code(optional)
+                    </label>
+                    <input type="text" class="form-control" disabled="disabled"
+                        value="<?php echo $voucher['group_code'];?>"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer form-horizontal">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Withdraw by</label>
+                    <div class="col-sm-8">
+                        <input type="text" disabled="disabled" class="form-control text-center" value="<?php echo $staffName;?>"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-offset-4 col-sm-4">
+                <p class="text-right">
+                    <a href="<?php echo $this->url('account_payable');?>" class="btn btn-default">
+                        <span class="glyphicon glyphicon-th-list"></span>
+                        Back to List
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

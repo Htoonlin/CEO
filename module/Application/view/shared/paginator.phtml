@@ -1,0 +1,78 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 3/7/2015
+ * Time: 1:38 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+if($this->pageCount) :
+    $query = '';
+
+    if(!empty($filter)){
+        $query .= '&filter=' . $filter;
+    }
+
+    if(!empty($sort)){
+        $query .= '&sort=' . $sort;
+    }
+
+    if(!empty($sortBy)){
+        $query .= '&by=' . $sortBy;
+    }
+
+    if(empty($url) && $this->route) {
+        $url = $this->url($this->route);
+    }
+?>
+<div>
+    <ul class="pagination" style="margin:0;">
+        <!-- Previous page link -->
+        <?php if (isset($this->previous)): ?>
+            <li>
+                <a href="<?php echo $url; ?>?page=<?php echo $this->previous . $query; ?>">
+                    &laquo;
+                </a>
+            </li>
+        <?php else: ?>
+            <li class="disabled">
+                <a href="#">
+                    &laquo;
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <!-- Numbered page links -->
+        <?php foreach ($this->pagesInRange as $page): ?>
+            <?php if ($page != $this->current): ?>
+                <li>
+                    <a href="<?php echo $url;?>?page=<?php echo $page . $query; ?>">
+                        <?php echo $page; ?>
+                    </a>
+                </li>
+            <?php else: ?>
+                <li class="active">
+                    <a href="#"><?php echo $page; ?></a>
+                </li>
+            <?php endif; ?>
+        <?php endforeach; ?>
+
+        <!-- Next page link -->
+        <?php if (isset($this->next)): ?>
+            <li>
+                <a href="<?php echo $url; ?>?page=<?php echo $this->next .$query; ?>">
+                    &raquo;
+                </a>
+            </li>
+        <?php else: ?>
+            <li class="disabled">
+                <a href="#">
+                    &raquo;
+                </a>
+            </li>
+        <?php endif; ?>
+    </ul>
+</div>
+
+<?php endif; ?>

@@ -1,0 +1,115 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+echo $this->doctype();
+?>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <?php echo $this->headTitle($this->translate('SUNDEW MYANMAR'))->setSeparator(' - ')->setAutoEscape(false) ?>
+
+    <?php echo $this->headMeta()
+        ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+        ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+    ?>
+
+    <!-- Le styles -->
+    <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/sundew.ico'))
+        ->prependStylesheet($this->basePath() . '/css/sundew.css')
+        ->prependStylesheet($this->basePath() . '/font-awesome/css/font-awesome.min.css')
+        ->prependStylesheet($this->basePath() . '/css/bootstrap-theme.css')
+        ->prependStylesheet($this->basePath() . '/fuelux/css/fuelux.css')
+        ->prependStylesheet($this->basePath() . '/bootstrap/css/bootstrap.min.css');
+    ?>
+
+    <!-- Scripts -->
+    <?php echo $this->headScript()
+        ->prependFile($this->basePath() . '/js/respond.min.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+        ->prependFile($this->basePath() . '/js/html5shiv.js',   'text/javascript', array('conditional' => 'lt IE 9',))
+        ->prependFile($this->basePath() . '/fuelux/js/fuelux.js')
+        ->prependFile($this->basePath() . '/js/moment.js')
+        ->prependFile($this->basePath() . '/bootstrap/js/bootstrap.min.js')
+        ->prependFile($this->basePath() . '/js/jquery.min.js');
+    ?>
+</head>
+<body class="fuelux">
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="<?php echo $this->url('home') ?>">
+                <img style="margin-top:-8px;" src="<?php echo $this->basePath('img/logo-white.png') ?>" width="40" alt="Sundew Myanmar"/>&nbsp;
+            </a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <?php  echo $this->navigation('navigation')->menu()
+                ->setPartial('shared/menu.phtml')
+                ->render();  ?>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <img src="<?php echo $this->url('user', array('action' => 'image', 'id' => $this->current_user->userId)) ?>" height="18px" ?>
+                        <?php echo $this->current_user->userName; ?>
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" id="page_2">
+                        <li>
+                            <a href="<?php echo $this->url('user', array('action' => 'profile')); ?>">
+                                <span class="glyphicon glyphicon-edit"></span>
+                                Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo $this->url('user', array('action' =>'password')); ?>">
+                                <span class="glyphicon glyphicon-asterisk"></span>
+                                Password
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="<?php echo $this->url('auth', array('action' => 'logout')); ?>">
+                                <span class="glyphicon glyphicon-lock"></span>
+                                Log out
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="container">
+    <?php
+    $flash = $this->flashMessenger();
+    $flash->setMessageOpenFormat('<div%s>
+     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+         &times;
+     </button>
+     <ul type="square"><li>')
+        ->setMessageSeparatorString('</li><li>')
+        ->setMessageCloseString('</li></ul></div>');
+    echo $flash->render('error',   array('alert', 'alert-dismissible', 'alert-danger'));
+    echo $flash->render('info',    array('alert', 'alert-dismissible', 'alert-info'));
+    echo $flash->render('default', array('alert', 'alert-dismissible', 'alert-warning'));
+    echo $flash->render('success', array('alert', 'alert-dismissible', 'alert-success'));
+    ?>
+    <?php echo $this->content; ?>
+</div> <!-- /container -->
+<footer class="container">
+    <hr>
+    <p align="center">Copyright &copy; 2011 - <?php echo date('Y') ?> by SUNDEW MYANMAR.
+        <br /><?php echo $this->translate('All rights reserved.') ?>
+    </p>
+</footer>
+<?php echo $this->inlineScript() ?>
+</body>
+</html>

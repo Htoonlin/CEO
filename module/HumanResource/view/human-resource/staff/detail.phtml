@@ -1,0 +1,72 @@
+<?php
+/**
+* Created by PhpStorm
+* User:NyanTun
+* Date: 4/22/2015
+* Time:10:15 AM
+* Zend Code Completion
+*/
+/**
+ *@var $this Zend\View\Renderer\PhpRenderer;
+ **/
+$title="Staff";
+$this->headTitle($title);
+?>
+<h1><?php echo $title; ?></h1>
+<hr/>
+<?php
+$form->setAttribute('action', $this->url('hr_staff', array('action'=>'detail', 'id'=>$id)));
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="row">
+    <div class="col-md-6">
+        <?php
+        echo $this->formHidden($form->get('staffId'));
+        echo $this->formHorizontal($form->get('staffCode'));
+        echo $this->formHorizontal($form->get('staffName'));
+        echo $this->formHorizontal($form->get('birthday'));
+        ?>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Salary</label>
+            <div class="col-sm-6">
+                <?php echo $this->formNumber($form->get('salary')); ?>
+            </div>
+            <div class="col-sm-3">
+                <?php echo $this->formSelect($form->get('currencyId')); ?>
+            </div>
+        </div>
+        <?php echo $this->formHorizontal($form->get('status')); ?>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <button type="submit" value="Save" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-floppy-save"></span>
+                    Save
+                </button>
+                <?php if($isEdit):?>
+                <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('hr_staff', array('action'=>'delete', 'id'=>$id)); ?>" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-trash"></span>
+                    Remove
+                </a>
+                <?php endif; ?>
+                <a href="<?php echo $this->url('hr_staff'); ?>" class="btn btn-default">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                    Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <?php
+        echo $this->formHorizontal($form->get('userId'));
+        echo $this->formHorizontal($form->get('positionId'));
+        echo $this->formHorizontal($form->get('departmentId'));
+        echo $this->formHorizontal($form->get('permanentDate'));
+        echo $this->formHorizontal($form->get('annual_leave'));
+        ?>
+    </div>
+</div>
+
+ <?php
+ echo $this->form()->closeTag();
+ ?>

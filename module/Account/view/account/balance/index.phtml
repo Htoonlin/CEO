@@ -1,0 +1,159 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 5/22/2015
+ * Time: 7:39 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+$title = 'Account Closing';
+$this->headTitle($title);
+?>
+<h1><?php echo $title; ?></h1>
+<script type="text/javascript">
+    $('document').ready(function(){
+        $('select[name="currency"]').change(function()
+        {
+            var currency = $(this).val();
+           window.location.href="<?php echo $this->url('account_balance') . '?page=1&filter=';?>" + currency;
+        });
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                <span class="input-group-addon">
+                    Currency
+                </span>
+                    <?php echo $this->formSelect($currencyCombo); ?>
+                </div>
+            </div>
+            <div class="col-md-4 col-md-offset-5">
+                <div class="text-right">
+                    <div class="btn-group">
+                        <a href="<?php echo $this->url("account_balance", array('action'=>'close'));?>"
+                           class="btn btn-primary">
+                            <span class="glyphicon glyphicon-tasks"></span>
+                            Closing/Check
+                        </a>
+                        <a href="<?php echo $this->url('account_balance', array('action'=>'export'));?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-download"></span>
+                            Export
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="grid">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th class="success text-center" colspan="3">
+                            Account Opening
+                        </th>
+                        <th class="warning text-center" colspan="3">
+                            Account Closing
+                        </th>
+                        <th colspan="2">
+                        </th>
+                    </tr>
+                    <tr>
+                        <th width="170px">
+                            <?php echo $this->gridHeaderCell('Date', 'openingDate', $filter, $page, $sort, $sortBy); ?>
+                        </th>
+                        <th width="150px">
+                            <?php echo $this->gridHeaderCell('Voucher No', 'receivable_voucher', $filter, $page, $sort, $sortBy); ?>
+                        </th>
+                        <th width="150px">
+                            <?php echo $this->gridHeaderCell('Amount', 'openingAmount', $filter, $page, $sort, $sortBy); ?>
+                        </th>
+                        <th width="170px">
+                            <?php echo $this->gridHeaderCell('Date', 'closingDate', $filter, $page, $sort, $sortBy); ?>
+                        </th>
+                        <th width="150px">
+                            <?php echo $this->gridHeaderCell('Voucher No', 'payable_voucher', $filter, $page, $sort, $sortBy); ?>
+                        </th>
+                        <th width="150px">
+                            <?php echo $this->gridHeaderCell('Amount', 'closingAmount', $filter, $page, $sort, $sortBy); ?>
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                        <th width="30px">
+                            Report
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach($paginator as $closing):?>
+                    <tr>
+                        <td class="success">
+                            <?php echo $this->escapeHtml($closing->openingDate); ?>
+                        </td>
+                        <td class="success">
+                            <?php echo $this->escapeHtml($closing->receivable_voucher); ?>
+                        </td>
+                        <td class="success">
+                            <?php echo $this->escapeHtml($closing->openingAmount). ' ' . $this->escapeHtml($closing->currency); ?>
+                        </td>
+                        <td class="warning">
+                            <?php echo (empty($closing->closingDate)) ? '-' : $this->escapeHtml($closing->closingDate); ?>
+                        </td>
+                        <td class="warning">
+                            <?php echo (empty($closing->payable_voucher)) ? '-' : $this->escapeHtml($closing->payable_voucher); ?>
+                        </td>
+                        <td class="warning">
+                            <?php echo (empty($closing->closingAmount)) ? '-' : ($this->escapeHtml($closing->closingAmount) . ' ' . $this->escapeHtml($closing->currency)); ?>
+                        </td>
+                        <td class="info">
+                            <?php
+                            if($closing->openingAmount && $closing->closingAmount){
+                                if($closing->openingAmount < $closing->closingAmount) {
+                                    $end = ($closing->closingAmount / $closing->openingAmount);
+                                    $end = ($end > 5) ? 5 : $end;
+                                    for($i = 0; $i < $end; $i++)
+                                    {
+                                        echo '<span style="color:#00ba54" class="fa fa-thumbs-up"></span> ';
+                                    }
+                                }else if($closing->openingAmount > $closing->closingAmount){
+                                    $end = ($closing->openingAmount/$closing->closingAmount);
+                                    $end = ($end > 5) ? 5 : $end;
+                                    for($i = 0; $i < $end; $i++)
+                                    {
+                                        echo '<span style="color:#d10709" class="fa fa-thumbs-down"></span> ';
+                                    }
+                                }else{
+                                    echo '<span style="color:#dcaa06" class="fa fa-puzzle-piece"></span>';
+                                }
+                            }else{
+                                echo '<span style="color:#dcaa06" class="fa fa-puzzle-piece"></span>';
+                            }
+                            ?>
+                        </td>
+                        <td class="info text-center">
+                            <a href="<?php echo $this->url('account_balance', array('action' => 'detail', 'id' => $closing->closingId)); ?>"
+                               class="btn btn-info btn-xs" title="Detail report">
+                                <span class="fa fa-bar-chart"></span>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="text-center">
+            <?php echo $this->paginationControl($paginator, 'Sliding', 'shared/paginator.phtml', array(
+                'route' => 'account_balance',
+                'filter' => $filter, 'sort' => $sort, 'sortBy' => $sortBy,
+            )); ?>
+        </div>
+    </div>
+</div>

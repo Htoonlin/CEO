@@ -1,0 +1,117 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 6/9/2015
+ * Time: 1:53 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+$title = 'Holiday';
+$this->headTitle($title);
+?>
+<h1><?php echo $title; ?></h1>
+<hr />
+<script type="text/javascript">
+    function day_click(date, jsEvent, view){
+        $('select#dayCombo').val(date.format('DD'));
+        $('select#monthCombo').val(date.format('MM'));
+        $('select#yearCombo').val(date.format('YYYY'));
+        $('select[name="type"]').val($(this).attr('data-type')).change();
+        $('input[name="title"]').val($(this).attr('title'));
+        $('input[name="calendarId"]').val($(this).attr('data-holiday-id'));
+        $('select#weekCombo').val($(this).attr('data-wd'));
+
+        if($(this).attr('data-holiday-id')){
+            $('button#btnDelete').show();
+        }else{
+            $('button#btnDelete').hide();
+            $('input[name="is_delete"]').val('no');
+        }
+    }
+
+    function generate_weekCombo(){
+        var weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        var container = $('select#yearCombo').parent('div');
+        var html = '<select class="date-control" name="weekCombo" id="weekCombo">';
+        for(var i = 0; i < 7; i++)
+        {
+            html += '<option value="' + (i + 1) + '">' + weekDays[i] + '</option>';
+        }
+        html += '</select>';
+        container.append(html);
+        $('select#weekCombo').hide();
+    }
+
+    $().ready(function(){
+        generate_weekCombo();
+        $('button#btnDelete').hide();
+        $('input[name="is_delete"]').val('no');
+
+        $('select[name="type"]').change(function(){
+            $('select#weekCombo').hide();
+            $('select#yearCombo').show();
+            $('select#monthCombo').show();
+            $('select#dayCombo').show();
+
+            var type = $(this).val();
+            if(type == 'holiday_y'){
+                $('select#yearCombo').fadeOut().hide();
+            }else if(type == 'holiday_m'){
+                $('select#yearCombo').fadeOut().hide();
+                $('select#monthCombo').fadeOut().hide();
+            }else if(type == 'holiday_w'){
+                $('select#weekCombo').show();
+                $('select#yearCombo').fadeOut().hide();
+                $('select#monthCombo').fadeOut().hide();
+                $('select#dayCombo').fadeOut().hide();
+            }
+        });
+
+        $('button#btnDelete').click(function(){
+            $('input[name="is_delete"]').val('yes');
+        });
+    });
+</script>
+<div class="row">
+    <div class="col-md-7">
+        <?php echo $this->partial('shared/calendar', array('height' => 500, 'name' => 'holidayCalendar', 'dayClick' => 'day_click')); ?>
+    </div>
+    <div class="col-md-5">
+        <?php
+        $form->setAttribute('action', $this->url('hr_holiday'));
+        $form->prepare();
+        echo $this->form()->openTag($form);
+        ?>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>
+                    <span class="glyphicon glyphicon-tree-conifer"></span>
+                    Properties
+                </strong>
+            </div>
+            <div class="panel-body">
+                <?php
+                echo $this->formHidden($form->get('calendarId'));
+                echo $this->formHorizontal($form->get('title'));
+                echo $this->formHorizontal($form->get('type'));
+                echo $this->formHorizontal($form->get('date'));
+                ?>
+            </div>
+            <div class="panel-footer">
+                <p class="text-right">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-floppy-save"></span>
+                        Save
+                    </button>
+                    <button type="submit" class="btn btn-danger" id="btnDelete">
+                        <input type="hidden" readonly="readonly" name="is_delete" value="no" />
+                        <span class="glyphicon glyphicon-trash"></span>
+                        Remove
+                    </button>
+                </p>
+            </div>
+        </div>
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
+</div>

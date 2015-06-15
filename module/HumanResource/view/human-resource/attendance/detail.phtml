@@ -1,0 +1,52 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 5/11/2015
+ * Time: 1:24 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+$title = 'Attendance';
+$this->headTitle($title);
+?>
+<h1><?php echo $title; ?></h1>
+<hr />
+<?php
+$form->setAttribute('action', $this->url('hr_attendance', array('action' => 'detail', 'id' => $id)));
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+<div class="col-md-6">
+    <?php
+    echo $this->formHidden($form->get('AttendanceId'));
+    echo $this->formHorizontal($form->get('StaffId'));
+    echo $this->formHorizontal($form->get('type'));
+    echo $this->formHorizontal($form->get('Date'));
+    ?>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">
+            Time
+        </label>
+        <div class="col-sm-3">
+            <?php
+            echo $this->formSelect($form->get('hour'));
+            ?>
+        </div>
+        <div class="col-sm-3">
+            <?php echo $this->formSelect($form->get('minute'));?>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" value="Save" class="btn btn-primary">
+                <span class="glyphicon glyphicon-floppy-save"></span>
+                Save
+            </button>
+            <a href="<?php echo $this->url('hr_attendance'); ?>" class="btn btn-default">
+                <span class="glyphicon glyphicon-th-list"></span>
+                Back to list
+            </a>
+        </div>
+    </div>
+</div>

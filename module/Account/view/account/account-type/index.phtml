@@ -1,0 +1,88 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 1/16/2015
+ * Time: 3:55 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ * @var $filter Zend\InputFilter\InputFilter
+ */
+$title = 'Account Type Manager';
+$this->headTitle($title);
+$this->headLink()->prependStylesheet($this->basePath() . '/css/treeview.css');
+$this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
+    ->prependFile($this->basePath() . '/js/bootstrap3-typeahead.js');
+?>
+<h2><?php echo $this->escapeHtml($title); ?></h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <?php echo $this->formTreeView($accountTypes, $id); ?>
+    </div>
+    <div class="col-md-8">
+        <script type="text/javascript">
+            $(function(){
+                $.get('<?php echo $this->url('account_type', array('action' => 'jsonAll')); ?>', function(data){
+                    $('#parentType #typeahead').typeahead({source: data, afterSelect:function(item){
+                        $currentId = $("input[name=accountTypeId]").val();
+                        if(item.accountTypeId == $currentId){
+                            alert("Parent can't same with current menu.");
+                            $("input[name=parentTypeId]").val("");
+                            return;
+                        }
+                        $("input[name=parentTypeId]").val(item.accountTypeId);
+                    }});
+                });
+            });
+        </script>
+        <?php
+        echo $this->form()->openTag($form);
+        echo $this->formHorizontal($form->get('accountTypeId'));
+        echo $this->formHorizontal($form->get('code'));
+        echo $this->formHorizontal($form->get('name'));
+        echo $this->formHorizontal($form->get('parentTypeId'));
+        echo $this->formHorizontal($form->get('baseType'));
+        ?>
+        <div class="form-group">
+            <label class="control-label col-sm-3">Parent Type</label>
+            <div class="col-sm-9" id="parentType">
+                <input data-provide="typeahead" id="typeahead" autocomplete="off"
+                       value="<?php echo ($parent) ? $parent->getName() : ""; ?>"
+                       class="form-control" type="text" placeholder="Parent Account Type">
+            </div>
+        </div>
+        <?php echo $this->formHorizontal($form->get('status')); ?>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <a href="<?php echo $this->url("account_type"); ?>" class="btn btn-default">
+                    <span class="glyphicon glyphicon-file"></span>
+                    New
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-floppy-save"></span>
+                    Save
+                </button>
+                <?php if($this->isEdit): ?>
+                    <script type="text/javascript">
+                        function del_click(sender){
+                            if(confirm('Are you sure to remove this account Type?')){
+                                $("input[name=is_delete]").val("yes");
+                                return true;
+                            }
+                            $("input[name=is_delete]").val("no");
+                            return false;
+                        }
+                    </script>
+                    <input type="hidden" value="no" name="is_delete" />
+                    <button type="submit" class="btn btn-danger"
+                            onclick="return del_click(this);">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        Remove
+                    </button>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
+</div>

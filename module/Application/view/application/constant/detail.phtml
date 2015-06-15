@@ -1,0 +1,51 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 3/6/2015
+ * Time: 10:15 AM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+$title = "Constant";
+$this->headTitle($title);
+?>
+<h1><?php echo $title; ?></h1>
+<hr />
+<?php
+$form->setAttribute('action', $this->url('constant', array('action' => 'detail', 'id' => $id)));
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+
+    <div class="col-md-8">
+        <?php
+        echo $this->formHidden($form->get('constantId'));
+        echo $this->formHorizontal($form->get('name'));
+        echo $this->formHorizontal($form->get('value'));
+        echo $this->formHorizontal($form->get('group_code'));
+        ?>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <button type="submit" value="Save" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-floppy-save"></span>
+                    Save
+                </button>
+                <?php if($isEdit): ?>
+                <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('constant', array('action' => 'delete', 'id' => $id)); ?>" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-trash"></span>
+                    Remove
+                </a>
+                <?php endif; ?>
+                <a href="<?php echo $this->url('constant'); ?>" class="btn btn-default">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                    Back to list
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+echo $this->form()->closeTag();
+?>

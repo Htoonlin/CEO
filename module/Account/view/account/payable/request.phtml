@@ -1,0 +1,99 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User:NyanTun
+ * Date:4/23/20015
+ * Time:12:34 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+$title="Payable Voucher";
+$this->headTitle($title);
+?>
+<h1><?php echo $title; ?></h1>
+<?php
+$form->setAttribute('action',$this->url('account_payable',array('action'=>'request')));
+$form->prepare();
+echo $this->form()->openTag($form);
+echo $this->formHidden($form->get('payVoucherId'));
+?>
+<script type="text/javascript">
+    $('document').ready(function()
+    {
+        $('#voucherDate').on('dateClicked.fu.datepicker',function(evt, date){
+            $.ajax({
+                url:'<?php echo $this->url('account_payable',array('action'=>'jsonGenerate'));?>',
+                method:'POST',
+                data:{date:$(this).datepicker('getFormattedDate')},
+                success:function(data){
+                    $(input[name="voucherNo"]).val(data.generateNo);
+                }
+            })
+        });
+    })
+</script>
+<div class="panel panel-default">
+    <div class="form-horizontal panel-heading">
+        <div class="row">
+            <div class="col-sm-4">
+                <?php echo $this->formHorizontal($form->get('voucherNo'));?>
+            </div>
+            <div class="col-sm-offset-4 col-sm-4">
+                <?php echo $this->formHorizontal($form->get('voucherDate'));?>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body" role="form">
+        <div class="row">
+            <div class="col-sm-4">
+                <?php echo $this->formRow($form->get('accountType'));?>
+            </div>
+            <div class="col-sm-6">
+                <?php echo $this->formRow($form->get('amount'));?>
+            </div>
+            <div class="col-sm-2">
+                <?php echo $this->formRow($form->get('currencyId')); ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <?php echo $this->formRow($form->get('description'));?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <?php echo $this->formRow($form->get('group_code'));?>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer form-horizontal">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Withdraw by</label>
+                    <div class="col-sm-8">
+                        <?php echo $this->formHidden($form->get('withdrawBy'));?>
+                        <input type="text"disabled="disabled" class="form-control text-center" value="<?php echo $staffName;?>" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-offset-4 col-sm-4">
+                <p class="text-right">
+                    <button type="submit" value="Save" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-send"></span>
+                        Request Now
+                    </button>
+                    <a href="<?php echo $this->url('account_payable');?>" class="btn btn-default">
+                        <span class="glyphicon glyphicon-th-list"></span>
+                        Back to List
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+echo $this->form()->closeTag();
+?>
+
+

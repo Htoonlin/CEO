@@ -1,0 +1,192 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 6/9/2015
+ * Time: 6:18 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+
+if(empty($height))
+    $height = 600;
+
+if(empty($name))
+    $name = 'calendar';
+
+$this->headLink()->appendStylesheet($this->basePath() . '/fullcalendar/fullcalendar.css');
+$this->headScript()->appendFile($this->basePath() . '/fullcalendar/fullcalendar.min.js');
+?>
+
+<script type="text/javascript">
+    var currentMonth = 0;
+    var weeklyHoliday = new Array();
+    var currentYear = 0;
+    var holidays = new Array();
+    function fillHolidays() {
+        $.ajax({
+            url     : '<?php echo $this->url('hr_holiday', array('action' => 'jsonHoliday')) ?>',
+            data    : {year:currentYear},
+            type    : 'POST',
+            async   : false,
+            success : function(data){
+                holidays = data;
+            }
+        });
+    }
+
+    function nextYear(){
+        $('#calendarLoader').loader().show();
+        currentYear++;
+        fillHolidays();
+        $('div#<?= $name ?>').fullCalendar('nextYear');
+    }
+    function prevYear(){
+        $('#calendarLoader').loader().show();
+        currentYear--;
+        fillHolidays();
+        $('div#<?= $name ?>').fullCalendar('prevYear');
+    }
+    function nextMonth(){
+        $('#calendarLoader').loader().show();
+        if(currentMonth == 12){
+            currentYear++;
+        }
+        fillHolidays();
+        $('div#<?= $name ?>').fullCalendar('next');
+    }
+    function prevMonth(){
+        $('#calendarLoader').loader().show();
+        if(currentMonth == 1){
+            currentYear--;
+        }
+        fillHolidays();
+        $('div#<?= $name ?>').fullCalendar('prev');
+    }
+    function today(){
+        $('#calendarLoader').loader().show();
+        currentYear = (new Date()).getFullYear();
+        fillHolidays();
+        $('div#<?= $name ?>').fullCalendar('today');
+    }
+
+    $('document').ready(function(){
+        $('#calendarLoader').loader().show();
+
+        //Load weekly holidays
+        $.ajax({
+            url     : '<?php echo $this->url('hr_holiday', array('action' => 'jsonWeeklyHoliday')) ?>',
+            type    : 'GET',
+            async   : false,
+            success : function(data){
+                weeklyHoliday = data;
+            }
+        });
+
+        currentYear = (new Date()).getFullYear();
+
+        fillHolidays();
+
+        $('div#<?= $name ?>').fullCalendar({
+            header:{
+                'left': '',
+                'center' : '',
+                'right' : ''
+            },
+            height: <?php echo $height; ?>,
+            editable: false,
+            selectable: true,
+            <?php if(!empty($dayClick)): ?>
+            dayClick: <?= $dayClick ?>,
+            <?php endif; ?>
+            viewRender: function(view, element){
+                currentYear = view.intervalStart.year();
+                currentMonth = view.intervalStart.month() + 1;
+                $('#yearSpin').spinbox('value', currentYear);
+                $('#calendar-title').html(view.title);
+
+                if(currentYear == (new Date()).getFullYear() && currentMonth == (new Date()).getMonth() + 1){
+                    $('#btnToday').attr('disabled', 'disabled');
+                }
+                else{
+                    $('#btnToday').removeAttr('disabled');
+                }
+                $('#calendarLoader').loader().hide();
+            },
+            dayRender: function(date, cell) {
+                $.each(weeklyHoliday, function(idx){
+                    var holiday = $(this)[0].day - 1;
+                    if(date.weekday() == holiday){
+                        cell.css('background-color', '#D9F3CF');
+                        cell.attr('title' , $(this)[0].title);
+                        cell.attr('data-type', $(this)[0].type);
+                        cell.attr('data-wd', $(this)[0].day);
+                        cell.attr('data-holiday-id', $(this)[0].calendar_id);
+                    }
+                });
+
+                $.each(holidays, function(idx) {
+                    var holiday = $(this)[0].date;
+                    if(holiday == date.format('YYYY-MM-DD')){
+                        cell.attr('title' , $(this)[0].title);
+                        cell.attr('data-type', $(this)[0].type);
+                        cell.attr('data-holiday-id', $(this)[0].id);
+                        cell.css('background-color', '#D9F3CF');
+                        cell.html('<div class="holiday">' +
+                        '<span class="glyphicon glyphicon-tree-conifer"></span>' +
+                        $(this)[0].title + '</div>');
+                    }
+                });
+            }
+        });
+
+        $('div#<?= $name ?> .fc-toolbar').remove();
+    });
+</script>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" id="btnLeft"
+                            onclick="prevYear()" title="Prev Year">
+                        <span class="glyphicon glyphicon-backward"></span>
+                    </button>
+                    <button type="button" class="btn btn-default" id="btnRight"
+                            onclick="nextYear()" title="Next Year">
+                        <span class="glyphicon glyphicon-forward"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="text-center" style="margin-top:8px">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                    <span id="calendar-title" style="font-weight:bold;font-size:15px;text-shadow: 0px 1px 0px #FFF;">
+                        June 2015
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-4 text-right">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" id="btnLeft"
+                            onclick="prevMonth()" title="Prev Month">
+                        <span class="glyphicon glyphicon-chevron-left"></span>
+                    </button>
+                    <button type="button" class="btn btn-info" id="btnToday"
+                            onclick="today()" title="Today">
+                        <span class="glyphicon glyphicon-home"></span>
+                    </button>
+                    <button type="button" class="btn btn-default" id="btnRight"
+                            onclick="nextMonth()" title="Next Month">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div id="<?= $name ?>" name="<?= $name ?>">
+            <div class="loader" data-initialize="loader" id="calendarLoader"></div>
+        </div>
+    </div>
+</div>

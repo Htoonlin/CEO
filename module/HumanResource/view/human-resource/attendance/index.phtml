@@ -1,0 +1,119 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 5/8/2015
+ * Time: 12:44 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+$title = 'Attandance Board';
+$this->headTitle($title);
+$flashMessages = $this->flashMessenger()->getMessages();
+?>
+<h1><?php echo $title; ?></h1>
+<?php if(count($flashMessages) > 0) : ?>
+    <div class="alert alert-info alert-dismissable">
+        <button type="button" class="close" data_dismiss="alert" aria-hidden="true">&times;</button>
+        <strong><span class="glyphicon glyphicon-info-sign"></span></strong>
+        <?php echo $flashMessages[0]; ?>
+    </div>
+<?php endif; ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#txtFilter").keydown(function(e){
+            if(e.which==13){
+                var filter=$(this).val();
+                window.location.href='<?php echo $this->url(). '?page=' .$page.'&filter=';?>' + filter + '<?php echo '&sort='.$sort.'&by='.$sortBy;?>'
+            }
+        });
+    });
+</script>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </span>
+                    <input type="text" class="form-control" id="txtFilter" value="<?php echo $filter;?>"/>
+                </div>
+            </div>
+            <div class="col-md-4 col-md-offset-5">
+                <div class="text-right">
+                    <div class="btn-group">
+                        <a href="<?php echo $this->url("hr_attendance",array('action' => 'detail', 'id' => 0));?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-file"></span>
+                            New
+                        </a>
+                        <a href="<?php echo $this->url('hr_attendance',array('action'=>'export'));?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-download"></span>
+                            Export
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="grid">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                <tr>
+                    <th width="160px">
+                        <?php echo $this->gridHeaderCell('Date','Date',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="160px">
+                        <?php echo $this->gridHeaderCell('Code','StaffCode',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="160px">
+                        <?php echo $this->gridHeaderCell('Name','StaffName',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="160px">
+                        <?php echo $this->gridHeaderCell('In','InTime',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="160px">
+                        <?php echo $this->gridHeaderCell('Out','OutTime',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="160px">
+                        <?php echo $this->gridHeaderCell('Leave?','IsLeave',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($paginator as $attendance):?>
+                    <tr <?php  echo boolval($this->escapeHtml($attendance->IsLeave)) ? 'class="warning"' : ''; ?>>
+                        <td>
+                            <?php echo $this->escapeHtml($attendance->Date); ?>
+                        </td>
+                        <td>
+                            <a href="<?php echo $this->url('hr_attendance', array('action' => 'detail', 'id' => $attendance->AttendanceId)) ?>" title="Edit">
+                            <?php echo $this->escapeHtml($attendance->StaffCode); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($attendance->StaffName); ?>
+                        </td>
+                        <td>
+                            <?php echo boolval($this->escapeHtml($attendance->IsLeave)) ? '-' : $this->escapeHtml($attendance->InTime); ?>
+                        </td>
+                        <td>
+                            <?php echo boolval($this->escapeHtml($attendance->IsLeave)) ? '-' : $this->escapeHtml($attendance->OutTime); ?>
+                        </td>
+                        <td>
+                            <?php echo boolval($this->escapeHtml($attendance->IsLeave)) ? 'Yes' : 'No'; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="text-center">
+            <?php echo $this->paginationControl($paginator, 'Sliding', 'shared/paginator.phtml', array('route' => 'hr_attendance',
+                'filter' => $filter, 'sort' => $sort, 'sortBy' => $sortBy)); ?>
+        </div>
+    </div>
+</div>

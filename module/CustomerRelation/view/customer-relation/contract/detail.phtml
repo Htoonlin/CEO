@@ -1,0 +1,99 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User:NyanTun
+ * Date:5/11/2015
+ * Time:12:43 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+$title="Contract Files";
+$this->headTitle($title);
+?>
+    <h1><?php echo $title;?></h1>
+<?php
+$form->setAttribute('action', $this->url('cr_contract', array('action' => 'detail', 'id' => $id)));
+$form->prepare();
+echo $this->form()->openTag($form);
+echo $this->formHidden($form->get('contractId'));
+?>
+    <div class="panel panel-default">
+        <div class="form-horizontal panel-heading">
+            <div class="row">
+                <div class="col-sm-4">
+                    <?php echo $this->formHorizontal($form->get('code'));?>
+                </div>
+                <div class="col-sm-offset-4 col-sm-4">
+                    <?php echo $this->formHorizontal($form->get('contractDate'));?>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body" role="form">
+            <div class="row">
+                <div class="col-sm-4">
+                    <?php echo $this->formRow($form->get('companyId'));?>
+                </div>
+                <div class="col-sm-8">
+                    <?php echo $this->formRow($form->get('contactId'))?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <?php echo $this->formRow($form->get('amount'));?>
+                </div>
+                <div class="col-sm-4">
+                    <?php echo $this->formRow($form->get('currencyId'));?>
+                </div>
+                <div class="col-sm-4">
+                    <?php echo $this->formRow($form->get('contractFile'))?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <?php echo $this->formRow($form->get('notes'));?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <?php echo $this->formRow($form->get('status'));?>
+                </div>
+                <div class="col-sm-6">
+                    <?php echo $this->formRow($form->get('projectId'));?>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer form-horizontal">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Contract by </label>
+                        <div class="col-sm-8">
+                            <?php echo $this->formHidden($form->get('contractBy'));?>
+                            <input type="text" disabled="disabled" class="form-control text-center" value="<?php echo $staffName;?>" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-offset-4 col-sm-4">
+                    <p class="text-right">
+                        <button type="submit" value="Save" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-send"></span>
+                            Save
+                        </button>
+                        <?php if($isEdit): ?>
+                            <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('cr_contract', array('action' => 'delete', 'id' => $id)); ?>" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-trash"></span>
+                                Remove
+                            </a>
+                        <?php endif; ?>
+                        <a href="<?php echo $this->url('cr_contract');?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-th-list"></span>
+                            Back to List
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php
+echo $this->form()->closeTag();
+?>

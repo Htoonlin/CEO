@@ -1,0 +1,107 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User:NyanTun
+ * Date:5/11/2015
+ * Time: 2:36 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+$title="Proposal";
+$this->headTitle($title);
+?>
+<h1><?php echo $title;?></h1>
+<div class="panel panel-default">
+    <div class="form-horizontal panel-heading">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label col-sm-3">
+                        Code
+                    </label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control text-center" disabled="disabled"
+                            value="<?php echo $proposal['code']; ?>"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-offset-4 col-sm-4">
+                <div class="form-group">
+                    <label class="control-label col-sm-4">
+                        Date
+                    </label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control text-center" disabled="disabled"
+                            value="<?php echo $proposal['proposalDate']; ?>"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body" role="form">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" class="form-control" disabled="disabled"
+                        value="<?php echo $proposal['companyName']; ?>"/>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Contact Name</label>
+                    <input type="text" class="form-control" disabled="disabled"
+                        value="<?php echo $proposal['contactName']; ?>"/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="text" class="form-control" disabled="disabled"
+                        value="<?php echo $proposal['amount'] . ' ' . $proposal['currencyCode'];?>"/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea class="form-control" disabled="disabled"><?php echo $proposal['notes'];?></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label>Group Code(optional)</label>
+                    <input type="text" class="form-control" disabled="disabled"
+                        value="<?php echo $proposal['group_code']; ?>"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer form-horizontal">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Proposal By</label>
+                    <div class="col-sm-8">
+                        <input type="text" disabled="disabled" class="form-control text-center" value="<?php echo $staffName; ?>"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-offset-4 col-sm-4">
+                <p class="text-right">
+                    <a href="<?php echo $this->url('cr_proposal');?>" class="btn btn-default">
+                        <span class="glyphicon glyphicon-th-list"></span>
+                        Back to List
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
