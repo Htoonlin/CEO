@@ -68,7 +68,7 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
             <label class="control-label col-sm-3">Parent Menu</label>
             <div class="col-sm-9" id="parentMenu">
                 <input data-provide="typeahead" id="typeahead" autocomplete="off"
-                       value="<?php echo ($parent) ? $parent->getTitle() : ""; ?>"
+                       value="<?php echo ($parent) ? $parent->getTitle() . ' (' . $parent->getDescription() . ')' : ""; ?>"
                        class="form-control" type="text" placeholder="Parent Menu">
             </div>
         </div>

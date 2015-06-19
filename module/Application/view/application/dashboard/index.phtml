@@ -8,6 +8,25 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $title; ?></h1>
 <hr />
+<script type="text/javascript">
+    function attendance(a)
+    {
+        console.log(a);
+        $.ajax({
+            url: '<?php echo $this->url('dashboard'); ?>',
+            data: {status: a},
+            type: 'POST',
+            success: function(data)
+            {
+                if(data.message == "success"){
+                    window.location.href = "<?php echo $this->url('dashboard'); ?>"
+                }else{
+                    alert(data.message);
+                }
+            }
+        });
+    }
+</script>
 <div class="row">
     <div class="col-sm-8">
         <?php echo $this->partial('shared/calendar', array('height' => 550, 'name' => 'dashboardCalendar')); ?>
@@ -35,7 +54,7 @@ $this->headTitle($title);
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
-                        <button id="btnIn" type="button" class="btn btn-info btn-block">
+                        <button id="btnIn" type="button" onclick="attendance('I')" class="btn btn-info btn-block">
                             <?php
                             if($attendanceIn){
                                 echo substr($attendanceIn->getAttendance(), -8);
@@ -46,7 +65,7 @@ $this->headTitle($title);
                         </button>
                     </div>
                     <div class="col-sm-6">
-                        <button id="btnOut" type="button" class="btn btn-warning btn-block">
+                        <button id="btnOut" type="button" onclick="attendance('O')" class="btn btn-warning btn-block">
                             <?php
                             if($attendanceOut){
                                 echo substr($attendanceOut->getAttendance(), -8);

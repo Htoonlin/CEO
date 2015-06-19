@@ -9,20 +9,14 @@
 
 namespace Application;
 
-use Application\DataAccess\ControllerDataAccess;
 use Application\DataAccess\RouteDataAccess;
 use Application\Service\SundewAuthStorage;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
 use Zend\Authentication\AuthenticationService;
-use Zend\Log\Logger;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\ControllerProviderInterface;
-use Zend\ModuleManager\Feature\FormElementProviderInterface;
-use Zend\ModuleManager\Feature\RouteProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
-use Zend\Mvc\Application;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\Http\Segment;
@@ -64,7 +58,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                 $router->addRoute($data->getName(), $route);
             }
         }catch(\Exception $ex){
-            Logger::ERR('Error from generateRoute(): ' . $ex->getMessage());
+            throw $ex;
         }
     }
 
@@ -152,12 +146,6 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
 
                         return $routeDataAccess->getRouteData($roleId);
                     },
-                    'ControllerData' => function($sm)
-                    {
-                        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                        $dataAccess = new ControllerDataAccess($dbAdapter);
-                        return $dataAccess->fetchAll();
-                    }
                 ),
             );
         }

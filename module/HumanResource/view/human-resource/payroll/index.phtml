@@ -1,0 +1,48 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 6/15/2015
+ * Time: 3:36 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+$title = 'Payroll';
+$this->headTitle($title);
+?>
+<h1><?= $this->escapeHtml($title) ?></h1>
+<hr />
+<div class="panel panel-default">
+    <div class="panel-heading">
+
+    </div>
+    <div class="panel-body">
+        <div class="grid">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Staff</th>
+                        <th>Date</th>
+                        <th>Salary</th>
+                        <th>Deduction</th>
+                        <th>Net</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach($staffs as $staff):?>
+                    <tr>
+                        <td><?= $staff->staffName . '(' . $staff->staffCode . ')' ?></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel-footer">
+
+    </div>
+</div>

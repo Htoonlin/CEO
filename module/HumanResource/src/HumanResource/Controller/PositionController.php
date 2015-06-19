@@ -1,7 +1,5 @@
 <?php
-
 namespace HumanResource\Controller;
-
 
 use Application\DataAccess\ConstantDataAccess;
 use HumanResource\DataAccess\PositionDataAccess;

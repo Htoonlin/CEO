@@ -51,7 +51,7 @@ class MenuController extends AbstractActionController{
         $menus = $this->menuTable()->fetchAll();
         $data = array();
         foreach($menus as $menu){
-            $data[] = array('menuId' => $menu->getMenuId(), 'name' => $menu->getTitle());
+            $data[] = array('menuId' => $menu->getMenuId(), 'name' => ($menu->getTitle() .' (' . $menu->getDescription() . ')'));
         }
         return new JsonModel($data);
     }

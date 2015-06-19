@@ -28,10 +28,8 @@ class PositionDataAccess extends AbstractTableGateway{
         $this->initialize();
     }
 
-
     public function fetchAll($paginated=false,$filter='',$orderBy='name',$order='ASC')
     {
-
         if($paginated){
             $select = new Select($this->table);
             $select->order($orderBy . ' ' . $order);
@@ -41,10 +39,8 @@ class PositionDataAccess extends AbstractTableGateway{
             $paginatorAdapter = new DbSelect($select, $this->adapter);
             $paginator = new Paginator($paginatorAdapter);
             return $paginator;
-
         }
         return $this->select();
-
     }
 
     public function getComboData($key, $value)

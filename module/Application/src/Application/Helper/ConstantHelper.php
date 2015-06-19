@@ -32,7 +32,7 @@ class ConstantHelper {
                 ->setName("name")
                 ->setAttribute('class', 'form-control');
 
-            $txtValue = new Element\Text();
+            $txtValue = new Element\Textarea();
             $txtValue->setLabel('Value')
                 ->setName("value")
                 ->setAttribute('class', 'form-control');
@@ -107,7 +107,7 @@ class ConstantHelper {
                     array(
                         'name' => 'StringLength',
                         'options' => array(
-                            'max' => 200
+                            'max' => 500
                         ),
                     ),
                 ),

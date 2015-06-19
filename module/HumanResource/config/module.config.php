@@ -10,11 +10,13 @@
 return array(
     'controllers' => array(
         'invokables' => array(
-            'HumanResource\Controller\Position' => 'HumanResource\Controller\PositionController',
-            'HumanResource\Controller\Staff' => 'HumanResource\Controller\StaffController',
-            'HumanResource\Controller\Department'=>'HumanResource\Controller\DepartmentController',
-            'HumanResource\Controller\Attendance'=>'HumanResource\Controller\AttendanceController',
-            'HumanResource\Controller\Holiday'=>'HumanResource\Controller\HolidayController',
+            'HumanResource\Controller\Position'     => 'HumanResource\Controller\PositionController',
+            'HumanResource\Controller\Staff'        => 'HumanResource\Controller\StaffController',
+            'HumanResource\Controller\Department'   => 'HumanResource\Controller\DepartmentController',
+            'HumanResource\Controller\Attendance'   => 'HumanResource\Controller\AttendanceController',
+            'HumanResource\Controller\Holiday'      => 'HumanResource\Controller\HolidayController',
+            'HumanResource\Controller\Payroll'      => 'HumanResource\Controller\PayrollController',
+            'HumanResource\Controller\Leave'        => 'HumanResource\Controller\LeaveController',
         ),
     ),
     'view_manager' => array(

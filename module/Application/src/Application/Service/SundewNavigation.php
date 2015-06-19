@@ -19,7 +19,6 @@ class SundewNavigation extends DefaultNavigationFactory
     protected function getPages(ServiceLocatorInterface $serviceLocatorInterface)
     {
         if(null === $this->pages){
-
             $dbAdapter = $serviceLocatorInterface->get('Zend\Db\Adapter\Adapter');
             $menuTable = new MenuDataAccess($dbAdapter);
 

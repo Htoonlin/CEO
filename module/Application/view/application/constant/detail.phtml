@@ -9,7 +9,23 @@
  */
 $title = "Constant";
 $this->headTitle($title);
+$this->headLink()->appendStylesheet($this->basePath() . '/codemirror/lib/codemirror.css')
+    ->appendStylesheet($this->basePath() . '/css/treeview.css');
+$this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.js')
+    ->appendFile($this->basePath() . '/codemirror/mode/javascript/javascript.js')
+    ->appendFile($this->basePath() . '/js/treeview.js');
 ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var myEditor = CodeMirror.fromTextArea($('textarea[name="value"]').get(0),
+            {
+                lineNumbers: true,
+                indentUnit: 4,
+                smartIndent: true
+            });
+        myEditor.setSize("100%", "120px");
+    });
+</script>
 <h1><?php echo $title; ?></h1>
 <hr />
 <?php

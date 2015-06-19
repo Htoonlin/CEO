@@ -10,8 +10,6 @@ namespace HumanResource\Helper;
 
 use Zend\Form\Element;
 use Zend\Form\Form;
-use Zend\InputFilter\FileInput;
-use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
 class StaffHelper

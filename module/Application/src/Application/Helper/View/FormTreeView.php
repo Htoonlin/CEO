@@ -46,9 +46,18 @@ class FormTreeView extends AbstractHelper
             else
                 $isActive = '';
 
+            $title = '';
+            if(method_exists($record, 'getDescription')){
+                $title = $record->getDescription();
+            }
+
+            if(!empty($record->description)){
+                $title = $record->description;
+            }
+
             $markup .= '<li value="' . $escapeHtml($record->getValue()) . '" ' . $isActive . '>';
-            $markup .= $this->getItem($escapeHtml($record->getLabel()),
-                $escapeHtml($record->getUrl()), $escapeHtml($record->getIconClass()));
+            $markup .= $this->getItem($escapeHtml($record->getLabel()), $escapeHtml($record->getUrl()),
+                $escapeHtml($record->getIconClass()), $escapeHtml($title));
             if($record->hasChildren())
             {
                 $markup .= $this->getList($record->getChildren(), $active);
@@ -58,10 +67,10 @@ class FormTreeView extends AbstractHelper
         return '<ul>' . $markup . '</ul>';
     }
 
-    private function getItem($label, $url, $icon)
+    private function getItem($label, $url, $icon, $title = '')
     {
         $markup = '';
-        $markup .= '<div class="tree-item" title="' . $label . '">';
+        $markup .= '<div class="tree-item" title="' . $title . '">';
         $markup .= '<span id="icon" class="' . $icon . '"></span>';
         $markup .= '<a href="' . $url . '">';
         $markup .= $label;
