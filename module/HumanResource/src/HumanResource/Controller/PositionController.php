@@ -60,8 +60,6 @@ class PositionController extends AbstractActionController
         $request = $this->getRequest();
 
         if($request->isPost()){
-
-            $form->setInputFilter($helper->getInputFilter($id));
             $post_data = $request->getPost()->toArray();
             $form->setData($post_data);
             $form->setInputFilter($helper->getInputFilter(($isEdit ? $post_data['positionId'] : 0), $post_data['name']));

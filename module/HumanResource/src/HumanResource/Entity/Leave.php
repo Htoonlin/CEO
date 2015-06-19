@@ -30,13 +30,18 @@ class Leave {
     public function getDescription(){return $this->description;}
     public function setDescription($value){$this->description = $value;}
 
+    protected $status;
+    public function getStatus(){return $this->status;}
+    public function setStatus($value){$this->status = $value;}
+
     public function exchangeArray(array $data)
     {
         $this->leaveId = (!empty($data['leaveId'])) ? $data['leaveId'] : null;
         $this->staffId = (!empty($data['staffId'])) ? $data['staffId'] : 0;
         $this->leaveType = (!empty($data['leaveType'])) ? $data['leaveType'] : 'E';
-        $this->leaveType = (!empty($data['date'])) ? $data['date'] : date('Y-m-d', time());
+        $this->date = (!empty($data['date'])) ? $data['date'] : date('Y-m-d', time());
         $this->description = (!empty($data['description'])) ? $data['description'] : null;
+        $this->status = (!empty($data['status'])) ? $data['status'] : null;
     }
 
     public function getArrayCopy()
@@ -46,7 +51,8 @@ class Leave {
             'staffId' => $this->staffId,
             'leaveType' => $this->leaveType,
             'date' => $this->date,
-            'description' => $this->description
+            'description' => $this->description,
+            'status' => $this->status
         );
     }
 }

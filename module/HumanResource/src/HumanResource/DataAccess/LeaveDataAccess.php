@@ -43,15 +43,23 @@ class LeaveDataAccess extends AbstractTableGateway
         $tableGateway = new TableGateway($view, $this->adapter);
         return $tableGateway->select();
     }
-
+    public function getLeave($id)
+    {
+        $id = (int)$id;
+        $rowset = $this->select(array('leaveId' => $id));
+        return $rowset->current();
+    }
     public function saveLeave(Leave $leave)
     {
         $id = $leave->getLeaveId();
         $data = $leave->getArrayCopy();
+        if(empty($data['status']))
+            $data['status'] = 'A';
+
         if($id > 0){
-            $this->update($data, array('id' => $id));
+            $this->update($data, array('leaveId' => $id));
         }else{
-            unset($data['id']);
+            unset($data['leaveId']);
             $this->insert($data);
         }
 
@@ -60,9 +68,5 @@ class LeaveDataAccess extends AbstractTableGateway
         }
 
         return $leave;
-    }
-
-    public function deleteLeave($id){
-        $this->delete(array('id' => (int)$id));
     }
 }

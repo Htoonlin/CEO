@@ -1,0 +1,46 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 6/19/2015
+ * Time: 3:46 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+$title = "Position";
+$this->headTitle($title);
+?>
+<h1><?php echo $title; ?></h1>
+<hr />
+<?php
+$form->setAttribute('action', $this->url('hr_leave', array('action' => 'detail', 'id' => $id)));
+$form->prepare();
+echo $this->form()->openTag($form);
+?>
+
+    <div class="col-md-8">
+        <?php
+        echo $this->formHidden($form->get('leaveId'));
+        echo $this->formHorizontal($form->get('staffId'));
+        echo $this->formHorizontal($form->get('date'));
+        echo $this->formHorizontal($form->get('leaveType'));
+        echo $this->formHorizontal($form->get('description'));
+        echo $this->formHorizontal($form->get('status'));
+        ?>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <button type="submit" value="Save" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-floppy-save"></span>
+                    Save
+                </button>
+                <a href="<?php echo $this->url('hr_leave'); ?>" class="btn btn-default">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                    Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+
+<?php
+echo $this->form()->closeTag();
+?>

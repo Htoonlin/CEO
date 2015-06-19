@@ -1,0 +1,159 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 6/19/2015
+ * Time: 3:06 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+$title = "Leave";
+$this->headTitle($title);
+?>
+<h1><?php echo $title;?></h1>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#txtFilter").keydown(function(e){
+            if(e.which==13){
+                var filter=$(this).val();
+                window.location.href='<?php echo $this->url(). '?page=' .$page.'&filter=';?>' + filter + '<?php echo '&sort='.$sort.'&by='.$sortBy;?>'
+            }
+        });
+        $("button#btnDelete").click(function(){
+            if(confirm('Are you sure to delete selected records?')){
+                $.ajax({
+                    url:'<?php echo $this->url('hr_leave', array('action'=>'jsonDelete'))?>',
+                    data:$('input[name="chkId[]"]:checked'),
+                    type:'POST',
+                    success:function(data){
+                        if(data.message=="success"){
+                            window.location.href="<?php echo $this->url('hr_leave');?>"
+                        }else{
+                            alert(data.message);
+                        }
+                    }
+                });
+            }
+        });
+        $("input#chkAll").change(function(){
+            if($(this).checkbox('isChecked')){
+                $('input[name="chkId[]"]').checkbox('check');
+            }else{
+                $('input[name="chkId[]"]').checkbox('uncheck');
+            }
+        });
+        $('input[name="chkId[]"]').change(function(){
+            var total=$('input[name="chkId[]"]').length;
+            var checks=$('input[name="chkId[]"]:checked').length;
+            if(total==checks){
+                $("input#chkAll").checkbox('check');
+            }else{
+                $("input#chkAll").checkbox('uncheck');
+            }
+        });
+    });
+</script>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </span>
+                    <input type="text" class="form-control" id="txtFilter" value="<?php echo $filter;?>"/>
+                </div>
+            </div>
+            <div class="col-md-4 col-md-offset-5">
+                <div class="text-right">
+                    <div class="btn-group">
+                        <a href="<?php echo $this->url("hr_leave",array('action'=>'detail','id'=>0));?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-file"></span>
+                            New
+                        </a>
+                        <a href="<?php echo $this->url('hr_leave',array('action'=>'export'));?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-download"></span>
+                            Export
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="grid">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                <tr>
+                    <th width="50px">
+                        <div class="checkbox" style="margin: 0">
+                            <label class="checkbox-custom" data-initialize="checkbox">
+                                <input type="checkbox" id="chkAll" />
+                            </label>
+                        </div>
+                    </th>
+                    <th width="140px">
+                        <?php echo $this->gridHeaderCell('Date','date',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="160px">
+                        <?php echo $this->gridHeaderCell('Code','staffCode',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="180px">
+                        <?php echo $this->gridHeaderCell('Name','staffName',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="140px">
+                        <?php echo $this->gridHeaderCell('Leave','leaveType',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th>
+                        <?php echo $this->gridHeaderCell('Description','description',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="110px">
+                        <?php echo $this->gridHeaderCell('status','status',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($paginator as $leave):?>
+                    <tr>
+                        <td>
+                            <div class="checkbox" style="margin: 0">
+                                <label class="checkbox-custom" data-initialize="checkbox">
+                                    <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($leave->leaveId);?>" />
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="<?php echo $this->url('hr_leave', array('action' => 'detail', 'id' => $leave->leaveId)); ?>" title="edit">
+                                <?= $this->escapeHtml($leave->date); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="<?php echo $this->url('hr_leave', array('action' => 'detail', 'id' => $leave->leaveId)); ?>" title="edit">
+                                <?php echo $this->escapeHtml($leave->staffCode); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($leave->staffName); ?>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($leave->leaveType); ?>
+                        </td>
+                        <td>
+                            <?= $this->escapeHtml($leave->description); ?>
+                        </td>
+                        <td>
+                            <?= $this->escapeHtml($leave->status); ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="text-center">
+            <?php echo $this->paginationControl($paginator, 'Sliding', 'shared/paginator.phtml', array('route' => 'hr_leave',
+                'filter' => $filter, 'sort' => $sort, 'sortBy' => $sortBy)); ?>
+        </div>
+    </div>
+</div>

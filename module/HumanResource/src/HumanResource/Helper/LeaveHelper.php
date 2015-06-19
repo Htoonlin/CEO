@@ -9,6 +9,7 @@
 namespace HumanResource\Helper;
 
 use Zend\Form\Element;
+use Zend\Form\Form;
 use Zend\InputFilter\InputFilter;
 
 class LeaveHelper
@@ -18,19 +19,22 @@ class LeaveHelper
         if(!$this->form){
             $leaveId = new Element\Hidden('leaveId');
 
-            $staff = new Element\Select('staffId');
-            $staff->setEmptyOption('-- Choose Staff --')
+            $staff = new Element\Select();
+            $staff->setName('staffId')
+                ->setEmptyOption('-- Choose Staff --')
                 ->setLabel('Staff')
                 ->setAttribute('class', 'form-control')
                 ->setValueOptions($staffList);
 
-            $leaveType = new Element\Select('leaveType');
-            $leaveType->setLabel('Type')
+            $leaveType = new Element\Select();
+            $leaveType->setName('leaveType')
+                ->setLabel('Type')
                 ->setAttribute('class', 'form-control')
                 ->setValueOptions($leaveList);
 
-            $date = new Element\Date('date');
-            $date->setLabel('Date')
+            $date = new Element\Date();
+            $date->setName('date')
+                ->setLabel('Date')
                 ->setAttributes(array(
                     'allowPastDate' => true,
                     'momentConfig' => array(
@@ -51,6 +55,7 @@ class LeaveHelper
             $form = new Form();
             $form->setAttribute('class', 'form-horizontal');
             $form->add($leaveId);
+            $form->add($staff);
             $form->add($leaveType);
             $form->add($date);
             $form->add($description);
@@ -71,6 +76,7 @@ class LeaveHelper
     {
         if(!$this->inputFilter){
             $filter = new InputFilter();
+
             $filter->add(array(
                 'name' => 'leaveId',
                 'required' => true,
@@ -79,10 +85,11 @@ class LeaveHelper
                 )
             ));
 
+
             $filter->add(array(
                 'name' => 'staffId',
                 'required' => true,
-                'filters' => array('name'=>'Int'),
+                'filters' => array('name'=>'Int')
             ));
 
             $filter->add(array(
@@ -105,6 +112,11 @@ class LeaveHelper
                         'encoding' => 'UTF-8',
                     ),
                 ),
+            ));
+
+            $filter->add(array(
+                'name' => 'status',
+                'required' => true,
             ));
 
             $this->inputFilter = $filter;
