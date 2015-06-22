@@ -14,8 +14,8 @@ use HumanResource\DataAccess\LeaveDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Leave;
 use HumanResource\Helper\LeaveHelper;
+use Zend\Form\View\Helper\Form;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class LeaveController extends AbstractActionController
@@ -26,6 +26,12 @@ class LeaveController extends AbstractActionController
         return new LeaveDataAccess($adapter);
     }
 
+    private function staffTable()
+    {
+        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        return new StaffDataAccess($adapter);
+    }
+    private $annualLeave = array('H' => 0.5, 'F' => 1);
     private $staffList;
     private $statusList;
     private $leaveTypeList;
@@ -36,6 +42,7 @@ class LeaveController extends AbstractActionController
         $constantDA = new ConstantDataAccess($adapter);
         $this->staffList = $staffDA->getComboData('staffId', 'staffCode');
         $this->statusList = $constantDA->getComboByGroupCode('leave_status');
+        unset($this->statusList['R']);
         $this->leaveTypeList = $constantDA->getComboByGroupCode('leave_type');
     }
 
@@ -63,12 +70,19 @@ class LeaveController extends AbstractActionController
         $id = (int)$this->params()->fromRoute('id', 0);
         $helper = new LeaveHelper();
         $this->initCombo();
-        $form = $helper->getForm($this->staffList, $this->statusList, $this->leaveTypeList);
         $leave = $this->leaveTable()->getLeave($id);
-        $isEdit = true;
+        $isSave = false;
         if(!$leave){
-            $isEdit = false;
             $leave = new Leave();
+            $isSave = true;
+            $form = $helper->getForm($this->staffList, $this->statusList, $this->leaveTypeList);
+        }else{
+            $formType = 'V';
+            if($leave->getStatus() == 'R'){
+                $isSave = true;
+                $formType = 'R';
+            }
+            $form = $helper->getForm($this->staffList, $this->statusList, $this->leaveTypeList, $formType);
         }
 
         $form->bind($leave);
@@ -79,8 +93,25 @@ class LeaveController extends AbstractActionController
             $form->setData($post_data);
             $form->setInputFilter($form->getInputFilter());
             if($form->isValid()){
-                $this->leaveTable()->saveLeave($leave);
-                $this->flashMessenger()->addSuccessMessage('Save successful.');
+                $message = 'Save successful.';
+                if( $leave->getStatus() == 'A' &&
+                    in_array($leave->getLeaveType(), array_keys($this->annualLeave))){
+                    $db = $this->leaveTable()->getAdapter();
+                    $conn = $db->getDriver()->getConnection();
+                    $conn->beginTransaction();
+                    try{
+                        $deduct = $this->annualLeave[$leave->getLeaveType()];
+                        $this->staffTable()->updateLeave($deduct, $leave->getStaffId());
+                        $this->leaveTable()->saveLeave($leave);
+                        $conn->commit();
+                    }catch(\Exception $ex){
+                        $conn->rollback();
+                        $message = $ex->getMessage();
+                    }
+                }else{
+                    $this->leaveTable()->saveLeave($leave);
+                }
+                $this->flashMessenger()->addSuccessMessage($message);
                 return $this->redirect()->toRoute('hr_leave');
             }
         }
@@ -88,7 +119,7 @@ class LeaveController extends AbstractActionController
         return new ViewModel(array(
             'form' => $form,
             'id' => $id,
-            'isEdit' => $isEdit,
+            'isSave' => $isSave,
         ));
     }
 

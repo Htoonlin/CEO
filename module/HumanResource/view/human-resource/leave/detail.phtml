@@ -17,7 +17,6 @@ $form->setAttribute('action', $this->url('hr_leave', array('action' => 'detail',
 $form->prepare();
 echo $this->form()->openTag($form);
 ?>
-
     <div class="col-md-8">
         <?php
         echo $this->formHidden($form->get('leaveId'));
@@ -29,10 +28,12 @@ echo $this->form()->openTag($form);
         ?>
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
+                <?php if($isSave) : ?>
                 <button type="submit" value="Save" class="btn btn-primary">
                     <span class="glyphicon glyphicon-floppy-save"></span>
                     Save
                 </button>
+                <?php endif; ?>
                 <a href="<?php echo $this->url('hr_leave'); ?>" class="btn btn-default">
                     <span class="glyphicon glyphicon-th-list"></span>
                     Back to List

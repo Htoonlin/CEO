@@ -82,6 +82,17 @@ class StaffDataAccess extends AbstractTableGateway {
         }
         return $staff;
     }
+    public function updateLeave($leave, $id)
+    {
+        $staff = $this->getStaff($id);
+        if($staff){
+            $currentLeave = $staff->getAnnualLeave();
+            $staff->setAnnualLeave($currentLeave - $leave);
+            $this->update($staff->getArrayCopy(), Array('staffId' => $id));
+        }
+
+        return $staff;
+    }
     public function deleteStaff($id)
     {
         $this->delete(array('staffId'=>(int)$id));

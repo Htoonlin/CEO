@@ -143,11 +143,9 @@ class PositionController extends AbstractActionController
         $data = $this->params()->fromPost('chkId', array());
         $db = $this->positionTable()->getAdapter();
         $conn = $db->getDriver()->getConnection();
-
+        $conn->beginTransaction();
         try{
-            $conn->beginTransaction();
             foreach($data as $id){
-
                 $this->positionTable()->deletePosition($id);
             }
             $conn->commit();

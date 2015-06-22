@@ -15,7 +15,7 @@ use Zend\InputFilter\InputFilter;
 class LeaveHelper
 {
     protected $form;
-    public function getForm(array $staffList, array $statusList, array $leaveList){
+    public function getForm(array $staffList, array $statusList, array $leaveList, $formType = 'W'){
         if(!$this->form){
             $leaveId = new Element\Hidden('leaveId');
 
@@ -36,7 +36,7 @@ class LeaveHelper
             $date->setName('date')
                 ->setLabel('Date')
                 ->setAttributes(array(
-                    'allowPastDate' => true,
+                    'allowPastDates' => true,
                     'momentConfig' => array(
                         'format' => 'YYYY-MM-DD',
                     ),
@@ -51,6 +51,23 @@ class LeaveHelper
                 ->setLabel('Status')
                 ->setAttribute('class', 'form-control')
                 ->setValueOptions($statusList);
+
+            if($formType == 'R' || $formType == 'V'){
+                $staff->setAttribute('disabled', 'disabled');
+                $leaveType->setAttribute('disabled', 'disabled');
+                $description->setAttribute('readonly', 'readonly');
+            }
+
+            if($formType == 'V'){
+                $status->setAttribute('disabled', 'disabled');
+                $date = new Element\Text();
+                $date->setName('date')
+                    ->setLabel('Date')
+                    ->setattributes(array(
+                        'class' => 'form-control',
+                        'disabled' => 'disabled'
+                    ));
+            }
 
             $form = new Form();
             $form->setAttribute('class', 'form-horizontal');

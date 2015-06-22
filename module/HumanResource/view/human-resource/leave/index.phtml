@@ -19,38 +19,6 @@ $this->headTitle($title);
                 window.location.href='<?php echo $this->url(). '?page=' .$page.'&filter=';?>' + filter + '<?php echo '&sort='.$sort.'&by='.$sortBy;?>'
             }
         });
-        $("button#btnDelete").click(function(){
-            if(confirm('Are you sure to delete selected records?')){
-                $.ajax({
-                    url:'<?php echo $this->url('hr_leave', array('action'=>'jsonDelete'))?>',
-                    data:$('input[name="chkId[]"]:checked'),
-                    type:'POST',
-                    success:function(data){
-                        if(data.message=="success"){
-                            window.location.href="<?php echo $this->url('hr_leave');?>"
-                        }else{
-                            alert(data.message);
-                        }
-                    }
-                });
-            }
-        });
-        $("input#chkAll").change(function(){
-            if($(this).checkbox('isChecked')){
-                $('input[name="chkId[]"]').checkbox('check');
-            }else{
-                $('input[name="chkId[]"]').checkbox('uncheck');
-            }
-        });
-        $('input[name="chkId[]"]').change(function(){
-            var total=$('input[name="chkId[]"]').length;
-            var checks=$('input[name="chkId[]"]:checked').length;
-            if(total==checks){
-                $("input#chkAll").checkbox('check');
-            }else{
-                $("input#chkAll").checkbox('uncheck');
-            }
-        });
     });
 </script>
 <div class="panel panel-default">
@@ -85,43 +53,33 @@ $this->headTitle($title);
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                 <tr>
-                    <th width="50px">
-                        <div class="checkbox" style="margin: 0">
-                            <label class="checkbox-custom" data-initialize="checkbox">
-                                <input type="checkbox" id="chkAll" />
-                            </label>
-                        </div>
-                    </th>
-                    <th width="140px">
+                    <th width="120px">
                         <?php echo $this->gridHeaderCell('Date','date',$filter,$page,$sort,$sortBy);?>
                     </th>
-                    <th width="160px">
+                    <th width="120px">
                         <?php echo $this->gridHeaderCell('Code','staffCode',$filter,$page,$sort,$sortBy);?>
                     </th>
-                    <th width="180px">
+                    <th width="160px">
                         <?php echo $this->gridHeaderCell('Name','staffName',$filter,$page,$sort,$sortBy);?>
                     </th>
-                    <th width="140px">
+                    <th width="120px">
                         <?php echo $this->gridHeaderCell('Leave','leaveType',$filter,$page,$sort,$sortBy);?>
                     </th>
                     <th>
                         <?php echo $this->gridHeaderCell('Description','description',$filter,$page,$sort,$sortBy);?>
                     </th>
-                    <th width="110px">
+                    <th width="120px">
                         <?php echo $this->gridHeaderCell('status','status',$filter,$page,$sort,$sortBy);?>
                     </th>
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($paginator as $leave):?>
+                <?php foreach($paginator as $leave): ?>
+                    <?php if($leave->status == 'Requested'): ?>
+                    <tr class="info">
+                    <?php else: ?>
                     <tr>
-                        <td>
-                            <div class="checkbox" style="margin: 0">
-                                <label class="checkbox-custom" data-initialize="checkbox">
-                                    <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($leave->leaveId);?>" />
-                                </label>
-                            </div>
-                        </td>
+                    <?php endif; ?>
                         <td>
                             <a href="<?php echo $this->url('hr_leave', array('action' => 'detail', 'id' => $leave->leaveId)); ?>" title="edit">
                                 <?= $this->escapeHtml($leave->date); ?>
