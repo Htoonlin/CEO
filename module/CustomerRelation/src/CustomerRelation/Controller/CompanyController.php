@@ -139,7 +139,7 @@ class CompanyController extends AbstractActionController
         $excelWriter->save('php://output');
         $excelOutput=ob_get_clean();
 
-        $filename='attachment; filename="Company-'.date('Ymdhms').'.xlsx"';
+        $filename='attachment; filename="Company-'.date('Ymdhis').'.xlsx"';
 
         $headers=$response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');

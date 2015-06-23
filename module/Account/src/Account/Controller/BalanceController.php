@@ -197,12 +197,12 @@ class BalanceController extends AbstractActionController
 
         if(!$closing && $fromPath = '/account/balance'){
             $results = $this->closingTable()->fetchAll(false);
-            $filename = 'attachment; filename="Closing-' . date('Ymdhms') . '.xlsx"';
+            $filename = 'attachment; filename="Closing-' . date('Ymdhis') . '.xlsx"';
         }else{
             $fromDate = $closing->getOpeningDate();
             $toDate = (is_null($closing->getClosingDate())) ? date('Y-m-d H:i:s', time()) : $closing->getClosingDate();
             $results = $this->voucherTable()->getVouchersByDate($fromDate, $toDate, false);
-            $filename = 'attachment; filename="BalanceReport-' . date('Ymdhms') . '.xlsx"';
+            $filename = 'attachment; filename="BalanceReport-' . date('Ymdhis') . '.xlsx"';
         }
 
         $columns = array();

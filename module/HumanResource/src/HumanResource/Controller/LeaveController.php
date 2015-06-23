@@ -163,7 +163,7 @@ class LeaveController extends AbstractActionController
         $excelWriter->save('php://output');
         $excelOutput = ob_get_clean();
 
-        $filename = 'attachment; filename="Leave-' . date('Ymdhms') . '.xlsx"';
+        $filename = 'attachment; filename="Leave-' . date('Ymdhis') . '.xlsx"';
 
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');

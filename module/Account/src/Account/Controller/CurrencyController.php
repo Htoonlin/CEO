@@ -171,7 +171,7 @@ class CurrencyController extends AbstractActionController
             $excelWriter->save('php://output');
             $excelOutput=ob_get_clean();
 
-            $filename='attachment; filename="Currency-'.date('Ymdhms').'.xlsx"';
+            $filename='attachment; filename="Currency-'.date('Ymdhis').'.xlsx"';
 
             $headers=$response->getHeaders();
             $headers->addHeaderLine('Content-Type','application/msexcel; charset=UTF-8');
