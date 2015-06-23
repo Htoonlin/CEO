@@ -40,30 +40,32 @@ class DashboardController extends AbstractActionController
     public function indexAction()
     {
         $request = $this->getRequest();
-        $attendance = new Attendance();
-        $attendance->exchangeArray(array(
-            'AttendanceId' => 0,
-            'staffId' => $this->getStaff()->getStaffId(),
-            'attendance' => date('Y-m-d H:i:s', time()),
-            'status' => 'I',
-        ));
-        $attendanceIn = $this->attendanceTable()->checkAttendance($attendance, date('Y-m-d'));
-        $attendance->setStatus('O');
-        $attendanceOut = $this->attendanceTable()->checkAttendance($attendance, date('Y-m-d'));
+        $attendance = $this->attendanceTable()->checkAttendance($this->getStaff()->getStaffId(), date('Y-m-d', time()));
+
+        if(!$attendance){
+            $attendance = new Attendance();
+            $attendance->exchangeArray(array(
+                'staffId' => $this->getStaff()->getStaffId(),
+                'attendanceDate' => date('Y-m-d', time()),
+            ));
+        }
 
         if($request->isPost())
         {
             $message = 'success';
             try{
                 $type = $this->params()->fromPost('status', '');
-                $attendance->setStatus($type);
 
-                $attendanceInfo = $this->attendanceTable()->checkAttendance($attendance, date('Y-m-d'));
-                if($attendanceInfo) {
-                    $message = 'You already registered. Please contact to HR if you want to change time.';
-                }else{
+                if($type == 'I' && !$attendance->getInTime()){
+                    $attendance->setInTime(date('h:i:s', time()));
                     $this->attendanceTable()->saveAttendance($attendance);
+                }else if($type == 'O' && !$attendance->getOutTime()){
+                    $attendance->setOutTime(date('h:i:s', time()));
+                    $this->attendanceTable()->saveAttendance($attendance);
+                }else{
+                    $message = 'You already registered. Please contact to HR if you want to change time.';
                 }
+
             }catch(\Exception $ex) {
                 $message = $ex->getMessage();
             }
@@ -71,8 +73,7 @@ class DashboardController extends AbstractActionController
             return new JsonModel(array('message' => $message));
         }
         return new ViewModel(array(
-            'attendanceIn' => $attendanceIn,
-            'attendanceOut' => $attendanceOut,
+            'attendance' => $attendance,
         ));
     }
 }

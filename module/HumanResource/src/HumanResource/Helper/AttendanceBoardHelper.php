@@ -20,10 +20,10 @@ class AttendanceBoardHelper
         if(!$this->form)
         {
             $attendanceId = new Element\Hidden();
-            $attendanceId->setName('AttendanceId');
+            $attendanceId->setName('attendanceId');
 
             $staffId = new Element\Select();
-            $staffId->setName('StaffId')
+            $staffId->setName('staffId')
                 ->setLabel('Staff')
                 ->setAttribute('class', 'form-control')
                 ->setEmptyOption('-- Choose --')
@@ -33,11 +33,10 @@ class AttendanceBoardHelper
             $type->setName('type')
                 ->setLabel('Type')
                 ->setAttribute('class', 'form-control')
-                ->setValueOptions(array('I' => 'In',
-                    'O' => 'Out', 'L' => 'Leave'));
+                ->setValueOptions(array('I' => 'In', 'O' => 'Out'));
 
             $date = new Element\Date();
-            $date->setName('Date')
+            $date->setName('attendanceDate')
                 ->setLabel('Date')
                 ->setAttributes(
                     array(
@@ -98,13 +97,13 @@ class AttendanceBoardHelper
             $filter = new InputFilter();
             $filter->add(
                 array(
-                    'name' => 'AttendanceId',
+                    'name' => 'attendanceId',
                     'required' => true,
                 )
             );
 
             $filter->add(array(
-                'name' => 'StaffId',
+                'name' => 'staffId',
                 'required' => true,
             ));
 
@@ -114,7 +113,7 @@ class AttendanceBoardHelper
             ));
 
             $filter->add(array(
-                'name' => 'Date',
+                'name' => 'attendanceDate',
                 'required' => true,
             ));
 

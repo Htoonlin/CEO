@@ -56,8 +56,8 @@ $this->headTitle($title);
                     <div class="col-sm-6">
                         <button id="btnIn" type="button" onclick="attendance('I')" class="btn btn-info btn-block">
                             <?php
-                            if($attendanceIn){
-                                echo substr($attendanceIn->getAttendance(), -8);
+                            if($attendance->getInTime()){
+                                echo $attendance->getInTime();
                             }else {
                                 echo '<span class="glyphicon glyphicon-pencil"></span>';
                             }
@@ -67,8 +67,8 @@ $this->headTitle($title);
                     <div class="col-sm-6">
                         <button id="btnOut" type="button" onclick="attendance('O')" class="btn btn-warning btn-block">
                             <?php
-                            if($attendanceOut){
-                                echo substr($attendanceOut->getAttendance(), -8);
+                            if($attendance->getOutTime()){
+                                echo $attendance->getOutTime();
                             }else {
                                 echo '<span class="glyphicon glyphicon-pencil"></span>';
                             }

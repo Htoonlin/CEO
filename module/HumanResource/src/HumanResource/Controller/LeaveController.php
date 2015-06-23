@@ -8,7 +8,6 @@
 
 namespace HumanResource\Controller;
 
-
 use Application\DataAccess\ConstantDataAccess;
 use HumanResource\DataAccess\LeaveDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
@@ -68,6 +67,8 @@ class LeaveController extends AbstractActionController
     public function detailAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
+        $staff = (int)$this->params()->fromQuery('staff', 0);
+
         $helper = new LeaveHelper();
         $this->initCombo();
         $leave = $this->leaveTable()->getLeave($id);
@@ -83,6 +84,10 @@ class LeaveController extends AbstractActionController
                 $formType = 'R';
             }
             $form = $helper->getForm($this->staffList, $this->statusList, $this->leaveTypeList, $formType);
+        }
+
+        if($staff > 0){
+            $leave->setStaffId($staff);
         }
 
         $form->bind($leave);
@@ -120,6 +125,7 @@ class LeaveController extends AbstractActionController
             'form' => $form,
             'id' => $id,
             'isSave' => $isSave,
+            'backLink' => $this->getRequest()->getHeader('Referer')->getUri(),
         ));
     }
 

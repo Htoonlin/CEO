@@ -62,47 +62,49 @@ $flashMessages = $this->flashMessenger()->getMessages();
                 <thead>
                 <tr>
                     <th width="160px">
-                        <?php echo $this->gridHeaderCell('Date','Date',$filter,$page,$sort,$sortBy);?>
+                        <?php echo $this->gridHeaderCell('Date','attendanceDate',$filter,$page,$sort,$sortBy);?>
                     </th>
                     <th width="160px">
-                        <?php echo $this->gridHeaderCell('Code','StaffCode',$filter,$page,$sort,$sortBy);?>
+                        <?php echo $this->gridHeaderCell('Code','staffCode',$filter,$page,$sort,$sortBy);?>
                     </th>
                     <th width="160px">
-                        <?php echo $this->gridHeaderCell('Name','StaffName',$filter,$page,$sort,$sortBy);?>
+                        <?php echo $this->gridHeaderCell('Name','staffName',$filter,$page,$sort,$sortBy);?>
                     </th>
                     <th width="160px">
-                        <?php echo $this->gridHeaderCell('In','InTime',$filter,$page,$sort,$sortBy);?>
+                        <?php echo $this->gridHeaderCell('In','inTime',$filter,$page,$sort,$sortBy);?>
                     </th>
                     <th width="160px">
-                        <?php echo $this->gridHeaderCell('Out','OutTime',$filter,$page,$sort,$sortBy);?>
+                        <?php echo $this->gridHeaderCell('Out','outTime',$filter,$page,$sort,$sortBy);?>
                     </th>
                     <th width="160px">
-                        <?php echo $this->gridHeaderCell('Leave?','IsLeave',$filter,$page,$sort,$sortBy);?>
+                        Action
                     </th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php foreach($paginator as $attendance):?>
-                    <tr <?php  echo boolval($this->escapeHtml($attendance->IsLeave)) ? 'class="warning"' : ''; ?>>
+                    <tr>
                         <td>
-                            <?php echo $this->escapeHtml($attendance->Date); ?>
+                            <?php echo $this->escapeHtml($attendance->attendanceDate); ?>
                         </td>
                         <td>
-                            <a href="<?php echo $this->url('hr_attendance', array('action' => 'detail', 'id' => $attendance->AttendanceId)) ?>" title="Edit">
-                            <?php echo $this->escapeHtml($attendance->StaffCode); ?>
+                            <a href="<?php echo $this->url('hr_attendance', array('action' => 'detail', 'id' => $attendance->attendanceId)) ?>" title="Edit">
+                            <?php echo $this->escapeHtml($attendance->staffCode); ?>
                             </a>
                         </td>
                         <td>
-                            <?php echo $this->escapeHtml($attendance->StaffName); ?>
+                            <?php echo $this->escapeHtml($attendance->staffName); ?>
                         </td>
                         <td>
-                            <?php echo boolval($this->escapeHtml($attendance->IsLeave)) ? '-' : $this->escapeHtml($attendance->InTime); ?>
+                            <?php echo $this->escapeHtml($attendance->inTime); ?>
                         </td>
                         <td>
-                            <?php echo boolval($this->escapeHtml($attendance->IsLeave)) ? '-' : $this->escapeHtml($attendance->OutTime); ?>
+                            <?php echo $this->escapeHtml($attendance->outTime); ?>
                         </td>
                         <td>
-                            <?php echo boolval($this->escapeHtml($attendance->IsLeave)) ? 'Yes' : 'No'; ?>
+                            <a href="<?= $this->url('hr_leave', array('action' => 'detail', 'id' => 0)) ?>?staff=<?= $attendance->staffId ?>" title="Leave" class="btn btn-xs btn-warning">
+                                <span class="fa fa-user-md"></span> Leave
+                            </a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

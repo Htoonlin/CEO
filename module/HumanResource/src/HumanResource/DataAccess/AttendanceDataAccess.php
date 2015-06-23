@@ -21,7 +21,7 @@ use Zend\Stdlib\Hydrator\ClassMethods;
 
 class AttendanceDataAccess extends AbstractTableGateway{
 
-    protected $boardView = 'vw_hr_attendance_board';
+    protected $boardView = 'vw_hr_attendance';
 
     public function __construct(Adapter $dpAdapter)
     {
@@ -42,14 +42,14 @@ class AttendanceDataAccess extends AbstractTableGateway{
 
         return $selectData;
     }
-    public function fetchAll($paginated=false, $filter='',$orderBy='Date',$order='DESC')
+    public function fetchAll($paginated=false, $filter='',$orderBy='attendanceDate',$order='DESC')
     {
         if($paginated)
         {
             $select = new Select($this->boardView);
             $select->order($orderBy . ' ' . $order);
             $where = new Where();
-            $where->literal("concat_ws(' ', StaffCode, StaffName, Date) LIKE ?", '%' . $filter . '%');
+            $where->literal("concat_ws(' ', StaffCode, StaffName, attendanceDate) LIKE ?", '%' . $filter . '%');
             $select->where($where);
             $paginatorAdapter = new DbSelect($select, $this->adapter);
             $paginator = new Paginator($paginatorAdapter);
@@ -59,20 +59,18 @@ class AttendanceDataAccess extends AbstractTableGateway{
         $attendanceBoard = new TableGateway($this->boardView, $this->adapter);
         return $attendanceBoard->select();
     }
-    public function getAttendanceBoard($id)
+    public function getAttendance($id)
     {
         $id=(int)$id;
-        $attendanceBoard = new TableGateway($this->boardView, $this->adapter);
-        $rowset=$attendanceBoard->select(array('AttendanceId'=>$id));
+        $rowset=$this->select(array('attendanceId'=>$id));
         return $rowset->current();
     }
-    public function checkAttendance(Attendance $attendance, $date)
+    public function checkAttendance($staffId, $date)
     {
-        $results = $this->select(function (Select $select) use($attendance, $date){
+        $results = $this->select(function (Select $select) use($staffId, $date){
             $where = new Where();
-            $where->equalTo('staffId', $attendance->getStaffId())
-                ->AND->equalTo('status', $attendance->getStatus())
-                ->AND->literal('Date(attendance) = ?', $date);
+            $where->equalTo('staffId',$staffId)
+                ->AND->literal('attendanceDate = ?', $date);
             $select->where($where);
         });
         return $results->current();

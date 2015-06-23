@@ -19,24 +19,35 @@ class Attendance {
     public function getStaffId(){return $this->staffId;}
     public function setStaffId($value){ $this->staffId=$value;}
 
-    protected $attendance;
-    public function getAttendance(){return $this->attendance;}
-    public function  setAttendance($value){$this->attendance=$value;}
+    protected $attendanceDate;
+    public function getAttendanceDate(){return $this->attendanceDate;}
+    public function  setAttendanceDate($value){$this->attendanceDate=$value;}
 
-    protected $status;
-    public function getStatus(){return $this->status;}
-    public function  setStatus($value){$this->status=$value;}
+    protected $inTime;
+    public function getInTime(){return $this->inTime;}
+    public function setInTime($value){$this->inTime = $value;}
+
+    protected $outTime;
+    public function getOutTime(){return $this->outTime;}
+    public function setOutTime($value){$this->outTime = $value;}
 
     public function exchangeArray(array $data)
     {
         $this->attendanceId = (!empty($data['attendanceId'])) ? $data['attendanceId'] : null;
         $this->staffId = (!empty($data['staffId'])) ? $data['staffId'] : null;
-        $this->attendance = (!empty($data['attendance'])) ? $data['attendance'] : null;
-        $this->status = (!empty($data['status'])) ? $data['status'] : null;
+        $this->attendanceDate = (!empty($data['attendanceDate'])) ? $data['attendanceDate'] : date('Y-m-d', time());
+        $this->inTime = (!empty($data['inTime'])) ? $data['inTime'] : null;
+        $this->outTime = (!empty($data['outTime'])) ? $data['outTime'] : null;
     }
 
     public function getArrayCopy()
     {
-        return get_object_vars($this);
+        return array(
+            'attendanceId' => $this->attendanceId,
+            'staffId' => $this->staffId,
+            'attendanceDate' => $this->attendanceDate,
+            'inTime' => $this->inTime,
+            'outTime' => $this->outTime,
+        );
     }
 }

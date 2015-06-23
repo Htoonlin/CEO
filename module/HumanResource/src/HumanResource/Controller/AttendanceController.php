@@ -33,7 +33,7 @@ class AttendanceController extends AbstractActionController
     public function indexAction()
     {
         $page = (int) $this->params()->fromQuery('page', 1);
-        $sort = $this->params()->fromQuery('sort', 'Date');
+        $sort = $this->params()->fromQuery('sort', 'attendanceDate');
         $sortBy = $this->params()->fromQuery('by', 'desc');
         $filter = $this->params()->fromQuery('filter', '');
         $paginator = $this->attendanceTable()->fetchAll(true, $filter, $sort, $sortBy);
@@ -54,50 +54,49 @@ class AttendanceController extends AbstractActionController
         $id = (int)$this->params()->fromRoute('id', 0);
         $helper = new AttendanceBoardHelper();
         $form = $helper->getForm($this->staffCombo());
-        $attendance = $this->attendanceTable()->getAttendanceBoard($id);
+
+        $attendance = $this->attendanceTable()->getAttendance($id);
 
         if(!$attendance){
-            $attendance = new ArrayObject(array(
-                'InTime' => '-', 'IsLeave' => 0, 'AttendanceId' => $id
-            ));
+            $attendance = new ArrayObject(array('attendanceId' => $id));
+        }else{
+            $attendance = new ArrayObject($attendance->getArrayCopy());
         }
 
         $attendance['hour'] = (int) date('H', time());
         $attendance['minute'] = round(((int) date('i', time())) / 5);
 
-        if($attendance['hour'] > 12 && strlen($attendance['InTime']) > 1){
+        if($attendance['hour'] > 12 && strlen($attendance['inTime']) > 1){
             $attendance['type'] = 'O';
-        }else if($attendance['IsLeave'] == 1){
-            $attendance['type'] = 'L';
         }else{
             $attendance['type'] = 'I';
         }
-        $form->bind($attendance);
 
+        $form->bind($attendance);
         $request = $this->getRequest();
+
         if($request->isPost()){
-            $post_data = $request->getPost()->toArray();
+            $post_data = $request->getPost();
             $form->setData($post_data);
             $form->setInputFilter($helper->getInputFilter());
             if($form->isValid())
             {
+                $newData = $this->attendanceTable()->getAttendance($id);
+
+                if(!$newData){
+                    $newData = new Attendance();
+                    $newData->exchangeArray($attendance->getArrayCopy());
+                }
+
                 $time = sprintf('%02d:%02d:00', $attendance['hour'], ($attendance['minute'] * 5));
-                $datetime = $attendance['Date'] . ' ' . $time;
-                $att = new Attendance();
 
-                $att->exchangeArray(array(
-                    'attendanceId' => $id,
-                    'staffId' => $attendance['StaffId'],
-                    'attendance' => $datetime,
-                    'status' => $attendance['type'],
-                ));
+                if($attendance['type'] == 'I'){
+                    $newData->setInTime($time);
+                }else{
+                    $newData->setOutTime($time);
+                }
 
-                $data = $this->attendanceTable()->checkAttendance($att, $attendance['Date']);
-                $id = (empty($data)) ? 0 : $data->getAttendanceId();
-                $att->setAttendanceId($id);
-
-                $this->attendanceTable()->saveAttendance($att);
-
+                $this->attendanceTable()->saveAttendance($newData);
                 $this->flashMessenger()->addSuccessMessage('Save successful');
                 return $this->redirect()->toRoute('hr_attendance');
             }
@@ -146,7 +145,7 @@ class AttendanceController extends AbstractActionController
         $excelWriter->save('php://output');
         $excelOutput = ob_get_clean();
 
-        $filename = 'attachment; filename="Attendance-' . date('Ymdhms') . '.xlsx"';
+        $filename = 'attachment; filename="Attendance-' . date('Ymdhis') . '.xlsx"';
 
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');

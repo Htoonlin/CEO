@@ -19,10 +19,10 @@ echo $this->form()->openTag($form);
 ?>
 <div class="col-md-6">
     <?php
-    echo $this->formHidden($form->get('AttendanceId'));
-    echo $this->formHorizontal($form->get('StaffId'));
+    echo $this->formHidden($form->get('attendanceId'));
+    echo $this->formHorizontal($form->get('staffId'));
     echo $this->formHorizontal($form->get('type'));
-    echo $this->formHorizontal($form->get('Date'));
+    echo $this->formHorizontal($form->get('attendanceDate'));
     ?>
     <div class="form-group">
         <label class="col-sm-3 control-label">
