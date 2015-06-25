@@ -97,9 +97,10 @@ echo $this->doctype();
      <ul type="square"><li>')
         ->setMessageSeparatorString('</li><li>')
         ->setMessageCloseString('</li></ul></div>');
+    echo $flash->render('default', array('alert', 'alert-dismissible', 'alert-info'));
     echo $flash->render('error',   array('alert', 'alert-dismissible', 'alert-danger'));
     echo $flash->render('info',    array('alert', 'alert-dismissible', 'alert-info'));
-    echo $flash->render('default', array('alert', 'alert-dismissible', 'alert-warning'));
+    echo $flash->render('warning', array('alert', 'alert-dismissible', 'alert-warning'));
     echo $flash->render('success', array('alert', 'alert-dismissible', 'alert-success'));
     ?>
     <?php echo $this->content; ?>

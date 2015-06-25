@@ -32,48 +32,81 @@ $this->headTitle($title);
         <?php echo $this->partial('shared/calendar', array('height' => 550, 'name' => 'dashboardCalendar')); ?>
     </div>
     <div class="col-sm-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="glyphicon glyphicon-pencil"></span>
-                Attendance Board
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <p class="text-center">
-                        <span class="glyphicon glyphicon-dashboard"></span>
-                        Arrival
-                        </p>
-                    </div>
-                    <div class="col-sm-6">
-                        <p class="text-center">
-                        <span class="glyphicon glyphicon-dashboard"></span>
-                        Departure
-                        </p>
+        <div class="panel-group" id="noticeBoard">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a href="#attendance" data-toggle="collapse" data-parent="#noticeBoard">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        Attendance
+                    </a>
+                </div>
+                <div id="attendance" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="text-center">
+                                    <span class="glyphicon glyphicon-dashboard"></span>
+                                    Arrival
+                                </p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="text-center">
+                                    <span class="glyphicon glyphicon-dashboard"></span>
+                                    Departure
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button id="btnIn" type="button" onclick="attendance('I')" class="btn btn-info btn-block">
+                                    <?php
+                                    if($attendance->getInTime()){
+                                        echo $attendance->getInTime();
+                                    }else {
+                                        echo '<span class="glyphicon glyphicon-pencil"></span>';
+                                    }
+                                    ?>
+                                </button>
+                            </div>
+                            <div class="col-sm-6">
+                                <button id="btnOut" type="button" onclick="attendance('O')" class="btn btn-warning btn-block">
+                                    <?php
+                                    if($attendance->getOutTime()){
+                                        echo $attendance->getOutTime();
+                                    }else {
+                                        echo '<span class="glyphicon glyphicon-pencil"></span>';
+                                    }
+                                    ?>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <button id="btnIn" type="button" onclick="attendance('I')" class="btn btn-info btn-block">
-                            <?php
-                            if($attendance->getInTime()){
-                                echo $attendance->getInTime();
-                            }else {
-                                echo '<span class="glyphicon glyphicon-pencil"></span>';
-                            }
-                            ?>
-                        </button>
-                    </div>
-                    <div class="col-sm-6">
-                        <button id="btnOut" type="button" onclick="attendance('O')" class="btn btn-warning btn-block">
-                            <?php
-                            if($attendance->getOutTime()){
-                                echo $attendance->getOutTime();
-                            }else {
-                                echo '<span class="glyphicon glyphicon-pencil"></span>';
-                            }
-                            ?>
-                        </button>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a href="#leaveForm" data-toggle="collapse" data-parent="#noticeBoard">
+                        <span class="fa fa-user-md"></span>
+                        Leave Form
+                    </a>
+                </div>
+                <div id="leaveForm" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <?php
+                        $leaveForm->setAttribute('action', $this->url('dashboard',array('action' => 'leave')));
+                        $leaveForm->prepare();
+                        echo $this->form()->openTag($leaveForm);
+                        echo $this->formRow($leaveForm->get('date'));
+                        echo $this->formRow($leaveForm->get('leaveType'));
+                        echo $this->formRow($leaveForm->get('description'));
+                        ?>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-block btn-primary">
+                                <span class="glyphicon glyphicon-send"></span>
+                                Request now
+                            </button>
+                        </div>
+                        <?= $this->form()->closeTag(); ?>
                     </div>
                 </div>
             </div>

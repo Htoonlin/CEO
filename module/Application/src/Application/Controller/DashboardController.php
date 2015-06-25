@@ -11,9 +11,12 @@ namespace Application\Controller;
 
 use Application\DataAccess\CalendarDataAccess;
 use Application\DataAccess\CalendarType;
+use Application\DataAccess\ConstantDataAccess;
+use Application\Helper\DashboardHelper;
 use HumanResource\DataAccess\AttendanceDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Attendance;
+use HumanResource\Helper\LeaveHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -32,6 +35,11 @@ class DashboardController extends AbstractActionController
         }
         return $this->staff;
     }
+    private function leaveTypeList(){
+        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $dataAccess = new ConstantDataAccess($adapter);
+        return $dataAccess->getComboByGroupCode('leave_type');
+    }
     private function attendanceTable()
     {
         $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
@@ -49,6 +57,8 @@ class DashboardController extends AbstractActionController
                 'attendanceDate' => date('Y-m-d', time()),
             ));
         }
+        $helper = new DashboardHelper();
+        $leaveForm = $helper->getLeaveForm($this->leaveTypeList());
 
         if($request->isPost())
         {
@@ -72,8 +82,17 @@ class DashboardController extends AbstractActionController
 
             return new JsonModel(array('message' => $message));
         }
+
         return new ViewModel(array(
             'attendance' => $attendance,
+            'leaveForm' => $leaveForm,
         ));
+    }
+
+    public function leaveAction(){
+        $request = $this->getRequest();
+
+        $this->flashMessenger()->addWarningMessage('Leave request send to HR.');
+        return $this->redirect()->toRoute('dashboard');
     }
 }

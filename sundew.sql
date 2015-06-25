@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.24, for Win32 (x86)
+-- MySQL dump 10.13  Distrib 5.6.21, for Win64 (x86_64)
 --
 -- Host: localhost    Database: sundew
 -- ------------------------------------------------------
--- Server version	5.6.24
+-- Server version	5.6.21
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -827,7 +827,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = latin1 */;
 /*!50001 SET collation_connection      = latin1_swedish_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`sundew`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_account_closing` AS select `close`.`closingId` AS `closingId`,`close`.`currencyId` AS `currencyId`,`cur`.`code` AS `currency`,`open`.`voucherNo` AS `receivable_voucher`,`close`.`receivableId` AS `receivableId`,`close`.`openingDate` AS `openingDate`,`close`.`openingAmount` AS `openingAmount`,`close`.`payableId` AS `payableId`,`close`.`closingDate` AS `closingDate`,`close`.`closingAmount` AS `closingAmount`,`pay`.`voucherNo` AS `payable_voucher` from (((`tbl_account_closing` `close` join `tbl_account_currency` `cur` on((`close`.`currencyId` = `cur`.`currencyId`))) left join `tbl_account_receivable` `open` on((`close`.`receivableId` = `open`.`receiveVoucherId`))) left join `tbl_account_payable` `pay` on((`close`.`payableId` = `pay`.`payVoucherId`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -845,7 +845,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = latin1 */;
 /*!50001 SET collation_connection      = latin1_swedish_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`sundew`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_account_payable` AS select `pv`.`payVoucherId` AS `payVoucherId`,`pv`.`voucherNo` AS `voucherNo`,`pv`.`voucherDate` AS `voucherDate`,`pv`.`accountType` AS `accountType`,`pv`.`description` AS `description`,`pv`.`amount` AS `amount`,`pv`.`currencyId` AS `currencyId`,`pv`.`withdrawBy` AS `withdrawBy`,`pv`.`approveBy` AS `approveBy`,`pv`.`status` AS `status`,`pv`.`approvedDate` AS `approvedDate`,`pv`.`reason` AS `reason`,`pv`.`requestedDate` AS `requestedDate`,`pv`.`group_code` AS `group_code`,`ty`.`name` AS `type`,`cur`.`code` AS `currencyCode`,concat(`req`.`staffName`,'(',`req`.`staffCode`,')') AS `requester`,concat(`app`.`staffName`,'(',`app`.`staffCode`,')') AS `approver` from ((((`tbl_account_payable` `pv` left join `tbl_account_type` `ty` on((`pv`.`accountType` = `ty`.`accountTypeId`))) left join `tbl_account_currency` `cur` on((`pv`.`currencyId` = `cur`.`currencyId`))) left join `tbl_hr_staff` `req` on((`pv`.`withdrawBy` = `req`.`staffId`))) left join `tbl_hr_staff` `app` on((`pv`.`approveBy` = `app`.`staffId`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -863,7 +863,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = latin1 */;
 /*!50001 SET collation_connection      = latin1_swedish_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`sundew`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_account_receivable` AS select `rv`.`receiveVoucherId` AS `receiveVoucherId`,`rv`.`voucherNo` AS `voucherNo`,`rv`.`voucherDate` AS `voucherDate`,`rv`.`accountType` AS `accountType`,`rv`.`description` AS `description`,`rv`.`amount` AS `amount`,`rv`.`currencyId` AS `currencyId`,`rv`.`depositBy` AS `depositBy`,`rv`.`approveBy` AS `approveBy`,`rv`.`status` AS `status`,`rv`.`approvedDate` AS `approvedDate`,`rv`.`reason` AS `reason`,`rv`.`requestedDate` AS `requestedDate`,`rv`.`group_code` AS `group_code`,`ty`.`name` AS `type`,`cur`.`code` AS `currencyCode`,concat(`req`.`staffName`,'(',`req`.`staffCode`,')') AS `requester`,concat(`app`.`staffName`,'(',`app`.`staffCode`,')') AS `approver` from ((((`tbl_account_receivable` `rv` left join `tbl_account_type` `ty` on((`rv`.`accountType` = `ty`.`accountTypeId`))) left join `tbl_account_currency` `cur` on((`rv`.`currencyId` = `cur`.`currencyId`))) left join `tbl_hr_staff` `req` on((`rv`.`depositBy` = `req`.`staffId`))) left join `tbl_hr_staff` `app` on((`rv`.`approveBy` = `app`.`staffId`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -881,7 +881,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = latin1 */;
 /*!50001 SET collation_connection      = latin1_swedish_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`sundew`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_account_voucher` AS select 'Receivable' AS `type`,`vw_account_receivable`.`receiveVoucherId` AS `voucherId`,`vw_account_receivable`.`voucherNo` AS `voucherNo`,`vw_account_receivable`.`voucherDate` AS `voucherDate`,`vw_account_receivable`.`accountType` AS `accountTypeId`,`vw_account_receivable`.`type` AS `accountType`,`vw_account_receivable`.`description` AS `description`,`vw_account_receivable`.`amount` AS `amount`,`vw_account_receivable`.`currencyId` AS `currencyId`,`vw_account_receivable`.`currencyCode` AS `currency`,`vw_account_receivable`.`depositBy` AS `requestBy`,`vw_account_receivable`.`requester` AS `requester`,`vw_account_receivable`.`approveBy` AS `approveBy`,`vw_account_receivable`.`approver` AS `approver`,`vw_account_receivable`.`status` AS `status`,`vw_account_receivable`.`approvedDate` AS `approvedDate`,`vw_account_receivable`.`reason` AS `reason`,`vw_account_receivable`.`requestedDate` AS `requestedDate`,`vw_account_receivable`.`group_code` AS `group_code` from `vw_account_receivable` union all select 'Payable' AS `type`,`vw_account_payable`.`payVoucherId` AS `voucherId`,`vw_account_payable`.`voucherNo` AS `voucherNo`,`vw_account_payable`.`voucherDate` AS `voucherDate`,`vw_account_payable`.`accountType` AS `accountTypeId`,`vw_account_payable`.`type` AS `accountType`,`vw_account_payable`.`description` AS `description`,`vw_account_payable`.`amount` AS `amount`,`vw_account_payable`.`currencyId` AS `currencyId`,`vw_account_payable`.`currencyCode` AS `currency`,`vw_account_payable`.`withdrawBy` AS `requestBy`,`vw_account_payable`.`requester` AS `requester`,`vw_account_payable`.`approveBy` AS `approveBy`,`vw_account_payable`.`approver` AS `approver`,`vw_account_payable`.`status` AS `status`,`vw_account_payable`.`approvedDate` AS `approvedDate`,`vw_account_payable`.`reason` AS `reason`,`vw_account_payable`.`requestedDate` AS `requestedDate`,`vw_account_payable`.`group_code` AS `group_code` from `vw_account_payable` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -899,7 +899,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = latin1 */;
 /*!50001 SET collation_connection      = latin1_swedish_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`sundew`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_cr_contact` AS select `c`.`contactId` AS `contactId`,`c`.`name` AS `contactName`,`c`.`phone` AS `Phone`,`c`.`email` AS `Email`,`c`.`address` AS `Address`,`c`.`website` AS `Website`,`c`.`notes` AS `Notes`,`c`.`tag` AS `Tag`,`c`.`status` AS `Status`,`p`.`name` AS `companyname` from (`tbl_cr_contact` `c` left join `tbl_cr_company` `p` on((`c`.`companyId` = `p`.`companyId`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -953,7 +953,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`sundew`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_hr_attendance` AS select `s`.`staffCode` AS `staffCode`,`s`.`staffName` AS `staffName`,`a`.`attendanceId` AS `attendanceId`,`a`.`staffId` AS `staffId`,`a`.`attendanceDate` AS `attendanceDate`,`a`.`inTime` AS `inTime`,`a`.`outTime` AS `outTime` from (`tbl_hr_attendance` `a` join `tbl_hr_staff` `s` on((`a`.`staffId` = `s`.`staffId`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -971,7 +971,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`sundew`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_hr_leave` AS select `l`.`leaveId` AS `leaveId`,(case `l`.`status` when 'R' then 'Requested' when 'A' then 'Approved' when 'C' then 'Rejected' else 'Invalid' end) AS `status`,`l`.`staffId` AS `staffId`,(case `l`.`leaveType` when 'H' then 'Half-day' when 'F' then 'Full-day' when 'M' then 'Medical' else 'Invalid' end) AS `leaveType`,`l`.`date` AS `date`,`l`.`description` AS `description`,`s`.`staffCode` AS `staffCode`,`s`.`staffName` AS `staffName` from (`tbl_hr_leave` `l` join `tbl_hr_staff` `s` on((`l`.`staffId` = `s`.`staffId`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -989,7 +989,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`sundew`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_hr_staff` AS select `s`.`staffId` AS `staffId`,`s`.`staffName` AS `staffName`,`s`.`staffCode` AS `staffCode`,`s`.`salary` AS `Salary`,`c`.`code` AS `Currency`,`s`.`birthday` AS `Birthday`,`s`.`annual_leave` AS `Leave`,`s`.`permanentDate` AS `PermanentDate`,`s`.`status` AS `Status`,`u`.`userName` AS `UserName`,`p`.`name` AS `Position`,`d`.`name` AS `Department` from ((((`tbl_hr_staff` `s` left join `tbl_user` `u` on((`s`.`userId` = `u`.`userId`))) left join `tbl_hr_position` `p` on((`p`.`positionId` = `s`.`positionId`))) left join `tbl_hr_department` `d` on((`s`.`departmentId` = `d`.`departmentId`))) left join `tbl_account_currency` `c` on((`s`.`currencyId` = `c`.`currencyId`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1058,4 +1058,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-23 20:34:02
+-- Dump completed on 2015-06-24 18:30:01
