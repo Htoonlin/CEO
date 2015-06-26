@@ -88,7 +88,7 @@ class AccountType implements TreeViewEntityInterface, ArraySerializableInterface
 
     public function getLabel()
     {
-        return $this->name;
+        return $this->name . '(' . $this->baseType . ')';
     }
 
     public function getUrl()

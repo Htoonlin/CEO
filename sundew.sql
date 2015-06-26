@@ -32,7 +32,7 @@ CREATE TABLE `tbl_account_closing` (
   `closingDate` datetime DEFAULT NULL,
   `closingAmount` int(11) DEFAULT NULL,
   PRIMARY KEY (`closingId`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -50,7 +50,7 @@ CREATE TABLE `tbl_account_currency` (
   `status` char(1) CHARACTER SET latin1 NOT NULL,
   `entryDate` date NOT NULL,
   PRIMARY KEY (`currencyId`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +76,7 @@ CREATE TABLE `tbl_account_payable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`payVoucherId`)
-) ENGINE=InnoDB AUTO_INCREMENT=682 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=700 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +102,7 @@ CREATE TABLE `tbl_account_receivable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`receiveVoucherId`)
-) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,7 +120,7 @@ CREATE TABLE `tbl_account_type` (
   `baseType` char(1) NOT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`accountTypeId`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -155,7 +155,7 @@ CREATE TABLE `tbl_constant` (
   `value` varchar(500) NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`constantId`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -280,7 +280,7 @@ CREATE TABLE `tbl_hr_attendance` (
   `inTime` time DEFAULT NULL,
   `outTime` time DEFAULT NULL,
   PRIMARY KEY (`attendanceId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -972,7 +972,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `vw_hr_leave` AS select `l`.`leaveId` AS `leaveId`,(case `l`.`status` when 'R' then 'Requested' when 'A' then 'Approved' when 'C' then 'Rejected' else 'Invalid' end) AS `status`,`l`.`staffId` AS `staffId`,(case `l`.`leaveType` when 'H' then 'Half-day' when 'F' then 'Full-day' when 'M' then 'Medical' else 'Invalid' end) AS `leaveType`,`l`.`date` AS `date`,`l`.`description` AS `description`,`s`.`staffCode` AS `staffCode`,`s`.`staffName` AS `staffName` from (`tbl_hr_leave` `l` join `tbl_hr_staff` `s` on((`l`.`staffId` = `s`.`staffId`))) */;
+/*!50001 VIEW `vw_hr_leave` AS select `l`.`leaveId` AS `leaveId`,(case `l`.`status` when 'R' then 'Requested' when 'A' then 'Approved' when 'C' then 'Rejected' else 'Invalid' end) AS `status`,`l`.`staffId` AS `staffId`,(case `l`.`leaveType` when 'H' then 'Half-day' when 'F' then 'Full-day' when 'M' then 'Medical' when 'A' then 'Absent' else 'Invalid' end) AS `leaveType`,`l`.`date` AS `date`,`l`.`description` AS `description`,`s`.`staffCode` AS `staffCode`,`s`.`staffName` AS `staffName` from (`tbl_hr_leave` `l` join `tbl_hr_staff` `s` on((`l`.`staffId` = `s`.`staffId`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1058,4 +1058,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-24 18:30:01
+-- Dump completed on 2015-06-25 18:30:01

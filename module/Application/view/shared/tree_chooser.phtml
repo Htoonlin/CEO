@@ -1,0 +1,76 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 6/26/2015
+ * Time: 11:10 AM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+$btnText = isset($text) ? $text : 'Choose Roles';
+$name = isset($name) ? $name : 'treePicker';
+$callback = isset($callback) ? $callback : 'afterSelect';
+
+$this->headLink()->prependStylesheet($this->basePath() . '/css/treeview.css');
+$this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
+?>
+<script type="text/javascript">
+    var <?= $callback ?>;
+    function choosed(value){
+        if(this.<?= $callback ?>){
+            return this.<?= $callback ?>(value);
+        }
+        console.log('value => ' + value);
+        return false;
+    }
+
+    function void_choosed(){
+        var go = choosed(0);
+        if(!go){
+            $('#tree-display').val('');
+            $('#<?= $name ?>Modal').modal('hide');
+        }
+    }
+
+    $('document').ready(function(){
+        $('#<?= $name ?>Modal .sundew-tree a').attr('href', '#');
+        $('#tree-display').val($('#<?= $name ?>Modal .sundew-tree li.active a').html());
+        $('#<?= $name ?>Modal .sundew-tree a').click(function(e){
+            e.preventDefault();
+            $('#<?= $name ?>Modal .sundew-tree li').removeClass('active');
+            $(this).closest('li').addClass('active');
+            var go = choosed($(this).closest('li').attr('value'));
+            if(!go){
+                $('#tree-display').val($(this).html());
+                $('#<?= $name ?>Modal').modal('hide');
+            }
+        });
+    });
+</script>
+<div class="input-group">
+    <input type="text" class="form-control" readonly="readonly" id="tree-display">
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#<?= $name ?>Modal">
+            <span class="glyphicon glyphicon-align-left"></span>
+        </button>
+      </span>
+</div>
+
+<div class="modal fade" id="<?= $name ?>Modal" tabindex="-1" role="dialog" aria-labelledby="<?= $name ?>ModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Choose Data</h4>
+            </div>
+            <div class="modal-body">
+                <?php echo $this->formTreeView($data, $active); ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="void_choosed()">
+                    Choose Void
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

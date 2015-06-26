@@ -60,9 +60,11 @@ class ConstantDataAccess extends AbstractTableGateway {
     {
         if(empty($group_code))
         {
-            return $this->select(array('name' => $name, 'group_code' => $group_code));
+            $result = $this->select(array('name' => $name, 'group_code' => $group_code));
+        }else{
+            $result = $this->select(array('name' => $name));
         }
-        return $this->select(array('name' => $name));
+        return $result->current();
     }
     public  function getConstant($id)
     {

@@ -46,9 +46,21 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
         <div class="form-group">
             <label class="control-label col-sm-3">Parent Department</label>
             <div class="col-sm-9" id="parentDepartment">
-                <input data-provide="typeahead" id="typeahead" autocomplete="off"
-                       value="<?php echo ($parent) ? $parent->getName() : ""; ?>"
-                       class="form-control" type="text" placeholder="Parent Department">
+                <script type="text/javascript">
+                    department_choosed = function(value){
+                        $currentId = $("input[name=departmentId]").val();
+                        if(value == $currentId){
+                            alert("Parent can't same with current department.");
+                            $("input[name=parentId]").val("");
+                            return true;
+                        }
+                        $('input[name=parentId]').val(value);
+                    }
+                </script>
+                <?= $this->formHidden($form->get('parentId')); ?>
+                <?= $this->partial('shared/tree_chooser.phtml', array('data' => $departments,
+                    'name' => 'departmentPicker', 'callback' => 'department_choosed',
+                    'active' => $form->get('parentId')->getValue())) ?>
             </div>
         </div>
 

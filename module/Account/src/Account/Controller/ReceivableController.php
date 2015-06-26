@@ -37,11 +37,11 @@ class ReceivableController extends AbstractActionController
         return new ReceivableDataAccess($adapter, $this->staffId);
     }
 
-    private function accountTypeCombo()
+    private function accountTypes()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        $dataAccess = new AccountTypeDataAccess($adapter);
-        return $dataAccess->getComboData('accountTypeId', 'name', 'I');
+        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $dataAccess=new AccountTypeDataAccess($adapter);
+        return $dataAccess->getChildren();
     }
 
     private function currencyCombo()
@@ -94,7 +94,7 @@ class ReceivableController extends AbstractActionController
     public function requestAction()
     {
         $helper = new ReceivableHelper($this->receivableTable());
-        $form = $helper->getForm($this->accountTypeCombo(), $this->currencyCombo());
+        $form = $helper->getForm($this->currencyCombo());
         $receivable = new Receivable();
         $generateNo = $this->receivableTable()->getVoucherNo(date('Y-m-d', time()));
         $receivable->setVoucherNo($generateNo);
@@ -115,6 +115,7 @@ class ReceivableController extends AbstractActionController
         return new ViewModel(array(
             'form' => $form,
             'staffName' => $this->staffName,
+            'accountTypes' => $this->accountTypes(),
         ));
     }
     public function exportAction()

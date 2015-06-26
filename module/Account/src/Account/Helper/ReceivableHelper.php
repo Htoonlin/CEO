@@ -16,7 +16,7 @@ use Zend\InputFilter\InputFilter;
 class ReceivableHelper
 {
     protected $form;
-    public function getForm(array $accountTypes, array $currencies)
+    public function getForm(array $currencies)
     {
         if(!$this->form) {
             $hidId=new Element\Hidden();
@@ -37,12 +37,7 @@ class ReceivableHelper
                         'format' => 'YYYY-MM-DD'
                     )
                 ));
-            $txtAccountType=new Element\Select();
-            $txtAccountType->setName("accountType")
-                ->setLabel('Type')
-                ->setAttribute('class','form-control')
-                ->setEmptyOption('-- Choose Type --')
-                ->setValueOptions($accountTypes);
+            $txtAccountType=new Element\Hidden('accountType');
 
             $txtDescription=new Element\Textarea();
             $txtDescription->setName("description")
@@ -141,7 +136,7 @@ class ReceivableHelper
                     ),
                 ),
             ));
-
+            $filter->add(array('name' => 'accountType', 'required' => true));
             $this->inputFilter=$filter;
         }
         return $this->inputFilter;

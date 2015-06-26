@@ -11,8 +11,7 @@
 $title = 'Role Manager';
 $this->headTitle($title);
 $this->headLink()->prependStylesheet($this->basePath() . '/css/treeview.css');
-$this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
-                    ->prependFile($this->basePath() . '/js/bootstrap3-typeahead.js');
+$this->headScript()->prependFile($this->basePath() . '/js/treeview.js');
 ?>
 <h2><?php echo $this->escapeHtml($title); ?></h2>
 <hr />
@@ -21,34 +20,30 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
         <?php echo $this->formTreeView($roles, $id); ?>
     </div>
     <div class="col-md-8">
-        <script type="text/javascript">
-            $(function(){
-                $.get('<?php echo $this->url('role', array('action' => 'jsonAll')); ?>', function(data){
-                    $('#parentRole #typeahead').typeahead({source: data, afterSelect:function(item){
-                        $currentId = $("input[name=id]").val();
-                        if(item.id == $currentId){
-                            alert("Parent can't same with current role.");
-                            $("input[name=parentId]").val("");
-                            return;
-                        }
-                        $("input[name=parentId]").val(item.id);
-                    }});
-                });
-            });
-        </script>
         <?php
         echo $this->form()->openTag($form);
         echo $this->formHorizontal($form->get('id'));
         echo $this->formHorizontal($form->get('name'));
         echo $this->formHorizontal($form->get('description'));
-        echo $this->formHorizontal($form->get('parentId'));
         ?>
         <div class="form-group">
             <label class="control-label col-sm-3">Parent Role</label>
             <div class="col-sm-9" id="parentRole">
-                <input data-provide="typeahead" id="typeahead" autocomplete="off"
-                       value="<?php echo ($parent) ? $parent->getName() : ""; ?>"
-                       class="form-control" type="text" placeholder="Parent Role">
+                <script type="text/javascript">
+                    role_choosed = function(value){
+                        $currentId = $("input[name=id]").val();
+                        if(value == $currentId){
+                            alert("Parent can't same with current role.");
+                            $("input[name=parentId]").val("");
+                            return true;
+                        }
+                        $('input[name=parentId]').val(value);
+                    }
+                </script>
+                <?= $this->formHidden($form->get('parentId')); ?>
+                <?= $this->partial('shared/tree_chooser.phtml', array('data' => $roles,
+                    'name' => 'rolePicker', 'callback' => 'role_choosed',
+                    'active' => $form->get('parentId')->getValue())) ?>
             </div>
         </div>
         <div class="form-group">
@@ -58,11 +53,11 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
             </div>
             <div class="col-sm-3">
                 <script type="text/javascript">
-                    afterSelect = function(icon){
+                    icon_choosed = function(icon){
                         $("input[name=icon]").val(icon);
                     }
                 </script>
-                <?php echo $this->partial('shared/icon_chooser.phtml'); ?>
+                <?php echo $this->partial('shared/icon_chooser.phtml', array('callback' => 'icon_choosed')); ?>
             </div>
         </div>
         <?php echo $this->formHorizontal($form->get('priority')); ?>

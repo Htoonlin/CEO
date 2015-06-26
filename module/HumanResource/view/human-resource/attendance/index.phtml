@@ -67,16 +67,16 @@ $flashMessages = $this->flashMessenger()->getMessages();
                     <th width="160px">
                         <?php echo $this->gridHeaderCell('Code','staffCode',$filter,$page,$sort,$sortBy);?>
                     </th>
-                    <th width="160px">
+                    <th>
                         <?php echo $this->gridHeaderCell('Name','staffName',$filter,$page,$sort,$sortBy);?>
                     </th>
-                    <th width="160px">
+                    <th width="120px">
                         <?php echo $this->gridHeaderCell('In','inTime',$filter,$page,$sort,$sortBy);?>
                     </th>
-                    <th width="160px">
+                    <th width="120px">
                         <?php echo $this->gridHeaderCell('Out','outTime',$filter,$page,$sort,$sortBy);?>
                     </th>
-                    <th width="160px">
+                    <th width="80px" class="text-center">
                         Action
                     </th>
                 </tr>
@@ -101,7 +101,7 @@ $flashMessages = $this->flashMessenger()->getMessages();
                         <td>
                             <?php echo $this->escapeHtml($attendance->outTime); ?>
                         </td>
-                        <td>
+                        <td class="text-center">
                             <a href="<?= $this->url('hr_leave', array('action' => 'detail', 'id' => 0)) ?>?staff=<?= $attendance->staffId ?>" title="Leave" class="btn btn-xs btn-warning">
                                 <span class="fa fa-user-md"></span> Leave
                             </a>

@@ -32,7 +32,7 @@ class ClosingDataAccess extends AbstractTableGateway
         $this->initialize();
     }
 
-    public function fetchAll($paginated=false,$currency = 0, $orderBy = 'openingDate', $order='desc')
+    public function fetchAll($paginated=false,$currency = 0, $orderBy = 'closingDate', $order='desc')
     {
         if($paginated){
             $select=new Select($this->view);

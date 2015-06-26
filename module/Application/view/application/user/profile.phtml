@@ -60,12 +60,7 @@ echo $this->form()->openTag($form);
         $userName = $form->get('userName');
         $userName->setAttribute('disabled', 'disabled');
         echo $this->formHorizontal($userName);
-
         echo $this->formHorizontal($form->get('image'));
-
-        $userRole = $form->get('userRole');
-        $userRole->setAttribute('disabled', 'disabled');
-        echo $this->formHorizontal($userRole);
         echo $this->formHorizontal($form->get('description'));
         echo $this->formHorizontal($form->get('status'));
         ?>

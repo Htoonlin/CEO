@@ -49,11 +49,11 @@ class StaffController extends AbstractActionController
         return $dataAccess->getComboData('positionId','name');
     }
 
-    private function departmentCombos()
+    private function departments()
     {
         $adapter=$this->getServiceLocator()->get('Zend/Db/Adapter/Adapter');
         $dataAccess=new DepartmentDataAccess($adapter);
-        return $dataAccess->getComboData('departmentId','name');
+        return $dataAccess->getChildren();
     }
 
     private function currencyCombo(){
@@ -87,8 +87,7 @@ class StaffController extends AbstractActionController
     {
         $id=(int)$this->params()->fromRoute('id',0);
         $helper=new StaffHelper($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
-        $form = $helper->getForm($this->userCombos(), $this->positionCombos(),
-            $this->departmentCombos(), $this->currencyCombo(), $this->statusCombo());
+        $form = $helper->getForm($this->userCombos(), $this->positionCombos(), $this->currencyCombo(), $this->statusCombo());
         $staff = $this->staffTable()->getStaff($id);
         $isEdit = true;
 
@@ -112,7 +111,10 @@ class StaffController extends AbstractActionController
                 return $this->redirect()->toRoute('hr_staff');
             }
         }
-        return new ViewModel(array('form'=>$form, 'id'=>$id, 'isEdit'=>$isEdit));
+        return new ViewModel(array('form'=>$form,
+            'id'=>$id,
+            'isEdit'=>$isEdit,
+            'departments' => $this->departments()));
     }
 
     public function  deleteAction()

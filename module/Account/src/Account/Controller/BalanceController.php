@@ -264,6 +264,8 @@ class BalanceController extends AbstractActionController
 
     private function getToOpenAccountData($closeData)
     {
+        if($closeData == null)
+            return array();
         $returnData = array();
 
         foreach($closeData as $close)
@@ -360,7 +362,7 @@ class BalanceController extends AbstractActionController
                     $payable->exchangeArray(array(
                         "voucherNo" => $payVoucher,
                         "voucherDate" => $voucherDate,
-                        "accountType" => 30,
+                        "accountType" => 3,
                         "description" => 'Automatic closing.',
                         "amount" => $row['amount'],
                         "currencyId"=> $row['currencyId'],
@@ -386,7 +388,7 @@ class BalanceController extends AbstractActionController
                 $receive->exchangeArray(array(
                     "voucherNo" => $receiveVoucher,
                     "voucherDate" => $voucherDate,
-                    "accountType" => 29,
+                    "accountType" => 2,
                     "description" => 'Automatic opening.',
                     "amount" => $row['amount'],
                     "currencyId"=> $row['currencyId'],

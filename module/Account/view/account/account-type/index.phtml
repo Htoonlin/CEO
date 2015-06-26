@@ -41,15 +41,26 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
         echo $this->formHorizontal($form->get('accountTypeId'));
         echo $this->formHorizontal($form->get('code'));
         echo $this->formHorizontal($form->get('name'));
-        echo $this->formHorizontal($form->get('parentTypeId'));
         echo $this->formHorizontal($form->get('baseType'));
         ?>
         <div class="form-group">
             <label class="control-label col-sm-3">Parent Type</label>
             <div class="col-sm-9" id="parentType">
-                <input data-provide="typeahead" id="typeahead" autocomplete="off"
-                       value="<?php echo ($parent) ? $parent->getName() : ""; ?>"
-                       class="form-control" type="text" placeholder="Parent Account Type">
+                <script type="text/javascript">
+                    parent_choosed = function(value){
+                        $currentId = $("input[name=accountTypeId]").val();
+                        if(value == $currentId){
+                            alert("Parent can't same with current type.");
+                            $("input[name=parentTypeId]").val("");
+                            return true;
+                        }
+                        $('input[name=parentTypeId]').val(value);
+                    }
+                </script>
+                <?= $this->formHidden($form->get('parentTypeId')); ?>
+                <?= $this->partial('shared/tree_chooser.phtml', array('data' => $accountTypes,
+                    'name' => 'parentPicker', 'callback' => 'parent_choosed',
+                    'active' => $form->get('parentTypeId')->getValue())) ?>
             </div>
         </div>
         <?php echo $this->formHorizontal($form->get('status')); ?>

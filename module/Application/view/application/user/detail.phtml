@@ -25,7 +25,8 @@ echo $this->form()->openTag($form);
                     $("img#imgAvatar").attr('src',"<?php echo $this->url("user", array('action' => 'image', 'id' => 0)); ?>");
                     $("input#hasImage").val("false");
                 });
-            })
+            });
+
         </script>
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -57,7 +58,30 @@ echo $this->form()->openTag($form);
             echo $this->formHorizontal($form->get('confirmPassword'));
         }
         echo $this->formHorizontal($form->get('image'));
-        echo $this->formHorizontal($form->get('userRole'));
+        ?>
+        <div class="form-group<?= empty($form->getMessages('userRole')) ? '' : ' has-error' ?>">
+            <label class="control-label col-sm-3">Role</label>
+            <div class="col-sm-9">
+                <script type="text/javascript">
+                    role_choosed = function(value){
+                        if(value > 0)
+                            $('input[name=userRole]').val(value);
+                        else
+                            $('input[name=userRole]').val('');
+                    }
+                </script>
+                <?= $this->formHidden($form->get('userRole')); ?>
+                <?= $this->partial('shared/tree_chooser.phtml', array('data' => $roles,
+                    'name' => 'rolePicker', 'callback' => 'role_choosed',
+                    'active' => $form->get('userRole')->getValue())) ?>
+                <?php if(!empty($form->getMessages('userRole'))) : ?>
+                    <?php foreach($form->getMessages('userRole') as $val) : ?>
+                        <p class="text-danger"><?= $val ?></p>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
         echo $this->formHorizontal($form->get('description'));
         echo $this->formHorizontal($form->get('status'));
         ?>

@@ -802,12 +802,13 @@ $fontAwesomeIcons = array(
     "fa fa-subway",
     "fa fa-medium",
 );
+$callback = isset($callback) ? $callback : 'afterSelect';
 ?>
 <script type="text/javascript">
-    var afterSelect;
+    var <?= $callback ?>;
     function choosed_icon(icon){
-        if(this.afterSelect){
-            this.afterSelect(icon);
+        if(this.<?= $callback ?>){
+            this.<?= $callback ?>(icon);
         }
     }
     $('document').ready(function(){
@@ -818,12 +819,12 @@ $fontAwesomeIcons = array(
     });
 </script>
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+<button type="button" class="btn btn-default" data-toggle="modal" data-target="#iconChooserModal">
     <span class="glyphicon glyphicon-leaf"></span>
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="iconChooserModal" tabindex="-1" role="dialog" aria-labelledby="iconChooserModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

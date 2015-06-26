@@ -60,7 +60,22 @@ echo $this->form()->openTag($form);
         <?php
         echo $this->formHorizontal($form->get('userId'));
         echo $this->formHorizontal($form->get('positionId'));
-        echo $this->formHorizontal($form->get('departmentId'));
+        ?>
+        <div class="form-group">
+            <label class="control-label col-sm-3">Department</label>
+            <div class="col-sm-9">
+                <script type="text/javascript">
+                    role_choosed = function(value){
+                        $('input[name=departmentId]').val(value);
+                    }
+                </script>
+                <?= $this->formHidden($form->get('departmentId')); ?>
+                <?= $this->partial('shared/tree_chooser.phtml', array('data' => $departments,
+                    'name' => 'rolePicker', 'callback' => 'role_choosed',
+                    'active' => $form->get('departmentId')->getValue())) ?>
+            </div>
+        </div>
+        <?php
         echo $this->formHorizontal($form->get('permanentDate'));
         echo $this->formHorizontal($form->get('annual_leave'));
         ?>

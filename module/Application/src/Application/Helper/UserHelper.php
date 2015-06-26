@@ -25,7 +25,7 @@ class UserHelper
     }
 
     protected $form;
-    public function getForm(array $roles, array $default_status)
+    public function getForm(array $default_status)
     {
         if(!$this->form) {
             $hidId = new Element\Hidden();
@@ -46,12 +46,7 @@ class UserHelper
                 ->setLabel('Retype Password')
                 ->setAttribute('class', 'form-control');
 
-            $selectRole = new Element\Select();
-            $selectRole->setName('userRole')
-                ->setLabel('Role')
-                ->setAttribute('class', 'form-control')
-                ->setEmptyOption("-- Choose Role --")
-                ->setValueOptions($roles);
+            $selectRole = new Element\Hidden('userRole');
 
             $description = new Element\Textarea();
             $description->setName('description')

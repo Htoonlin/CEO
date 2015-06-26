@@ -32,11 +32,11 @@ class UserController extends AbstractActionController
         $dataAccess = new ConstantDataAccess($adapter);
         return $dataAccess->getComboByGroupCode('default_status');
     }
-    private function roleCombo()
+    private function roleTreeview()
     {
         $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $dataAccess = new RoleDataAccess($adapter);
-        return $dataAccess->getComboData('id', 'name');
+        return $dataAccess->getChildren();
     }
 
     public function indexAction()
@@ -64,7 +64,7 @@ class UserController extends AbstractActionController
     {
         $id = (int)$this->params()->fromRoute('id', 0);
         $helper = new UserHelper($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
-        $form = $helper->getForm($this->roleCombo(), $this->statusCombo());
+        $form = $helper->getForm($this->statusCombo());
         $user = $this->userTable()->getUser($id);
         $isEdit = true;
         $hasImage = 'false';
@@ -107,8 +107,13 @@ class UserController extends AbstractActionController
             }
         }
 
-        return new ViewModel(array('form' => $form,
-            'id' => $id, 'isEdit' => $isEdit, 'hasImage' => $hasImage));
+        return new ViewModel(array(
+            'form' => $form,
+            'id' => $id,
+            'isEdit' => $isEdit,
+            'hasImage' => $hasImage,
+            'roles' => $this->roleTreeview(),
+        ));
     }
     public function deleteAction()
     {
@@ -225,8 +230,8 @@ class UserController extends AbstractActionController
         $current_image = $user->getImage();
         $message = '';
 
-        $helper = new UserHelper($this->roleCombo(), $this->userTable()->adapter);
-        $form = $helper->getForm($this->roleCombo(), $this->statusCombo());
+        $helper = new UserHelper($this->userTable()->adapter);
+        $form = $helper->getForm($this->statusCombo());
         $form->bind($user);
 
         $request = $this->getRequest();

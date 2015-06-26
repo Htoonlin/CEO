@@ -71,7 +71,7 @@ class DepartmentDataAccess extends AbstractTableGateway
         $data=$department->getArrayCopy();
         $data['status']='A';
         if($id>0){
-            $this->update($data,array('id'=>$id));
+            $this->update($data,array('departmentId'=>$id));
         }else{
             unset($data['id']);
             $this->insert($data);

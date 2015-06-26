@@ -35,11 +35,11 @@ class PayableController extends  AbstractActionController
         }
         return new PayableDataAccess($adapter, $this->staffId);
     }
-    private function accountTypeCombo()
+    private function accountTypes()
     {
         $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $dataAccess=new AccountTypeDataAccess($adapter);
-        return $dataAccess->getComboData('accountTypeId','name','E');
+        return $dataAccess->getChildren();
     }
 
     public function currencyCombo()
@@ -84,6 +84,7 @@ class PayableController extends  AbstractActionController
         return new ViewModel(array(
             'voucher'=>$payable,
             'staffName'=>$this->staffName,
+            'accountTypes' => $this->accountTypes(),
         ));
     }
     public function requestAction()

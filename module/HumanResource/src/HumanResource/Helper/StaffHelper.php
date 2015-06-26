@@ -22,7 +22,7 @@ class StaffHelper
         $this->dbAdapter=$dbAdapter;
     }
 
-    public function getForm(array $usersData, array $positionsData, array $departmentsData, array $currencyData, array $defaultStatus)
+    public function getForm(array $usersData, array $positionsData, array $currencyData, array $defaultStatus)
     {
         if (!$this->form) {
             $hidId = new Element\Hidden();
@@ -52,12 +52,7 @@ class StaffHelper
                 ->setEmptyOption("-- Choose Position --")
                 ->setValueOptions($positionsData);
 
-            $selectDepartment=new Element\Select();
-            $selectDepartment->setName('departmentId')
-                ->setLabel('Department')
-                ->setAttribute('class', 'form-control')
-                ->setEmptyOption("-- Choose Department --")
-                ->setValueOptions($departmentsData);
+            $selectDepartment=new Element\Hidden('departmentId');
 
             $salary = new Element\Number();
             $salary->setLabel('Salary')

@@ -45,8 +45,28 @@ echo $this->formHidden($form->get('payVoucherId'));
     </div>
     <div class="panel-body" role="form">
         <div class="row">
-            <div class="col-sm-4">
-                <?php echo $this->formRow($form->get('accountType'));?>
+            <div class="col-sm-4 <?= empty($form->getMessages('accountType')) ? '' : ' has-error' ?>">
+                <label class="control-label">Account Type</label>
+                <div class="form-control">
+                    <script type="text/javascript">
+                        acocuntType_choosed = function(value){
+                            if(value > 0){
+                                $('input[name=accountType]').val(value);
+                            }else{
+                                $('input[name=accountType]').val('');
+                            }
+                        }
+                    </script>
+                    <?= $this->formHidden($form->get('accountType')); ?>
+                    <?= $this->partial('shared/tree_chooser.phtml', array('data' => $accountTypes,
+                        'name' => 'accountTypePicker', 'callback' => 'acocuntType_choosed',
+                        'active' => $form->get('accountType')->getValue())) ?>
+                    <?php if(!empty($form->getMessages('accountType'))) : ?>
+                        <?php foreach($form->getMessages('accountType') as $val) : ?>
+                            <p class="text-danger"><?= $val ?></p>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
             </div>
             <div class="col-sm-6">
                 <?php echo $this->formRow($form->get('amount'));?>
