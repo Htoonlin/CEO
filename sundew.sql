@@ -50,7 +50,7 @@ CREATE TABLE `tbl_account_currency` (
   `status` char(1) CHARACTER SET latin1 NOT NULL,
   `entryDate` date NOT NULL,
   PRIMARY KEY (`currencyId`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +76,7 @@ CREATE TABLE `tbl_account_payable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`payVoucherId`)
-) ENGINE=InnoDB AUTO_INCREMENT=700 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +102,7 @@ CREATE TABLE `tbl_account_receivable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`receiveVoucherId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,7 +120,7 @@ CREATE TABLE `tbl_account_type` (
   `baseType` char(1) NOT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`accountTypeId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -299,7 +299,7 @@ CREATE TABLE `tbl_hr_department` (
   `priority` int(11) NOT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`departmentId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1058,4 +1058,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-25 18:30:01
+-- Dump completed on 2015-06-26 18:30:01

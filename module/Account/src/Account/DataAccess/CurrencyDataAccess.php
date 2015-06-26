@@ -58,6 +58,19 @@ class CurrencyDataAccess extends AbstractTableGateway
         return $selectData;
     }
 
+    public function getLastCurrency($currency){
+        $results = $this->select(function (Select $select) use ($currency){
+            $where = new Where();
+            $where->equalTo('code', $currency)
+                ->AND->equalTo('status','A');
+            $select->where($where)
+                ->order('entryDate DESC')
+                ->limit(1);
+        });
+
+        return $results->current();
+    }
+
     public function  getCurrency($id)
     {
         $id=(int)$id;

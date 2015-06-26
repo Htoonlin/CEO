@@ -49,11 +49,25 @@ class VoucherDataAccess extends AbstractTableGateway
         return $result->current();
     }
 
+    public function getInitVoucherByNewCurrency($currency){
+        $results = $this->select(function (Select $select) use ($currency){
+            $where = new Where();
+            $where->equalTo('currency', $currency)
+                ->AND->equalTo('type', 'Receivable')
+                ->AND->equalTo('status','A');
+            $select->where($where)
+                ->order('approvedDate ASC')
+                ->limit(1);
+        });
+
+        return $results->current();
+    }
+
     public function getClosingData($openingDate, $currency)
     {
         $results = $this->select(function (Select $select) use ($openingDate, $currency){
             $where = new Where();
-            $where->equalTo('currencyId', $currency)
+            $where->equalTo('currency', $currency)
                 ->AND->greaterThanOrEqualTo('approvedDate', $openingDate)
                 ->AND->equalTo('status','A');
             $select->columns(array('type', 'amount' => new Expression('SUM(amount)')))

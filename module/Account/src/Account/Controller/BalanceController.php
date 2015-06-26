@@ -46,6 +46,12 @@ class BalanceController extends AbstractActionController
         return $this->staffId;
     }
 
+    private function currencyTable()
+    {
+        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        return new CurrencyDataAccess($dbAdapter);
+    }
+
     private function payableTable()
     {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
@@ -162,8 +168,10 @@ class BalanceController extends AbstractActionController
         }
 
         $fromDate = $closing->getOpeningDate();
-        $toDate = (is_null($closing->getClosingDate())) ? date('Y-m-d H:i:s', time()) : $closing->getClosingDate();
+        $toDate = (is_null($closing->getClosingDate())) ? date('Y-m-d 23:59:59', time()) : $closing->getClosingDate();
 
+        var_dump($fromDate);
+        var_dump($toDate);
         $paginator = $this->voucherTable()->getVouchersByDate($fromDate, $toDate,
             true, $filter, $sort, $sortBy);
 
@@ -183,10 +191,7 @@ class BalanceController extends AbstractActionController
     public function exportAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
-        $requestUri = new Http($this->getRequest()->getHeader('Referer')->getUri());
-        $fromPath = $requestUri->getPath();
         $closing = $this->closingTable()->getClosing($id);
-        $filename = '';
 
         $response = $this->getResponse();
 
@@ -247,12 +252,10 @@ class BalanceController extends AbstractActionController
     {
         $data = array();
         $results = $this->closingTable()->getOpenedData();
-
         foreach($results as $result)
         {
             $data[] = array(
                 'closingId' => $result->closingId,
-                'currencyId' => $result->currencyId,
                 'date' => $result->openingDate,
                 'amount' => $result->openingAmount,
                 'currency' => $result->currency,
@@ -264,76 +267,73 @@ class BalanceController extends AbstractActionController
 
     private function getToOpenAccountData($closeData)
     {
-        if($closeData == null)
-            return array();
         $returnData = array();
 
-        foreach($closeData as $close)
-        {
-            $results = $this->voucherTable()->getClosingData($close['date'], $close['currencyId']);
-            $pay = 0;
-            $receive = 0;
-
-            foreach($results as $result)
+        if(!empty($closeData)){
+            foreach($closeData as $close)
             {
-                if($result->type == 'Payable') $pay += $result->amount;
-                if($result->type == 'Receivable') $receive += $result->amount;
-            }
+                $results = $this->voucherTable()->getClosingData($close['date'], $close['currency']);
+                $pay = 0;
+                $receive = 0;
 
-            $returnData[] = array(
-                'closingId' => $close['closingId'],
-                'currency' => $close['currency'],
-                'currencyId' => $close['currencyId'],
-                'receive' => $receive,
-                'pay' => $pay,
-                'amount' => ($receive - $pay),
-                'status' => (($receive - $pay) == 0) ? 'C' : 'C=>O',
-            );
-        }
+                foreach($results as $result)
+                {
+                    if($result->type == 'Payable') $pay += $result->amount;
+                    if($result->type == 'Receivable') $receive += $result->amount;
+                }
 
-        $currencies = array();
-        foreach($returnData as $data)
-        {
-            $currencies[] = $data['currencyId'];
-        }
-
-        $results = $this->closingTable()->getNewOpeningData($currencies);
-        $prevCurId = 0;
-        $pay = 0;
-        $receive = 0;
-        $currency = '';
-
-        foreach($results as $result)
-        {
-            if($prevCurId > 0 && $prevCurId != $result->currencyId) {
                 $returnData[] = array(
-                    'closingId' => 0,
-                    'currency' => $currency,
-                    'currencyId' => $prevCurId,
+                    'closingId' => $close['closingId'],
+                    'currency' => $close['currency'],
                     'receive' => $receive,
                     'pay' => $pay,
                     'amount' => ($receive - $pay),
-                    'status' => 'O',
+                    'status' => (($receive - $pay) == 0) ? 'C' : 'C=>O',
                 );
-                $pay = 0;
+            }
+        }
+
+        $currencies = array();
+
+        foreach($returnData as $data)
+        {
+            $currencies[] = $data['currency'];
+        }
+
+        $results = $this->closingTable()->getNewOpeningData($currencies);
+        $pay = 0;
+        $receive = 0;
+        $currency = '';
+        foreach($results as $result)
+        {
+            if($currency != $result->currency && !empty($currency)){
+                $returnData[] = array(
+                    'closingId' => 0,
+                    'currency' => $currency,
+                    'receive' => $receive,
+                    'pay' => $pay,
+                    'amount' => ($receive - $pay),
+                    'status' =>  'O=>C=>O',
+                );
+
                 $receive = 0;
+                $pay = 0;
             }
 
             if($result->type == 'Payable') $pay = $result->amount;
             if($result->type == 'Receivable') $receive = $result->amount;
 
             $currency = $result->currency;
-            $prevCurId = $result->currencyId;
         }
-        if($prevCurId > 0){
+
+        if(!empty($currency)){
             $returnData[] = array(
                 'closingId' => 0,
                 'currency' => $currency,
-                'currencyId' => $prevCurId,
                 'receive' => $receive,
                 'pay' => $pay,
                 'amount' => ($receive - $pay),
-                'status' => 'O',
+                'status' => 'O=>C=>O',
             );
         }
 
@@ -352,37 +352,55 @@ class BalanceController extends AbstractActionController
                     continue;
                 }
 
-                $voucherDate = date('Y-m-d', time());
-                $dbTime = date('Y-m-d H:i:s', time());
-
-                if($row['closingId'] > 0)
+                if(empty($row['closingId']))
                 {
-                    $payVoucher = $this->payableTable()->getVoucherNo($voucherDate);
-                    $payable = new Payable();
-                    $payable->exchangeArray(array(
-                        "voucherNo" => $payVoucher,
-                        "voucherDate" => $voucherDate,
-                        "accountType" => 3,
-                        "description" => 'Automatic closing.',
-                        "amount" => $row['amount'],
-                        "currencyId"=> $row['currencyId'],
-                        "withdrawBy" => $this->getStaffId(),
-                        "approveBy" => $this->getStaffId(),
-                        "status" => 'A',
-                        "approvedDate" => $dbTime,
-                        "requestedDate" => $dbTime
-                    ));
-
-                    $payable = $this->payableTable()->savePayable($payable);
-                    $closeData = $this->closingTable()->getClosing($row['closingId']);
-                    $closeData->setPayableId($payable->getPayVoucherId());
-                    $closeData->setClosingDate($dbTime);
-                    $closeData->setClosingAmount((int)$row['amount']);
-                    $this->closingTable()->saveClosing($closeData);
+                    /*
+                     * Opening Process by first-voucher date
+                     */
+                    $initVoucher = $this->voucherTable()->getInitVoucherByNewCurrency($row['currency']);
+                    $openDate = empty($initVoucher['approvedDate']) ? $initVoucher['requestedDate'] : $initVoucher['approvedDate'];
+                    $opening = new Closing();
+                    $opening->setReceivableId($initVoucher['voucherId']);
+                    $opening->setCurrencyId($initVoucher['currencyId']);
+                    $opening->setOpeningDate(date('Y-m-d 00:00:59', strtotime($openDate)));
+                    $opening->setOpeningAmount($initVoucher['amount']);
+                    $closing = $this->closingTable()->saveClosing($opening);
+                    $row['closingId'] = $closing->getClosingId();
                 }
 
+                $voucherDate = date('Y-m-d', time());
+                $dbTime = date('Y-m-d 23:59:59', time());
+                $currencyId = $this->currencyTable()->getLastCurrency($row['currency'])->getCurrencyId();
+                /*
+                 * Closing Process
+                 */
+                $payVoucher = $this->payableTable()->getVoucherNo($voucherDate);
+                $payable = new Payable();
+                $payable->exchangeArray(array(
+                    "voucherNo" => $payVoucher,
+                    "voucherDate" => $voucherDate,
+                    "accountType" => 3,
+                    "description" => 'Automatic closing.',
+                    "amount" => $row['amount'],
+                    "currencyId"=> $currencyId,
+                    "withdrawBy" => $this->getStaffId(),
+                    "approveBy" => $this->getStaffId(),
+                    "status" => 'A',
+                    "approvedDate" => $dbTime,
+                    "requestedDate" => $dbTime
+                ));
+                $payable = $this->payableTable()->savePayable($payable);
+                $closeData = $this->closingTable()->getClosing($row['closingId']);
+                $closeData->setPayableId($payable->getPayVoucherId());
+                $closeData->setClosingDate($dbTime);
+                $closeData->setClosingAmount((int)$row['amount']);
+                $this->closingTable()->saveClosing($closeData);
+
+                /*
+                 * Reopening Process in next day
+                 */
                 $voucherDate = date('Y-m-d', strtotime('+1 day'));
-                $dbTime = date('Y-m-d H:i:s', strtotime('+1 day'));
+                $dbTime = date('Y-m-d 00:00:59', strtotime('+1 day'));
                 $receiveVoucher = $this->receivableTable()->getVoucherNo($voucherDate);
                 $receive = new Receivable();
                 $receive->exchangeArray(array(
@@ -391,7 +409,7 @@ class BalanceController extends AbstractActionController
                     "accountType" => 2,
                     "description" => 'Automatic opening.',
                     "amount" => $row['amount'],
-                    "currencyId"=> $row['currencyId'],
+                    "currencyId"=> $currencyId,
                     "depositBy" => $this->getStaffId(),
                     "approveBy" => $this->getStaffId(),
                     "status" => 'A',
@@ -403,7 +421,7 @@ class BalanceController extends AbstractActionController
 
                 $opening = new Closing();
                 $opening->setReceivableId($receive->getReceiveVoucherId());
-                $opening->setCurrencyId($row['currencyId']);
+                $opening->setCurrencyId($currencyId);
                 $opening->setOpeningDate($dbTime);
                 $opening->setOpeningAmount($row['amount']);
                 $this->closingTable()->saveClosing($opening);

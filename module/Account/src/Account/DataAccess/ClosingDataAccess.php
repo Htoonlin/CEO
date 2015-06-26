@@ -75,7 +75,7 @@ class ClosingDataAccess extends AbstractTableGateway
         }
 
         if(!$closing->getClosingId()){
-            $closing->setCurrencyId($this->getLastInsertValue());
+            $closing->setClosingId($this->getLastInsertValue());
         }
 
         return $closing;
@@ -99,12 +99,16 @@ class ClosingDataAccess extends AbstractTableGateway
 
         $results = $tableGateway->select(function (Select $select) use($currency){
             $where = new Where();
-            $where->notIn('currencyId', $currency)
-                ->AND->equalTo('status','A');
-            $select->columns(array('type', 'currencyId', 'currency', 'amount' => new Expression('SUM(amount)')))
+            if(empty($currency)){
+                $where->equalTo('status', 'A');
+            }else{
+                $where->notIn('currency', $currency)
+                    ->AND->equalTo('status','A');
+            }
+            $select->columns(array('type', 'currency', 'amount' => new Expression('SUM(amount)')))
                 ->where($where)
-                ->group(array('type', 'currencyId', 'currency'))
-                ->order('type asc, currencyId asc');
+                ->group(array('type', 'currency'))
+                ->order('currency asc');
         });
 
         return $results;
