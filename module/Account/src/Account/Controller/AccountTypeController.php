@@ -32,14 +32,14 @@ class AccountTypeController extends AbstractActionController
     {
         $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
-        return $dataAccess->getComboByGroupCode('account_base_type');
+        return $dataAccess->getComboByName('account_base_type');
     }
 
     private function defaultStatusCombo()
     {
         $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
-        return $dataAccess->getComboByGroupCode('default_status');
+        return $dataAccess->getComboByName('default_status');
     }
 
     public function jsonAllAction()

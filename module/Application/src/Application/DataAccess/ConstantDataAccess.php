@@ -14,6 +14,7 @@ use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\AbstractTableGateway;
+use Zend\Json\Json;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
@@ -41,16 +42,14 @@ class ConstantDataAccess extends AbstractTableGateway {
         }
         return $this->select();
     }
-    public function getComboByGroupCode($group_code)
+    public function getComboByName($name)
     {
-        $results = $this->getDataByGroupCode($group_code);
-        $selectData = array();
-        foreach($results as $role){
-            $data = $role->getArrayCopy();
-            $selectData[$data['value']] = $data['name'];
+        $result = $this->select(array('name' => $name));
+        if($result->count() > 0){
+            return get_object_vars(json_decode($result->current()->getValue()));
         }
 
-        return $selectData;
+        return array();
     }
     public function getDataByGroupCode($group_code)
     {

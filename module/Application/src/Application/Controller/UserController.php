@@ -30,7 +30,7 @@ class UserController extends AbstractActionController
     {
         $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
-        return $dataAccess->getComboByGroupCode('default_status');
+        return $dataAccess->getComboByName('default_status');
     }
     private function roleTreeview()
     {

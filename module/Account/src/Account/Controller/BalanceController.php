@@ -170,8 +170,6 @@ class BalanceController extends AbstractActionController
         $fromDate = $closing->getOpeningDate();
         $toDate = (is_null($closing->getClosingDate())) ? date('Y-m-d 23:59:59', time()) : $closing->getClosingDate();
 
-        var_dump($fromDate);
-        var_dump($toDate);
         $paginator = $this->voucherTable()->getVouchersByDate($fromDate, $toDate,
             true, $filter, $sort, $sortBy);
 

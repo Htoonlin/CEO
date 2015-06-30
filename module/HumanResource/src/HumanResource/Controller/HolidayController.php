@@ -30,7 +30,7 @@ class HolidayController extends AbstractActionController
     {
         $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
-        return $dataAccess->getComboByGroupCode('holiday_type');
+        return $dataAccess->getComboByName('holiday_type');
     }
 
     public function jsonHolidayAction()

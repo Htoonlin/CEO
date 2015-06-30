@@ -90,7 +90,7 @@ class PayableController extends  AbstractActionController
     public function requestAction()
     {
         $helper=new PayableHelper($this->payableTable());
-        $form=$helper->getForm($this->accountTypeCombo(),$this->currencyCombo());
+        $form=$helper->getForm($this->currencyCombo());
         $payable=new Payable();
         $generateNo=$this->payableTable()->getVoucherNo(date('Y-m-d',time()));
         $payable->setVoucherNo($generateNo);
@@ -111,6 +111,7 @@ class PayableController extends  AbstractActionController
         return new ViewModel(array(
             'form'=>$form,
             'staffName'=>$this->staffName,
+            'accountTypes' => $this->accountTypes(),
         ));
     }
     public function exportAction()

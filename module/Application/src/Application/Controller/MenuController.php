@@ -31,7 +31,7 @@ class MenuController extends AbstractActionController{
     {
         $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
-        return $dataAccess->getComboByGroupCode('routing_url_type');
+        return $dataAccess->getComboByName('routing_url_type');
     }
     private function roleTreeData()
     {

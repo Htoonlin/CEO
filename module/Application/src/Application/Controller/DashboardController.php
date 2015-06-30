@@ -38,7 +38,7 @@ class DashboardController extends AbstractActionController
     private function leaveTypeList(){
         $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
-        return $dataAccess->getComboByGroupCode('leave_type');
+        return $dataAccess->getComboByName('leave_type');
     }
     private function attendanceTable()
     {

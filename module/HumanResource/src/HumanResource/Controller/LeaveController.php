@@ -40,9 +40,9 @@ class LeaveController extends AbstractActionController
         $staffDA = new StaffDataAccess($adapter);
         $constantDA = new ConstantDataAccess($adapter);
         $this->staffList = $staffDA->getComboData('staffId', 'staffCode');
-        $this->statusList = $constantDA->getComboByGroupCode('leave_status');
+        $this->statusList = $constantDA->getComboByName('leave_status');
         unset($this->statusList['R']);
-        $this->leaveTypeList = $constantDA->getComboByGroupCode('leave_type');
+        $this->leaveTypeList = $constantDA->getComboByName('leave_type');
     }
 
     public function indexAction()
