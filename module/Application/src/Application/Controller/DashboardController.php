@@ -14,8 +14,10 @@ use Application\DataAccess\CalendarType;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Helper\DashboardHelper;
 use HumanResource\DataAccess\AttendanceDataAccess;
+use HumanResource\DataAccess\LeaveDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Attendance;
+use HumanResource\Entity\Leave;
 use HumanResource\Helper\LeaveHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
@@ -35,10 +37,20 @@ class DashboardController extends AbstractActionController
         }
         return $this->staff;
     }
+    private function leaveTable(){
+        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        return new LeaveDataAccess($adapter);
+    }
     private function leaveTypeList(){
         $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
-        return $dataAccess->getComboByName('leave_type');
+        $result = $dataAccess->getConstantByName('leave_type');
+        $leaveTypes = json_decode($result->getValue());
+        $comboList = array();
+        foreach($leaveTypes as $leave){
+            $comboList[$leave->id] = $leave->title;
+        }
+        return $comboList;
     }
     private function attendanceTable()
     {
@@ -57,11 +69,47 @@ class DashboardController extends AbstractActionController
                 'attendanceDate' => date('Y-m-d', time()),
             ));
         }
+
         $helper = new DashboardHelper();
         $leaveForm = $helper->getLeaveForm($this->leaveTypeList());
+        $leave = new Leave();
+        $leaveForm->bind($leave);
+
+        if($request->isPost()){
+            $post_data = $request->getPost()->toArray();
+            $leaveForm->setData($post_data);
+            $leaveForm->setInputFilter($helper->getLeaveFilter());
+            if($leaveForm->isValid()){
+                $leave->setStaffId($this->getStaff()->getStaffId());
+                $leave->setStatus('R');
+                $this->leaveTable()->saveLeave($leave);
+                $this->flashMessenger()->addWarningMessage('Leave request send to HR.');
+                return $this->redirect()->toRoute('dashboard');
+            }
+        }
+
+        return new ViewModel(array(
+            'attendance' => $attendance,
+            'leaveForm' => $leaveForm,
+        ));
+    }
+
+    public function jsonAttendanceAction()
+    {
+        $request = $this->getRequest();
 
         if($request->isPost())
         {
+            $attendance = $this->attendanceTable()->checkAttendance($this->getStaff()->getStaffId(), date('Y-m-d', time()));
+
+            if(!$attendance){
+                $attendance = new Attendance();
+                $attendance->exchangeArray(array(
+                    'staffId' => $this->getStaff()->getStaffId(),
+                    'attendanceDate' => date('Y-m-d', time()),
+                ));
+            }
+
             $message = 'success';
             try{
                 $type = $this->params()->fromPost('status', '');
@@ -83,16 +131,6 @@ class DashboardController extends AbstractActionController
             return new JsonModel(array('message' => $message));
         }
 
-        return new ViewModel(array(
-            'attendance' => $attendance,
-            'leaveForm' => $leaveForm,
-        ));
-    }
-
-    public function leaveAction(){
-        $request = $this->getRequest();
-
-        $this->flashMessenger()->addWarningMessage('Leave request send to HR.');
-        return $this->redirect()->toRoute('dashboard');
+        return new JsonModel(array('message' => 'Invalid request.'));
     }
 }

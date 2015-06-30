@@ -13,7 +13,7 @@ $this->headTitle($title);
     {
         console.log(a);
         $.ajax({
-            url: '<?php echo $this->url('dashboard'); ?>',
+            url: '<?php echo $this->url('dashboard', array('action' => 'jsonAttendance')); ?>',
             data: {status: a},
             type: 'POST',
             success: function(data)
@@ -90,10 +90,10 @@ $this->headTitle($title);
                         Leave Form
                     </a>
                 </div>
-                <div id="leaveForm" class="panel-collapse collapse">
+                <div id="leaveForm" class="panel-collapse collapse in">
                     <div class="panel-body">
                         <?php
-                        $leaveForm->setAttribute('action', $this->url('dashboard',array('action' => 'leave')));
+                        $leaveForm->setAttribute('action', $this->url('dashboard'));
                         $leaveForm->prepare();
                         echo $this->form()->openTag($leaveForm);
                         echo $this->formRow($leaveForm->get('date'));

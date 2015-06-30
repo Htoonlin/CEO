@@ -30,7 +30,7 @@ class LeaveController extends AbstractActionController
         $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         return new StaffDataAccess($adapter);
     }
-    private $annualLeave = array('H' => 0.5, 'F' => 1);
+    private $annualLeave;
     private $staffList;
     private $statusList;
     private $leaveTypeList;
@@ -42,7 +42,18 @@ class LeaveController extends AbstractActionController
         $this->staffList = $staffDA->getComboData('staffId', 'staffCode');
         $this->statusList = $constantDA->getComboByName('leave_status');
         unset($this->statusList['R']);
-        $this->leaveTypeList = $constantDA->getComboByName('leave_type');
+
+        $result = $constantDA->getConstantByName('leave_type');
+        $leaveTypes = json_decode($result->getValue());
+
+        if(!$this->leaveTypeList){
+            $comboList = array();
+            foreach($leaveTypes as $leave){
+                $comboList[$leave->id] = $leave->title;
+                $this->annualLeave[$leave->id] = $leave->value;
+            }
+            $this->leaveTypeList = $comboList;
+        }
     }
 
     public function indexAction()
@@ -94,7 +105,7 @@ class LeaveController extends AbstractActionController
         $request = $this->getRequest();
 
         if($request->isPost()){
-            $post_data = $request->getPost()->toArray();
+            $post_data = array_merge($leave->getArrayCopy(), $request->getPost()->toArray());
             $form->setData($post_data);
             $form->setInputFilter($form->getInputFilter());
             if($form->isValid()){

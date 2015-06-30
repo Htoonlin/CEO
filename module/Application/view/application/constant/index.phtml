@@ -18,10 +18,32 @@
  */
 $title="Constants";
 $this->headTitle($title);
+$this->headTitle($title);
+$this->headLink()->appendStylesheet($this->basePath() . '/codemirror/lib/codemirror.css')
+    ->appendStylesheet($this->basePath() . '/codemirror/theme/mbo.css');
+$this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.js')
+    ->appendFile($this->basePath() . '/codemirror/mode/javascript/javascript.js');
 ?>
 <h1><?php echo $title;?></h1>
 <script type="text/javascript">
     $(document).ready(function(){
+        $('.code-value').each(function() {
+            var $this = $(this),
+                $code = $this.html(),
+                $unescaped = $('<div/>').html($code).text();
+
+            $this.empty();
+
+            var jsonEditor = CodeMirror(this, {
+                value: $unescaped,
+                mode: 'javascript',
+                lineNumbers: !$this.is('.inline'),
+                readOnly: true,
+                theme: 'mbo'
+            });
+            jsonEditor.setSize('100%', '120px');
+        });
+
         $("#txtFilter").keydown(function(e){
             if(e.which == 13){
                 var filter = $(this).val();
@@ -107,11 +129,11 @@ $this->headTitle($title);
                             </label>
                         </div>
                     </th>
-                    <th width="260px">
-                        <?php echo $this->gridHeaderCell('Group Code','group_code',$filter,$page,$sort,$sortBy);?>
-                    </th>
-                    <th width="260px">
+                    <th width="230px">
                         <?php echo $this->gridHeaderCell('Constant Name','name',$filter,$page,$sort,$sortBy);?>
+                    </th>
+                    <th width="230px">
+                        <?php echo $this->gridHeaderCell('Group Code','group_code',$filter,$page,$sort,$sortBy);?>
                     </th>
                     <th>
                         <?php echo $this->gridHeaderCell('Value','value',$filter,$page,$sort,$sortBy);?>
@@ -129,16 +151,15 @@ $this->headTitle($title);
                             </div>
                         </td>
                         <td>
-                            <?php echo $this->escapeHtml($constant->group_code);?>
-                        </td>
-                        <td>
                             <a href="<?php echo $this->url('constant', array('action' => 'detail', 'id' => $constant->constantId)); ?>" title="edit">
                                 <?php echo $this->escapeHtml($constant->name); ?>
                             </a>
                         </td>
-
                         <td>
-                            <?php echo highlight_string($constant->value, true);?>
+                            <?php echo $this->escapeHtml($constant->group_code);?>
+                        </td>
+                        <td>
+                            <div class="code-value"><?= $constant->value; ?></div>
                         </td>
                     </tr>
                 <?php endforeach; ?>

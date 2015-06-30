@@ -116,10 +116,10 @@ class LeaveHelper
 
             $filter->add(array(
                 'name' => 'description',
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
-                    array('name' => 'StringTrims'),
+                    array('name' => 'StringTrim'),
                 ),
                 'validators' => array(
                     array(

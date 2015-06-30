@@ -42,11 +42,11 @@ class ConstantDataAccess extends AbstractTableGateway {
         }
         return $this->select();
     }
-    public function getComboByName($name)
+    public function getComboByName($name, $group_code = '')
     {
-        $result = $this->select(array('name' => $name));
-        if($result->count() > 0){
-            return get_object_vars(json_decode($result->current()->getValue()));
+        $result = $this->getConstantByName($name, $group_code);
+        if($result){
+            return get_object_vars(json_decode($result->getValue()));
         }
 
         return array();
@@ -57,7 +57,7 @@ class ConstantDataAccess extends AbstractTableGateway {
     }
     public function getConstantByName($name, $group_code = '')
     {
-        if(empty($group_code))
+        if(!empty($group_code))
         {
             $result = $this->select(array('name' => $name, 'group_code' => $group_code));
         }else{

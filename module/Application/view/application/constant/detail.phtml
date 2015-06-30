@@ -10,10 +10,9 @@
 $title = "Constant";
 $this->headTitle($title);
 $this->headLink()->appendStylesheet($this->basePath() . '/codemirror/lib/codemirror.css')
-    ->appendStylesheet($this->basePath() . '/css/treeview.css');
+    ->appendStylesheet($this->basePath() . '/codemirror/theme/mbo.css');
 $this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.js')
-    ->appendFile($this->basePath() . '/codemirror/mode/javascript/javascript.js')
-    ->appendFile($this->basePath() . '/js/treeview.js');
+    ->appendFile($this->basePath() . '/codemirror/mode/javascript/javascript.js');
 ?>
 <script type="text/javascript">
     $(document).ready(function(){
@@ -21,9 +20,10 @@ $this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.
             {
                 lineNumbers: true,
                 indentUnit: 4,
-                smartIndent: true
+                smartIndent: true,
+                theme:'mbo'
             });
-        myEditor.setSize("100%", "120px");
+        myEditor.setSize("100%", "150px");
     });
 </script>
 <h1><?php echo $title; ?></h1>

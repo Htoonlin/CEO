@@ -26,7 +26,7 @@ class ConstantController extends AbstractActionController
         $filter=$this->params()->fromQuery('filter','');
         $paginator = $this->constantTable()->fetchAll(true,$filter, $sort, $sortBy);
         $paginator->setCurrentPageNumber($page);
-        $paginator->setItemCountPerPage(10);
+        $paginator->setItemCountPerPage(3);
 
         return new ViewModel(array(
             'paginator' => $paginator,
