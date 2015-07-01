@@ -34,7 +34,7 @@ class FormRow extends \Zend\Form\View\Helper\FormRow{
      * @throws \Zend\Form\Exception\DomainException
      * @return string
      */
-    public function render(ElementInterface $element)
+    public function render(ElementInterface $element, $labelPosition = null)
     {
         $escapeHtmlHelper    = $this->getEscapeHtmlHelper();
         $elementHelper       = $this->getElementHelper();
