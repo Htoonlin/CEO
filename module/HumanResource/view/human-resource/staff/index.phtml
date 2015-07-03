@@ -17,12 +17,6 @@
 
  <script type="text/javascript">
      $(document).ready(function(){
-         $("#txtFilter").keydown(function(e){
-             if(e.which==13){
-                 var filter=$(this).val();
-                 window.location.href='<?php echo $this->url(). '?page=' .$page.'&filter=';?>' + filter + '<?php echo '&sort='.$sort.'&by='.$sortBy;?>'
-             }
-         });
          $("button#btnDelete").click(function(){
              if(confirm('Are you sure to delete selected records?')){
                  $.ajax({
@@ -62,12 +56,7 @@
      <div class="panel-heading">
          <div class="row">
              <div class="col-md-3">
-                 <div class="input-group">
-                     <span class="input-group-addon">
-                         <span class="glyphicon glyphicon-search"></span>
-                     </span>
-                     <input type="text" class="form-control" id="txtFilter" value="<?php echo $filter;?>">
-                 </div>
+                 <?php echo $this->gridFilter('staffFilter'); ?>
              </div>
              <div class="col-md-4 col-md-offset-5">
                  <div class="text-right">
@@ -102,19 +91,19 @@
                             </div>
                         </th>
                         <th width="150px">
-                            <?php echo $this->gridHeaderCell('Staff Code','staffCode', $filter, $page, $sort, $sortBy);?>
+                            <?php echo $this->gridHeaderCell('Staff Code','staffCode');?>
                         </th>
                         <th>
-                            <?php echo $this->gridHeaderCell('Staff Name','staffName', $filter, $page, $sort, $sortBy);?>
+                            <?php echo $this->gridHeaderCell('Staff Name','staffName');?>
                         </th>
                         <th width="90px">
-                            <?php echo $this->gridHeaderCell('Leave','Leave', $filter, $page, $sort, $sortBy);?>
+                            <?php echo $this->gridHeaderCell('Leave','Leave');?>
                         </th>
                         <th width="120px">
-                            <?php echo $this->gridHeaderCell('P-Date','PermanentDate', $filter, $page, $sort, $sortBy);?>
+                            <?php echo $this->gridHeaderCell('P-Date','PermanentDate');?>
                         </th>
                         <th width="100px">
-                            <?php echo $this->gridHeaderCell('Status','status', $filter, $page, $sort, $sortBy);?>
+                            <?php echo $this->gridHeaderCell('Status','status');?>
                         </th>
                     </tr>
                  </thead>

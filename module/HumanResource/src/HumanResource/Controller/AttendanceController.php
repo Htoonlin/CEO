@@ -36,13 +36,14 @@ class AttendanceController extends AbstractActionController
         $sort = $this->params()->fromQuery('sort', 'attendanceDate');
         $sortBy = $this->params()->fromQuery('by', 'desc');
         $filter = $this->params()->fromQuery('filter', '');
+        $pageSize = (int)$this->params()->fromQuery('size', 10);
+
         $paginator = $this->attendanceTable()->fetchAll(true, $filter, $sort, $sortBy);
         $paginator->setCurrentPageNumber($page);
-        $paginator->setItemCountPerPage(10);
+        $paginator->setItemCountPerPage($pageSize);
 
         return new ViewModel(array(
             'paginator' => $paginator,
-            'page' => $page,
             'sort' => $sort,
             'sortBy' => $sortBy,
             'filter' => $filter,

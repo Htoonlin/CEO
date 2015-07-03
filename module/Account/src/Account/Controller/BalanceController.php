@@ -87,19 +87,18 @@ class BalanceController extends AbstractActionController
 
     public function indexAction()
     {
-        $page=(int)$this->params()->fromQuery('page',1);
-        $currency=$this->params()->fromQuery('filter', 0);
-        $sort=$this->params()->fromQuery('sort','openingDate');
-        $sortBy=$this->params()->fromQuery('by','desc');
+        $page = (int)$this->params()->fromQuery('page',1);
+        $currency = $this->params()->fromQuery('filter', 0);
+        $sort = $this->params()->fromQuery('sort','openingDate');
+        $sortBy = $this->params()->fromQuery('by','desc');
+        $pageSize = (int)$this->params()->fromQuery('size', 10);
 
         $paginator=$this->closingTable()->fetchAll(true,$currency, $sort, $sortBy);
-
         $paginator->setCurrentPageNumber($page);
-        $paginator->setItemCountPerPage(10);
+        $paginator->setItemCountPerPage($pageSize);
 
         return new ViewModel(array(
             'paginator'=>$paginator,
-            'page'=>$page,
             'sort'=>$sort,
             'sortBy'=>$sortBy,
             'filter' => $currency,
@@ -159,6 +158,7 @@ class BalanceController extends AbstractActionController
         $filter=$this->params()->fromQuery('filter', '');
         $sort=$this->params()->fromQuery('sort','voucherNo');
         $sortBy=$this->params()->fromQuery('by','asc');
+        $pageSize = $this->params()->fromQuery('size', 10);
 
         $closing = $this->closingTable()->getClosing($id);
 
@@ -174,12 +174,11 @@ class BalanceController extends AbstractActionController
             true, $filter, $sort, $sortBy);
 
         $paginator->setCurrentPageNumber($page);
-        $paginator->setItemCountPerPage(10);
+        $paginator->setItemCountPerPage($pageSize);
 
         return new ViewModel(array(
             'id' => $id,
             'paginator'=>$paginator,
-            'page'=>$page,
             'sort'=>$sort,
             'sortBy'=>$sortBy,
             'filter' => $filter

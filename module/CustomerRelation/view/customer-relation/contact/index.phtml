@@ -8,13 +8,6 @@ $this->headTitle($title);
 <h1><?php echo $title; ?></h1>
 <script type="text/javascript">
     $(document).ready(function(){
-        $("#txtFilter").keydown(function(e){
-            if(e.which==13){
-                var filter=$(this).val();
-                window.location.href='<?php echo $this->url().'?page='. $page. '&filter=';?>'+filter+'<?php echo '&sort='.$sort.'&by='.$sortBy; ?>'
-
-            }
-        });
         $("button#btnDelete").click(function(){
             if(confirm('Are you sure to delete selected records?')){
                 $.ajax({
@@ -57,12 +50,7 @@ $this->headTitle($title);
     <div class="panel-heading">
         <div class="row">
             <div class="col-md-3">
-                <div class="input-group">
-                     <span class="input-group-addon">
-                         <span class="glyphicon glyphicon-search"></span>
-                     </span>
-                    <input type="text" class="form-control" id="txtFilter" value="<?php echo $filter;?>"/>
-                </div>
+                <?php echo $this->gridFilter('contactFilter'); ?>
             </div>
             <div class="col-md-4 col-md-offset-5">
                 <div class="text-right">
@@ -97,22 +85,22 @@ $this->headTitle($title);
                         </div>
                     </th>
                     <th>
-                        <?php echo $this->gridHeaderCell('Contact Name', 'name', $filter, $page, $sort, $sortBy);?>
+                        <?php echo $this->gridHeaderCell('Contact Name', 'name');?>
                     </th>
                     <th width="200px">
-                        <?php echo $this->gridHeaderCell('Phone', 'phone', $filter, $page, $sort, $sortBy);?>
+                        <?php echo $this->gridHeaderCell('Phone', 'phone');?>
                     </th>
                     <th width="200px">
-                        <?php echo $this->gridHeaderCell('Email', 'email', $filter, $page, $sort, $sortBy);?>
+                        <?php echo $this->gridHeaderCell('Email', 'email');?>
                     </th>
                     <th width="180px">
-                        <?php echo $this->gridHeaderCell('CompanyName','companyname', $filter, $page, $sort, $sortBy);?>
+                        <?php echo $this->gridHeaderCell('CompanyName','companyname');?>
                     </th>
                     <th width="120px">
-                        <?php echo $this->gridHeaderCell('Tag', 'tag', $filter, $page, $sort, $sortBy);?>
+                        <?php echo $this->gridHeaderCell('Tag', 'tag');?>
                     </th>
                     <th width="80px">
-                        <?php echo $this->gridHeaderCell('Status','status', $filter, $page, $sort, $sortBy);?>
+                        <?php echo $this->gridHeaderCell('Status','status');?>
                     </th>
                 </tr>
                 </thead>

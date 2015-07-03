@@ -10,13 +10,17 @@
 namespace Application;
 
 use Application\DataAccess\RouteDataAccess;
+use Application\Helper\View\GridFilter;
+use Application\Helper\View\GridHeaderCell;
 use Application\Service\SundewAuthStorage;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
 use Zend\Authentication\AuthenticationService;
+use Zend\Di\ServiceLocatorInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
+use Zend\Mvc\Application;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\Http\Segment;
@@ -161,11 +165,20 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
     public function getViewHelperConfig()
     {
         return array(
+            'factories' => array(
+                'gridHeaderCell' => function($sm){
+                    $app = $sm->getServiceLocator()->get('Application');
+                    return new GridHeaderCell($app->getRequest());
+                },
+                'gridFilter' => function($sm){
+                    $app = $sm->getServiceLocator()->get('Application');
+                    return new GridFilter($app->getRequest());
+                }
+            ),
             'invokables' => array(
                 'formTreeView' => 'Application\Helper\View\FormTreeView',
                 'formRow' => 'Application\Helper\View\FormRow',
                 'formHorizontal' => 'Application\Helper\View\FormHorizontal',
-                'gridHeaderCell' => 'Application\Helper\View\GridHeaderCell',
                 'formcheckbox' => 'Application\Helper\View\FormCheckBox',
                 'formnumber' => 'Application\Helper\View\FormNumber',
                 'formdate' => 'Application\Helper\View\FormDate',

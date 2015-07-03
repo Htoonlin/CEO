@@ -22,13 +22,6 @@ $flashMesssages = $this->flashMessenger()->getMessages();
 <?php endif;?>
 <script type="text/javascript">
     $(document).ready(function(){
-        $("#txtFilter").keydown(function(e){
-            if(e.which == 13){
-                var filter = $(this).val();
-                window.location.href = '<?php echo $this->url() . '?page' . $page . '&filter='; ?>' +  filter + '<?php echo '&sort=' . $sort . '&by=' . $sortBy; ?>'
-            }
-        });
-
         $("button#btnDelete").click(function(){
             if(confirm('Are you sure to delete selected records?')){
                 $.ajax({
@@ -68,12 +61,7 @@ $flashMesssages = $this->flashMessenger()->getMessages();
     <div class="panel-heading">
         <div class="row">
             <div class="col-md-3">
-                <div class="input-group">
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-search"></span>
-                    </span>
-                    <input type="text" class="form-control" id="txtFilter" value="<?php echo $filter; ?>"/>
-                </div>
+                <?php echo $this->gridFilter('contractFilter'); ?>
             </div>
             <div class="col-md-4 col-md-offset-5">
                 <div class="text-right">
@@ -108,19 +96,19 @@ $flashMesssages = $this->flashMessenger()->getMessages();
                         </div>
                     </th>
                     <th width="160px">
-                        <?php echo $this->gridHeaderCell('Code', 'code', $filter, $page, $sort, $sortBy); ?>
+                        <?php echo $this->gridHeaderCell('Code', 'code'); ?>
                     </th>
                     <th>
                         Contract File
                     </th>
                     <th>
-                        <?php echo $this->gridHeaderCell('Amount', 'amount', $filter, $page, $sort, $sortBy); ?>
+                        <?php echo $this->gridHeaderCell('Amount', 'amount'); ?>
                     </th>
                     <th width="80px">
-                        <?php echo $this->gridHeaderCell('Notes', 'notes', $filter, $page, $sort, $sortBy); ?>
+                        <?php echo $this->gridHeaderCell('Notes', 'notes'); ?>
                     </th>
                     <th width="100px">
-                        <?php echo $this->gridHeaderCell('Status', 'status', $filter, $page, $sort, $sortBy); ?>
+                        <?php echo $this->gridHeaderCell('Status', 'status'); ?>
                     </th>
                 </tr>
                 </thead>

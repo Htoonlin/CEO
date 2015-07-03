@@ -50,16 +50,17 @@ class PayableController extends  AbstractActionController
     }
     public function indexAction()
     {
-        $page=(int)$this->params()->fromQuery('page',1);
-        $sort=$this->params()->fromQuery('sort','voucherDate');
-        $sortBy=$this->params()->fromQuery('by','desc');
-        $filter=$this->params()->fromQuery('filter','');
+        $page = (int)$this->params()->fromQuery('page',1);
+        $sort = $this->params()->fromQuery('sort','voucherDate');
+        $sortBy = $this->params()->fromQuery('by','desc');
+        $filter = $this->params()->fromQuery('filter','');
+        $pageSize = (int)$this->params()->fromQuery('size', 10);
+
         $paginator=$this->payableTable()->fetchAll(true,$filter,$sort,$sortBy);
         $paginator->setCurrentPageNumber($page);
-        $paginator->setItemCountPerPage(10);
+        $paginator->setItemCountPerPage($pageSize);
         return new ViewModel(array(
             'paginator'=>$paginator,
-            'page'=>$page,
             'sort'=>$sort,
             'sortBy'=>$sortBy,
             'filter'=>$filter,

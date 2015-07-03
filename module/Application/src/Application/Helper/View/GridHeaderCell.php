@@ -9,6 +9,7 @@
 namespace Application\Helper\View;
 
 
+use Zend\Stdlib\RequestInterface;
 use Zend\View\Helper\AbstractHelper;
 
 class GridHeaderCell extends AbstractHelper
@@ -21,16 +22,25 @@ class GridHeaderCell extends AbstractHelper
     protected $icon;
     protected $page;
     protected $url;
+    protected $pageSize;
 
-    public function __invoke($title, $col = '', $filter = '', $page = '', $sort = '', $sortBy = '', $url = '')
+    protected $request;
+
+    public function __construct(RequestInterface $request){
+        $this->request = $request;
+    }
+
+    public function __invoke($title, $col = '', $url = '')
     {
         $this->title = $title;
-        $this->page = $page;
         $this->col = $col;
-        $this->sort = $sort;
-        $this->sortBy = $sortBy;
-        $this->filter = $filter;
         $this->url = empty($url) ? $this->getView()->url() : $url;
+
+        $this->page = $this->request->getQuery('page', 1);
+        $this->sort = $this->request->getQuery('sort', '');
+        $this->sortBy = $this->request->getQuery('by', '');
+        $this->filter = $this->request->getQuery('filter', '');
+        $this->pageSize = $this->request->getQuery('size', 10);
 
         return $this->render();
     }
@@ -41,7 +51,8 @@ class GridHeaderCell extends AbstractHelper
         if(empty($this->col)){
             $query = '#';
         }else{
-            $query = $this->url . '?page=' . $this->page . '&filter=' . $this->filter . '&sort=' . $this->col . '&by=';
+            $query = $this->url . '?page=' . $this->page . '&size=' . $this->pageSize
+                . '&filter=' . $this->filter . '&sort=' . $this->col . '&by=';
             $icon = 'fa fa-';
             if($this->sort == $this->col) {
                 $query .= ($this->sortBy == 'asc') ? 'desc' : 'asc';

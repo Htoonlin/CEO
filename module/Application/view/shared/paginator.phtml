@@ -1,78 +1,105 @@
-<?php 
+<?php
 /**
  * Created by PhpStorm.
  * User: NyanTun
  * Date: 3/7/2015
  * Time: 1:38 PM
  * Zend Code Completion
- * @var $this \Zend\View\Renderer\PhpRenderer 
+ * @var $this \Zend\View\Renderer\PhpRenderer
  */
-if($this->pageCount) :
-    $query = '';
+$query = '&size=' . $this->itemCountPerPage;
 
-    if(!empty($filter)){
-        $query .= '&filter=' . $filter;
-    }
+if(!empty($filter)){
+    $query .= '&filter=' . $filter;
+}
 
-    if(!empty($sort)){
-        $query .= '&sort=' . $sort;
-    }
+if(!empty($sort)){
+    $query .= '&sort=' . $sort;
+}
 
-    if(!empty($sortBy)){
-        $query .= '&by=' . $sortBy;
-    }
+if(!empty($sortBy)){
+    $query .= '&by=' . $sortBy;
+}
 
-    if(empty($url) && $this->route) {
-        $url = $this->url($this->route);
-    }
+if(empty($url) && $this->route) {
+    $url = $this->url($this->route);
+}
 ?>
-<div>
-    <ul class="pagination" style="margin:0;">
-        <!-- Previous page link -->
-        <?php if (isset($this->previous)): ?>
-            <li>
-                <a href="<?php echo $url; ?>?page=<?php echo $this->previous . $query; ?>">
-                    &laquo;
-                </a>
-            </li>
-        <?php else: ?>
-            <li class="disabled">
-                <a href="#">
-                    &laquo;
-                </a>
-            </li>
-        <?php endif; ?>
 
-        <!-- Numbered page links -->
-        <?php foreach ($this->pagesInRange as $page): ?>
-            <?php if ($page != $this->current): ?>
-                <li>
-                    <a href="<?php echo $url;?>?page=<?php echo $page . $query; ?>">
-                        <?php echo $page; ?>
-                    </a>
-                </li>
-            <?php else: ?>
-                <li class="active">
-                    <a href="#"><?php echo $page; ?></a>
-                </li>
-            <?php endif; ?>
-        <?php endforeach; ?>
+<?php
+if($this->pageCount) :
+    ?>
+    <div class="row">
+        <div class="col-md-3 text-left" style="padding-top: 5px;">
+            <small>
+                Showing
+                <?php echo ((($this->current - 1) * $this->itemCountPerPage) + 1); ?> to
+                <?php echo ((($this->current - 1) * $this->itemCountPerPage) + $this->currentItemCount); ?> of
+                <?php echo $this->totalItemCount; ?> records
+            </small>
+        </div>
+        <div class="col-md-6">
+            <ul class="pagination" style="margin:0;">
+                <!-- Previous page link -->
+                <?php if (isset($this->previous)): ?>
+                    <li>
+                        <a href="<?php echo $url; ?>?page=<?php echo $this->previous . $query; ?>">
+                            &laquo;
+                        </a>
+                    </li>
+                <?php else: ?>
+                    <li class="disabled">
+                        <a href="#">
+                            &laquo;
+                        </a>
+                    </li>
+                <?php endif; ?>
 
-        <!-- Next page link -->
-        <?php if (isset($this->next)): ?>
-            <li>
-                <a href="<?php echo $url; ?>?page=<?php echo $this->next .$query; ?>">
-                    &raquo;
-                </a>
-            </li>
-        <?php else: ?>
-            <li class="disabled">
-                <a href="#">
-                    &raquo;
-                </a>
-            </li>
-        <?php endif; ?>
-    </ul>
-</div>
+                <!-- Numbered page links -->
+                <?php foreach ($this->pagesInRange as $page): ?>
+                    <?php if ($page != $this->current): ?>
+                        <li>
+                            <a href="<?php echo $url;?>?page=<?php echo $page . $query; ?>">
+                                <?php echo $page; ?>
+                            </a>
+                        </li>
+                    <?php else: ?>
+                        <li class="active">
+                            <a href="#"><?php echo $page; ?></a>
+                        </li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
 
+                <!-- Next page link -->
+                <?php if (isset($this->next)): ?>
+                    <li>
+                        <a href="<?php echo $url; ?>?page=<?php echo $this->next .$query; ?>">
+                            &raquo;
+                        </a>
+                    </li>
+                <?php else: ?>
+                    <li class="disabled">
+                        <a href="#">
+                            &raquo;
+                        </a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </div>
+        <div class="col-md-3 text-right">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <?php echo $this->itemCountPerPage . ' records'; ?>&nbsp;&nbsp;
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" style="width:80px;">
+                    <li><a href="<?= $url . '?page=1&size=5&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>">5 records</a></li>
+                    <li><a href="<?= $url . '?page=1&size=10&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>"">10 records</a></li>
+                    <li><a href="<?= $url . '?page=1&size=20&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>"">20 records</a></li>
+                    <li><a href="<?= $url . '?page=1&size=50&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>"">50 records</a></li>
+                    <li><a href="<?= $url . '?page=1&size=100&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>"">100 records</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 <?php endif; ?>

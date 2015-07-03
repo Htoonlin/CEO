@@ -17,24 +17,14 @@ $this->headTitle($title);
 <script type="text/javascript">
     $(document).ready(function(){
         $("[data-toggle=popover]").popover();
-        $("#txtFilter").keydown(function(e){
-            if(e.which==13){
-                var filter=$(this).val();
-                window.location.href='<?php echo $this->url('account_balance', array('action' => 'detail','id'=>$id)). '?page=' .$page.'&filter=';?>' + filter + '<?php echo '&sort='.$sort.'&by='.$sortBy;?>'
-            }
-        });
     });
 </script>
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
             <div class="col-md-3">
-                <div class="input-group">
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-search"></span>
-                    </span>
-                    <input type="text" class="form-control" id="txtFilter" value="<?php echo $filter;?>"/>
-                </div>
+                <?php echo $this->gridFilter('balanceFilter',
+                    $this->url('account_balance', array('action' => 'detail','id'=>$id))); ?>
             </div>
             <div class="col-md-4 col-md-offset-5">
                 <div class="text-right">
@@ -58,23 +48,23 @@ $this->headTitle($title);
                 <thead>
                 <tr>
                     <th width="150px">
-                        <?php echo $this->gridHeaderCell('Voucher No','voucherNo',$filter,$page,$sort,$sortBy,
+                        <?php echo $this->gridHeaderCell('Voucher No','voucherNo',
                             $this->url('account_balance', array('action' => 'detail','id'=>$id)));?>
                     </th>
                     <th width="100px">
-                        <?php echo $this->gridHeaderCell('Date','approvedDate',$filter,$page,$sort,$sortBy,
+                        <?php echo $this->gridHeaderCell('Date','approvedDate',
                             $this->url('account_balance', array('action' => 'detail','id'=>$id)));?>
                     </th>
                     <th width="200px">
-                        <?php echo $this->gridHeaderCell('Requester','requester',$filter,$page,$sort,$sortBy,
+                        <?php echo $this->gridHeaderCell('Requester','requester',
                             $this->url('account_balance', array('action' => 'detail','id'=>$id)));?>
                     </th>
                     <th>
-                        <?php echo $this->gridHeaderCell('Description','description',$filter,$page,$sort,$sortBy,
+                        <?php echo $this->gridHeaderCell('Description','description',
                             $this->url('account_balance', array('action' => 'detail','id'=>$id)));?>
                     </th>
                     <th width="180px">
-                        <?php echo $this->gridHeaderCell('Amount','amount',$filter,$page,$sort,$sortBy,
+                        <?php echo $this->gridHeaderCell('Amount','amount',
                             $this->url('account_balance', array('action' => 'detail','id'=>$id)));?>
                     </th>
                     <th width="80px">

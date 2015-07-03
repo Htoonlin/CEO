@@ -19,26 +19,11 @@ $flashMessages = $this->flashMessenger()->getMessages();
         <?php echo $flashMessages[0]; ?>
     </div>
 <?php endif; ?>
-<script type="text/javascript">
-    $(document).ready(function(){
-        $("#txtFilter").keydown(function(e){
-            if(e.which==13){
-                var filter=$(this).val();
-                window.location.href='<?php echo $this->url(). '?page=' .$page.'&filter=';?>' + filter + '<?php echo '&sort='.$sort.'&by='.$sortBy;?>'
-            }
-        });
-    });
-</script>
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
             <div class="col-md-3">
-                <div class="input-group">
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-search"></span>
-                    </span>
-                    <input type="text" class="form-control" id="txtFilter" value="<?php echo $filter;?>"/>
-                </div>
+                <?php echo $this->gridFilter('attendanceFilter'); ?>
             </div>
             <div class="col-md-4 col-md-offset-5">
                 <div class="text-right">
@@ -62,16 +47,16 @@ $flashMessages = $this->flashMessenger()->getMessages();
                 <thead>
                 <tr>
                     <th width="160px">
-                        <?php echo $this->gridHeaderCell('Date','attendanceDate',$filter,$page,$sort,$sortBy);?>
+                        <?php echo $this->gridHeaderCell('Date','attendanceDate');?>
                     </th>
                     <th width="160px">
-                        <?php echo $this->gridHeaderCell('Code','staffCode',$filter,$page,$sort,$sortBy);?>
+                        <?php echo $this->gridHeaderCell('Code','staffCode');?>
                     </th>
                     <th>
-                        <?php echo $this->gridHeaderCell('Name','staffName',$filter,$page,$sort,$sortBy);?>
+                        <?php echo $this->gridHeaderCell('Name','staffName');?>
                     </th>
                     <th width="120px">
-                        <?php echo $this->gridHeaderCell('In','inTime',$filter,$page,$sort,$sortBy);?>
+                        <?php echo $this->gridHeaderCell('In','inTime');?>
                     </th>
                     <th width="120px">
                         <?php echo $this->gridHeaderCell('Out','outTime',$filter,$page,$sort,$sortBy);?>
