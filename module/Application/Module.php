@@ -13,14 +13,15 @@ use Application\DataAccess\RouteDataAccess;
 use Application\Helper\View\GridFilter;
 use Application\Helper\View\GridHeaderCell;
 use Application\Service\SundewAuthStorage;
+use Application\Service\SundewErrorHandling;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
 use Zend\Authentication\AuthenticationService;
-use Zend\Di\ServiceLocatorInterface;
+use Zend\Log\Logger;
+use Zend\Log\Writer\Stream as LogWriter;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
-use Zend\Mvc\Application;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\Http\Segment;
@@ -37,6 +38,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
 
         $this->generateRoute($e);
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'checkAuth'), -100);
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'dispatch_error'));
     }
 
     private function generateRoute(MvcEvent $e)
@@ -101,6 +103,15 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
         return $response;
     }
 
+    public function dispatch_error(MvcEvent $e){
+        $exception = $e->getResult()->exception;
+        if($exception){
+            $sm = $e->getApplication()->getServiceManager();
+            $service = $sm->get('AppErrorHandling');
+            $service->logException($exception);
+        }
+    }
+
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
@@ -126,7 +137,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                     'navigation' => 'Application\Service\SundewNavigationFactory',
                     'Application\Service\SundewAuthStorage' => function($sm)
                     {
-                        return new SundewAuthStorage('sundew_auth');
+                        return new SundewAuthStorage('officemanagement_auth');
                     },
                     'AuthService' => function($sm)
                     {
@@ -149,6 +160,19 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                         }
 
                         return $routeDataAccess->getRouteData($roleId);
+                    },
+                    'AppErrorHandling' =>  function($sm) {
+                        $logger = $sm->get('ZendLog');
+                        $service = new SundewErrorHandling($logger);
+                        return $service;
+                    },
+                    'ZendLog' => function ($sm) {
+                        $filename = 'Log_' . date('Ymd') . '.log';
+                        $log = new Logger();
+                        $writer = new LogWriter('./data/logs/' . $filename);
+                        $log->addWriter($writer);
+
+                        return $log;
                     },
                 ),
             );
