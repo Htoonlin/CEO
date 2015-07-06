@@ -12,6 +12,7 @@ use Account\DataAccess\PayableDataAccess;
 use Account\DataAccess\ReceivableDataAccess;
 use Account\DataAccess\VoucherDataAccess;
 use Account\Entity\Voucher;
+use Application\Service\SundewExporting;
 use HumanResource\DataAccess\StaffDataAccess;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -154,50 +155,14 @@ class VoucherController extends AbstractActionController
 
     public function exportAction()
     {
+        $export = new SundewExporting($this->voucherTable()->fetchAll());
         $response = $this->getResponse();
-
-        $excelObj = new \PHPExcel();
-        $excelObj->setActiveSheetIndex(0);
-
-        $sheet = $excelObj->getActiveSheet();
-
-       $vouchers = $this->voucherTable()->fetchAll(false);
-        $columns = array();
-
-        $excelColumn = "A";
-        $start = 2;
-        foreach($vouchers as $row)
-        {
-            $data = $row->getArrayCopy();
-            if(count($columns) == 0){
-                $columns = array_keys($data);
-            }
-            foreach($columns as $col){
-                $cellId = $excelColumn . $start;
-                $sheet->setCellValue($cellId, $data[$col]);
-                $excelColumn++;
-            }
-            $start++;
-            $excelColumn = "A";
-        }
-        foreach($columns as $col)
-        {
-            $cellId = $excelColumn . '1';
-            $sheet->setCellValue($cellId, $col);
-            $excelColumn++;
-        }
-
-        $excelWriter = \PHPExcel_IOFactory::createWriter($excelObj, 'Excel2007');
-        ob_start();
-        $excelWriter->save('php://output');
-        $excelOutput = ob_get_clean();
-
         $filename = 'attachment; filename="Voucher-' . date('Ymdhis') . '.xlsx"';
 
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');
         $headers->addHeaderLine('Content-Disposition', $filename);
-        $response->setContent($excelOutput);
+        $response->setContent($export->getExcel());
 
         return $response;
     }

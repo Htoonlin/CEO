@@ -17,6 +17,7 @@ use Account\DataAccess\VoucherDataAccess;
 use Account\Entity\Closing;
 use Account\Entity\Payable;
 use Account\Entity\Receivable;
+use Application\Service\SundewExporting;
 use HumanResource\DataAccess\StaffDataAccess;
 use Zend\Form\Element;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -192,11 +193,6 @@ class BalanceController extends AbstractActionController
 
         $response = $this->getResponse();
 
-        $excelObj = new \PHPExcel();
-        $excelObj->setActiveSheetIndex(0);
-
-        $sheet = $excelObj->getActiveSheet();
-
         if(!$closing && $fromPath = '/account/balance'){
             $results = $this->closingTable()->fetchAll(false);
             $filename = 'attachment; filename="Closing-' . date('Ymdhis') . '.xlsx"';
@@ -207,40 +203,13 @@ class BalanceController extends AbstractActionController
             $filename = 'attachment; filename="BalanceReport-' . date('Ymdhis') . '.xlsx"';
         }
 
-        $columns = array();
-
-        $excelColumn = "A";
-        $start = 2;
-        foreach($results as $row)
-        {
-            $data = $row->getArrayCopy();
-            if(count($columns) == 0){
-                $columns = array_keys($data);
-            }
-            foreach($columns as $col){
-                $cellId = $excelColumn . $start;
-                $sheet->setCellValue($cellId, $data[$col]);
-                $excelColumn++;
-            }
-            $start++;
-            $excelColumn = "A";
-        }
-        foreach($columns as $col)
-        {
-            $cellId = $excelColumn . '1';
-            $sheet->setCellValue($cellId, $col);
-            $excelColumn++;
-        }
-
-        $excelWriter = \PHPExcel_IOFactory::createWriter($excelObj, 'Excel2007');
-        ob_start();
-        $excelWriter->save('php://output');
-        $excelOutput = ob_get_clean();
+        $export = new SundewExporting($results);
+        $excel = $export->getExcel();
 
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');
         $headers->addHeaderLine('Content-Disposition', $filename);
-        $response->setContent($excelOutput);
+        $response->setContent($excel);
 
         return $response;
     }

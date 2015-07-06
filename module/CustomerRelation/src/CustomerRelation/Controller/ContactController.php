@@ -8,6 +8,7 @@
 
 namespace CustomerRelation\Controller;
 
+use Application\Service\SundewExporting;
 use CustomerRelation\DataAccess\ContactDataAccess;
 use CustomerRelation\DataAccess\CompanyDataAccess;
 use CustomerRelation\Entity\Contact;
@@ -108,49 +109,14 @@ class ContactController extends AbstractActionController{
 
     public function exportAction()
     {
+        $export = new SundewExporting($this->contactTable()->fetchAll(false));
         $response=$this->getResponse();
-
-        $excelObj=new \PHPExcel();
-        $excelObj->setActiveSheetIndex(0);
-
-        $sheet=$excelObj->getActiveSheet();
-
-        $data=$this->contactTable()->fetchAll(false);
-        $columns=array();
-
-        $excelColumn="A";
-        $start=2;
-        foreach($data as $row)
-        {
-            if(count($columns)==0){
-                $columns=array_keys($row->getArrayCopy());
-            }
-            foreach($columns as $col){
-                $cellId=$excelColumn.$start;
-                $sheet->setCellValue($cellId, $row->$col);
-                $excelColumn++;
-            }
-            $start++;
-            $excelColumn="A";
-        }
-        foreach($columns as $col)
-        {
-            $cellId=$excelColumn.'1';
-            $sheet->setCellValue($cellId, $col);
-            $excelColumn++;
-        }
-
-        $excelWriter=\PHPExcel_IOFactory::createWriter($excelObj, 'Excel2007');
-        ob_start();
-        $excelWriter->save('php://output');
-        $excelOutput=ob_get_clean();
-
         $filename='attachment; filename="Contact-'. date('Ymdhis').'xlsx"';
 
         $headers=$response->getHeaders();
         $headers->addHeaderLine('Content-Type','application/ms-excel; charset=UTF-8');
         $headers->addHeaderLine('Content-Disposition', $filename);
-        $response->setContent($excelOutput);
+        $response->setContent($export->getExcel());
 
         return $response;
     }

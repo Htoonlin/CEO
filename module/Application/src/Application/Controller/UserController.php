@@ -9,6 +9,7 @@ use Application\Entity\User;
 use Application\Helper\PasswordForm;
 use Application\Helper\PasswordHelper;
 use Application\Helper\UserHelper;
+use Application\Service\SundewExporting;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
@@ -155,49 +156,15 @@ class UserController extends AbstractActionController
 
     public function exportAction()
     {
-        $response = $this->getResponse();
-
-        $excelObj = new \PHPExcel();
-        $excelObj->setActiveSheetIndex(0);
-
-        $sheet = $excelObj->getActiveSheet();
-
-        $data = $this->userTable()->fetchAll(false);
-        $columns = array();
-
-        $excelColumn = "A";
-        $start = 2;
-        foreach($data as $row)
-        {
-            if(count($columns) == 0){
-                $columns = array_keys($row->getArrayCopy());
-            }
-            foreach($columns as $col){
-                $cellId = $excelColumn . $start;
-                $sheet->setCellValue($cellId, $row->$col);
-                $excelColumn++;
-            }
-            $start++;
-            $excelColumn = "A";
-        }
-        foreach($columns as $col)
-        {
-            $cellId = $excelColumn . '1';
-            $sheet->setCellValue($cellId, $col);
-            $excelColumn++;
-        }
-
-        $excelWriter = \PHPExcel_IOFactory::createWriter($excelObj, 'Excel2007');
-        ob_start();
-        $excelWriter->save('php://output');
-        $excelOutput = ob_get_clean();
-
+        $export = new SundewExporting($this->userTable()->fetchAll());
         $filename = 'attachment; filename="User-' . date('Ymdhis') . '.xlsx"';
+        $excel = $export->getExcel();
 
+        $response = $this->getResponse();
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');
         $headers->addHeaderLine('Content-Disposition', $filename);
-        $response->setContent($excelOutput);
+        $response->setContent($excel);
 
         return $response;
     }

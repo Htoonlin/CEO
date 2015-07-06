@@ -12,6 +12,7 @@ use Account\Helper\CurrencyHelper;
 use Account\Entity\Currency;
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Application\Service\SundewExporting;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -132,54 +133,18 @@ class CurrencyController extends AbstractActionController
     }
     public function exportAction()
     {
-        $response=$this->getResponse();
+        $export = new SundewExporting($this->currencyTable()->fetchAll());
+        $filename = 'attachment; filename="Currency-' . date('Ymdhis') . '.xlsx"';
+        $excel = $export->getExcel();
 
-        $excelObj=new \PHPExcel();
-        $excelObj->setActiveSheetIndex(0);
+        $response = $this->getResponse();
+        $headers = $response->getHeaders();
+        $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');
+        $headers->addHeaderLine('Content-Disposition', $filename);
+        $response->setContent($excel);
 
-        $sheet=$excelObj->getActiveSheet();
-
-        $currencies=$this->currencyTable()->fetchAll(false);
-        $columns=array();
-
-        $excelColumn="A";
-        $start=2;
-        foreach($currencies as $row) {
-            $data = $row->getArrayCopy();
-            if (count($columns) == 0) {
-                $columns = array_keys($data);
-            }
-            foreach ($columns as $col) {
-                $cellId = $excelColumn . '1';
-                $sheet->setCellValue($cellId, $col);
-                $excelColumn++;
-            }
-
-            $start++;
-            $excelColumn="A";
-        }
-
-        foreach($columns as $col)
-        {
-            $cellId=$excelColumn.'1';
-            $sheet->setCellValue($cellId, $col);
-            $excelColumn++;
-        }
-
-            $excelWriter=\PHPExcel_IOFactory::createWriter($excelObj, 'Excel2007');
-            ob_start();
-            $excelWriter->save('php://output');
-            $excelOutput=ob_get_clean();
-
-            $filename='attachment; filename="Currency-'.date('Ymdhis').'.xlsx"';
-
-            $headers=$response->getHeaders();
-            $headers->addHeaderLine('Content-Type','application/msexcel; charset=UTF-8');
-            $headers->addHeaderLine('Content-Disposition', $filename);
-            $response->setContent($excelOutput);
-
-            return $response;
-        }
+        return $response;
+    }
 
     public function jsonDeleteAction()
     {

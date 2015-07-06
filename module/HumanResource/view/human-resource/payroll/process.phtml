@@ -10,70 +10,17 @@
 $title = 'Payroll process';
 $this->headTitle($title);
 ?>
+<script type="text/javascript">
+    $('document').ready(function(){
+
+    });
+</script>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <div class="row">
-            <div class="col-md-4">
-            </div>
-            <div class="col-md-4 text-center">
-                <span class="glyphicon glyphicon-calendar"></span>
-                <strong>
-                    <?= date('F-Y') . ' Salary' ?>
-                </strong>
-            </div>
-            <div class="col-md-4 text-right">
-                <div class="btn-group">
-                    <a href="<?= $this->url('hr_payroll'); ?>" class="btn btn-default">
-                        <span class="glyphicon glyphicon-th-list"></span>
-                        Back to list
-                    </a>
-                    <button type="button" class="btn btn-success">
-                        <span class="glyphicon glyphicon-ok"></span>
-                        Process
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
     <div class="panel-body">
-        <div class="grid">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Staff</th>
-                        <th>Salary</th>
-                        <th>S_WD</th>
-                        <th>Leave</th>
-                        <th>Absent</th>
-                        <?php foreach($lateList as $late): ?>
-                            <th><?= 'Late (' . $late->minute . ')' ?></th>
-                        <?php endforeach; ?>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php foreach($staffs as $staff):?>
-                    <tr>
-                        <td><?= $this->escapeHtml($staff->staffName . '(' . $staff->staffCode . ')') ?></td>
-                        <td><?= $this->escapeHtml($staff->Salary . ' ' . $staff->Currency) ?></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <?php foreach($lateList as $late): ?>
-                            <th><?= $late->count ?></th>
-                        <?php endforeach; ?>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
     </div>
     <div class="panel-footer">
-        <div class="progress">
-            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                <span class="sr-only">40% Complete (success)</span>
-                40%
-            </div>
-        </div>
     </div>
 </div>

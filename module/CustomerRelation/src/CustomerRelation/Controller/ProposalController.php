@@ -9,6 +9,7 @@
 namespace CustomerRelation\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
+use Application\Service\SundewExporting;
 use CustomerRelation\DataAccess\ProposalDataAccess;
 use CustomerRelation\Entity\Proposal;
 use CustomerRelation\Helper\ProposalHelper;
@@ -179,49 +180,14 @@ class ProposalController extends AbstractActionController
     }
     public function exportAction()
     {
+        $export = new SundewExporting($this->proposalTable()->fetchAll(false));
         $response = $this->getResponse();
-
-        $excelObj = new \PHPExcel();
-        $excelObj->setActiveSheetIndex(0);
-
-        $sheet = $excelObj->getActiveSheet();
-
-        $data = $this->proposalTable()->fetchAll(false);
-        $columns = array();
-
-        $excelColumn = "A";
-        $start = 2;
-        foreach($data as $row)
-        {
-            if(count($columns) == 0){
-                $columns = array_keys($row->getArrayCopy());
-            }
-            foreach($columns as $col){
-                $cellId = $excelColumn . $start;
-                $sheet->setCellValue($cellId, $row->$col);
-                $excelColumn++;
-            }
-            $start++;
-            $excelColumn = "A";
-        }
-        foreach($columns as $col)
-        {
-            $cellId = $excelColumn . '1';
-            $sheet->setCellValue($cellId, $col);
-            $excelColumn++;
-        }
-
-        $excelWriter = \PHPExcel_IOFactory::createWriter($excelObj, 'Excel2007');
-        ob_start();
-        $excelWriter->save('php://output');
-        $excelOutput = ob_get_clean();
-
         $filename = 'attachment; filename="Proposal-' . date('Ymdhis') . '.xlsx"';
 
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');
         $headers->addHeaderLine('Content-Disposition', $filename);
-        $response->setContent($excelOutput);
+        $response->setContent($export->getExcel());
 
         return $response;
     }
