@@ -110,6 +110,8 @@ class StaffController extends AbstractActionController
                 $this->staffTable()->saveStaff($staff);
                 $this->flashMessenger()->addSuccessMessage('Save Successful');
                 return $this->redirect()->toRoute('hr_staff');
+            }else{
+                var_dump($form->getMessages());
             }
         }
         return new ViewModel(array('form'=>$form,

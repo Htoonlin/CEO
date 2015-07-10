@@ -9,6 +9,8 @@
 namespace HumanResource\Controller;
 
 use Application\DataAccess\ConstantDataAccess;
+use HumanResource\DataAccess\AttendanceDataAccess;
+use HumanResource\DataAccess\LeaveDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use Zend\Json\Json;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -18,10 +20,18 @@ class PayrollController extends AbstractActionController{
 
     private $staffTable;
     private $lateList;
+    private $leaveTable;
+    private $attendanceTable;
     private function init_data(){
         $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         if(!$this->staffTable)
             $this->staffTable = new StaffDataAccess($adapter);
+
+        if(!$this->leaveTable)
+            $this->leaveTable = new LeaveDataAccess($adapter);
+
+        if(!$this->attendanceTable)
+            $this->attendanceTable = new AttendanceDataAccess($adapter);
 
         $constantDataAccess = new ConstantDataAccess($adapter);
         if(!$this->lateList){
@@ -36,9 +46,8 @@ class PayrollController extends AbstractActionController{
 
     public function processAction(){
         $this->init_data();
-        $staffData = $this->staffTable->fetchAll(false);
         return new ViewModel(array(
-            'staffs' => $staffData,
+            'staffs' => $this->staffTable->fetchAll(false),
             'lateList' => $this->lateList,
         ));
     }

@@ -4,6 +4,8 @@
     body {
         padding-top: 60px;
         padding-bottom: 40px;
+        background: #C9D6DE;
+        color:#0F3845;
     }
 
     div.form-control{
@@ -110,8 +112,15 @@
     }
 
     /* Grid */
+    .panel-footer{
+        border-top: 1px solid #aaaaaa;
+    }
     .panel-body > .grid{
-        margin: -15px -15px -35px -15px;
+        margin: -16px -16px -36px -16px;
+    }
+    .grid > .table{
+        border:none;
+        border-top: 1px solid #aaaaaa;
     }
     .grid > .table > thead > tr > th{
         text-shadow: 0 1px 0 #fff;
@@ -122,9 +131,7 @@
         filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe0e0e0', GradientType=0);
         filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
         background-repeat: repeat-x;
-        border-width: 1px;
-        border-color: #dbdbdb;
-        border-color: #ccc;
+        border:1px solid #aaaaaa;
     }
     .grid > .table > thead > tr > th > span.fa{
         font-weight: 100;
@@ -135,6 +142,9 @@
     }
     .grid > .table > thead > tr > th > a:hover{
         color: #337AB7;
+    }
+    .grid > .table > tbody > tr > td{
+        border:1px solid #aaaaaa;
     }
 
     /* Calendar */

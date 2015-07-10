@@ -12,15 +12,106 @@ $this->headTitle($title);
 ?>
 <script type="text/javascript">
     $('document').ready(function(){
-
+        $("input#chkAll").change(function(){
+            if($(this).checkbox('isChecked')){
+                $('input[name="chkId[]"]').checkbox('check');
+            }else{
+                $('input[name="chkId[]"]').checkbox('uncheck');
+            }
+        });
+        $('input[name="chkId[]"]').change(function(){
+            var total=$('input[name="chkId[]"]').length;
+            var checks=$('input[name="chkId[]"]:checked').length;
+            if(total==checks){
+                $("input#chkAll").checkbox('check');
+            }else{
+                $("input#chkAll").checkbox('uncheck');
+            }
+        });
     });
 </script>
 <h1><?= $this->escapeHtml($title) ?></h1>
+<hr />
 <div class="panel panel-default">
     <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-4">
+
+            </div>
+            <div class="col-md-4">
+                <p class="text-center">
+
+                </p>
+            </div>
+            <div class="col-md-4">
+                <div class="text-right">
+                    <div class="btn-group">
+                        <button type="button" id="btnProcess" class="btn btn-primary">
+                            <span class="fa fa-calculator"></span>
+                            Attendance
+                        </button>
+                        <button type="button" id="btnProcess" class="btn btn-success" disabled="disabled">
+                            <span class="glyphicon glyphicon-ok"></span>
+                            Process
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="panel-body">
+        <div class="grid">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th class="text-center" width="50px">
+                        <div class="checkbox" style="margin: 0">
+                            <label class="checkbox-custom" data-initialize="checkbox">
+                                <input type="checkbox" id="chkAll" />
+                            </label>
+                        </div>
+                    </th>
+                    <th width="250px">Staff</th>
+                    <th width="150px">Salary</th>
+                    <th class="text-center" width="80px">M_WD</th>
+                    <th class="text-center" width="80px">S_WD</th>
+                    <th class="text-center" width="80px">Leave</th>
+                    <th class="text-center" width="80px">Absent</th>
+                    <?php foreach($lateList as $late): ?>
+                        <th class="text-center" width="125px"><?= $late->title ?></th>
+                    <?php endforeach; ?>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($staffs as $staff):?>
+                    <tr>
+                        <td class="text-center">
+                            <div class="checkbox" style="margin: 0">
+                                <label class="checkbox-custom" data-initialize="checkbox">
+                                    <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($staff->staffId);?>" />
+                                </label>
+                            </div>
+                        </td>
+                        <td><?= $this->escapeHtml($staff->staffName . ' (' . $staff->staffCode . ')') ?></td>
+                        <td><?= $this->escapeHtml($staff->Salary . ' ' . $staff->Currency) ?></td>
+                        <td class="text-center">0</td>
+                        <td class="text-center">0</td>
+                        <td class="text-center">0</td>
+                        <td class="text-center">0</td>
+                        <?php foreach($lateList as $late): ?>
+                            <td class="text-center" id="<?= $late->code . '-' . $staff->staffId ?>">0</td>
+                        <?php endforeach; ?>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
     <div class="panel-footer">
+        <div class="progress" id="payrollProcess">
+            <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                40%
+            </div>
+        </div>
     </div>
 </div>

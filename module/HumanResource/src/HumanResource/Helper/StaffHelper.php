@@ -58,9 +58,9 @@ class StaffHelper
             $salary->setLabel('Salary')
                 ->setName("salary")
                 ->setAttributes(array(
-                    'min' => '10000',
+                    'min' => '100',
                     'max' => '999999999999',
-                    'step' => '5000'
+                    'step' => '50'
                 ));
 
             $leave = new Element\Number();

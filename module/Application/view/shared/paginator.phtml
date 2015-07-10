@@ -30,13 +30,13 @@ if(empty($url) && $this->route) {
 if($this->pageCount) :
     ?>
     <div class="row">
-        <div class="col-md-3 text-left" style="padding-top: 5px;">
-            <small>
+        <div class="col-md-3 text-left" style="padding-top:8px;">
+            <p>
                 Showing
-                <?php echo ((($this->current - 1) * $this->itemCountPerPage) + 1); ?> to
+                <?php echo ((($this->current - 1) * $this->itemCountPerPage) + 1); ?> -
                 <?php echo ((($this->current - 1) * $this->itemCountPerPage) + $this->currentItemCount); ?> of
-                <?php echo $this->totalItemCount; ?> records
-            </small>
+                <?php echo $this->totalItemCount; ?> items
+            </p>
         </div>
         <div class="col-md-6">
             <ul class="pagination" style="margin:0;">
@@ -89,15 +89,15 @@ if($this->pageCount) :
         <div class="col-md-3 text-right">
             <div class="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <?php echo $this->itemCountPerPage . ' records'; ?>&nbsp;&nbsp;
+                    <?php echo $this->itemCountPerPage . ' / page'; ?>&nbsp;&nbsp;
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu" style="width:80px;">
-                    <li><a href="<?= $url . '?page=1&size=5&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>">5 records</a></li>
-                    <li><a href="<?= $url . '?page=1&size=10&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>"">10 records</a></li>
-                    <li><a href="<?= $url . '?page=1&size=20&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>"">20 records</a></li>
-                    <li><a href="<?= $url . '?page=1&size=50&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>"">50 records</a></li>
-                    <li><a href="<?= $url . '?page=1&size=100&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>"">100 records</a></li>
+                    <li><a href="<?= $url . '?page=1&size=5&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>">5 / page</a></li>
+                    <li><a href="<?= $url . '?page=1&size=10&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>"">10 / page</a></li>
+                    <li><a href="<?= $url . '?page=1&size=20&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>"">20 / page</a></li>
+                    <li><a href="<?= $url . '?page=1&size=50&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>"">50 / page</a></li>
+                    <li><a href="<?= $url . '?page=1&size=100&filter=' . $filter . '&sort=' . $sort . '&by=' . $sortBy; ?>"">100 / page</a></li>
                 </ul>
             </div>
         </div>

@@ -49,6 +49,11 @@ class LeaveDataAccess extends AbstractTableGateway
         $rowset = $this->select(array('leaveId' => $id));
         return $rowset->current();
     }
+    public function getLeaveByStaff($staffId, $date)
+    {
+        $rowset = $this->select(array('staffId' => $staffId, 'date' => $date));
+        return $rowset->current();
+    }
     public function saveLeave(Leave $leave)
     {
         $id = $leave->getLeaveId();

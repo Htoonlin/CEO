@@ -65,6 +65,10 @@ class AttendanceDataAccess extends AbstractTableGateway{
         $rowset=$this->select(array('attendanceId'=>$id));
         return $rowset->current();
     }
+    public function getAttendanceByStaff($staffId, $date){
+        $rowset = $this->select(array('staffId' => $staffId, 'attendanceDate' => $date));
+        return $rowset->current();
+    }
     public function checkAttendance($staffId, $date)
     {
         $results = $this->select(function (Select $select) use($staffId, $date){
