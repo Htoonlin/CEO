@@ -15,6 +15,7 @@ use HumanResource\Entity\Attendance;
 use HumanResource\Helper\AttendanceBoardHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\ArrayObject;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class AttendanceController extends AbstractActionController
@@ -119,5 +120,22 @@ class AttendanceController extends AbstractActionController
         $response->setContent($export->getExcel());
 
         return $response;
+    }
+
+    public function jsonAttendanceAction()
+    {
+        $staffId = $this->params()->fromQuery('staffId', 0);
+        $date = $this->params()->fromQuery('date', date('Y-m-D', time()));
+        $attendance = $this->attendanceTable()->checkAttendance($staffId, $date);
+        if($attendance){
+            return new JsonModel(array(
+                'status' => true,
+                'result' => $attendance->getArrayCopy()
+            ));
+        }
+        return new JsonModel(array(
+            'status' => false,
+            'result' => array('staffId' => $staffId, 'date' => $date)
+        ));
     }
 }

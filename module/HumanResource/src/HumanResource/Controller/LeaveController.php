@@ -16,6 +16,7 @@ use HumanResource\Entity\Leave;
 use HumanResource\Helper\LeaveHelper;
 use Zend\Form\View\Helper\Form;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class LeaveController extends AbstractActionController
@@ -154,5 +155,22 @@ class LeaveController extends AbstractActionController
         $response->setContent($export->getExcel());
 
         return $response;
+    }
+
+    public function jsonLeaveAction()
+    {
+        $staffId = $this->params()->fromQuery('staffId', 0);
+        $date = $this->params()->fromQuery('date', date('Y-m-D', time()));
+        $leave = $this->leaveTable()->getLeaveByStaff($staffId, $date);
+        if($leave){
+            return new JsonModel(array(
+                'status' => true,
+                'result' => $leave->getArrayCopy()
+            ));
+        }
+        return new JsonModel(array(
+            'status' => false,
+            'result' => array('staffId' => $staffId, 'date' => $date)
+        ));
     }
 }

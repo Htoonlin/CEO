@@ -17,15 +17,41 @@ class PayrollHelper
     public function getForm()
     {
         if(!$this->form){
-            $month = new Element\MonthSelect('month');
-            $month->setLabel('Month :')
-                ->setMinYear(2011)
-                ->setMaxYear(date('Y', time()))
-                ->setMonthAttributes(array('class' => 'form-control'))
-                ->setYearAttributes(array('class' => 'form-control'));
+            $fromDate = new Element\Date('fromDate');
+            $fromDate->setAttributes(array(
+                'allowPastDates' => true,
+                'style' => 'width:120px;',
+                'momentConfig' => array('format' => 'YYYY-MM-DD'),
+            ));
+            #$fromDate->setValue(date('Y-m-d', strtotime('-1 day')));
+            $fromDate->setValue(date('Y-m-26', strtotime('-1 month')));
+
+            $toDate = new Element\Date('toDate');
+            $toDate->setAttributes(array(
+                'allowPastDates' => true,
+                'style' => 'width:120px;margin-left:5px;',
+                'momentConfig' => array('format' => 'YYYY-MM-DD'),
+            ));
+            #$toDate->setValue(date('Y-m-d', strtotime('-1 day')));
+            $toDate->setValue(date('Y-m-25', time('')));
+
+            $formula = new Element\Text('formula');
+            $formula->setAttributes(array(
+                'class' => 'form-control',
+                'style' => 'width:450px;margin-left:5px;',
+                'placeholder' => 'Payroll Formula',
+            ));
 
             $form = new Form();
-            $form->add($month);
+            $form->setAttributes(array(
+                'class' => 'form-inline',
+                'role' => 'form',
+            ));
+            $form->add($fromDate);
+            $form->add($toDate);
+            $form->add($formula);
+
+            $this->form = $form;
         }
 
         return $this->form;

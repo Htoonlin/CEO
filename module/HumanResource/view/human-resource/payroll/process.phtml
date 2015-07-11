@@ -9,6 +9,7 @@
  */
 $title = 'Payroll process';
 $this->headTitle($title);
+$this->headScript()->appendFile($this->basePath() . '/js/payroll.js');
 ?>
 <script type="text/javascript">
     $('document').ready(function(){
@@ -28,40 +29,92 @@ $this->headTitle($title);
                 $("input#chkAll").checkbox('uncheck');
             }
         });
+
+        $('button#btnProcess').hide();
+        $('input[name="formula"]').hide();
+
+        $.setPayrollData({
+            weeklyHoliday   : <?= $weeklyHoliday ?>,
+            workingHours    : <?= $workingHours ?>,
+            lateList        : <?= json_encode($lateList); ?>,
+            leaveValues     : <?= $leaveValues; ?>
+        });
+
+        $.setPayrollUrl({
+            attendance  : '<?= $this->url('hr_attendance', array('action' => 'jsonAttendance')) ?>',
+            leave       : '<?= $this->url('hr_leave', array('action' => 'json_leave')) ?>'
+        });
+
+        $('button#btnAttendance').click(function(){
+            var totalProgress = $("#payroll-staffs>tbody").find('input[type="checkbox"]:checked').length;
+            var perStaff = Math.ceil(100/totalProgress);
+
+            if(totalProgress <= 0){
+                alert('Please check at least one.');
+                return;
+            }
+
+            $("#payroll-staffs>tbody").find('input[type="checkbox"]:checked').each(function(idx){
+                $(this).closest('tr').collectAttendance({
+                    start: moment($('input[name=fromDate]').val(), 'YYYY-MM-DD'),
+                    end: moment($('input[name=toDate]').val(), 'YYYY-MM-DD'),
+                    progress: function(val){
+                        var percentage = (Math.round(((idx * perStaff) + ((val/100) * perStaff)) * 10) / 10) + '%';
+                        $('#payrollProcess>.progress-bar').css('width', percentage).html(percentage);
+                    }
+                });
+            });
+
+            $(this).attr('disabled', 'disabled').hide();
+            $('div#fromDate').hide();
+            $('div#toDate').hide();
+            $('button#btnProcess').fadeIn().removeAttr('disabled');
+            $('#payrollProcess>.progress-bar').removeClass('progress-bar-primary').addClass('progress-bar-success');
+            $('input[name="formula"]').fadeIn();
+            $('span#current-step').removeClass('label-primary')
+                .html('Step 2: Write payroll formula by variable before process.')
+                .addClass('label-success').slideDown();
+        });
+
     });
+
 </script>
 <h1><?= $this->escapeHtml($title) ?></h1>
 <hr />
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
-            <div class="col-md-4">
-
-            </div>
-            <div class="col-md-4">
-                <p class="text-center">
-
+            <div class="col-md-3">
+                <p class="panel-title" style="padding-top:5px;">
+                    <span id="current-step" class="label label-primary" style="padding: 10px;">Step 1: Collect attendance info for marked staff.</span>
                 </p>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-9">
                 <div class="text-right">
-                    <div class="btn-group">
-                        <button type="button" id="btnProcess" class="btn btn-primary">
-                            <span class="fa fa-calculator"></span>
-                            Attendance
-                        </button>
-                        <button type="button" id="btnProcess" class="btn btn-success" disabled="disabled">
-                            <span class="glyphicon glyphicon-ok"></span>
-                            Process
-                        </button>
-                    </div>
+                    <?php
+                        $form->setAttribute('action', $this->url('hr_payroll', array('action'=> 'process')));
+                        echo $this->form()->openTag($form);
+                        echo $this->formRow($form->get('fromDate'));
+                        echo $this->formRow($form->get('toDate'));
+                        echo $this->formRow($form->get('formula'));
+                    ?>
+                    <button type="button" id="btnAttendance" class="btn btn-primary">
+                        <span class="fa fa-list"></span> Collect
+                    </button>
+                    <button type="button" id="btnProcess" class="btn btn-success" disabled="disabled">
+                        <span class="fa fa-calculator"></span>
+                        Process
+                    </button>
+                    <?php
+                        echo $this->form()->closeTag();
+                    ?>
                 </div>
             </div>
         </div>
     </div>
     <div class="panel-body">
         <div class="grid">
-            <table class="table table-bordered">
+            <table class="table table-bordered" id="payroll-staffs">
                 <thead>
                 <tr>
                     <th class="text-center" width="50px">
@@ -84,33 +137,45 @@ $this->headTitle($title);
                 </thead>
                 <tbody>
                 <?php foreach($staffs as $staff):?>
-                    <tr>
-                        <td class="text-center">
+                    <tr data-id="<?= $staff->staffId ?>" id="row-<?= $staff->staffId ?>">
+                        <td class="text-center" id="isMark">
                             <div class="checkbox" style="margin: 0">
                                 <label class="checkbox-custom" data-initialize="checkbox">
                                     <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($staff->staffId);?>" />
                                 </label>
                             </div>
                         </td>
-                        <td><?= $this->escapeHtml($staff->staffName . ' (' . $staff->staffCode . ')') ?></td>
-                        <td><?= $this->escapeHtml($staff->Salary . ' ' . $staff->Currency) ?></td>
-                        <td class="text-center">0</td>
-                        <td class="text-center">0</td>
-                        <td class="text-center">0</td>
-                        <td class="text-center">0</td>
+                        <td id="staff"><?= $this->escapeHtml($staff->staffName . ' (' . $staff->staffCode . ')') ?></td>
+                        <td id="salary"><?= $this->escapeHtml($staff->Salary . ' ' . $staff->Currency) ?></td>
+                        <td id="M_WD" class="text-center">0</td>
+                        <td id="S_WD" class="text-center">0</td>
+                        <td id="Leave" class="text-center">0</td>
+                        <td id="Absent" class="text-center">0</td>
                         <?php foreach($lateList as $late): ?>
                             <td class="text-center" id="<?= $late->code . '-' . $staff->staffId ?>">0</td>
                         <?php endforeach; ?>
                     </tr>
                 <?php endforeach; ?>
+                    <tr>
+                        <td class="text-right" colspan="3">
+                            <strong>Formula variables</strong>
+                        </td>
+                        <td class="text-center">{M}</td>
+                        <td class="text-center">{S}</td>
+                        <td class="text-center">{L}</td>
+                        <td class="text-center">{A}</td>
+                        <?php foreach($lateList as $late): ?>
+                            <td class="text-center">{<?= $late->code ?>}</td>
+                        <?php endforeach; ?>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
     <div class="panel-footer">
         <div class="progress" id="payrollProcess">
-            <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                40%
+            <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                0%
             </div>
         </div>
     </div>
