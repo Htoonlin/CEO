@@ -25,7 +25,7 @@ class AttendanceDataAccess extends AbstractTableGateway{
 
     public function __construct(Adapter $dpAdapter)
     {
-        $this->table="tbl_hr_Attendance";
+        $this->table="tbl_hr_attendance";
         $this->adapter=$dpAdapter;
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Attendance());
         $this->initialize();

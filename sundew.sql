@@ -317,7 +317,7 @@ CREATE TABLE `tbl_hr_leave` (
   `date` date NOT NULL,
   `description` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`leaveId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -333,20 +333,16 @@ CREATE TABLE `tbl_hr_payroll` (
   `fromDate` date NOT NULL,
   `toDate` date NOT NULL,
   `m_wd` tinyint(4) NOT NULL,
-  `s_wd` tinyint(4) NOT NULL,
-  `salary` bigint(20) NOT NULL,
-  `annual_leave` float NOT NULL,
-  `absent` tinyint(4) NOT NULL,
-  `formular` varchar(500) NOT NULL,
-  `Late1` smallint(6) DEFAULT NULL,
-  `Late2` smallint(6) DEFAULT NULL,
-  `Late3` smallint(6) DEFAULT NULL,
-  `Late4` smallint(6) DEFAULT NULL,
-  `Late5` smallint(6) DEFAULT NULL,
+  `s_wd` float NOT NULL,
+  `salary` float NOT NULL,
+  `leave` float NOT NULL,
+  `absent` float NOT NULL,
+  `formula` varchar(500) NOT NULL,
+  `Late` varchar(500) DEFAULT NULL,
   `managerId` int(11) NOT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`payrollId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1064,4 +1060,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-12 18:30:02
+-- Dump completed on 2015-07-13 18:30:01
