@@ -14,7 +14,7 @@ use Zend\Form\Form;
 class PayrollHelper
 {
     protected $form;
-    public function getForm()
+    public function getForm(array $formulaList)
     {
         if(!$this->form){
             $fromDate = new Element\Date('fromDate');
@@ -23,7 +23,6 @@ class PayrollHelper
                 'style' => 'width:120px;',
                 'momentConfig' => array('format' => 'YYYY-MM-DD'),
             ));
-            #$fromDate->setValue(date('Y-m-d', strtotime('-1 day')));
             $fromDate->setValue(date('Y-m-26', strtotime('-1 month')));
 
             $toDate = new Element\Date('toDate');
@@ -32,20 +31,21 @@ class PayrollHelper
                 'style' => 'width:120px;margin-left:5px;',
                 'momentConfig' => array('format' => 'YYYY-MM-DD'),
             ));
-            #$toDate->setValue(date('Y-m-d', strtotime('-1 day')));
+
             $toDate->setValue(date('Y-m-25', time('')));
 
-            $formula = new Element\Text('formula');
-            $formula->setAttributes(array(
-                'class' => 'form-control',
-                'style' => 'width:450px;margin-left:5px;',
-                'placeholder' => 'Payroll Formula',
-            ));
+            $formula=new Element\Select();
+            $formula->setName('formula')
+                ->setAttribute('class', 'form-control')
+                ->setAttribute('style', 'width:200px')
+                ->setValueOptions($formulaList)
+                ->setEmptyOption('-- Choose Formula --');
 
             $form = new Form();
             $form->setAttributes(array(
                 'class' => 'form-inline',
                 'role' => 'form',
+                'id' => 'process-form'
             ));
             $form->add($fromDate);
             $form->add($toDate);

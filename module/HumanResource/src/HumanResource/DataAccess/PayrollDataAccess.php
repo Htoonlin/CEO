@@ -20,32 +20,29 @@ class PayrollDataAccess extends AbstractTableGateway{
     {
         $this->table="tbl_hr_payroll";
         $this->adapter=$dpAdapter;
-        $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Payroll());
         $this->initialize();
     }
-    public function fetchAll()
-    {
-        return $this->select()->toArray();
+    public function checkPayroll($fromDate, $toDate, $staffId){
+        $result = $this->select(array(
+            'staffId' => $staffId,
+            'fromDate' => $fromDate,
+            'toDate' => $toDate
+        ));
+
+        return $result->current();
     }
-    public function getPayroll($id)
+    public function savePayroll(array $payroll)
     {
-        $id=(int)$id;
-        $rowset=$this->select(array('payrollId'=>$id));
-        return $rowset->current();
-    }
-    public function savePayroll(Payroll $payroll)
-    {
-        $id = $payroll->getPayrollId();
-        $data = $payroll->getArrayCopy();
+        $id = isset($payroll['payrollId']) ? $payroll['payrollId'] : 0;
 
         if ($id > 0) {
-            $this->update($data, Array('payrollId' => $id));
+            $this->update($payroll, Array('payrollId' => $id));
         } else {
-            unset($data['payrollId']);
-            $this->insert($data);
+            unset($payroll['payrollId']);
+            $this->insert($payroll);
         }
-        if (!$payroll->getPayrollId()) {
-            $payroll->setPayrollId($this->getLastInsertValue());
+        if (!isset($payroll['payrollId'])) {
+            $payroll['payrollId'] = $this->getLastInsertValue();
         }
         return $payroll;
     }

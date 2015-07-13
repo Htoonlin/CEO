@@ -12,7 +12,6 @@
     }
 
     var payroll_data = {
-        weeklyHoliday   : {},
         workingHours    : {},
         lateList        : {},
         leaveValues     : {}
@@ -20,7 +19,9 @@
 
     var payroll_url = {
         attendance  : '',
-        leave       : ''
+        leave       : '',
+        holiday     : '',
+        payroll     : ''
     };
 
     $.setPayrollData = function(options){
@@ -33,11 +34,13 @@
 
     function checkHoliday(date){
         var isHoliday = false;
-        $.each(payroll_data.weeklyHoliday, function(){
-            var holiday = $(this)[0].day - 1;
-            if(date.weekday() == holiday){
-                isHoliday = true;
-                return false;
+        $.ajax({
+            'url': payroll_url.holiday,
+            'data': {date: date.format('YYYY-MM-DD')},
+            'type': 'get',
+            'async': false,
+            'success': function (data) {
+                isHoliday = data.status;
             }
         });
         return isHoliday;
@@ -64,14 +67,12 @@
 
                 var late_from = parseTimeToMinute(full_day.from) + late.minute;
                 if(in_time > late_from){
-                    console.log(attendance);
                     $(ptr).html(currentLate + 1);
                     hasLate = true;
                 }
 
                 var late_to = parseTimeToMinute(full_day.to) - late.minute;
                 if(out_time < late_to){
-                    console.log(attendance);
                     $(ptr).html(currentLate + 1);
                     hasLate = true;
                 }
@@ -91,6 +92,7 @@
         }, options);
 
         var staffId = $(this).attr('data-id');
+        var salary = $(this).attr('data-salary');
 
         if(staffId == 0) return;
 
@@ -171,7 +173,64 @@
             settings.progress(currentProgress);
         }
 
+        current_row.children('td#Per_Day').html(math.round(salary / M_WD, 2));
+
         settings.progress(100);
+    };
+
+    //Calculate payroll by row cell
+    $.fn.calculatePayroll = function(options){
+        var default_var = {
+            S: parseFloat($(this).attr('data-salary')),
+            M: parseFloat($(this).children('td#M_WD').html()),
+            P: parseFloat($(this).children('td#Per_Day').html()),
+            W: parseFloat($(this).children('td#S_WD').html()),
+            L: parseFloat($(this).children('td#Leave').html()),
+            A: parseFloat($(this).children('td#Absent').html())
+        };
+
+        var lateList = {};
+        var staffId = $(this).attr('data-id');
+        $.each(payroll_data.lateList, function(idx, late){
+            var ptr = '#' + late.code + '-' + staffId;
+            var lateCount = parseInt($(ptr).html());
+            default_var[late.code] = lateCount;
+            lateList[late.code] = lateCount;
+        });
+
+        var settings = $.extend({
+            formula : '(S*(W + L)) - ((S * A)',
+            staff : staffId,
+            start: moment(),
+            end: moment().subtract(1, 'month'),
+            success: function(salary){
+                console.log('Salary for ' + settings.staff + ' => ' + salary);
+            }
+        }, options);
+
+        $.ajax({
+            'url': payroll_url.payroll,
+            'data': {
+                staffId:settings.staff,
+                fromDate:settings.start.format('YYYY-MM-DD'),
+                toDate:settings.end.format('YYYY-MM-DD'),
+                m_wd:default_var.M,
+                s_wd:default_var.W,
+                salary:default_var.S,
+                leave:default_var.L,
+                absent:default_var.A,
+                formula:settings.formula,
+                late:lateList
+            },
+            'type': 'POST',
+            'async': false,
+            success: function(data){
+                console.log(data)
+            }
+        });
+
+        var result = math.eval(settings.formula, default_var);
+        settings.success(result);
     };
 
 }(jQuery));

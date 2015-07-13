@@ -52,6 +52,47 @@ class CalendarDataAccess extends AbstractTableGateway
         return $calendar;
     }
 
+    public function checkHoliday($date)
+    {
+        $day = (int)date('d', strtotime($date));
+        $month = (int)date('m', strtotime($date));
+        $year = (int)date('Y', strtotime($date));
+        $dow = (int)date('w', strtotime($date));
+
+        //Check holiday
+        $holidays = $this->select(array(
+            'type' => CalendarType::holiday,
+            'day' => $day,
+            'month' => $month,
+            'year' => $year
+        ));
+        if(count($holidays) > 0) return true;
+
+        //Check weekly holiday
+        $holidays = $this->select(array(
+            'type' => CalendarType::holiday_weekly,
+            'day' => $dow + 1
+        ));
+        if(count($holidays) > 0) return true;
+
+        //Check yearly holiday
+        $holidays = $this->select(array(
+            'type' => CalendarType::holiday_yearly,
+            'day' => $day,
+            'month' => $month
+        ));
+        if(count($holidays) > 0) return true;
+
+        //Check monthly holiday
+        $holidays = $this->select(array(
+            'type' => CalendarType::holiday_monthly,
+            'day' => $day,
+        ));
+        if(count($holidays) > 0) return true;
+
+        return false;
+    }
+
     public function getCalendarByType($type)
     {
         return $this->select(array('type' => $type));
@@ -61,14 +102,14 @@ class CalendarDataAccess extends AbstractTableGateway
     {
         $result = array();
 
-        $yearly = $this->select(function(Select $select){
+        $yearly = $this->select(function (Select $select) {
             $where = new Where();
             $where->equalTo('type', CalendarType::holiday_yearly);
             $select->where($where)
                 ->order('month asc, day asc');
         });
 
-        foreach($yearly as $calendar){
+        foreach ($yearly as $calendar) {
             $calendar->setYear($year);
             $result[] = array(
                 'id' => $calendar->getCalendarId(),
@@ -78,15 +119,15 @@ class CalendarDataAccess extends AbstractTableGateway
             );
         }
 
-        $monthly = $this->select(function (Select $select){
+        $monthly = $this->select(function (Select $select) {
             $where = new Where();
             $where->equalTo('type', CalendarType::holiday_monthly);
             $select->where($where)
                 ->order('month asc, day asc');
         });
 
-        foreach($monthly as $calendar){
-            for($m = 1; $m <= 12; $m++){
+        foreach ($monthly as $calendar) {
+            for ($m = 1; $m <= 12; $m++) {
                 $calendar->setYear($year);
                 $calendar->setMonth($m);
                 $result[] = array(
@@ -94,7 +135,7 @@ class CalendarDataAccess extends AbstractTableGateway
                     'date' => $calendar->getDateString(),
                     'title' => $calendar->getTitle(),
                     'type' => CalendarType::holiday_monthly
-                    );
+                );
             }
         }
 
@@ -102,7 +143,7 @@ class CalendarDataAccess extends AbstractTableGateway
             'type' => CalendarType::holiday,
             'year' => $year));
 
-        foreach($holiday as $calendar){
+        foreach ($holiday as $calendar) {
             $result[] = array(
                 'id' => $calendar->getCalendarId(),
                 'date' => $calendar->getDateString(),

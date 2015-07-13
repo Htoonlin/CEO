@@ -47,6 +47,13 @@ class HolidayController extends AbstractActionController
         return new JsonModel($result->toArray());
     }
 
+    public function jsonCheckHolidayAction()
+    {
+        $date = $this->params()->fromQuery('date', date('Y-m-D', time()));
+        $isHoliday = $this->calendarTable()->checkHoliday($date);
+        return new JsonModel(array("status" => $isHoliday));
+    }
+
     public function indexAction()
     {
         $helper = new HolidayHelper();
