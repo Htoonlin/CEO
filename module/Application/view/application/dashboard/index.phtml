@@ -5,6 +5,9 @@
 
 $title = 'Dashboard';
 $this->headTitle($title);
+$this->headScript()
+    ->appendFile($this->basePath() . '/js/math.min.js')
+    ->appendFile($this->basePath() . '/js/payroll.js');
 ?>
 <h1><?php echo $title; ?></h1>
 <hr />
@@ -26,6 +29,33 @@ $this->headTitle($title);
             }
         });
     }
+
+    $().ready(function()
+    {
+        $.setPayrollData({
+            workingHours    : <?= $workingHours ?>,
+            lateList        : <?= json_encode($lateList); ?>,
+            leaveValues     : <?= $leaveValues; ?>
+        });
+
+        $.setPayrollUrl({
+            attendance  : '<?= $this->url('hr_attendance', array('action' => 'jsonAttendance')) ?>',
+            leave       : '<?= $this->url('hr_leave', array('action' => 'jsonLeave')) ?>',
+            holiday     : '<?= $this->url('hr_holiday', array('action' => 'jsonCheckHoliday')) ?>',
+        });
+
+        $('button#btnCalculate').click(function(){
+            $('#payrollProcess>.progress-bar').css('width', '').html('');
+            $('#payrollTable-<?= $staff->getStaffId() ?>').collectAttendance({
+                start: moment($('input[name=fromDate]').val(), 'YYYY-MM-DD'),
+                end: moment($('input[name=toDate]').val(), 'YYYY-MM-DD'),
+                progress: function(val){
+                    var percentage = math.round(val, 2) + '%';
+                    $('#payrollProcess>.progress-bar').css('width', percentage).html(percentage);
+                }
+            });
+        });
+    });
 </script>
 <div class="row">
     <div class="col-sm-8">
@@ -90,7 +120,7 @@ $this->headTitle($title);
                         Leave Form
                     </a>
                 </div>
-                <div id="leaveForm" class="panel-collapse collapse in">
+                <div id="leaveForm" class="panel-collapse collapse">
                     <div class="panel-body">
                         <?php
                         $leaveForm->setAttribute('action', $this->url('dashboard'));
@@ -107,6 +137,71 @@ $this->headTitle($title);
                             </button>
                         </div>
                         <?= $this->form()->closeTag(); ?>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a href="#salaryCalculator" data-toggle="collapse" data-parent="#noticeBoard">
+                        <span class="fa fa-money"></span>
+                        Payroll Calculator
+                    </a>
+                </div>
+                <div id="salaryCalculator" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <p>
+                        <?php
+                        echo $this->form()->openTag($salaryForm);
+                        echo $this->formRow($salaryForm->get('fromDate'));
+                        echo $this->formRow($salaryForm->get('toDate'));
+                        echo $this->form()->closeTag();
+                        ?>
+                        </p>
+                        <p>
+                            <button type="button" id="btnCalculate" class="btn btn-block btn-primary">
+                                <span class="fa fa-calculator"></span>
+                                Calculate
+                            </button>
+                        </p>
+                        <p>
+                            <table data-id="<?= $staff->getStaffId() ?>" class="table table-bordered table-striped"
+                                   id="payrollTable-<?= $staff->getStaffId() ?>" data-salary="<?= $staff->getSalary() ?>">
+                                <tr>
+                                    <td width="150px" class="text-right">Per Day :</td>
+                                    <td class="text-center" id="Per_Day">0</td>
+                                </tr>
+                                <tr>
+                                    <td width="150px" class="text-right">Monthly WD :</td>
+                                    <td class="text-center" id="M_WD">0</td>
+                                </tr>
+                                <tr>
+                                    <td width="150px" class="text-right">Your WD :</td>
+                                    <td class="text-center" id="S_WD">0</td>
+                                </tr>
+                                <tr>
+                                    <td width="150px" class="text-right">Leave :</td>
+                                    <td class="text-center" id="Leave">0</td>
+                                </tr>
+                                <tr>
+                                    <td width="150px" class="text-right">Absent :</td>
+                                    <td class="text-center" id="Absent">0</td>
+                                </tr>
+                            <?php foreach($lateList as $late): ?>
+                                <tr>
+                                    <td class="text-right">
+                                        <?= $late->title ?> :
+                                    </td>
+                                    <td class="text-center" id="<?= $late->code . '-' . $staff->getStaffId() ?>">0</td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </table>
+                        </p>
+                        <p>
+                            <div class="progress" id="payrollProcess" style="margin-top:10px; margin-bottom: 0;">
+                                <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                </div>
+                            </div>
+                        </p>
                     </div>
                 </div>
             </div>

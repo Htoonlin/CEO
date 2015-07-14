@@ -19,6 +19,8 @@ use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Attendance;
 use HumanResource\Entity\Leave;
 use HumanResource\Helper\LeaveHelper;
+use HumanResource\Helper\PayrollHelper;
+use Zend\Json\Json;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -26,63 +28,107 @@ use Zend\View\Model\ViewModel;
 class DashboardController extends AbstractActionController
 {
     private $staff;
-    private function getStaff()
-    {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-
-        if(!$this->staff){
-            $userId = $this->layout()->current_user->userId;
-            $staffDataAccess = new StaffDataAccess($adapter);
-            $this->staff = $staffDataAccess->getStaffByUser($userId);
-        }
-        return $this->staff;
-    }
-    private function leaveTable(){
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        return new LeaveDataAccess($adapter);
-    }
-    private function leaveTypeList(){
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        $dataAccess = new ConstantDataAccess($adapter);
-        $result = $dataAccess->getConstantByName('leave_type');
-        $leaveTypes = json_decode($result->getValue());
-        $comboList = array();
-        foreach($leaveTypes as $leave){
-            $comboList[$leave->id] = $leave->title;
-        }
-        return $comboList;
-    }
+    private $leaveTypeList;
     private function attendanceTable()
     {
         $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         return new AttendanceDataAccess($adapter);
     }
+    private $staffTable;
+    private $calendarTable;
+    private $lateList;
+    private $workingHours;
+    private $leaveValues;
+    private $formulaList;
+    private $leaveTable;
+
+    private function init_data(){
+        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        if(!$this->staffTable)
+            $this->staffTable = new StaffDataAccess($adapter);
+
+        if(!$this->staff){
+            $userId = $this->layout()->current_user->userId;
+            $this->staff = $this->staffTable->getStaffByUser($userId);
+        }
+
+        if(!$this->leaveTable)
+            $this->leaveTable = new LeaveDataAccess($adapter);
+
+        if(!$this->calendarTable)
+            $this->calendarTable = new CalendarDataAccess($adapter);
+
+        $constantTable = new ConstantDataAccess($adapter);
+
+        if(!$this->formulaList){
+            $this->formulaList = $constantTable->getComboByName('payroll_formula', 'payroll');
+        }
+
+        if(!$this->workingHours){
+            $constant = $constantTable->getConstantByName('work_hour');
+            $this->workingHours = $constant->getValue();
+        }
+
+        if(!$this->leaveValues){
+            $constant = $constantTable->getConstantByName('leave_type');
+            $this->leaveValues = $constant->getValue();
+        }
+
+        $constantDataAccess = new ConstantDataAccess($adapter);
+        if(!$this->lateList){
+            $lateData = $constantDataAccess->getConstantByName('late_condition','payroll');
+            $lateList = Json::decode($lateData->getValue());
+            usort($lateList,  function($a, $b){
+                if($a->minute == $b->minute){
+                    return 0;
+                }
+                return $a->minute > $b->minute ? -1 : 1;
+            });
+
+            $this->lateList = $lateList;
+        }
+
+        if(!$this->leaveTypeList){
+            $result = $constantDataAccess->getConstantByName('leave_type');
+            $leaveTypes = json_decode($result->getValue());
+            $comboList = array();
+            foreach($leaveTypes as $leave){
+                $comboList[$leave->id] = $leave->title;
+            }
+            $this->leaveTypeList = $comboList;
+        }
+    }
+
     public function indexAction()
     {
+        $this->init_data();
         $request = $this->getRequest();
-        $attendance = $this->attendanceTable()->checkAttendance($this->getStaff()->getStaffId(), date('Y-m-d', time()));
+        $attendance = $this->attendanceTable()->checkAttendance($this->staff->getStaffId(), date('Y-m-d', time()));
 
         if(!$attendance){
             $attendance = new Attendance();
             $attendance->exchangeArray(array(
-                'staffId' => $this->getStaff()->getStaffId(),
+                'staffId' => $this->staff->getStaffId(),
                 'attendanceDate' => date('Y-m-d', time()),
             ));
         }
 
         $helper = new DashboardHelper();
-        $leaveForm = $helper->getLeaveForm($this->leaveTypeList());
+        $leaveForm = $helper->getLeaveForm($this->leaveTypeList);
         $leave = new Leave();
         $leaveForm->bind($leave);
+
+        $salaryHelper = new PayrollHelper();
+        $salaryForm = $salaryHelper->getForm(array());
 
         if($request->isPost()){
             $post_data = $request->getPost()->toArray();
             $leaveForm->setData($post_data);
             $leaveForm->setInputFilter($helper->getLeaveFilter());
             if($leaveForm->isValid()){
-                $leave->setStaffId($this->getStaff()->getStaffId());
+                $leave->setStaffId($this->staff->getStaffId());
                 $leave->setStatus('R');
-                $this->leaveTable()->saveLeave($leave);
+                $this->leaveTable->saveLeave($leave);
                 $this->flashMessenger()->addWarningMessage('Leave request send to HR.');
                 return $this->redirect()->toRoute('dashboard');
             }
@@ -91,6 +137,11 @@ class DashboardController extends AbstractActionController
         return new ViewModel(array(
             'attendance' => $attendance,
             'leaveForm' => $leaveForm,
+            'salaryForm' => $salaryForm,
+            'lateList' => $this->lateList,
+            'workingHours' => $this->workingHours,
+            'leaveValues' => $this->leaveValues,
+            'staff' => $this->staff
         ));
     }
 
@@ -100,12 +151,12 @@ class DashboardController extends AbstractActionController
 
         if($request->isPost())
         {
-            $attendance = $this->attendanceTable()->checkAttendance($this->getStaff()->getStaffId(), date('Y-m-d', time()));
+            $attendance = $this->attendanceTable()->checkAttendance($this->staff->getStaffId(), date('Y-m-d', time()));
 
             if(!$attendance){
                 $attendance = new Attendance();
                 $attendance->exchangeArray(array(
-                    'staffId' => $this->getStaff()->getStaffId(),
+                    'staffId' => $this->staff->getStaffId(),
                     'attendanceDate' => date('Y-m-d', time()),
                 ));
             }

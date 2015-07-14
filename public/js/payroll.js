@@ -98,12 +98,13 @@
 
         var current_row = $(this);
 
-        current_row.children('td#M_WD').html(0);
-        current_row.children('td#S_WD').html(0);
-        current_row.children('td#Leave').html(0);
-        current_row.children('td#Absent').html(0);
+        current_row.find('td#M_WD').html(0);
+        current_row.find('td#S_WD').html(0);
+        current_row.find('td#Leave').html(0);
+        current_row.find('td#Absent').html(0);
+        current_row.find('td#Per_Day').html(0);
         $.each(payroll_data.lateList, function(idx, late){
-            current_row.children('td#' + late.code + '-' + staffId).html(0);
+            current_row.find('td#' + late.code + '-' + staffId).html(0);
         });
 
         settings.progress(5);
@@ -129,7 +130,7 @@
             }
 
             //Increment to monthly working day
-            current_row.children('td#M_WD').html(++M_WD);
+            current_row.find('td#M_WD').html(++M_WD);
 
             //Check attendance by staff and date
             $.ajax({
@@ -142,7 +143,7 @@
                         //Validate late minutes and update Staff Working Day
                         S_WD += getAttendance(data.result, d.weekday());
                     }
-                    current_row.children('td#S_WD').html(S_WD);
+                    current_row.find('td#S_WD').html(S_WD);
                 }
             });
 
@@ -159,22 +160,21 @@
 
                                 //Update and increment leave count
                                 Leave += leave.value;
-                                current_row.children('td#Leave').html(Leave);
+                                current_row.find('td#Leave').html(Leave);
                             }
                         });
                     }
 
                     //Calculate and update to absent count for staff
                     Absent = M_WD - (S_WD + Leave);
-                    current_row.children('td#Absent').html(Absent);
+                    current_row.find('td#Absent').html(Absent);
                 }
             });
 
             settings.progress(currentProgress);
         }
 
-        current_row.children('td#Per_Day').html(math.round(salary / M_WD, 2));
-
+        current_row.find('td#Per_Day').html(math.round(salary / M_WD, 2));
         settings.progress(100);
     };
 
@@ -182,11 +182,11 @@
     $.fn.calculatePayroll = function(options){
         var default_var = {
             S: parseFloat($(this).attr('data-salary')),
-            M: parseFloat($(this).children('td#M_WD').html()),
-            P: parseFloat($(this).children('td#Per_Day').html()),
-            W: parseFloat($(this).children('td#S_WD').html()),
-            L: parseFloat($(this).children('td#Leave').html()),
-            A: parseFloat($(this).children('td#Absent').html())
+            M: parseFloat($(this).find('td#M_WD').html()),
+            P: parseFloat($(this).find('td#Per_Day').html()),
+            W: parseFloat($(this).find('td#S_WD').html()),
+            L: parseFloat($(this).find('td#Leave').html()),
+            A: parseFloat($(this).find('td#Absent').html())
         };
 
         var lateList = {};
