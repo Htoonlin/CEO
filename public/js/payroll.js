@@ -189,13 +189,11 @@
             A: parseFloat($(this).find('td#Absent').html())
         };
 
-        var lateList = {};
         var staffId = $(this).attr('data-id');
         $.each(payroll_data.lateList, function(idx, late){
             var ptr = '#' + late.code + '-' + staffId;
             var lateCount = parseInt($(ptr).html());
             default_var[late.code] = lateCount;
-            lateList[late.code] = lateCount;
         });
 
         var settings = $.extend({
@@ -208,29 +206,56 @@
             }
         }, options);
 
+        var result = math.eval(settings.formula, default_var);
+        settings.success(result);
+    };
+
+    //Save payroll To Database
+    $.fn.savePayroll = function(options){
+
+        var lateList = {};
+        var staffId = $(this).attr('data-id');
+        var salary = parseFloat($(this).attr('data-salary'));
+        var m_wd = parseFloat($(this).find('td#M_WD').html());
+        var s_wd = parseFloat($(this).find('td#S_WD').html());
+        var leave = parseFloat($(this).find('td#Leave').html());
+        var absent = parseFloat($(this).find('td#Absent').html());
+
+        $.each(payroll_data.lateList, function(idx, late){
+            var ptr = '#' + late.code + '-' + staffId;
+            var lateCount = parseInt($(ptr).html());
+            lateList[late.code] = lateCount;
+        });
+
+        var settings = $.extend({
+            formula : '(S*(W + L)) - ((S * A)',
+            start: moment(),
+            end: moment().subtract(1, 'month'),
+            success: function(data){
+                console.log(data);
+            }
+        }, options);
+
         $.ajax({
             'url': payroll_url.payroll,
             'data': {
-                staffId:settings.staff,
+                staffId: staffId,
                 fromDate:settings.start.format('YYYY-MM-DD'),
                 toDate:settings.end.format('YYYY-MM-DD'),
-                m_wd:default_var.M,
-                s_wd:default_var.W,
-                salary:default_var.S,
-                leave:default_var.L,
-                absent:default_var.A,
+                m_wd:m_wd,
+                s_wd:s_wd,
+                salary:salary,
+                leave:leave,
+                absent:absent,
                 formula:settings.formula,
                 late:lateList
             },
             'type': 'POST',
-            'async': false,
+            'async': true,
             success: function(data){
-                console.log(data)
+                settings.success(data);
             }
         });
-
-        var result = math.eval(settings.formula, default_var);
-        settings.success(result);
-    };
+    }
 
 }(jQuery));

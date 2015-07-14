@@ -34,6 +34,7 @@ $this->headScript()
 
         $('button#btnProcess').hide();
         $('select[name="formula"]').hide();
+        $('button#btnSave').hide();
 
         $.setPayrollData({
             workingHours    : <?= $workingHours ?>,
@@ -123,10 +124,46 @@ $this->headScript()
             });
 
             $('#payrollProcess>.progress-bar').css('width', '100%').html('Completed payroll process.');
-            $('span#current-step').html('Finished!: Payroll process was success.');
-            $('input[name="chkId[]"]').checkbox('uncheck');
+            $('span#current-step').html('Step 3: Ready to save.');
             $(this).hide();
             $('select[name="formula"]').hide();
+            $('button#btnSave').removeAttr('disabled').show();
+        });
+
+        $('button#btnSave').click(function(){
+            var totalProgress = $("#payroll-staffs>tbody").find('input[type="checkbox"]:checked').length;
+            var perStaff = Math.ceil(95/totalProgress);
+
+            if(totalProgress <= 0){
+                alert('Please check at least one.');
+                return;
+            }
+
+            //Restart progress bar
+            $('#payrollProcess>.progress-bar').css('width', '5%').html('5%');
+
+            var currentProgress = 5;
+
+            $("#payroll-staffs>tbody").find('input[type="checkbox"]:checked').each(function(){
+                $(this).closest('tr').savePayroll({
+                    start: moment($('input[name=fromDate]').val(), 'YYYY-MM-DD'),
+                    end: moment($('input[name=toDate]').val(), 'YYYY-MM-DD'),
+                    formula: $('select[name="formula"]').val(),
+                    success: function(data){
+                        currentProgress += perStaff;
+                        var percentage = currentProgress + '%';
+                        $('#payrollProcess>.progress-bar').css('width', percentage).html(percentage);
+                        if(currentProgress >= 100){
+                            $('#payrollProcess>.progress-bar').css('width', '100%').html('Save successful.');
+                            $('span#current-step').html('Finished!: Payroll process was success.');
+                            $('input[name="chkId[]"]').checkbox('uncheck');
+                            $(this).hide();
+                            alert('Save successful.');
+                            window.location.href = '<?= $this->url('hr_payroll'); ?>';
+                        }
+                    }
+                });
+            });
         });
     });
 </script>
@@ -154,6 +191,10 @@ $this->headScript()
                     <button type="button" id="btnProcess" class="btn btn-success" disabled="disabled">
                         <span class="fa fa-play"></span>
                         Run
+                    </button>
+                    <button type="button" id="btnSave" class="btn btn-primary" disabled="disabled">
+                        <span class="glyphicon glyphicon-save"></span>
+                        Save
                     </button>
                     <a class="btn btn-default" href="<?= $this->url('hr_payroll')?>">
                         <span class="fa fa-refresh"></span>
