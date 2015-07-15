@@ -23,7 +23,7 @@ class CompanyHelper{
         $this->dbAdapter=$dbAdapter;
     }
 
-    public function getForm()
+    public function getForm(array $companyTypes, array $statusList)
     {
         if(!$this->form){
             $companyId=new Element\Hidden();
@@ -53,20 +53,13 @@ class CompanyHelper{
             $type->setName("type")
                 ->setLabel('Type')
                 ->setAttribute('class', 'form-control')
-                ->setValueOptions(array(
-                    'A'=>'TypeA',
-                    'B'=>'TypeB',
-                    'C'=>'TypeC',
-                ));
+                ->setValueOptions($companyTypes);
 
             $status=new Element\Select();
             $status->setName("status")
                 ->setLabel('Status')
                 ->setAttribute('class', 'form-control')
-                ->setValueOptions(array(
-                    'A'=>'Active',
-                    'D'=>'Inactive',
-                ));
+                ->setValueOptions($statusList);
 
             $form=new Form();
             $form->setAttribute('class', 'form-horizontal');

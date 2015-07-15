@@ -9,20 +9,23 @@
 namespace CustomerRelation\Helper;
 
 use Zend\Form\Element;
-use Zend\Form\Element\Text;
 use Zend\Form\Form;
 use Zend\InputFilter\FileInput;
-use Zend\InputFilter\Input;
-use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
-use Zend\Validator\Db\NoRecordExists;
-use Zend\Validator\File\IsImage;
+use Zend\Validator\File\Extension;
+
 class ProposalHelper extends Form
 {
+    protected $dbAdapter;
+    public function __construct($dbAdapter)
+    {
+        $this->dbAdapter = $dbAdapter;
+    }
+
     protected $form;
-    public function getForm(array $currencies,array $companies,array $contacts)
+    public function getForm(array $currencies,array $companies,
+                            array $contacts, array $statusList)
     {
         if(!$this->form){
             $hidId=new Element\Hidden();
@@ -47,6 +50,11 @@ class ProposalHelper extends Form
                 ->setName('code')
                 ->setAttribute('class','form-control');
 
+            $txtName=new Element\Text();
+            $txtName->setLabel('Name')
+                ->setName('name')
+                ->setAttribute('class','form-control');
+
             $txtAmount=new Element\Number();
             $txtAmount->setName("amount")
                 ->setLabel('Amount')
@@ -61,7 +69,6 @@ class ProposalHelper extends Form
             $selectCurrency->setName('currencyId')
                 ->setLabel('Currency')
                 ->setAttribute('class','form-control')
-                ->setEmptyOption("---Choose Currency---")
                 ->setValueOptions($currencies);
 
             $txtProposalDate=new Element\Date('proposalDate');
@@ -78,7 +85,7 @@ class ProposalHelper extends Form
             $txtProposalFile->setName('proposalFile')
                 ->setLabel('Upload file');
 
-            $txtNodes=new Element\Text();
+            $txtNodes=new Element\Textarea();
             $txtNodes->setLabel('Notes')
                 ->setName('notes')
                 ->setAttribute('class','form-control');
@@ -97,10 +104,7 @@ class ProposalHelper extends Form
             $txtStatus->setName('status')
                 ->setLabel('Status')
                 ->setAttribute('class','form-control')
-                ->setValueOptions(array(
-                    'A'=>'Active',
-                    'D'=>'Inactive',
-                ));
+                ->setValueOptions($statusList);
 
             $form=new Form();
             $form->setAttribute('class','form-horizontal');
@@ -109,6 +113,7 @@ class ProposalHelper extends Form
             $form->add($txtCompanyId);
             $form->add($txtContactId);
             $form->add($txtCode);
+            $form->add($txtName);
             $form->add($txtAmount);
             $form->add($selectCurrency);
             $form->add($txtProposalDate);
@@ -130,11 +135,9 @@ class ProposalHelper extends Form
         $this->inputFilter=$filter;
     }
     protected $inputFilter;
-    public function getInputFilter($proposalId=0,$code=" ")
+    public function getInputFilter($proposalId=0, $code = "")
     {
         if(!$this->inputFilter){
-            $inputFilter = new InputFilter();
-            $factory     = new InputFactory();
             $filter=new InputFilter();
             $filter->add(array(
                 'name'=>'proposalId',
@@ -156,26 +159,62 @@ class ProposalHelper extends Form
                             'encoding'=>'UTF-8',
                         ),
                     ),
-                ),
-            ));
-            $filter->add(array(
-                'name'=>'notes',
-                'required'=>true,
-                'validators'=>array(
                     array(
-                        'name'=>'StringLength',
-                        'options'=>array(
-                            'max'=>500,
-                            'min'=>1,
-                            'encoding'=>'UTF-8',
+                        'name' => 'Db\NoRecordExists',
+                        'options' => array(
+                            'table' => 'tbl_cr_proposal',
+                            'field' => 'code',
+                            'adapter' => $this->dbAdapter,
+                            'exclude' => array(
+                                'field' => 'proposalId',
+                                'value' => $proposalId
+                            ),
+                            'message' => 'This proposal code is already exists.',
                         ),
                     ),
                 ),
             ));
 
+            $filter->add(array(
+                'name' => 'name',
+                'required' => true,
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'max' => 255,
+                            'min' => 1,
+                            'encoding' => 'UTF-8',
+                        )
+                    )
+                ),
+            ));
+
+            $filter->add(array(
+                'name' => 'amount',
+                'required' => true,
+            ));
+
+            $filter->add(array(
+                'name' => 'proposalDate',
+                'required' => true,
+            ));
+
+            $filter->add(array(
+                'name' => 'notes',
+                'required' => false,
+            ));
+
+            $filter->add(array(
+                'name' => 'group_code',
+                'required' => false,
+            ));
+
             $fileInput = new FileInput('proposalFile');
             $fileInput->setRequired(false);
-
+            $fileInput->getValidatorChain()
+                ->attach(new Extension(array('doc', 'docx', 'pdf')))
+                ->attachByName('filesize', array('max' => '50MB'));
             $fileInput->getFilterChain()->attachByName(
                 'filerenameupload',
                 array(
@@ -186,9 +225,10 @@ class ProposalHelper extends Form
             );
 
             $filter->add($fileInput);
-           $this->InputFilter=$filter;
+           $this->inputFilter = $filter;
         }
-        return $this->InputFilter;
+
+        return $this->inputFilter;
     }
 
 }

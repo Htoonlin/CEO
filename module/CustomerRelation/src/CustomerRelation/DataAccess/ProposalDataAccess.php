@@ -29,42 +29,24 @@ class ProposalDataAccess extends AbstractTableGateway
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Proposal());
         $this->initialize();
     }
-    public function getProposalView($id)
-    {
-        $select=new Select('vw_cr_proposal');
-        $select->where(array('proposalId'=>$id,'proposalBy'=>$this->staffId));
-        $statement=$this->sql->prepareStatementForSqlObject($select);
-        $result=$statement->execute();
-        return $result->current();
-    }
 
-   public function fetchAll($paginated = false, $filter ='', $orderBy= 'proposalDate', $order='ASC')
-   {
-    if($paginated){
-        $select=new Select($this->table);
-        $select->order($orderBy . ' ' . $order);
-        $where=new Where();
-        $where->literal("Concat_ws(' ', proposalId, code) LIKE ?", '%' . $filter . '%')
-            ->and->equalTo('proposalBy',$this->staffId);
-        $select->where($where);
-        $paginatorAdapter=new DbSelect($select, $this->adapter);
-        $paginator=new Paginator($paginatorAdapter);
-        return $paginator;
-    }
-       $proposalView=new TableGateway($this->table, $this->adapter);
-       return $proposalView->select(array('proposalBy'=>$this->staffId));
-   }
-    public function getComboData($key, $value)
+    public function fetchAll($paginated = false, $filter ='', $orderBy= 'proposalDate', $order='ASC')
     {
-        $results=$this->select();
-        $selectData=array();
-        foreach($results as $proposal){
-            $data=$proposal->getArrayCopy();
-            $selectData[$data[$key]]=$data[$value];
+        $view = 'vw_cr_proposal';
+        if($paginated){
+           $select=new Select($view);
+            $select->order($orderBy . ' ' . $order);
+            $where=new Where();
+            $where->literal("Concat_ws(' ', proposalId, code) LIKE ?", '%' . $filter . '%')
+                ->and->equalTo('proposalBy',$this->staffId);
+            $select->where($where);
+            $paginatorAdapter=new DbSelect($select, $this->adapter);
+            $paginator=new Paginator($paginatorAdapter);
+            return $paginator;
         }
-        return $selectData;
+        $proposalView=new TableGateway($view, $this->adapter);
+        return $proposalView->select(array('proposalBy'=>$this->staffId));
     }
-
     public function getProposal($id)
     {
         $id=(int)$id;

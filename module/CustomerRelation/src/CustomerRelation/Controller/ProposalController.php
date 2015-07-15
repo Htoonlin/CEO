@@ -9,6 +9,7 @@
 namespace CustomerRelation\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
+use Application\DataAccess\ConstantDataAccess;
 use Application\Service\SundewExporting;
 use CustomerRelation\DataAccess\ProposalDataAccess;
 use CustomerRelation\Entity\Proposal;
@@ -16,24 +17,13 @@ use CustomerRelation\Helper\ProposalHelper;
 use CustomerRelation\DataAccess\CompanyDataAccess;
 use CustomerRelation\DataAccess\ContactDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
-use Zend\Config\Reader\Json;
-use Zend\Crypt\Password\Apache;
-use Zend\File\Transfer\Adapter\Http;
-use Zend\Filter\File\RenameUpload;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Fieldset;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Validator\Db\NoRecordExists;
-use Zend\Validator\File\FilesSize;
-use Zend\Validator\File\ImageSize;
-use Zend\Validator\File\IsImage;
-use Zend\Validator\File\Size;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+
 class ProposalController extends AbstractActionController
 {
     private $staffId;
-    private $staffName;
     private function proposalTable()
     {
         $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
@@ -42,33 +32,43 @@ class ProposalController extends AbstractActionController
             $staffDataAccess=new StaffDataAccess($adapter);
             $staff=$staffDataAccess->getStaffByUser($userId);
             $this->staffId=boolval($staff)?$staff->getStaffId():0;
-            $this->staffName=boolval($staff)?$staff->getStaffName():'';
         }
         return new ProposalDataAccess($adapter,$this->staffId);
     }
-    private function currencyCombos()
+    private $currencyList;
+    private $companyList;
+    private $contactList;
+    private $statusList;
+
+    private function init_combos()
     {
         $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        $dataAccess=new CurrencyDataAccess($adapter);
-        return $dataAccess->getComboData('currencyId','code');
+        if(!$this->currencyList){
+            $currencyDataAccess = new CurrencyDataAccess($adapter);
+            $this->currencyList = $currencyDataAccess->getComboData('currencyId', 'code');
+        }
+
+        if(!$this->companyList){
+            $companyDataAccess = new CompanyDataAccess($adapter);
+            $this->companyList = $companyDataAccess->getComboData('companyId', 'name');
+        }
+
+        if(!$this->contactList){
+            $contactDataAccess = new ContactDataAccess($adapter);
+            $this->contactList = $contactDataAccess->getComboData('contactId', 'name');
+        }
+
+        if(!$this->statusList){
+            $constantDataAccess = new ConstantDataAccess($adapter);
+            $this->statusList = $constantDataAccess->getComboByName('default_status');
+        }
     }
-    private function companyCombos()
-    {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        $dataAccess=new CompanyDataAccess($adapter);
-        return $dataAccess->getComboData('companyId','name');
-    }
-    private function contactCombos()
-    {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        $dataAccess=new ContactDataAccess($adapter);
-        return $dataAccess->getComboData('contactId','name');
-    }
+
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page',1);
         $sort = $this->params()->fromQuery('sort','proposalDate');
-        $sortBy = $this->params()->fromQuery('by','dsc');
+        $sortBy = $this->params()->fromQuery('by','desc');
         $filter = $this->params()->fromQuery('filter','');
         $pageSize = (int)$this->params()->fromQuery('size', 10);
 
@@ -85,52 +85,31 @@ class ProposalController extends AbstractActionController
     }
     public function detailAction()
     {
-        $id=(int)$this->params()->fromRoute('id',0);
-        $proposal=$this->proposalTable()->getProposalView($id);
-
-        if($proposal==null){
-            $this->flashMessenger()->addMessage('Invalid proposal voucher.');
-            return $this->redirect()->toRoute('cr_proposal');
-        }
-        return new ViewModel(array(
-            'proposal'=>$proposal,
-            'staffName'=>$this->staffName,
-        ));
-    }
-    public function requestAction()
-    {
+        $this->init_combos();
         $id = (int)$this->params()->fromRoute('id', 0);
-        $helper = new ProposalHelper($this->proposalTable());
-        $form = $helper->getForm($this->currencyCombos(),$this->companyCombos(),$this->contactCombos());
-        $proposal = $this->proposalTable()->getProposalView($id);
-        $isEdit = true;
-        $hasFile = 'false';
-        $currentFile = "";
 
+        $helper = new ProposalHelper($this->proposalTable()->getAdapter());
+        $form = $helper->getForm($this->currencyList, $this->companyList,
+            $this->contactList, $this->statusList);
+        $proposal = $this->proposalTable()->getProposal($id);
+        $isEdit = true;
         if(!$proposal){
-            $isEdit = false;
+            $isEdit= false;
             $proposal = new Proposal();
-        }else{
-            $hasFile = is_null($proposal->getProposalFile()) ? 'false' : 'true';
-            $currentFile = $proposal->getProposalFile();
         }
+
         $form->bind($proposal);
         $request = $this->getRequest();
-
         if($request->isPost()){
-            $post_data = array_merge_recursive($request->getPost()->toArray(),
-                $request->getFiles()->toArray());
+            $post_data = array_merge_recursive(
+                $request->getPost()->toArray(),
+            $request->getFiles()->toArray());
             $form->setData($post_data);
-            $form->setInputFilter($helper->getInputFilter(($isEdit ? $post_data['proposalId'] : 0), $post_data['code']));
+            $form->setInputFilter($helper->getInputFilter($id, $post_data['code']));
+            $post_data['proposalBy'] = $this->staffId;
             if($form->isValid()){
-                $file = $proposal->getProposalFile();
-                if($post_data['proposalFile'] ==  'false' && empty($file['name'])){
-                    $proposal->setContractFile(null);
-                }else if($post_data['proposalFile'] == 'true' && empty($file['name']) && $isEdit){
-                    $proposal->setProposalFile($currentFile);
-                }
                 $this->proposalTable()->saveProposal($proposal);
-                $this->flashMessenger()->addMessage('Save successful');
+                $this->flashMessenger()->addSuccessMessage('Save successful.');
                 return $this->redirect()->toRoute('cr_proposal');
             }
         }
@@ -138,11 +117,8 @@ class ProposalController extends AbstractActionController
         return new ViewModel(array(
             'form' => $form,
             'id' => $id,
-            'proposal'=>$proposal,
-            'isEdit' => $isEdit,
-            'hasFile' => $hasFile,
-            'staffName'=>$this->staffName,));
-
+            'isEdit' => $isEdit
+        ));
     }
 
     public function deleteAction()

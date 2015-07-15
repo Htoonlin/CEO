@@ -7,7 +7,7 @@
  * Zend Code Completion
  * @var $this \Zend\View\Renderer\PhpRenderer
  */
-$title="Proposals";
+$title="Proposal";
 $this->headTitle($title);
 $flashMesssages=$this->flashMessenger()->getMessages();
 ?>
@@ -65,7 +65,7 @@ $flashMesssages=$this->flashMessenger()->getMessages();
             <div class="col-md-4 col-md-offset-5">
                 <div class="text-right">
                     <div class="btn-group">
-                        <a href="<?php echo $this->url("cr_proposal",array('action'=>'request','id'=>0));?>" class="btn btn-default">
+                        <a href="<?php echo $this->url("cr_proposal",array('action'=>'detail','id'=>0));?>" class="btn btn-default">
                             <span class="glyphicon glyphicon-file"></span>
                             New
                         </a>
@@ -86,41 +86,38 @@ $flashMesssages=$this->flashMessenger()->getMessages();
         <div class="grid">
             <table class="table table-bordered table-striped table-hover">
                 <thead>
-                <tr>
-                    <th width="50px">
-                        <div class="checkbox" style="margin: 0">
-                            <label class="checkbox-custom" data-initialize="checkbox">
-                                <input type="checkbox" id="chkAll" />
-                            </label>
-                        </div>
-                    </th>
-                    <th width="160px">
-                        <?php echo $this->gridHeaderCell('Proposal code','code');?>
-                    </th>
-                    <th width="80px">
-                        <?php echo $this->gridHeaderCell('Amount','amount');?>
-                    </th>
-                    <th class="120px">
-                        <?php echo $this->gridHeaderCell('Proposal Date','proposalDate');?>
-                    </th>
-                    <th class="160px">
-                        <?php echo $this->gridHeaderCell('Proposal Note','notes');?>
-                    </th>
-                    <th class="120px">
-                        <?php echo $this->gridHeaderCell('Group Code','group_code');?>
-                    </th>
-                    <th class="120px">
-                        <?php echo $this->gridHeaderCell('Status','status');?>
-                    </th>
-                    <th class="120px">
-                        <?php echo $this->gridHeaderCell('File','proposalFile');?>
-                    </th>
-                </tr>
+                    <tr>
+                        <th width="50px" class="text-center">
+                            <div class="checkbox" style="margin: 0">
+                                <label class="checkbox-custom" data-initialize="checkbox">
+                                    <input type="checkbox" id="chkAll" />
+                                </label>
+                            </div>
+                        </th>
+                        <th width="180px">
+                            <?php echo $this->gridHeaderCell('Code','code');?>
+                        </th>
+                        <th>
+                            <?php echo $this->gridHeaderCell('Name','name');?>
+                        </th>
+                        <th width="150px">
+                            <?php echo $this->gridHeaderCell('Date','proposalDate');?>
+                        </th>
+                        <th width="180px">
+                            <?php echo $this->gridHeaderCell('Amount','amount');?>
+                        </th>
+                        <th width="120px">
+                            <?php echo $this->gridHeaderCell('Status','status');?>
+                        </th>
+                        <th width="80px" class="text-center">
+                            File
+                        </th>
+                    </tr>
                 </thead>
                 <tbody>
                 <?php foreach($paginator as $proposal) : ?>
                     <tr>
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox" style="margin: 0">
                                 <label class="checkbox-custom" data-initialize="checkbox">
                                     <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($proposal->proposalId); ?>" />
@@ -133,18 +130,15 @@ $flashMesssages=$this->flashMessenger()->getMessages();
                             </a>
                         </td>
                         <td>
-                            <?php echo $this->escapeHtml($proposal->amount);?>
+                            <?php echo $this->escapeHtml($proposal->name);?>
                         </td>
-                        <th>
+                        <td>
                             <?php echo $this->escapeHtml($proposal->proposalDate);?>
-                        </th>
-                        <th>
-                            <?php echo $this->escapeHtml($proposal->notes);?>
-                        </th>
-                        <th>
-                            <?php echo $this->escapeHtml($proposal->group_code);?>
-                        </th>
-                        <th>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($proposal->amount) . ' ' . $proposal->currencyCode;?>
+                        </td>
+                        <td>
                             <?php
                             switch($proposal->status){
                                 case 'A':
@@ -158,10 +152,12 @@ $flashMesssages=$this->flashMessenger()->getMessages();
                                     break;
                             }
                             ?>
-                        </th>
-                        <th>
-                            <?php echo $this->escapeHtml($proposal->proposalFile);?>
-                        </th>
+                        </td>
+                        <td class="text-center">
+                            <a href="#" class="btn btn-info btn-sm" title="Download">
+                                <span class="glyphicon glyphicon-download"></span>
+                            </a>
+                        </td>
                     </tr>
                 <?php endforeach;?>
                 </tbody>

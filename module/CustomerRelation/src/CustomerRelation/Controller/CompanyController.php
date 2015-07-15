@@ -8,6 +8,7 @@
 
 namespace CustomerRelation\Controller;
 
+use Application\DataAccess\ConstantDataAccess;
 use Application\Service\SundewExporting;
 use CustomerRelation\Entity\Company;
 use CustomerRelation\Helper\CompanyHelper;
@@ -24,6 +25,20 @@ class CompanyController extends AbstractActionController
         $adapter=$sm->get('Zend\Db\Adapter\Adapter');
         $dataAccess=new CompanyDataAccess($adapter);
         return $dataAccess;
+    }
+
+    private $statusList;
+    private $companyTypes;
+    private function init_combos()
+    {
+        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $constant = new ConstantDataAccess($adapter);
+
+        if(!$this->statusList)
+            $this->statusList = $constant->getComboByName('default_status');
+
+        if(!$this->companyTypes)
+            $this->companyTypes = $constant->getComboByName('company_types');
     }
 
     public function jsonAllAction()
@@ -60,9 +75,10 @@ class CompanyController extends AbstractActionController
 
     public function detailAction()
     {
+        $this->init_combos();
         $id=(int)$this->params()->fromRoute('id',0);
         $helper=new CompanyHelper($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
-        $form=$helper->getForm();
+        $form=$helper->getForm($this->companyTypes, $this->statusList);
         $company=$this->companyTable()->getCompany($id);
 
         $isEdit=true;
