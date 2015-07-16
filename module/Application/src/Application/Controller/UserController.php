@@ -6,7 +6,6 @@ use Application\DataAccess\ConstantDataAccess;
 use Application\DataAccess\RoleDataAccess;
 use Application\DataAccess\UserDataAccess;
 use Application\Entity\User;
-use Application\Helper\PasswordForm;
 use Application\Helper\PasswordHelper;
 use Application\Helper\UserHelper;
 use Application\Service\SundewExporting;
@@ -239,14 +238,14 @@ class UserController extends AbstractActionController
     {
         $message = "";
         $request = $this->getRequest();
-        $password = new PasswordForm();
-        $builder = new AnnotationBuilder();
-        $form = $builder->createForm($password);
-        $form->setAttribute('class', 'form-horizontal');
+
+        $helper = new PasswordHelper();
+        $form = $helper->getForm();
 
         if($request->isPost())
         {
             $form->setData($request->getPost());
+            $form->setInputFilter($helper->getInputFilter());
             if($form->isValid()){
                 $user = $this->userTable()->getUser($this->layout()->current_user->userId);
                 $current = $form->get('currentPassword', '');

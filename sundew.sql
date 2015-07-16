@@ -155,7 +155,7 @@ CREATE TABLE `tbl_constant` (
   `value` varchar(500) NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`constantId`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -254,16 +254,17 @@ CREATE TABLE `tbl_cr_proposal` (
   `companyId` int(11) NOT NULL,
   `contactId` int(11) NOT NULL,
   `code` varchar(50) COLLATE utf8_bin NOT NULL,
+  `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `amount` bigint(20) NOT NULL,
   `currencyId` int(11) NOT NULL,
   `proposalDate` date NOT NULL,
   `proposalFile` varchar(500) COLLATE utf8_bin NOT NULL,
   `notes` varchar(500) COLLATE utf8_bin DEFAULT NULL,
   `proposalBy` int(11) NOT NULL,
-  `group_code` varchar(50) COLLATE utf8_bin NOT NULL,
+  `group_code` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`proposalId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -686,6 +687,7 @@ SET character_set_client = utf8;
  1 AS `companyId`,
  1 AS `contactId`,
  1 AS `code`,
+ 1 AS `name`,
  1 AS `amount`,
  1 AS `currencyId`,
  1 AS `currencyCode`,
@@ -935,10 +937,10 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
 /*!50001 SET character_set_client      = utf8mb4 */;
 /*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `vw_cr_proposal` AS select `tbl_cr_proposal`.`proposalId` AS `proposalId`,`tbl_cr_proposal`.`companyId` AS `companyId`,`tbl_cr_proposal`.`contactId` AS `contactId`,`tbl_cr_proposal`.`code` AS `code`,`tbl_cr_proposal`.`amount` AS `amount`,`tbl_account_currency`.`currencyId` AS `currencyId`,`tbl_account_currency`.`code` AS `currencyCode`,`tbl_cr_proposal`.`proposalDate` AS `proposalDate`,`tbl_cr_proposal`.`proposalFile` AS `proposalFile`,`tbl_cr_proposal`.`notes` AS `notes`,`tbl_cr_proposal`.`proposalBy` AS `proposalBy`,`tbl_cr_proposal`.`group_code` AS `group_code`,`tbl_cr_proposal`.`status` AS `status` from (`tbl_cr_proposal` join `tbl_account_currency` on((`tbl_cr_proposal`.`currencyId` = `tbl_account_currency`.`currencyId`))) */;
+/*!50001 VIEW `vw_cr_proposal` AS select `tbl_cr_proposal`.`proposalId` AS `proposalId`,`tbl_cr_proposal`.`companyId` AS `companyId`,`tbl_cr_proposal`.`contactId` AS `contactId`,`tbl_cr_proposal`.`code` AS `code`,`tbl_cr_proposal`.`name` AS `name`,`tbl_cr_proposal`.`amount` AS `amount`,`tbl_account_currency`.`currencyId` AS `currencyId`,`tbl_account_currency`.`code` AS `currencyCode`,`tbl_cr_proposal`.`proposalDate` AS `proposalDate`,`tbl_cr_proposal`.`proposalFile` AS `proposalFile`,`tbl_cr_proposal`.`notes` AS `notes`,`tbl_cr_proposal`.`proposalBy` AS `proposalBy`,`tbl_cr_proposal`.`group_code` AS `group_code`,`tbl_cr_proposal`.`status` AS `status` from (`tbl_cr_proposal` join `tbl_account_currency` on((`tbl_cr_proposal`.`currencyId` = `tbl_account_currency`.`currencyId`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1060,4 +1062,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-14 18:30:01
+-- Dump completed on 2015-07-15 18:30:02

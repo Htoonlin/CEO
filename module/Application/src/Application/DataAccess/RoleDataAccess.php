@@ -46,7 +46,7 @@ class RoleDataAccess extends AbstractTableGateway
     public function getRole($id)
     {
         $id = (int)$id;
-        $rowset = $this->select(array('id' => $id));
+        $rowset = $this->select(array('roleId' => $id));
         $row = $rowset->current();
         if(!$row){
             throw new \Exception("Could not find row $id");
@@ -63,7 +63,7 @@ class RoleDataAccess extends AbstractTableGateway
         $resultList = array();
         foreach($results as $role)
         {
-            $children = $this->getChildren($role->getId(), $parentName);
+            $children = $this->getChildren($role->getRoleId(), $parentName);
             if(!empty($children)){
                 $role->setChildren($children);
             }
@@ -74,17 +74,17 @@ class RoleDataAccess extends AbstractTableGateway
 
     public function saveRole(Role $role)
     {
-        $id = $role->getId();
+        $id = $role->getRoleId();
         $data = $role->getArrayCopy();
 
         if($id > 0){
-            $this->update($data, array('id' => $id));
+            $this->update($data, array('roleId' => $id));
         }else{
-            unset($data['id']);
+            unset($data['roleId']);
             $this->insert($data);
         }
-        if(!$role->getId()){
-            $role->setId($this->getLastInsertValue());
+        if(!$role->getRoleId()){
+            $role->setRoleId($this->getLastInsertValue());
         }
         return $role;
     }
@@ -93,8 +93,8 @@ class RoleDataAccess extends AbstractTableGateway
     {
         $results = $this->select(array("parentId" => $id));
         foreach($results as $role){
-            $this->deleteRole($role->getId());
+            $this->deleteRole($role->getRoleId());
         }
-        $this->delete(array('id' => (int)$id));
+        $this->delete(array('roleId' => (int)$id));
     }
 }

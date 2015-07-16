@@ -24,11 +24,9 @@ class Constant implements ArraySerializableInterface{
     public function getConstantId(){return $this->constantId;}
     public function setConstantId($value){$this->constantId=$value;}
 
-
     protected $name;
     public function getName(){return $this->name;}
     public function setName($value){$this->name=$value;}
-
 
     protected $value;
     public function getValue(){return $this->value;}

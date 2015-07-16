@@ -22,7 +22,7 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js');
     <div class="col-md-8">
         <?php
         echo $this->form()->openTag($form);
-        echo $this->formHorizontal($form->get('id'));
+        echo $this->formHorizontal($form->get('roleId'));
         echo $this->formHorizontal($form->get('name'));
         echo $this->formHorizontal($form->get('description'));
         ?>
@@ -31,7 +31,7 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js');
             <div class="col-sm-9" id="parentRole">
                 <script type="text/javascript">
                     role_choosed = function(value){
-                        $currentId = $("input[name=id]").val();
+                        $currentId = $("input[name=roleId]").val();
                         if(value == $currentId){
                             alert("Parent can't same with current role.");
                             $("input[name=parentId]").val("");

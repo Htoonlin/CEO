@@ -13,9 +13,9 @@ use Zend\Stdlib\ArraySerializableInterface;
 
 class Role implements TreeViewEntityInterface, ArraySerializableInterface
 {
-    protected $id;
-    public function getId(){return $this->id;}
-    public function setId($id){$this->id = $id;}
+    protected $roleId;
+    public function getRoleId(){return $this->roleId;}
+    public function setRoleId($value){$this->roleId = $value;}
 
     protected $name;
     public function getName(){return $this->name;}
@@ -43,7 +43,7 @@ class Role implements TreeViewEntityInterface, ArraySerializableInterface
 
     public function exchangeArray(array $data)
     {
-        $this->id = (!empty($data['id'])) ? $data['id'] : null;
+        $this->roleId = (!empty($data['roleId'])) ? $data['roleId'] : null;
         $this->name = (!empty($data['name'])) ? $data['name'] : null;
         $this->description = (!empty($data['description'])) ? $data['description'] : null;
         $this->parentId = (!empty($data['parentId'])) ? $data['parentId'] : null;
@@ -55,7 +55,7 @@ class Role implements TreeViewEntityInterface, ArraySerializableInterface
     public function getArrayCopy()
     {
         return array(
-            "id" => $this->id,
+            "roleId" => $this->roleId,
             "name" => $this->name,
             "description" => $this->description,
             "parentId" => $this->parentId,
@@ -92,11 +92,11 @@ class Role implements TreeViewEntityInterface, ArraySerializableInterface
 
     public function getUrl()
     {
-        return "/role/index/" . $this->id;
+        return "/role/index/" . $this->roleId;
     }
 
     public function getValue()
     {
-        return $this->id;
+        return $this->roleId;
     }
 }

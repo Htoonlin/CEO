@@ -16,18 +16,7 @@ use CustomerRelation\Helper\ContractHelper;
 use CustomerRelation\DataAccess\CompanyDataAccess;
 use CustomerRelation\DataAccess\ContactDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
-use Zend\Config\Reader\Json;
-use Zend\Crypt\Password\Apache;
-use Zend\File\Transfer\Adapter\Http;
-use Zend\Filter\File\RenameUpload;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Fieldset;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Validator\Db\NoRecordExists;
-use Zend\Validator\File\FilesSize;
-use Zend\Validator\File\ImageSize;
-use Zend\Validator\File\IsImage;
-use Zend\Validator\File\Size;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 class ContractController extends AbstractActionController

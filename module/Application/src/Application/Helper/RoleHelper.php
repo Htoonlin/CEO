@@ -24,7 +24,7 @@ class RoleHelper
         $form->setAttribute('class', 'form-horizontal');
         $form->setAttribute('role','form');
         $form->add(array(
-            'name' => 'id',
+            'name' => 'roleId',
             'type' => 'Hidden',
         ));
         $form->add(array(
@@ -92,7 +92,7 @@ class RoleHelper
         $filter = new InputFilter();
 
         $filter->add(array(
-            'name' => 'id',
+            'name' => 'roleId',
             'required' => true,
             'filters' => array(
                 array('name' => 'Int'),
