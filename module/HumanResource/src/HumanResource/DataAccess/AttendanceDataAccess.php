@@ -8,18 +8,16 @@
 
 namespace HumanResource\DataAccess;
 
+use Application\Service\SundewTableGateway;
 use HumanResource\Entity\Attendance;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
-use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Paginator\Adapter\DbSelect;
-use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
-class AttendanceDataAccess extends AbstractTableGateway{
+class AttendanceDataAccess extends SundewTableGateway{
 
     protected $boardView = 'vw_hr_attendance';
 
@@ -46,14 +44,7 @@ class AttendanceDataAccess extends AbstractTableGateway{
     {
         if($paginated)
         {
-            $select = new Select($this->boardView);
-            $select->order($orderBy . ' ' . $order);
-            $where = new Where();
-            $where->literal("concat_ws(' ', StaffCode, StaffName, attendanceDate) LIKE ?", '%' . $filter . '%');
-            $select->where($where);
-            $paginatorAdapter = new DbSelect($select, $this->adapter);
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
+            return $this->paginate($filter, $orderBy, $order, $this->boardView);
         }
 
         $attendanceBoard = new TableGateway($this->boardView, $this->adapter);

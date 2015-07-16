@@ -10,6 +10,7 @@ namespace Application\DataAccess;
 
 
 use Application\Entity\User;
+use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
@@ -20,7 +21,7 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
-class UserDataAccess extends AbstractTableGateway
+class UserDataAccess extends SundewTableGateway
 {
     public function __construct(Adapter $dbAdapter)
     {
@@ -33,14 +34,7 @@ class UserDataAccess extends AbstractTableGateway
     {
         $view = 'vw_user';
         if($paginated){
-            $select = new Select($view);
-            $select->order($orderBy . ' ' . $order);
-            $where = new Where();
-            $where->literal("Concat_ws(' ',userName, description, rolename) LIKE ?", '%' . $filter . '%');
-            $select->where($where);
-            $paginatorAdapter = new DbSelect($select, $this->adapter);
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
+            return $this->paginate($filter, $orderBy, $order, $view);
         }
 
         $userView = new TableGateway($view, $this->adapter);

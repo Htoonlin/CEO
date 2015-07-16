@@ -9,6 +9,7 @@
 namespace Application\DataAccess;
 
 use Application\Entity\Menu;
+use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
@@ -16,7 +17,7 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\View\Helper\EscapeHtml;
 
-class MenuDataAccess extends AbstractTableGateway
+class MenuDataAccess extends SundewTableGateway
 {
     public function __construct(Adapter $dbAdapter)
     {

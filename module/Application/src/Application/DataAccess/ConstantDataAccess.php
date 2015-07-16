@@ -9,6 +9,7 @@
 namespace Application\DataAccess;
 
 use Application\Entity\Constant;
+use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
@@ -19,7 +20,7 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
-class ConstantDataAccess extends AbstractTableGateway {
+class ConstantDataAccess extends SundewTableGateway {
 
     public function __construct(Adapter $dbAdapter)
     {
@@ -31,14 +32,7 @@ class ConstantDataAccess extends AbstractTableGateway {
     public function fetchAll($paginated=false,$filter = '',$orderBy='name',$order='ASC')
     {
         if($paginated){
-            $select = new Select($this->table);
-            $select->order($orderBy . ' ' . $order);
-            $where = new Where();
-            $where->literal("Concat_ws(' ',name, value, group_code) LIKE ?", '%' . $filter . '%');
-            $select->where($where);
-            $paginatorAdapter = new DbSelect($select, $this->adapter);
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
+            return $this->paginate($filter, $orderBy, $order);
         }
         return $this->select();
     }
@@ -48,7 +42,6 @@ class ConstantDataAccess extends AbstractTableGateway {
         if($result){
             return get_object_vars(json_decode($result->getValue()));
         }
-
         return array();
     }
     public function getDataByGroupCode($group_code)

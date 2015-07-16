@@ -8,17 +8,15 @@
 
 namespace CustomerRelation\DataAccess;
 
+use Application\Service\SundewTableGateway;
 use CustomerRelation\Entity\Contract;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Where;
-use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Paginator\Adapter\DbSelect;
-use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
-class ContractDataAccess extends AbstractTableGateway
+
+class ContractDataAccess extends SundewTableGateway
 {
     protected $staffId;
     public function __construct(Adapter $dbAdapter,$staffId)
@@ -40,14 +38,7 @@ class ContractDataAccess extends AbstractTableGateway
     public function fetchAll($paginated = false, $filter ='', $orderBy= 'contractBy', $order='ASC')
     {
         if($paginated){
-            $select=new Select($this->table);
-            $select->order($orderBy . ' ' . $order);
-            $where=new Where();
-            $where->literal("Concat_ws(' ', contractId, code) LIKE ?", '%' . $filter . '%');
-            $select->where($where);
-            $paginatorAdapter=new DbSelect($select, $this->adapter);
-            $paginator=new Paginator($paginatorAdapter);
-            return $paginator;
+            $this->paginate($filter, $orderBy, $order);
         }
         $contractView=new TableGateway($this->table, $this->adapter);
         return $contractView->select(array('contract'=>$this->staffId));

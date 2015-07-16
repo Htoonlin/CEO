@@ -8,18 +8,17 @@
 
 namespace HumanResource\DataAccess;
 
+use Application\Service\SundewTableGateway;
 use HumanResource\Entity\Position;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
-use Zend\Db\TableGateway\AbstractTableGateway;
-use Zend\Db\TableGateway\TableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 
-class PositionDataAccess extends AbstractTableGateway{
+class PositionDataAccess extends SundewTableGateway{
     public function __construct(Adapter $dbAdapter)
     {
         $this->table="tbl_hr_position";
@@ -31,14 +30,7 @@ class PositionDataAccess extends AbstractTableGateway{
     public function fetchAll($paginated=false,$filter='',$orderBy='name',$order='ASC')
     {
         if($paginated){
-            $select = new Select($this->table);
-            $select->order($orderBy . ' ' . $order);
-            $where = new Where();
-            $where->literal("Concat_ws(' ',name, max_salary, min_salary) LIKE ?", '%' . $filter . '%');
-            $select->where($where);
-            $paginatorAdapter = new DbSelect($select, $this->adapter);
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
+            return $this->paginate($filter, $orderBy, $order);
         }
         return $this->select();
     }

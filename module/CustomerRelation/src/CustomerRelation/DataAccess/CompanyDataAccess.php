@@ -8,18 +8,17 @@
 
 namespace CustomerRelation\DataAccess;
 
+use Application\Service\SundewTableGateway;
 use CustomerRelation\Entity\Company;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
-use Zend\Db\TableGateway\AbstractTableGateway;
-use Zend\Db\TableGateway\TableGateway;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Db\Sql\Where;
 
-class CompanyDataAccess extends AbstractTableGateway
+class CompanyDataAccess extends SundewTableGateway
 {
     public function __construct(Adapter $dbAdapter)
     {
@@ -32,15 +31,7 @@ class CompanyDataAccess extends AbstractTableGateway
     public function fetchAll($paginated=false, $filter='', $orderBy='name', $order='ASC')
     {
         if($paginated){
-            $select=new Select($this->table);
-            $select->order($orderBy. ' '. $order);
-            $where=new Where();
-            $where->literal("Concat_ws(' ',name,phone,address,website) LIKE ?", '%'.$filter.'%');
-            $select->where($where);
-            $select->where($where);
-            $paginatorAdapter=new DbSelect($select, $this->adapter);
-            $paginator=new Paginator($paginatorAdapter);
-            return $paginator;
+            return $this->paginate($filter, $orderBy, $order);
         }
         return $this->select();
 

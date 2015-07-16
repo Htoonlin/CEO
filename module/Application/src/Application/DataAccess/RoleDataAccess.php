@@ -9,13 +9,14 @@
 namespace Application\DataAccess;
 
 use Application\Entity\Role;
+use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
-class RoleDataAccess extends AbstractTableGateway
+class RoleDataAccess extends SundewTableGateway
 {
     public function __construct(Adapter $dbAdapter)
     {

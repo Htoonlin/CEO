@@ -8,6 +8,7 @@
 
 namespace Account\DataAccess;
 use Account\Entity\Payable;
+use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Expression;
@@ -18,7 +19,7 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
-class PayableDataAccess extends AbstractTableGateway
+class PayableDataAccess extends SundewTableGateway
 {
     protected $staffId;
     public function __construct(Adapter $dbAdapter,$staffId)
@@ -53,12 +54,10 @@ class PayableDataAccess extends AbstractTableGateway
             $select=new Select($view);
             $select->order($orderBy . ' ' . $order);
             $where=new Where();
-            $where->literal("Concat_ws(' ',voucherNo,description, accountType) LIKE ?",'%'.$filter.'%')
+            $where->literal("concat_ws(' ',description, voucherNo, Type, amount, voucherDate, currencyCode) LIKE ?",'%'.$filter.'%')
                 ->and->equalTo('withdrawBy',$this->staffId);
             $select->where($where);
-            $paginatorAdapter=new DbSelect($select,$this->adapter);
-            $paginator=new Paginator($paginatorAdapter);
-            return $paginator;
+            return $this->paginateWith($select);
         }
         $tableGateway=new TableGateway($view,$this->adapter);
         return $tableGateway->select(array('withdrawBy'=>$this->staffId));

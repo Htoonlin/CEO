@@ -8,17 +8,14 @@
 
 namespace CustomerRelation\DataAccess;
 
+use Application\Service\SundewTableGateway;
 use CustomerRelation\Entity\Proposal;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
-use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Where;
-use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Paginator\Adapter\DbSelect;
-use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
-class ProposalDataAccess extends AbstractTableGateway
+
+class ProposalDataAccess extends SundewTableGateway
 {
     protected $staffId;
     public function __construct(Adapter $dbAdapter,$staffId)
@@ -34,15 +31,7 @@ class ProposalDataAccess extends AbstractTableGateway
     {
         $view = 'vw_cr_proposal';
         if($paginated){
-           $select=new Select($view);
-            $select->order($orderBy . ' ' . $order);
-            $where=new Where();
-            $where->literal("Concat_ws(' ', proposalId, code) LIKE ?", '%' . $filter . '%')
-                ->and->equalTo('proposalBy',$this->staffId);
-            $select->where($where);
-            $paginatorAdapter=new DbSelect($select, $this->adapter);
-            $paginator=new Paginator($paginatorAdapter);
-            return $paginator;
+           return $this->paginate($filter, $orderBy, $order, $view);
         }
         $proposalView=new TableGateway($view, $this->adapter);
         return $proposalView->select(array('proposalBy'=>$this->staffId));

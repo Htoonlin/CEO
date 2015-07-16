@@ -9,6 +9,7 @@
 namespace Application\DataAccess;
 
 use Application\Entity\Calendar;
+use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
@@ -24,7 +25,7 @@ abstract class CalendarType
     const holiday_weekly = 'holiday_w';
 }
 
-class CalendarDataAccess extends AbstractTableGateway
+class CalendarDataAccess extends SundewTableGateway
 {
     public function __construct(Adapter $dbAdapter)
     {

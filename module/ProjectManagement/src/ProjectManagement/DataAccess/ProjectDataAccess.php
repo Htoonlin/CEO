@@ -8,6 +8,7 @@
 
 namespace ProjectManagement\DataAccess;
 
+use Application\Service\SundewTableGateway;
 use ProjectManagement\Entity\Project;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
@@ -18,7 +19,7 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
-class ProjectDataAccess extends AbstractTableGateway{
+class ProjectDataAccess extends SundewTableGateway{
     public function __construct(Adapter $dbAdapter){
         $this->table="tbl_pm_project";
         $this->adapter=$dbAdapter;
@@ -30,16 +31,7 @@ class ProjectDataAccess extends AbstractTableGateway{
         $view='vw_pm_project';
 
         if($paginated){
-            $select=new Select($view);
-            $select->order($orderBy . ' ' . $order);
-
-            $where=new Where();
-            $where->literal("Concat_ws(' ', code, name, description, startDate, endDate, remark, group_code) LIKE ?",'%' . $filter . '%');
-
-            $select->where($where);
-            $paginatorAdapter=new DbSelect($select, $this->adapter);
-            $paginator=new Paginator($paginatorAdapter);
-            return $paginator;
+           return $this->paginate($filter, $orderBy, $order, $view);
         }
 
         return $this->select();

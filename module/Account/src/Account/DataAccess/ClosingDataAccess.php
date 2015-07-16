@@ -10,6 +10,7 @@ namespace Account\DataAccess;
 
 
 use Account\Entity\Closing;
+use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Predicate\Expression;
@@ -21,7 +22,7 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
-class ClosingDataAccess extends AbstractTableGateway
+class ClosingDataAccess extends SundewTableGateway
 {
     private $view = 'vw_account_closing';
     public function __construct(Adapter $dbAdapter)
@@ -42,10 +43,7 @@ class ClosingDataAccess extends AbstractTableGateway
                 $where->equalTo('currencyId', $currency);
                 $select->where($where);
             }
-            $paginatorAdapter=new DbSelect($select, $this->adapter);
-            $paginator=new Paginator($paginatorAdapter);
-            return $paginator;
-
+            return $this->paginateWith($select);
         }
         $tableGateway = new TableGateway($this->view, $this->adapter);
         return $tableGateway->select();

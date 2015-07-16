@@ -10,6 +10,7 @@ namespace Account\DataAccess;
 
 use Account\Entity\Closing;
 use Account\Entity\Voucher;
+use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
@@ -18,7 +19,7 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 
-class VoucherDataAccess extends AbstractTableGateway
+class VoucherDataAccess extends SundewTableGateway
 {
     public function __construct(Adapter $dbAdapter)
     {
@@ -34,11 +35,9 @@ class VoucherDataAccess extends AbstractTableGateway
             $select->order($orderBy . ' ' . $order);
             $where = new Where();
             $where->equalTo('status', 'R')
-                ->AND->literal("Concat_ws(' ',voucherNo,  accountType) LIKE ?", '%' . $filter . '%');
+                ->AND->literal("concat_ws(' ',requester, description, voucherNo, accountType, amount, voucherDate, currency) LIKE ?", '%' . $filter . '%');
             $select->where($where);
-            $paginatorAdapter = new DbSelect($select, $this->adapter);
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
+            return $this->paginateWith($select);
         }
         return $this->select();
     }
@@ -87,12 +86,11 @@ class VoucherDataAccess extends AbstractTableGateway
             $where = new Where();
             $where->in('status', array('A', 'C', 'F'))
                 ->AND->between('approvedDate', $fromDate, $toDate)
-                ->AND->literal("Concat_ws(' ', type,  voucherNo, requester, accountType, description, amount, currency) LIKE ?", '%' . $filter . '%');
+                ->AND->literal("concat_ws(' ',requester, description, voucherNo, accountType, amount, voucherDate, currency) LIKE ?", '%' . $filter . '%');
             $select->where($where);
             $select->order($orderBy . ' ' . $order);
-            $paginatorAdapter = new DbSelect($select, $this->adapter);
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
+
+            return $this->paginateWith($select);
         }
 
         $results = $this->select(function (Select $select) use ($fromDate, $toDate){

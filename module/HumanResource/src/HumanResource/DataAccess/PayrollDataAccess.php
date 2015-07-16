@@ -8,14 +8,12 @@
 
 namespace HumanResource\DataAccess;
 
+use Application\Service\SundewTableGateway;
 use HumanResource\Entity\Payroll;
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\ResultSet\HydratingResultSet;
-use Zend\Db\TableGateway\AbstractTableGateway;
-use Zend\Stdlib\Hydrator\ClassMethods;
 
 
-class PayrollDataAccess extends AbstractTableGateway{
+class PayrollDataAccess extends SundewTableGateway{
     public function __construct(Adapter $dpAdapter)
     {
         $this->table="tbl_hr_payroll";

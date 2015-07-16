@@ -8,13 +8,14 @@
 
 namespace Application\DataAccess;
 use Application\Entity\RoutePermission;
+use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\stdlib\Hydrator\ClassMethods;
 
-class RoutePermissionDataAccess extends AbstractTableGateway
+class RoutePermissionDataAccess extends SundewTableGateway
 {
 
     public function __construct(Adapter $dbAdapter)

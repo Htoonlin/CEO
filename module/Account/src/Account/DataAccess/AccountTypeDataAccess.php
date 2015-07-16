@@ -9,6 +9,7 @@
 namespace Account\DataAccess;
 
 use Account\Entity\AccountType;
+use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
@@ -16,7 +17,7 @@ use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
-class AccountTypeDataAccess extends AbstractTableGateway
+class AccountTypeDataAccess extends SundewTableGateway
 {
     public function __construct(Adapter $dbAdapter)
     {

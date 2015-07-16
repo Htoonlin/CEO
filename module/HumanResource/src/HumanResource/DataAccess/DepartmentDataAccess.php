@@ -8,13 +8,13 @@
 
 namespace HumanResource\DataAccess;
 
+use Application\Service\SundewTableGateway;
 use HumanResource\Entity\Department;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
-use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
-class DepartmentDataAccess extends AbstractTableGateway
+class DepartmentDataAccess extends SundewTableGateway
 {
     public function __construct(Adapter $dbAdapter)
     {

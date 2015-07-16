@@ -8,18 +8,14 @@
 
 namespace HumanResource\DataAccess;
 
+use Application\Service\SundewTableGateway;
 use HumanResource\Entity\Leave;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
-use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Where;
-use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Paginator\Adapter\DbSelect;
-use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
-class LeaveDataAccess extends AbstractTableGateway
+class LeaveDataAccess extends SundewTableGateway
 {
     public function __construct(Adapter $dbAdapter){
         $this->table = 'tbl_hr_leave';
@@ -32,13 +28,7 @@ class LeaveDataAccess extends AbstractTableGateway
     {
         $view = 'vw_hr_leave';
         if($paginated){
-            $select = new Select($view);
-            $select->order($orderBy . ' ' . $order);
-            $where = new Where();
-            $where->literal("CONCAT_WS(' ', status, staffCode, staffname, date, leaveType) LIKE ?", '%' . $filter . '%');
-            $select->where($where);
-            $paginatorAdapter = new DbSelect($select, $this->adapter);
-            return new Paginator($paginatorAdapter);
+            return $this->paginate($filter, $orderBy, $order, $view);
         }
         $tableGateway = new TableGateway($view, $this->adapter);
         return $tableGateway->select();

@@ -10,6 +10,7 @@ namespace Account\DataAccess;
 
 use Account\Entity\AccountType;
 use Account\Entity\Currency;
+use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
@@ -20,7 +21,7 @@ use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Db\Sql\Where;
 
-class CurrencyDataAccess extends AbstractTableGateway
+class CurrencyDataAccess extends SundewTableGateway
 {
     public function __construct(Adapter $dbAdapter)
     {
@@ -33,15 +34,7 @@ class CurrencyDataAccess extends AbstractTableGateway
     public function fetchAll($paginated=false, $filter='', $orderBy='name', $order='ASC')
     {
         if($paginated){
-            $select=new Select($this->table);
-            $select->order($orderBy. ' '. $order);
-            $where=new Where();
-            $where->literal("Concat_ws(' ',code, name) LIKE ?", '%'.$filter.'%');
-            $select->where($where);
-            $paginatorAdapter=new DbSelect($select, $this->adapter);
-            $paginator=new Paginator($paginatorAdapter);
-            return $paginator;
-
+            return $this->paginate($filter, $orderBy, $order);
         }
         return $this->select();
 
