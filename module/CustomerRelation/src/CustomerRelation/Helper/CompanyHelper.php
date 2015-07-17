@@ -133,7 +133,7 @@ class CompanyHelper{
 
             $filter->add(array(
                 'name'=>'website',
-                'required'=>true,
+                'required'=>false,
 
             ));
 

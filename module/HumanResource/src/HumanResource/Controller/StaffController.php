@@ -52,13 +52,13 @@ class StaffController extends AbstractActionController
 
     private function departments()
     {
-        $adapter=$this->getServiceLocator()->get('Zend/Db/Adapter/Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess=new DepartmentDataAccess($adapter);
         return $dataAccess->getChildren();
     }
 
     private function currencyCombo(){
-        $adapter = $this->getServiceLocator()->get('Zend/Db/Adapter/Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new CurrencyDataAccess($adapter);
         return $dataAccess->getComboData('currencyId', 'code');
     }

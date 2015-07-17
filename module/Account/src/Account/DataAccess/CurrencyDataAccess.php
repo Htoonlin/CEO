@@ -77,7 +77,6 @@ class CurrencyDataAccess extends SundewTableGateway
     {
         $id=$currency->getCurrencyId();
         $data=$currency->getArrayCopy();
-
         if($id>0){
             $this->update($data, array('currencyId'=>$id));
         }else{

@@ -12,13 +12,6 @@ $this->headTitle($title);
 $flashMesssages=$this->flashMessenger()->getMessages();
 ?>
 <h1><?php echo $title;?></h1>
-<?php if(count($flashMesssages) > 0) : ?>
-    <div class="alert alert-info alert-dismissable">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <strong><span class="glyphicon glyphicon-info-sign"></span></strong>
-        <?php echo $flashMesssages[0]; ?>
-    </div>
-<?php endif;?>
 <script type="text/javascript">
     $(document).ready(function(){
         $("button#btnDelete").click(function(){

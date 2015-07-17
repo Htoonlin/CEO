@@ -195,6 +195,8 @@ class UserController extends AbstractActionController
         $current_image = $user->getImage();
         $message = '';
 
+        $hasImage = is_null($user->getImage()) ? 'false' : 'true';
+
         $helper = new UserHelper($this->userTable()->adapter);
         $form = $helper->getForm($this->statusCombo());
         $form->bind($user);
@@ -215,7 +217,6 @@ class UserController extends AbstractActionController
             $form->setInputFilter($helper->getInputFilter($user->getUserId(), $user->getUserName()));
             if($form->isValid()){
                 $image = $user->getImage();
-
                 if($post_data['hasImage'] == 'false' && empty($image['name'])){
                     $user->setImage(null);
                 }
@@ -230,7 +231,7 @@ class UserController extends AbstractActionController
             $form->setData($post_data);
         }
 
-        return new ViewModel(array('form' => $form, 'message' => $message));
+        return new ViewModel(array('form' => $form, 'message' => $message, 'hasImage' => $hasImage));
     }
 
     public function passwordAction()

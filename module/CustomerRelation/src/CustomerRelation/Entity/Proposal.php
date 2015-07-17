@@ -28,6 +28,10 @@ class Proposal implements ArraySerializableInterface
     public function getCode(){return $this->code;}
     public function setCode($value){$this->code=$value;}
 
+    protected $name;
+    public function getName(){return $this->name;}
+    public function setName($value){$this->name=$value;}
+
     protected $amount;
     public function getAmount(){return $this->amount;}
     public function setAmount($value){$this->amount=$value;}
@@ -66,6 +70,7 @@ class Proposal implements ArraySerializableInterface
         $this->companyId=(!empty($data['companyId']))?$data['companyId']:null;
         $this->contactId=(!empty($data['contactId']))?$data['contactId']:null;
         $this->code=(!empty($data['code']))?$data['code']:null;
+        $this->name=(!empty($data['name']))?$data['name']:null;
         $this->amount=(!empty($data['amount']))?$data['amount']:null;
         $this->currencyId=(!empty($data['currencyId']))?$data['currencyId']:null;
         $this->proposalDate=(!empty($data['proposalDate']))?$data['proposalDate']:null;

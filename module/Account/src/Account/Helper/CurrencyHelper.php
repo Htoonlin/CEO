@@ -40,7 +40,9 @@ class CurrencyHelper{
            $rate=new Element\Text();
            $rate->setLabel('Rate')
                ->setName("rate")
-               ->setAttribute('class', 'form-control');
+               ->setAttributes(array(
+                   'class'=>'form-control',
+               ));
 
            $status=new Element\Select();
            $status->setName('status')
@@ -143,8 +145,8 @@ class CurrencyHelper{
            $filter->add(array(
                'name'=>'rate',
                'required'=>true,
-               'filters'=>array(
-                   array('name'=>'Int'),
+               'validators'=>array(
+                   array('name'=>'Float'),
                )
            ));
 

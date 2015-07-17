@@ -39,14 +39,17 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
         $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'dispatch_error'));
     }
 
+    private $cacheRouteData;
     private function generateRoute(MvcEvent $e)
     {
-        $sm = $e->getApplication()->getServiceManager();
-        $routeData = $sm->get('RouteData');
+        if(!$this->cacheRouteData){
+            $sm = $e->getApplication()->getServiceManager();
+            $this->cacheRouteData = $sm->get('RouteData');
+        }
 
         try{
             $router = $e->getRouter();
-            foreach($routeData as $data)
+            foreach($this->cacheRouteData as $data)
             {
                 $constraints = json_decode($data->getConstraints(), true);
                 $route = Segment::factory(
@@ -61,6 +64,8 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                 );
                 $router->addRoute($data->getName(), $route);
             }
+
+            $this->hasRoute = true;
         }catch(\Exception $ex){
             throw $ex;
         }
@@ -148,14 +153,13 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                     {
                         $dbAdapter = $sm->get('Sundew\Db\Adapter');
                         $routeDataAccess = new RouteDataAccess($dbAdapter);
-                        $roleId = 0;
-
                         $authService = $sm->get('AuthService');
                         if($authService->hasIdentity()){
                             $roleId = $authService->getIdentity()->userRole;
+                            return $routeDataAccess->getRouteData($roleId);
                         }
 
-                        return $routeDataAccess->getRouteData($roleId);
+                        return array();
                     },
                     'AppErrorHandling' =>  function($sm) {
                         $authStorage = $sm->get('Application\Service\SundewAuthStorage');

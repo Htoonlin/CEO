@@ -112,6 +112,12 @@ class DepartmentHelper {
                 array('name' => 'Int'),
             ),
         ));
+
+        $filter->add(array(
+            'name' => 'parentId',
+            'required' => false,
+        ));
+
         $filter->add(array(
             'name' => 'code',
             'required' => true,

@@ -54,21 +54,6 @@ class Currency implements ArraySerializableInterface
     {
        return get_object_vars($this);
     }
-
-    public  function getLabel()
-    {
-        return ucfirst($this->name);
-    }
-
-    public function getUrl()
-    {
-        return "/account/currency/index/".$this->currencyId;
-    }
-
-    public function getValue()
-    {
-        return $this->currencyId;
-    }
 }
 
 

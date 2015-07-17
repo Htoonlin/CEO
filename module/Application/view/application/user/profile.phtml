@@ -33,7 +33,7 @@ echo $this->form()->openTag($form);
             </div>
             <div class="panel-body">
                 <div class="text-center">
-                    <input type="hidden" id="hasImage" name="hasImage" value="true" />
+                    <input type="hidden" id="hasImage" name="hasImage" value="<?= $hasImage ?>" />
                     <img id="imgAvatar" src="<?php echo $this->url("user", array('action' => 'image', 'id' => $this->layout()->current_user->userId)); ?>"
                          alt="No Image" title="User Avatar" style="max-height:150px;max-width:200px;"/>
                 </div>

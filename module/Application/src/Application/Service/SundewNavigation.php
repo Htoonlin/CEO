@@ -44,6 +44,7 @@ class SundewNavigation extends DefaultNavigationFactory
             $pages = $this->getPagesFromConfig($configuration['navigation'][$this->getName()]);
             $this->pages = $this->preparePages($serviceLocatorInterface, $pages);
         }
+
         return $this->pages;
     }
 

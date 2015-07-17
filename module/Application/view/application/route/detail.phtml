@@ -10,9 +10,11 @@
 $title = "Routing";
 $this->headTitle($title);
 $this->headLink()->appendStylesheet($this->basePath() . '/codemirror/lib/codemirror.css')
-    ->appendStylesheet($this->basePath() . '/codemirror/theme/mbo.css');
+    ->appendStylesheet($this->basePath() . '/codemirror/theme/mbo.css')
+    ->appendStylesheet($this->basePath() . '/css/treeview.css');
 $this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.js')
-    ->appendFile($this->basePath() . '/codemirror/mode/javascript/javascript.js');
+    ->appendFile($this->basePath() . '/codemirror/mode/javascript/javascript.js')
+    ->appendFile($this->basePath() . '/js/treeview.js');
 ?>
 <script type="text/javascript">
     $(document).ready(function(){

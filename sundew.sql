@@ -174,7 +174,7 @@ CREATE TABLE `tbl_cr_company` (
   `type` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`companyId`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -196,7 +196,7 @@ CREATE TABLE `tbl_cr_contact` (
   `tag` varchar(255) COLLATE utf8_bin NOT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`contactId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -405,7 +405,7 @@ CREATE TABLE `tbl_menu` (
   `priority` int(11) NOT NULL,
   `hasDivider` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`menuId`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -479,7 +479,7 @@ CREATE TABLE `tbl_route` (
   `constraints` varchar(255) NOT NULL,
   PRIMARY KEY (`routeId`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1062,4 +1062,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-16 18:30:01
+-- Dump completed on 2015-07-17 18:30:01
