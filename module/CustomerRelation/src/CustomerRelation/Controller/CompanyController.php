@@ -22,7 +22,7 @@ class CompanyController extends AbstractActionController
     private function companyTable()
     {
         $sm=$this->getServiceLocator();
-        $adapter=$sm->get('Zend\Db\Adapter\Adapter');
+        $adapter=$sm->get('Sundew\Db\Adapter');
         $dataAccess=new CompanyDataAccess($adapter);
         return $dataAccess;
     }
@@ -31,7 +31,7 @@ class CompanyController extends AbstractActionController
     private $companyTypes;
     private function init_combos()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $constant = new ConstantDataAccess($adapter);
 
         if(!$this->statusList)
@@ -77,7 +77,7 @@ class CompanyController extends AbstractActionController
     {
         $this->init_combos();
         $id=(int)$this->params()->fromRoute('id',0);
-        $helper=new CompanyHelper($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+        $helper=new CompanyHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
         $form=$helper->getForm($this->companyTypes, $this->statusList);
         $company=$this->companyTable()->getCompany($id);
 

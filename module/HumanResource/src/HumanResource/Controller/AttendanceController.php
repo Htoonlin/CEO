@@ -22,12 +22,12 @@ class AttendanceController extends AbstractActionController
 {
     private function attendanceTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new AttendanceDataAccess($adapter);
     }
     private function staffCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new StaffDataAccess($adapter);
         return $dataAccess->getComboData('staffId', 'staffCode');
     }

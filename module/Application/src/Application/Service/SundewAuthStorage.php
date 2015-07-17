@@ -8,7 +8,6 @@
 
 namespace Application\Service;
 
-
 use Zend\Authentication\Storage\Session;
 
 class SundewAuthStorage extends Session

@@ -9,7 +9,6 @@ use Application\Entity\User;
 use Application\Helper\PasswordHelper;
 use Application\Helper\UserHelper;
 use Application\Service\SundewExporting;
-use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -18,7 +17,7 @@ class UserController extends AbstractActionController
 {
     private function userTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new UserDataAccess($adapter);
     }
 
@@ -28,13 +27,13 @@ class UserController extends AbstractActionController
     }
     private function statusCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
         return $dataAccess->getComboByName('default_status');
     }
     private function roleTreeview()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new RoleDataAccess($adapter);
         return $dataAccess->getChildren();
     }
@@ -63,7 +62,7 @@ class UserController extends AbstractActionController
     public function detailAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
-        $helper = new UserHelper($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+        $helper = new UserHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
         $form = $helper->getForm($this->statusCombo());
         $user = $this->userTable()->getUser($id);
         $isEdit = true;

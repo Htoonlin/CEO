@@ -25,7 +25,7 @@ class ReceivableController extends AbstractActionController
     private $staffName;
     private function receivableTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
 
         if(!$this->staffId){
             $userId = $this->layout()->current_user->userId;
@@ -40,14 +40,14 @@ class ReceivableController extends AbstractActionController
 
     private function accountTypes()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess=new AccountTypeDataAccess($adapter);
         return $dataAccess->getChildren();
     }
 
     private function currencyCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new CurrencyDataAccess($adapter);
         return $dataAccess->getComboData('currencyId', 'code');
     }

@@ -26,26 +26,26 @@ class StaffController extends AbstractActionController
 {
     private  function  staffTable()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new StaffDataAccess($adapter);
     }
 
     private  function  userCombos()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess=new UserDataAccess($adapter);
         return $dataAccess->getComboData('userId', 'userName');
     }
 
     private function statusCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
         return $dataAccess->getComboByName('default_status');
     }
     private function positionCombos()
     {
-        $adapter=$this->getServiceLocator()->get('Zend/Db/Adapter/Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess=new PositionDataAccess($adapter);
         return $dataAccess->getComboData('positionId','name');
     }
@@ -87,7 +87,7 @@ class StaffController extends AbstractActionController
     public  function detailAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
-        $helper=new StaffHelper($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+        $helper=new StaffHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
         $form = $helper->getForm($this->userCombos(), $this->positionCombos(), $this->currencyCombo(), $this->statusCombo());
         $staff = $this->staffTable()->getStaff($id);
         $isEdit = true;

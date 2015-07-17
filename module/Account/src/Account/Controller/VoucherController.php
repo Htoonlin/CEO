@@ -21,13 +21,13 @@ class VoucherController extends AbstractActionController
 {
     private function voucherTable()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new VoucherDataAccess($adapter);
     }
     private $staffId;
     private function receivableTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
 
         if(!$this->staffId && $this->staffId <= 0){
             $userId = $this->layout()->current_user->userId;
@@ -40,7 +40,7 @@ class VoucherController extends AbstractActionController
     }
     private function payableTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
 
         if(!$this->staffId && $this->staffId <= 0){
             $userId = $this->layout()->current_user->userId;

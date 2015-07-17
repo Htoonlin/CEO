@@ -29,7 +29,7 @@ class BalanceController extends AbstractActionController
 {
     private function voucherTable()
     {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new VoucherDataAccess($dbAdapter);
     }
 
@@ -37,7 +37,7 @@ class BalanceController extends AbstractActionController
     private function getStaffId()
     {
         if(!$this->staffId){
-            $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+            $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
             $userId=$this->layout()->current_user->userId;
             $staffDataAccess=new StaffDataAccess($dbAdapter);
             $staff=$staffDataAccess->getStaffByUser($userId);
@@ -49,31 +49,31 @@ class BalanceController extends AbstractActionController
 
     private function currencyTable()
     {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new CurrencyDataAccess($dbAdapter);
     }
 
     private function payableTable()
     {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new PayableDataAccess($dbAdapter, $this->getStaffId());
     }
 
     private function receivableTable()
     {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new ReceivableDataAccess($dbAdapter, $this->getStaffId());
     }
 
     private function closingTable()
     {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new ClosingDataAccess($dbAdapter);
     }
 
     private function currencyCombo($useAllCurrency = false, $selected = 0)
     {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new CurrencyDataAccess($dbAdapter);
         $data = $dataAccess->getComboData('currencyId', 'name');
         $currencyCombo = new Element\Select('currency');

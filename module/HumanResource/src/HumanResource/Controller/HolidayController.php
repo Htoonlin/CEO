@@ -22,13 +22,13 @@ class HolidayController extends AbstractActionController
 {
     private function calendarTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new CalendarDataAccess($adapter);
     }
 
     private function holidayTypeCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
         return $dataAccess->getComboByName('holiday_type');
     }

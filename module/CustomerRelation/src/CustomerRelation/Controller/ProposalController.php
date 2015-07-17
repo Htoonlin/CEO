@@ -26,7 +26,7 @@ class ProposalController extends AbstractActionController
     private $staffId;
     private function proposalTable()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         if(!$this->staffId){
             $userId=$this->layout()->current_user->userId;
             $staffDataAccess=new StaffDataAccess($adapter);
@@ -42,7 +42,7 @@ class ProposalController extends AbstractActionController
 
     private function init_combos()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         if(!$this->currencyList){
             $currencyDataAccess = new CurrencyDataAccess($adapter);
             $this->currencyList = $currencyDataAccess->getComboData('currencyId', 'code');

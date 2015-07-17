@@ -25,7 +25,7 @@ class PayableController extends  AbstractActionController
     private $staffName;
     private function payableTable()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\DB\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
 
         if(!$this->staffId){
             $userId=$this->layout()->current_user->userId;
@@ -38,14 +38,14 @@ class PayableController extends  AbstractActionController
     }
     private function accountTypes()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess=new AccountTypeDataAccess($adapter);
         return $dataAccess->getChildren();
     }
 
     public function currencyCombo()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess=new CurrencyDataAccess($adapter);
         return $dataAccess->getComboData('currencyId','code');
     }

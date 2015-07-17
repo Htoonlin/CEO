@@ -15,7 +15,7 @@ class ConstantController extends AbstractActionController
 {
     private function constantTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new ConstantDataAccess($adapter);
     }
 
@@ -43,7 +43,7 @@ class ConstantController extends AbstractActionController
     {
         $id = (int)$this->params()->fromRoute('id', 0);
 
-        $helper = new ConstantHelper($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+        $helper = new ConstantHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
         $form = $helper->getForm();
         $constant = $this->constantTable()->getConstant($id);
         $form->setAttribute("class", "form-horizontal");

@@ -19,4 +19,9 @@ return array(
             PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'",
         ),
     ),
+    'session' => array(
+        'remember_me_seconds' => 24129200,
+        'use_cookies' => true,
+        'cookie_httponly' => true,
+    ),
 );

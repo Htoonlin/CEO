@@ -31,7 +31,7 @@ class DashboardController extends AbstractActionController
     private $leaveTypeList;
     private function attendanceTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new AttendanceDataAccess($adapter);
     }
     private $staffTable;
@@ -43,7 +43,7 @@ class DashboardController extends AbstractActionController
     private $leaveTable;
 
     private function init_data(){
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         if(!$this->staffTable)
             $this->staffTable = new StaffDataAccess($adapter);
 

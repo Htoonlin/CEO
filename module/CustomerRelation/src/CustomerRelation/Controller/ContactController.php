@@ -22,13 +22,13 @@ class ContactController extends AbstractActionController{
 
     private function contactTable()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new ContactDataAccess($adapter);
     }
 
     private function companyCombos()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess=new CompanyDataAccess($adapter);
         return $dataAccess->getComboData('companyId', 'name');
     }
@@ -57,7 +57,7 @@ class ContactController extends AbstractActionController{
     public function detailAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
-        $helper=new ContactHelper($this->companyCombos(), $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+        $helper=new ContactHelper($this->companyCombos(), $this->getServiceLocator()->get('Sundew\Db\Adapter'));
         $form=$helper->getForm();
         $contact=$this->contactTable()->getContact($id);
         $isEdit=true;

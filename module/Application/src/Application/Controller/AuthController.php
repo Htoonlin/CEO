@@ -22,7 +22,7 @@ class AuthController extends AbstractActionController
 
     private function userTable()
     {
-        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new UserDataAccess($dbAdapter);
     }
 

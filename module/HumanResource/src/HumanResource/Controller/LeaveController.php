@@ -23,13 +23,13 @@ class LeaveController extends AbstractActionController
 {
     private function leaveTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new LeaveDataAccess($adapter);
     }
 
     private function staffTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new StaffDataAccess($adapter);
     }
     private $annualLeave;
@@ -38,7 +38,7 @@ class LeaveController extends AbstractActionController
     private $leaveTypeList;
     private function initCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $staffDA = new StaffDataAccess($adapter);
         $constantDA = new ConstantDataAccess($adapter);
         $this->staffList = $staffDA->getComboData('staffId', 'staffCode');

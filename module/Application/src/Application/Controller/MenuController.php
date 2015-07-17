@@ -22,27 +22,27 @@ class MenuController extends AbstractActionController{
     private function menuTable()
     {
         $sm = $this->getServiceLocator();
-        $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+        $adapter = $sm->get('Sundew\Db\Adapter');
         $dataAccess = new MenuDataAccess($adapter);
         return $dataAccess;
     }
 
     private function urlTypeCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
         return $dataAccess->getComboByName('routing_url_type');
     }
     private function roleTreeData()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new RoleDataAccess($adapter);
         return $dataAccess->getChildren();
     }
 
     private function menuPermissionTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new MenuPermissionDataAccess($adapter);
     }
 

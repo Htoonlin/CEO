@@ -22,7 +22,7 @@ class AccountTypeController extends AbstractActionController
     private function accountTypeTable()
     {
         $sm = $this->getServiceLocator();
-        $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+        $adapter = $sm->get('Sundew\Db\Adapter');
 
         $dataAccess=new AccountTypeDataAccess($adapter);
         return $dataAccess;
@@ -30,14 +30,14 @@ class AccountTypeController extends AbstractActionController
 
     private function baseTypeCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
         return $dataAccess->getComboByName('account_base_type');
     }
 
     private function defaultStatusCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
         return $dataAccess->getComboByName('default_status');
     }

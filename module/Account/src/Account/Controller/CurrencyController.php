@@ -22,7 +22,7 @@ class CurrencyController extends AbstractActionController
     private function currencyTable()
     {
         $sm=$this->getServiceLocator();
-        $adapter=$sm->get('Zend\Db\Adapter\Adapter');
+        $adapter=$sm->get('Sundew\Db\Adapter');
 
         $dataAccess=new CurrencyDataAccess($adapter);
 
@@ -31,7 +31,7 @@ class CurrencyController extends AbstractActionController
 
     private function statusCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
         return $dataAccess->getComboByName('default_status');
     }
@@ -72,7 +72,7 @@ class CurrencyController extends AbstractActionController
     public function detailAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
-        $helper=new CurrencyHelper($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+        $helper=new CurrencyHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
         $form=$helper->getForm($this->statusCombo());
         $currency=$this->currencyTable()->getCurrency($id);
 

@@ -23,19 +23,19 @@ class RouteController extends AbstractActionController
 {
     private function routeTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new RouteDataAccess($adapter);
     }
 
     private function routePermissionTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new RoutePermissionDataAccess($adapter);
     }
 
     private function roleTreeData()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new RoleDataAccess($adapter);
         return $dataAccess->getChildren();
     }
@@ -67,7 +67,7 @@ class RouteController extends AbstractActionController
     public function detailAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
-        $helper = new RouteHelper($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+        $helper = new RouteHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
         $form = $helper->getForm();
         $route = $this->routeTable()->getRoute($id);
         $isEdit = true;

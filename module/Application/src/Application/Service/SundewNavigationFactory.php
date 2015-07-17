@@ -14,6 +14,10 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 class SundewNavigationFactory implements FactoryInterface
 {
+    /**
+     * @param ServiceLocatorInterface $serviceLocatorInterface
+     * @return \Zend\Navigation\Navigation
+     */
     public function createService(ServiceLocatorInterface $serviceLocatorInterface)
     {
         $navigation = new SundewNavigation();

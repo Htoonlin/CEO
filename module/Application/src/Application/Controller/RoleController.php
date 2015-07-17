@@ -15,7 +15,7 @@ class RoleController extends AbstractActionController
     private function roleTable()
     {
         $sm = $this->getServiceLocator();
-        $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+        $adapter = $sm->get('Sundew\Db\Adapter');
         $dataAccess = new RoleDataAccess($adapter);
         return $dataAccess;
     }

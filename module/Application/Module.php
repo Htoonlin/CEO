@@ -13,11 +13,9 @@ use Application\DataAccess\RouteDataAccess;
 use Application\Helper\View\GridFilter;
 use Application\Helper\View\GridHeaderCell;
 use Application\Service\SundewAuthStorage;
-use Application\Service\SundewErrorHandling;
+use Application\Service\SundewLogger;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
 use Zend\Authentication\AuthenticationService;
-use Zend\Log\Logger;
-use Zend\Log\Writer\Stream as LogWriter;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
@@ -72,9 +70,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
     {
         $sm = $e->getApplication()->getServiceManager();
         $auth = $sm->get('AuthService');
-
         $match = $e->getRouteMatch();
-
         if(!$match instanceof RouteMatch){
             return;
         }
@@ -141,7 +137,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                     },
                     'AuthService' => function($sm)
                     {
-                        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                        $dbAdapter = $sm->get('Sundew\Db\Adapter');
                         $authService = new AuthenticationService();
                         $authService->setAdapter(new CredentialTreatmentAdapter($dbAdapter, 'tbl_user', 'username',
                                                                         'password', 'MD5(?) AND status="A"'));
@@ -150,7 +146,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                     },
                     'RouteData' => function($sm)
                     {
-                        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                        $dbAdapter = $sm->get('Sundew\Db\Adapter');
                         $routeDataAccess = new RouteDataAccess($dbAdapter);
                         $roleId = 0;
 
@@ -162,17 +158,14 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                         return $routeDataAccess->getRouteData($roleId);
                     },
                     'AppErrorHandling' =>  function($sm) {
-                        $logger = $sm->get('ZendLog');
-                        $service = new SundewErrorHandling($logger);
+                        $authStorage = $sm->get('Application\Service\SundewAuthStorage');
+                        $user = array();
+                        if(!$authStorage->isEmpty()){
+                            $user = $authStorage->read();
+                        }
+                        $filename = 'Error' . date('Ymd') . '.log';
+                        $service = new SundewLogger($filename, $user);
                         return $service;
-                    },
-                    'ZendLog' => function ($sm) {
-                        $filename = 'Log_' . date('Ymd') . '.log';
-                        $log = new Logger();
-                        $writer = new LogWriter('./data/logs/' . $filename);
-                        $log->addWriter($writer);
-
-                        return $log;
                     },
                 ),
             );
@@ -186,28 +179,32 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
      *
      * @return array|\Zend\ServiceManager\Config
      */
+    private $viewHelperConfig;
     public function getViewHelperConfig()
     {
-        return array(
-            'factories' => array(
-                'gridHeaderCell' => function($sm){
-                    $app = $sm->getServiceLocator()->get('Application');
-                    return new GridHeaderCell($app->getRequest());
-                },
-                'gridFilter' => function($sm){
-                    $app = $sm->getServiceLocator()->get('Application');
-                    return new GridFilter($app->getRequest());
-                }
-            ),
-            'invokables' => array(
-                'formTreeView' => 'Application\Helper\View\FormTreeView',
-                'formRow' => 'Application\Helper\View\FormRow',
-                'formHorizontal' => 'Application\Helper\View\FormHorizontal',
-                'formcheckbox' => 'Application\Helper\View\FormCheckBox',
-                'formnumber' => 'Application\Helper\View\FormNumber',
-                'formdate' => 'Application\Helper\View\FormDate',
-                'formLoader' => 'Application\Helper\View\FormLoader',
-            ),
-        );
+        if($this->viewHelperConfig == null){
+            $this->viewHelperConfig = array(
+                'factories' => array(
+                    'gridHeaderCell' => function($sm){
+                        $app = $sm->getServiceLocator()->get('Application');
+                        return new GridHeaderCell($app->getRequest());
+                    },
+                    'gridFilter' => function($sm){
+                        $app = $sm->getServiceLocator()->get('Application');
+                        return new GridFilter($app->getRequest());
+                    }
+                ),
+                'invokables' => array(
+                    'formTreeView' => 'Application\Helper\View\FormTreeView',
+                    'formRow' => 'Application\Helper\View\FormRow',
+                    'formHorizontal' => 'Application\Helper\View\FormHorizontal',
+                    'formcheckbox' => 'Application\Helper\View\FormCheckBox',
+                    'formnumber' => 'Application\Helper\View\FormNumber',
+                    'formdate' => 'Application\Helper\View\FormDate',
+                    'formLoader' => 'Application\Helper\View\FormLoader',
+                ),
+            );
+        }
+        return $this->viewHelperConfig;
     }
 }

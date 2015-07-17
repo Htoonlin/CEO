@@ -30,7 +30,7 @@ class PayrollController extends AbstractActionController{
     private $staffId;
 
     private function init_data(){
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         if(!$this->staffTable)
             $this->staffTable = new StaffDataAccess($adapter);
 

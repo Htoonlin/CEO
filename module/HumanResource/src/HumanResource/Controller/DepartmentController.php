@@ -20,7 +20,7 @@ class DepartmentController extends AbstractActionController
     private function departmentTable()
     {
         $sm=$this->getServiceLocator();
-        $adapter=$sm->get('Zend\Db\Adapter\Adapter');
+        $adapter=$sm->get('Sundew\Db\Adapter');
         $dataAccess=new DepartmentDataAccess($adapter);
         return $dataAccess;
     }

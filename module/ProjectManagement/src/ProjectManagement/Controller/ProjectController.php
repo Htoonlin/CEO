@@ -41,7 +41,7 @@ class ProjectController extends AbstractActionController{
     }
 
     private function projectTable(){
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new ProjectDataAccess($adapter);
     }
     /*index action*/
@@ -49,7 +49,7 @@ class ProjectController extends AbstractActionController{
     /*detail action INSERT/UPDATE */
     public function detailAction(){
         $id=(int)$this->params()->fromRoute('id',0);
-        $helper=new ProjectHelper($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+        $helper=new ProjectHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
         $form=$helper->getform($this->userCombos());
         $project=$this->projectTable()->getProject($id);
 
@@ -79,7 +79,7 @@ class ProjectController extends AbstractActionController{
     }
 
     private function userCombos(){
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess=new UserDataAccess($adapter);
         return $dataAccess->getComboData('userId','userName');
     }

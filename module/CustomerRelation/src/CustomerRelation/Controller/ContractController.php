@@ -25,7 +25,7 @@ class ContractController extends AbstractActionController
     private $staffName;
     private function contractTable()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         if(!$this->staffId){
             $userId=$this->layout()->current_user->userId;
             $staffDataAccess=new StaffDataAccess($adapter);
@@ -37,19 +37,19 @@ class ContractController extends AbstractActionController
     }
     private function currencyCombos()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess=new CurrencyDataAccess($adapter);
         return $dataAccess->getComboData('currencyId','code');
     }
     private function companyCombos()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess=new CompanyDataAccess($adapter);
         return $dataAccess->getComboData('companyId','name');
     }
     private function contactCombos()
     {
-        $adapter=$this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess=new ContactDataAccess($adapter);
         return $dataAccess->getComboData('contactId','name');
     }

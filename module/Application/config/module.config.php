@@ -56,7 +56,7 @@ return array(
             'Zend\Log\LoggerAbstractServiceFactory',
         ),
         'factories' => array(
-            'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
+            'Sundew\Db\Adapter' => 'Application\Service\SundewAdapterFactory',
         ),
         'aliases' => array(
             'translator' => 'MvcTranslator',

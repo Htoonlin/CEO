@@ -14,13 +14,13 @@ class PositionController extends AbstractActionController
 {
     private function positionTable()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         return new PositionDataAccess($adapter);
     }
 
     private function statusCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         $dataAccess = new ConstantDataAccess($adapter);
         return $dataAccess->getComboByName('default_status');
     }
@@ -48,7 +48,7 @@ class PositionController extends AbstractActionController
     public function detailAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
-        $helper = new PositionHelper($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+        $helper = new PositionHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
         $form = $helper->getForm($this->statusCombo());
         $position = $this->positionTable()->getPosition($id);
         $isEdit = true;
