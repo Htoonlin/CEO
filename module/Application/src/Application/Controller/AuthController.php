@@ -5,13 +5,16 @@ namespace Application\Controller;
 use Application\DataAccess\UserDataAccess;
 use Application\Entity\User;
 use Application\Helper\AuthHelper;
-use Zend\Form\Annotation\Hydrator;
-use Zend\Mvc\Controller\AbstractActionController;
+use Application\Service\SundewController;
 use Zend\View\Model\ViewModel;
 
-class AuthController extends AbstractActionController
+class AuthController extends SundewController
 {
     private $authService;
+
+    /**
+     * @return array|object
+     */
     public function getAuthService()
     {
         if(!$this->authService){
@@ -20,21 +23,30 @@ class AuthController extends AbstractActionController
         return $this->authService;
     }
 
+    /**
+     * @return UserDataAccess
+     */
     private function userTable()
     {
-        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new UserDataAccess($dbAdapter);
+        return new UserDataAccess($this->getDbAdapter());
     }
 
     private $storage;
+
+    /**
+     * @return array|object
+     */
     public function getSessionStorage()
     {
         if(!$this->storage){
-            $this->storage = $this->getServiceLocator()->get('Application\Service\SundewAuthStorage');
+            $this->storage = $this->getServiceLocator()->get('Sundew\AuthStorage');
         }
         return $this->storage;
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function indexAction()
     {
         if($this->getAuthService()->hasIdentity()){
@@ -87,6 +99,9 @@ class AuthController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Http\Response
+     */
     public function logoutAction()
     {
         $this->getSessionStorage()->forgetMe();

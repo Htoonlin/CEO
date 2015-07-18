@@ -20,8 +20,15 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class RouteDataAccess
+ * @package Application\DataAccess
+ */
 class RouteDataAccess  extends SundewTableGateway
 {
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table = "tbl_route";

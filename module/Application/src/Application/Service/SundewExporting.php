@@ -17,11 +17,19 @@ class SundewExporting {
         $this->data = $data;
     }
 
+    /**
+     * @return array
+     */
     public function getData()
     {
         return $this->data;
     }
 
+    /**
+     * @return string
+     * @throws \PHPExcel_Exception
+     * @throws \PHPExcel_Reader_Exception
+     */
     public function getExcel()
     {
         $excelObj = new \PHPExcel();

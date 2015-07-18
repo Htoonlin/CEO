@@ -9,17 +9,35 @@
 namespace ProjectManagement\Controller;
 
 use Application\DataAccess\UserDataAccess;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use ProjectManagement\DataAccess\ProjectDataAccess;
 use ProjectManagement\Entity\Project;
 use ProjectManagement\Helper\ProjectHelper;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 
-class ProjectController extends AbstractActionController{
+class ProjectController extends SundewController{
 
-    /*index action*/
+    /**
+     * @return ProjectDataAccess
+     */
+    private function projectTable(){
+        return new ProjectDataAccess($this->getDbAdapter());
+    }
+
+    /**
+     * @return array
+     */
+    private function userCombos(){
+        $dataAccess=new UserDataAccess($this->getDbAdapter());
+        return $dataAccess->getComboData('userId','userName');
+    }
+
+    /* Insert Action */
+    /**
+     * @return ViewModel
+     */
     public function indexAction(){
         $page = (int)$this->params()->fromQuery('page',1);
         $sort = $this->params()->fromQuery('sort','name');
@@ -40,16 +58,13 @@ class ProjectController extends AbstractActionController{
         ));
     }
 
-    private function projectTable(){
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new ProjectDataAccess($adapter);
-    }
-    /*index action*/
-
     /*detail action INSERT/UPDATE */
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction(){
         $id=(int)$this->params()->fromRoute('id',0);
-        $helper=new ProjectHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
+        $helper=new ProjectHelper($this->getDbAdapter());
         $form=$helper->getform($this->userCombos());
         $project=$this->projectTable()->getProject($id);
 
@@ -78,14 +93,12 @@ class ProjectController extends AbstractActionController{
         return new ViewModel(array('form'=>$form, 'id'=>$id, 'isEdit'=>$isEdit));
     }
 
-    private function userCombos(){
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess=new UserDataAccess($adapter);
-        return $dataAccess->getComboData('userId','userName');
-    }
     /*detail action INSERT/UPDATE */
 
     /*delete action DELETE*/
+    /**
+     * @return \Zend\Http\Response
+     */
     public function deleteAction(){
         $id=(int)$this->params()->fromRoute('id', 0);
         $project=$this->projectTable()->getProject($id);
@@ -125,6 +138,9 @@ class ProjectController extends AbstractActionController{
     /*json delete action DELETEs*/
 
     /*export action EXCEL*/
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction(){
         $export = new SundewExporting($this->projectTable()->fetchAll(false));
         $response=$this->getResponse();

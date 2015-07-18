@@ -10,15 +10,19 @@ namespace HumanResource\Controller;
 
 use Application\DataAccess\CalendarDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Application\Service\SundewController;
 use HumanResource\DataAccess\PayrollDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Helper\PayrollHelper;
 use Zend\Json\Json;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class PayrollController extends AbstractActionController{
+/**
+ * Class PayrollController
+ * @package HumanResource\Controller
+ */
+class PayrollController extends SundewController{
 
     private $staffTable;
     private $calendarTable;
@@ -30,23 +34,22 @@ class PayrollController extends AbstractActionController{
     private $staffId;
 
     private function init_data(){
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         if(!$this->staffTable)
-            $this->staffTable = new StaffDataAccess($adapter);
+            $this->staffTable = new StaffDataAccess($this->getDbAdapter());
 
         if(!$this->staffId){
-            $userId = $this->layout()->current_user->userId;
+            $userId = $this->getAuthUser()->userId;
             $staff = $this->staffTable->getStaffByUser($userId);
             $this->staffId = boolval($staff) ? $staff->getStaffId() : 0;
         }
 
         if(!$this->payrollTable)
-            $this->payrollTable = new PayrollDataAccess($adapter);
+            $this->payrollTable = new PayrollDataAccess($this->getDbAdapter());
 
         if(!$this->calendarTable)
-            $this->calendarTable = new CalendarDataAccess($adapter);
+            $this->calendarTable = new CalendarDataAccess($this->getDbAdapter());
 
-        $constantTable = new ConstantDataAccess($adapter);
+        $constantTable = new ConstantDataAccess($this->getDbAdapter());
 
         if(!$this->formulaList){
             $this->formulaList = $constantTable->getComboByName('payroll_formula', 'payroll');
@@ -62,7 +65,7 @@ class PayrollController extends AbstractActionController{
             $this->leaveValues = $constant->getValue();
         }
 
-        $constantDataAccess = new ConstantDataAccess($adapter);
+        $constantDataAccess = new ConstantDataAccess($this->getDbAdapter());
         if(!$this->lateList){
             $lateData = $constantDataAccess->getConstantByName('late_condition','payroll');
             $lateList = Json::decode($lateData->getValue());
@@ -77,6 +80,9 @@ class PayrollController extends AbstractActionController{
         }
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction(){
         $this->init_data();
         $helper = new PayrollHelper();
@@ -91,6 +97,9 @@ class PayrollController extends AbstractActionController{
         ));
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonSaveAction()
     {
         try{

@@ -17,10 +17,17 @@ use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class AttendanceDataAccess
+ * @package HumanResource\DataAccess
+ */
 class AttendanceDataAccess extends SundewTableGateway{
 
     protected $boardView = 'vw_hr_attendance';
 
+    /**
+     * @param Adapter $dpAdapter
+     */
     public function __construct(Adapter $dpAdapter)
     {
         $this->table="tbl_hr_attendance";
@@ -28,6 +35,12 @@ class AttendanceDataAccess extends SundewTableGateway{
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Attendance());
         $this->initialize();
     }
+
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     public function getComboData($key, $value)
     {
         $results = $this->select();
@@ -40,6 +53,15 @@ class AttendanceDataAccess extends SundewTableGateway{
 
         return $selectData;
     }
+
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|\Zend\Paginator\Paginator
+     * @throws \Exception
+     */
     public function fetchAll($paginated=false, $filter='',$orderBy='attendanceDate',$order='DESC')
     {
         if($paginated)
@@ -50,16 +72,33 @@ class AttendanceDataAccess extends SundewTableGateway{
         $attendanceBoard = new TableGateway($this->boardView, $this->adapter);
         return $attendanceBoard->select();
     }
+
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     */
     public function getAttendance($id)
     {
         $id=(int)$id;
         $rowset=$this->select(array('attendanceId'=>$id));
         return $rowset->current();
     }
+
+    /**
+     * @param $staffId
+     * @param $date
+     * @return array|\ArrayObject|null
+     */
     public function getAttendanceByStaff($staffId, $date){
         $rowset = $this->select(array('staffId' => $staffId, 'attendanceDate' => $date));
         return $rowset->current();
     }
+
+    /**
+     * @param $staffId
+     * @param $date
+     * @return array|\ArrayObject|null
+     */
     public function checkAttendance($staffId, $date)
     {
         $results = $this->select(function (Select $select) use($staffId, $date){
@@ -70,6 +109,11 @@ class AttendanceDataAccess extends SundewTableGateway{
         });
         return $results->current();
     }
+
+    /**
+     * @param Attendance $attendance
+     * @return Attendance
+     */
     public function saveAttendance(Attendance $attendance)
     {
         $id = $attendance->getAttendanceId();

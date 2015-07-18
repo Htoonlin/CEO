@@ -15,9 +15,15 @@ use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class RoutePermissionDataAccess
+ * @package Application\DataAccess
+ */
 class RoutePermissionDataAccess extends SundewTableGateway
 {
-
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table = "tbl_route_permission";
@@ -25,11 +31,19 @@ class RoutePermissionDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @param $routeId
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function grantRoles($routeId)
     {
         return $this->select(array('routeId' => $routeId));
     }
 
+    /**
+     * @param $routeId
+     * @param array $roles
+     */
     public function saveRoutePermission($routeId, array $roles)
     {
         $this->delete(array('routeId' => $routeId));
@@ -43,6 +57,9 @@ class RoutePermissionDataAccess extends SundewTableGateway
         }
     }
 
+    /**
+     * @param $routeId
+     */
     public function deleteRoles($routeId)
     {
         $this->delete(array('routeId' => $routeId));

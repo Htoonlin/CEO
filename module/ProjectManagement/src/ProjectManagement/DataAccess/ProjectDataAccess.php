@@ -19,7 +19,15 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class ProjectDataAccess
+ * @package ProjectManagement\DataAccess
+ */
 class ProjectDataAccess extends SundewTableGateway{
+
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter){
         $this->table="tbl_pm_project";
         $this->adapter=$dbAdapter;
@@ -27,6 +35,14 @@ class ProjectDataAccess extends SundewTableGateway{
         $this->initialize();
     }
 
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|Paginator
+     * @throws \Exception
+     */
     public function fetchAll($paginated=false, $filter='',$orderBy='code',$order='ASC'){
         $view='vw_pm_project';
 
@@ -37,6 +53,11 @@ class ProjectDataAccess extends SundewTableGateway{
         return $this->select();
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     public function getComboData($key, $value){
         $results=$this->select();
         $selectData=array();
@@ -47,12 +68,20 @@ class ProjectDataAccess extends SundewTableGateway{
         return $selectData;
     }
 
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     */
     public function getProject($id){
         $id=(int)$id;
         $rowSet=$this->select(array('projectId'=>$id));
         return $rowSet->current();
     }
 
+    /**
+     * @param Project $project
+     * @return Project
+     */
     public function saveProject(Project $project){
         $id=$project->getProjectId();
         $data=$project->getArrayCopy();
@@ -72,6 +101,9 @@ class ProjectDataAccess extends SundewTableGateway{
         return $project;
     }
 
+    /**
+     * @param $id
+     */
     public function deleteProject($id){
         $this->delete(array('projectId'=>(int)$id));
     }

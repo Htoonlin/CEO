@@ -10,6 +10,7 @@ namespace CustomerRelation\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use CustomerRelation\DataAccess\ProposalDataAccess;
 use CustomerRelation\Entity\Proposal;
@@ -21,19 +22,24 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class ProposalController extends AbstractActionController
+/**
+ * Class ProposalController
+ * @package CustomerRelation\Controller
+ */
+class ProposalController extends SundewController
 {
     private $staffId;
+
+    /**
+     * @return ProposalDataAccess
+     */
     private function proposalTable()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         if(!$this->staffId){
-            $userId=$this->layout()->current_user->userId;
-            $staffDataAccess=new StaffDataAccess($adapter);
-            $staff=$staffDataAccess->getStaffByUser($userId);
+            $staff = $this->getCurrentStaff();
             $this->staffId=boolval($staff)?$staff->getStaffId():0;
         }
-        return new ProposalDataAccess($adapter,$this->staffId);
+        return new ProposalDataAccess($this->getDbAdapter(),$this->staffId);
     }
     private $currencyList;
     private $companyList;
@@ -42,28 +48,30 @@ class ProposalController extends AbstractActionController
 
     private function init_combos()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         if(!$this->currencyList){
-            $currencyDataAccess = new CurrencyDataAccess($adapter);
+            $currencyDataAccess = new CurrencyDataAccess($this->getDbAdapter());
             $this->currencyList = $currencyDataAccess->getComboData('currencyId', 'code');
         }
 
         if(!$this->companyList){
-            $companyDataAccess = new CompanyDataAccess($adapter);
+            $companyDataAccess = new CompanyDataAccess($this->getDbAdapter());
             $this->companyList = $companyDataAccess->getComboData('companyId', 'name');
         }
 
         if(!$this->contactList){
-            $contactDataAccess = new ContactDataAccess($adapter);
+            $contactDataAccess = new ContactDataAccess($this->getDbAdapter());
             $this->contactList = $contactDataAccess->getComboData('contactId', 'name');
         }
 
         if(!$this->statusList){
-            $constantDataAccess = new ConstantDataAccess($adapter);
+            $constantDataAccess = new ConstantDataAccess($this->getDbAdapter());
             $this->statusList = $constantDataAccess->getComboByName('default_status');
         }
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page',1);
@@ -83,6 +91,10 @@ class ProposalController extends AbstractActionController
             'filter'=>$filter,
         ));
     }
+
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction()
     {
         $this->init_combos();
@@ -121,6 +133,9 @@ class ProposalController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Http\Response
+     */
     public function deleteAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
@@ -133,6 +148,10 @@ class ProposalController extends AbstractActionController
 
         return $this->redirect()->toRoute("cr_proposal");
     }
+
+    /**
+     * @return JsonModel
+     */
     public function jsonDeleteAction()
     {
         $data=$this->params()->fromRoute('chkId',array());
@@ -154,6 +173,10 @@ class ProposalController extends AbstractActionController
         }
         return new JsonModel(array("message"=>$message));
     }
+
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->proposalTable()->fetchAll(false));

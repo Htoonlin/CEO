@@ -13,6 +13,10 @@ use Zend\Log\Logger;
 use Zend\Log\Writer\Stream as LogWriter;
 use Zend\Log\Formatter\Simple as LogFormatter;
 
+/**
+ * Class SundewLogger
+ * @package Application\Service
+ */
 class SundewLogger implements ProfilerInterface{
     protected $logger;
     protected $current_user;

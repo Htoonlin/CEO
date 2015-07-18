@@ -14,38 +14,49 @@ use Application\DataAccess\RoleDataAccess;
 use Application\Helper\MenuHelper;
 use Application\Entity\Menu;
 use Application\DataAccess\MenuDataAccess;
-use Zend\Mvc\Controller\AbstractActionController;
+use Application\Service\SundewController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class MenuController extends AbstractActionController{
+class MenuController extends SundewController
+{
+    /**
+     * @return MenuDataAccess
+     */
     private function menuTable()
     {
-        $sm = $this->getServiceLocator();
-        $adapter = $sm->get('Sundew\Db\Adapter');
-        $dataAccess = new MenuDataAccess($adapter);
-        return $dataAccess;
+        return new MenuDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return array
+     */
     private function urlTypeCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new ConstantDataAccess($adapter);
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
         return $dataAccess->getComboByName('routing_url_type');
     }
+
+    /**
+     * @return array
+     */
     private function roleTreeData()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new RoleDataAccess($adapter);
+        $dataAccess = new RoleDataAccess($this->getDbAdapter());
         return $dataAccess->getChildren();
     }
 
+    /**
+     * @return MenuPermissionDataAccess
+     */
     private function menuPermissionTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new MenuPermissionDataAccess($adapter);
+        return new MenuPermissionDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonAllAction()
     {
         $menus = $this->menuTable()->fetchAll();
@@ -56,6 +67,10 @@ class MenuController extends AbstractActionController{
         return new JsonModel($data);
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     * @throws \Exception
+     */
     public function indexAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);

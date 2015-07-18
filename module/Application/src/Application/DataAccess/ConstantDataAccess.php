@@ -20,8 +20,15 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class ConstantDataAccess
+ * @package Application\DataAccess
+ */
 class ConstantDataAccess extends SundewTableGateway {
 
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table="tbl_constant";
@@ -29,6 +36,15 @@ class ConstantDataAccess extends SundewTableGateway {
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Constant());
         $this->initialize();
     }
+
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|Paginator
+     * @throws \Exception
+     */
     public function fetchAll($paginated=false,$filter = '',$orderBy='name',$order='ASC')
     {
         if($paginated){
@@ -36,6 +52,12 @@ class ConstantDataAccess extends SundewTableGateway {
         }
         return $this->select();
     }
+
+    /**
+     * @param $name
+     * @param string $group_code
+     * @return array
+     */
     public function getComboByName($name, $group_code = '')
     {
         $result = $this->getConstantByName($name, $group_code);
@@ -44,10 +66,21 @@ class ConstantDataAccess extends SundewTableGateway {
         }
         return array();
     }
+
+    /**
+     * @param $group_code
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function getDataByGroupCode($group_code)
     {
         return $this->select(array('group_code' => $group_code));
     }
+
+    /**
+     * @param $name
+     * @param string $group_code
+     * @return array|\ArrayObject|null
+     */
     public function getConstantByName($name, $group_code = '')
     {
         if(!empty($group_code))
@@ -58,12 +91,22 @@ class ConstantDataAccess extends SundewTableGateway {
         }
         return $result->current();
     }
+
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     */
     public  function getConstant($id)
     {
         $id=(int)$id;
         $rowset=$this->select(array('constantId'=>$id));
         return $rowset->current();
     }
+
+    /**
+     * @param Constant $constant
+     * @return Constant
+     */
     public function saveConstant(Constant $constant)
     {
         $id=$constant->getConstantId();
@@ -82,6 +125,9 @@ class ConstantDataAccess extends SundewTableGateway {
         return $constant;
     }
 
+    /**
+     * @param $id
+     */
     public function deleteConstant($id)
     {
         $this->delete(array('constantId'=>(int)$id));

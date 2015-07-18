@@ -13,6 +13,7 @@ config/autoload/*.local.php
 # Data
 data/logs/
 data/cache/
+data/uploads/
 data/sessions/
 data/tmp/
 temp/

@@ -12,6 +12,10 @@ use Zend\Authentication\Storage\Session;
 
 class SundewAuthStorage extends Session
 {
+    /**
+     * @param int $rememberMe
+     * @param int $time
+     */
     public function setRememberMe($rememberMe = 0, $time = 1209600)
     {
         if($rememberMe == 1)

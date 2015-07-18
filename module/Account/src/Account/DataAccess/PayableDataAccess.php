@@ -19,9 +19,19 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
+
+/**
+ * Class PayableDataAccess
+ * @package Account\DataAccess
+ */
 class PayableDataAccess extends SundewTableGateway
 {
     protected $staffId;
+
+    /**
+     * @param Adapter $dbAdapter
+     * @param $staffId
+     */
     public function __construct(Adapter $dbAdapter,$staffId)
     {
         $this->staffId=$staffId;
@@ -30,6 +40,11 @@ class PayableDataAccess extends SundewTableGateway
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Payable());
         $this->initialize();
     }
+
+    /**
+     * @param $date
+     * @return string
+     */
     public function getVoucherNo($date)
     {
         $select = new Select($this->table);
@@ -47,6 +62,13 @@ class PayableDataAccess extends SundewTableGateway
         return $generate;
     }
 
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|Paginator
+     */
     public  function fetchAll($paginated=false,$filter='',$orderBy='voucherNo',$order='ASC')
     {
         $view='vw_account_payable';
@@ -62,6 +84,11 @@ class PayableDataAccess extends SundewTableGateway
         $tableGateway=new TableGateway($view,$this->adapter);
         return $tableGateway->select(array('withdrawBy'=>$this->staffId));
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function getPayableView($id)
     {
         $select=new Select('vw_account_payable');
@@ -70,8 +97,14 @@ class PayableDataAccess extends SundewTableGateway
         $result=$statement->execute();
         return $result->current();
     }
-   public function getPayable($id, $withPermission = true)
-   {
+
+    /**
+     * @param $id
+     * @param bool $withPermission
+     * @return array|\ArrayObject|null
+     */
+    public function getPayable($id, $withPermission = true)
+    {
        $id=(int)$id;
        if($withPermission){
            $rowset=$this->select(array('payVoucherId'=>$id,'withdrawBy'=>$this->staffId));
@@ -80,7 +113,12 @@ class PayableDataAccess extends SundewTableGateway
        }
 
        return $rowset->current();
-   }
+    }
+
+    /**
+     * @param Payable $payable
+     * @return Payable
+     */
     public function savePayable(Payable $payable)
     {
         $id=$payable->getPayVoucherId();

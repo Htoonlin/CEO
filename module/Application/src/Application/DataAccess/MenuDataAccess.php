@@ -17,8 +17,15 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\View\Helper\EscapeHtml;
 
+/**
+ * Class MenuDataAccess
+ * @package Application\DataAccess
+ */
 class MenuDataAccess extends SundewTableGateway
 {
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table = 'tbl_menu';
@@ -27,13 +34,20 @@ class MenuDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
-
+    /**
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function fetchAll()
     {
         $results = $this->select();
         return $results;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     public function getComboData($key,$value)
     {
         $results=$this->select();
@@ -45,6 +59,11 @@ class MenuDataAccess extends SundewTableGateway
         return $selectData;
     }
 
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     * @throws \Exception
+     */
     public function getMenu($id)
     {
         $id=(int)$id;
@@ -56,6 +75,11 @@ class MenuDataAccess extends SundewTableGateway
         return $row;
     }
 
+    /**
+     * @param null $parentId
+     * @param int $roleId
+     * @return array
+     */
     public function getMenuList($parentId = null, $roleId = 0)
     {
         $results = $this->select(function(Select $select) use($parentId, $roleId){
@@ -94,6 +118,11 @@ class MenuDataAccess extends SundewTableGateway
         return $menus;
     }
 
+    /**
+     * @param null $parentId
+     * @param string $parentName
+     * @return array
+     */
     public function getChildren($parentId = null, $parentName = "")
     {
         $results = $this->select(function (Select $select) use ($parentId){
@@ -112,6 +141,10 @@ class MenuDataAccess extends SundewTableGateway
         return $resultList;
     }
 
+    /**
+     * @param Menu $menu
+     * @return Menu
+     */
     public function saveMenu(Menu $menu)
     {
 
@@ -130,6 +163,9 @@ class MenuDataAccess extends SundewTableGateway
         return $menu;
     }
 
+    /**
+     * @param $id
+     */
     public function deleteMenu($id)
     {
         $results = $this->select(array("parentId" => $id));

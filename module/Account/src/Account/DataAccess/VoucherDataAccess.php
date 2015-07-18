@@ -19,8 +19,15 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 
+/**
+ * Class VoucherDataAccess
+ * @package Account\DataAccess
+ */
 class VoucherDataAccess extends SundewTableGateway
 {
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table = "vw_account_voucher";
@@ -28,6 +35,13 @@ class VoucherDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|Paginator
+     */
     public function fetchAll($paginated=false,$filter='',$orderBy='voucherNo',$order='ASC')
     {
         if($paginated){
@@ -42,12 +56,20 @@ class VoucherDataAccess extends SundewTableGateway
         return $this->select();
     }
 
+    /**
+     * @param $voucherNo
+     * @return array|\ArrayObject|null
+     */
     public function getVoucher($voucherNo)
     {
         $result = $this->select(array('voucherNo' => $voucherNo));
         return $result->current();
     }
 
+    /**
+     * @param $currency
+     * @return array|\ArrayObject|null
+     */
     public function getInitVoucherByNewCurrency($currency){
         $results = $this->select(function (Select $select) use ($currency){
             $where = new Where();
@@ -62,6 +84,11 @@ class VoucherDataAccess extends SundewTableGateway
         return $results->current();
     }
 
+    /**
+     * @param $openingDate
+     * @param $currency
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function getClosingData($openingDate, $currency)
     {
         $results = $this->select(function (Select $select) use ($openingDate, $currency){
@@ -77,6 +104,15 @@ class VoucherDataAccess extends SundewTableGateway
         return $results;
     }
 
+    /**
+     * @param $fromDate
+     * @param $toDate
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|Paginator
+     */
     public function getVouchersByDate($fromDate, $toDate, $paginated = false, $filter='',$orderBy='voucherNo',$order='ASC')
     {
         if($paginated)

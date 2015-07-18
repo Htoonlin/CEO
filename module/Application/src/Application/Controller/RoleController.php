@@ -6,20 +6,28 @@ namespace Application\Controller;
 use Application\Helper\RoleHelper;
 use Application\Entity\Role;
 use Application\DataAccess\RoleDataAccess;
+use Application\Service\SundewController;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class RoleController extends AbstractActionController
+/**
+ * Class RoleController
+ * @package Application\Controller
+ */
+class RoleController extends SundewController
 {
+    /**
+     * @return RoleDataAccess
+     */
     private function roleTable()
     {
-        $sm = $this->getServiceLocator();
-        $adapter = $sm->get('Sundew\Db\Adapter');
-        $dataAccess = new RoleDataAccess($adapter);
-        return $dataAccess;
+        return new RoleDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonAllAction()
     {
         return new JsonModel($this->roleTable()->fetchAll());

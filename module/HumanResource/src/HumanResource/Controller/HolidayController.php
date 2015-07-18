@@ -8,31 +8,41 @@
 
 namespace HumanResource\Controller;
 
-
 use Application\DataAccess\CalendarDataAccess;
 use Application\DataAccess\CalendarType;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Entity\Calendar;
+use Application\Service\SundewController;
 use HumanResource\Helper\HolidayHelper;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class HolidayController extends AbstractActionController
+/**
+ * Class HolidayController
+ * @package HumanResource\Controller
+ */
+class HolidayController extends SundewController
 {
+    /**
+     * @return CalendarDataAccess
+     */
     private function calendarTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new CalendarDataAccess($adapter);
+        return new CalendarDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return array
+     */
     private function holidayTypeCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new ConstantDataAccess($adapter);
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
         return $dataAccess->getComboByName('holiday_type');
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonHolidayAction()
     {
         $year = (int)$this->params()->fromPost('year', date('Y'));
@@ -41,12 +51,18 @@ class HolidayController extends AbstractActionController
         return new JsonModel($holiday);
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonWeeklyHolidayAction()
     {
         $result = $this->calendarTable()->getCalendarByType(CalendarType::holiday_weekly);
         return new JsonModel($result->toArray());
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonCheckHolidayAction()
     {
         $date = $this->params()->fromQuery('date', date('Y-m-D', time()));
@@ -54,6 +70,9 @@ class HolidayController extends AbstractActionController
         return new JsonModel(array("status" => $isHoliday));
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function indexAction()
     {
         $helper = new HolidayHelper();

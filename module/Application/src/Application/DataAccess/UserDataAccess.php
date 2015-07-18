@@ -21,8 +21,15 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class UserDataAccess
+ * @package Application\DataAccess
+ */
 class UserDataAccess extends SundewTableGateway
 {
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table = "tbl_user";
@@ -30,6 +37,15 @@ class UserDataAccess extends SundewTableGateway
         $this->resultSetPrototype = new HydratingResultSet(new ClassMethods(), new User());
         $this->initialize();
     }
+
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|Paginator
+     * @throws \Exception
+     */
     public function fetchAll($paginated = false, $filter = '', $orderBy = 'userName', $order = 'ASC')
     {
         $view = 'vw_user';
@@ -41,6 +57,11 @@ class UserDataAccess extends SundewTableGateway
         return $userView->select();
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     public function getComboData($key, $value)
     {
         $results=$this->select();
@@ -52,6 +73,10 @@ class UserDataAccess extends SundewTableGateway
         return $selectData;
     }
 
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     */
     public function getUser($id)
     {
         $id = (int)$id;
@@ -59,6 +84,10 @@ class UserDataAccess extends SundewTableGateway
         return $rowset->current();
     }
 
+    /**
+     * @param User $user
+     * @return User
+     */
     public function saveUser(User $user)
     {
         $id = $user->getUserId();
@@ -83,6 +112,9 @@ class UserDataAccess extends SundewTableGateway
         return $user;
     }
 
+    /**
+     * @param $id
+     */
     public function deleteUser($id)
     {
 

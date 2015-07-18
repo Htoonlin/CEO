@@ -9,38 +9,45 @@
 namespace HumanResource\Controller;
 
 use Application\DataAccess\ConstantDataAccess;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use HumanResource\DataAccess\LeaveDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Leave;
 use HumanResource\Helper\LeaveHelper;
-use Zend\Form\View\Helper\Form;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class LeaveController extends AbstractActionController
+/**
+ * Class LeaveController
+ * @package HumanResource\Controller
+ */
+class LeaveController extends SundewController
 {
+    /**
+     * @return LeaveDataAccess
+     */
     private function leaveTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new LeaveDataAccess($adapter);
+        return new LeaveDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return StaffDataAccess
+     */
     private function staffTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new StaffDataAccess($adapter);
+        return new StaffDataAccess($this->getDbAdapter());
     }
     private $annualLeave;
     private $staffList;
     private $statusList;
     private $leaveTypeList;
+
     private function initCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $staffDA = new StaffDataAccess($adapter);
-        $constantDA = new ConstantDataAccess($adapter);
+        $staffDA = new StaffDataAccess($this->getDbAdapter());
+        $constantDA = new ConstantDataAccess($this->getDbAdapter());
         $this->staffList = $staffDA->getComboData('staffId', 'staffCode');
         $this->statusList = $constantDA->getComboByName('leave_status');
         unset($this->statusList['R']);
@@ -58,6 +65,9 @@ class LeaveController extends AbstractActionController
         }
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page', 1);
@@ -78,6 +88,9 @@ class LeaveController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
@@ -143,6 +156,9 @@ class LeaveController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->leaveTable()->fetchAll(false));
@@ -157,6 +173,9 @@ class LeaveController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonLeaveAction()
     {
         $staffId = $this->params()->fromQuery('staffId', 0);

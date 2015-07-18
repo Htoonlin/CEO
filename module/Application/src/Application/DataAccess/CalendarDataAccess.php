@@ -17,6 +17,10 @@ use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class CalendarType
+ * @package Application\DataAccess
+ */
 abstract class CalendarType
 {
     const holiday = 'holiday';
@@ -25,6 +29,10 @@ abstract class CalendarType
     const holiday_weekly = 'holiday_w';
 }
 
+/**
+ * Class CalendarDataAccess
+ * @package Application\DataAccess
+ */
 class CalendarDataAccess extends SundewTableGateway
 {
     public function __construct(Adapter $dbAdapter)
@@ -35,6 +43,10 @@ class CalendarDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @param Calendar $calendar
+     * @return Calendar
+     */
     public function saveCalendar(Calendar $calendar)
     {
         $id = $calendar->getCalendarId();
@@ -53,6 +65,10 @@ class CalendarDataAccess extends SundewTableGateway
         return $calendar;
     }
 
+    /**
+     * @param $date
+     * @return bool
+     */
     public function checkHoliday($date)
     {
         $day = (int)date('d', strtotime($date));
@@ -94,11 +110,19 @@ class CalendarDataAccess extends SundewTableGateway
         return false;
     }
 
+    /**
+     * @param $type
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function getCalendarByType($type)
     {
         return $this->select(array('type' => $type));
     }
 
+    /**
+     * @param $year
+     * @return array
+     */
     public function getHolidayByYear($year)
     {
         $result = array();

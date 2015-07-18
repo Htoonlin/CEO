@@ -12,36 +12,41 @@ use Account\Helper\AccountTypeHelper;
 use Account\Entity\AccountType;
 use Account\DataAccess\AccountTypeDataAccess;
 use Application\DataAccess\ConstantDataAccess;
-use Zend\Mvc\Controller\AbstractActionController;
+use Application\Service\SundewController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class AccountTypeController extends AbstractActionController
+class AccountTypeController extends SundewController
 {
-
+    /**
+     * @return AccountTypeDataAccess
+     */
     private function accountTypeTable()
     {
-        $sm = $this->getServiceLocator();
-        $adapter = $sm->get('Sundew\Db\Adapter');
-
-        $dataAccess=new AccountTypeDataAccess($adapter);
-        return $dataAccess;
+        return new AccountTypeDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return array
+     */
     private function baseTypeCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new ConstantDataAccess($adapter);
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
         return $dataAccess->getComboByName('account_base_type');
     }
 
+    /**
+     * @return array
+     */
     private function defaultStatusCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new ConstantDataAccess($adapter);
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
         return $dataAccess->getComboByName('default_status');
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonAllAction()
     {
         $accountTypes = $this->accountTypeTable()->fetchAll();
@@ -54,6 +59,10 @@ class AccountTypeController extends AbstractActionController
         return new JsonModel($data);
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     * @throws \Exception
+     */
     public function indexAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);

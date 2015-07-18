@@ -14,8 +14,10 @@ use Application\Helper\View\GridFilter;
 use Application\Helper\View\GridHeaderCell;
 use Application\Service\SundewAuthStorage;
 use Application\Service\SundewLogger;
+use Application\Service\SundewTableGateway;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
 use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
@@ -135,10 +137,8 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
         if($this->serviceConfig == null){
             $this->serviceConfig = array(
                 'factories' => array(
-                    'navigation' => 'Application\Service\SundewNavigationFactory',
-                    'Application\Service\SundewAuthStorage' => function($sm)
-                    {
-                        return new SundewAuthStorage('officemanagement_auth');
+                    'Sundew\AuthStorage' => function($sm){
+                        return new SundewAuthStorage('ceo_auth');
                     },
                     'AuthService' => function($sm)
                     {
@@ -146,7 +146,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                         $authService = new AuthenticationService();
                         $authService->setAdapter(new CredentialTreatmentAdapter($dbAdapter, 'tbl_user', 'username',
                                                                         'password', 'MD5(?) AND status="A"'));
-                        $authService->setStorage($sm->get('Application\Service\SundewAuthStorage'));
+                        $authService->setStorage($sm->get('Sundew\AuthStorage'));
                         return $authService;
                     },
                     'RouteData' => function($sm)
@@ -156,13 +156,19 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                         $authService = $sm->get('AuthService');
                         if($authService->hasIdentity()){
                             $roleId = $authService->getIdentity()->userRole;
-                            return $routeDataAccess->getRouteData($roleId);
+                            $cache_ns = 'route_cache' . $roleId;
+                            $routeData = $routeDataAccess->getCache()->getItem($cache_ns);
+                            if(!$routeData){
+                                $routeData = $routeDataAccess->getRouteData($roleId);
+                                $routeDataAccess->getCache()->setItem($cache_ns, $routeData);
+                            }
+                            return $routeData;
                         }
 
                         return array();
                     },
                     'AppErrorHandling' =>  function($sm) {
-                        $authStorage = $sm->get('Application\Service\SundewAuthStorage');
+                        $authStorage = $sm->get('Sundew\AuthStorage');
                         $user = array();
                         if(!$authStorage->isEmpty()){
                             $user = $authStorage->read();

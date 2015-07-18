@@ -10,6 +10,7 @@ namespace Account\Controller;
 
 use Account\DataAccess\AccountTypeDataAccess;
 use Account\DataAccess\CurrencyDataAccess;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use HumanResource\DataAccess\StaffDataAccess;
 use Account\DataAccess\ReceivableDataAccess;
@@ -19,39 +20,50 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class ReceivableController extends AbstractActionController
+/**
+ * Class ReceivableController
+ * @package Account\Controller
+ */
+class ReceivableController extends SundewController
 {
     private $staffId;
     private $staffName;
+
+    /**
+     * @return ReceivableDataAccess
+     */
     private function receivableTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-
         if(!$this->staffId){
-            $userId = $this->layout()->current_user->userId;
-            $staffDataAccess = new StaffDataAccess($adapter);
-            $staff = $staffDataAccess->getStaffByUser($userId);
+            $staff = $this->getCurrentStaff();
             $this->staffId = boolval($staff) ? $staff->getStaffId() : 0;
             $this->staffName = boolval($staff) ? $staff->getStaffName() : '';
         }
 
-        return new ReceivableDataAccess($adapter, $this->staffId);
+        return new ReceivableDataAccess($this->getDbAdapter(), $this->staffId);
     }
 
+    /**
+     * @return array
+     */
     private function accountTypes()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess=new AccountTypeDataAccess($adapter);
+        $dataAccess=new AccountTypeDataAccess($this->getDbAdapter());
         return $dataAccess->getChildren();
     }
 
+    /**
+     * @return array
+     */
     private function currencyCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new CurrencyDataAccess($adapter);
+        $dataAccess = new CurrencyDataAccess($this->getDbAdapter());
         return $dataAccess->getComboData('currencyId', 'code');
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page', 1);
@@ -71,6 +83,9 @@ class ReceivableController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonGenerateAction()
     {
         $date = $this->params()->fromPost('date',date('Y-m-d', time()));
@@ -78,6 +93,9 @@ class ReceivableController extends AbstractActionController
             'generatedNo' => $this->receivableTable()->getVoucherNo($date)));
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
@@ -93,6 +111,10 @@ class ReceivableController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     * @throws \Exception
+     */
     public function requestAction()
     {
         $helper = new ReceivableHelper($this->receivableTable());
@@ -120,6 +142,10 @@ class ReceivableController extends AbstractActionController
             'accountTypes' => $this->accountTypes(),
         ));
     }
+
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->receivableTable()->fetchAll(false));

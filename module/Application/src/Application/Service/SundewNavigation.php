@@ -21,15 +21,20 @@ class SundewNavigation extends DefaultNavigationFactory
         if(null === $this->pages){
             $dbAdapter = $serviceLocatorInterface->get('Sundew\Db\Adapter');
             $menuTable = new MenuDataAccess($dbAdapter);
-
             $roleId = 0;
-
             $authService = $serviceLocatorInterface->get('AuthService');
             if($authService->hasIdentity()){
                 $roleId = $authService->getIdentity()->userRole;
             }
+            $cache_ns = 'menu_cache_' . $roleId;
+            $menuList = $menuTable->getCache()->getItem($cache_ns);
 
-            $configuration['navigation'][$this->getName()] = $menuTable->getMenuList(null, $roleId);
+            if(!$menuList){
+                $menuList = $menuTable->getMenuList(null, $roleId);
+                $menuTable->getCache()->setItem($cache_ns, $menuList);
+            }
+
+            $configuration['navigation'][$this->getName()] = $menuList;
             if(!isset($configuration['navigation'])){
                 throw new InvalidArgumentException('Could not find navigation configuration key');
             }

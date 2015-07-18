@@ -10,45 +10,54 @@ namespace Account\Controller;
 
 use Account\DataAccess\AccountTypeDataAccess;
 use Account\DataAccess\CurrencyDataAccess;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use HumanResource\DataAccess\StaffDataAccess;
 use Account\DataAccess\PayableDataAccess;
 use Account\Entity\Payable;
 use Account\Helper\PayableHelper;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class PayableController extends  AbstractActionController
+class PayableController extends SundewController
 {
     private $staffId;
     private $staffName;
+
+    /**
+     * @return PayableDataAccess
+     */
     private function payableTable()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-
         if(!$this->staffId){
-            $userId=$this->layout()->current_user->userId;
-            $staffDataAccess=new StaffDataAccess($adapter);
-            $staff=$staffDataAccess->getStaffByUser($userId);
+            $staff = $this->getCurrentStaff();
             $this->staffId=boolval($staff) ? $staff->getStaffId():0;
             $this->staffName=boolval($staff) ? $staff->getStaffName():'';
         }
-        return new PayableDataAccess($adapter, $this->staffId);
+        return new PayableDataAccess($this->getDbAdapter(), $this->staffId);
     }
+
+    /**
+     * @return array
+     */
     private function accountTypes()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess=new AccountTypeDataAccess($adapter);
+        $dataAccess=new AccountTypeDataAccess($this->getDbAdapter());
         return $dataAccess->getChildren();
     }
 
+    /**
+     * @return array
+     */
     public function currencyCombo()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess=new CurrencyDataAccess($adapter);
+        $dataAccess=new CurrencyDataAccess($this->getDbAdapter());
         return $dataAccess->getComboData('currencyId','code');
     }
+
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page',1);
@@ -67,6 +76,10 @@ class PayableController extends  AbstractActionController
             'filter'=>$filter,
         ));
     }
+
+    /**
+     * @return JsonModel
+     */
     public function jsonGenerateAction()
     {
         $date = $this->params()->fromPost('date',date('Y-m-d', time()));
@@ -74,6 +87,9 @@ class PayableController extends  AbstractActionController
             'generatedNo' => $this->payableTable()->getVoucherNo($date)));
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
@@ -89,6 +105,10 @@ class PayableController extends  AbstractActionController
             'accountTypes' => $this->accountTypes(),
         ));
     }
+
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function requestAction()
     {
         $helper=new PayableHelper($this->payableTable());
@@ -116,6 +136,10 @@ class PayableController extends  AbstractActionController
             'accountTypes' => $this->accountTypes(),
         ));
     }
+
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->payableTable()->fetchAll(false));

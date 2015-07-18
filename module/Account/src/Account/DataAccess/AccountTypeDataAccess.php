@@ -16,8 +16,15 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class AccountTypeDataAccess
+ * @package Account\DataAccess
+ */
 class AccountTypeDataAccess extends SundewTableGateway
 {
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table = 'tbl_account_type';
@@ -26,12 +33,21 @@ class AccountTypeDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function fetchAll()
     {
         $results = $this->select();
         return $results;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @param $type
+     * @return array
+     */
     public function getComboData($key, $value, $type)
     {
         $results = $this->select(function(Select $select) use ($type){
@@ -50,6 +66,11 @@ class AccountTypeDataAccess extends SundewTableGateway
         return $selectData;
     }
 
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     * @throws \Exception
+     */
     public function getAccountType($id)
     {
         $id = (int)$id;
@@ -61,6 +82,11 @@ class AccountTypeDataAccess extends SundewTableGateway
         return $row;
     }
 
+    /**
+     * @param null $parentId
+     * @param string $parentName
+     * @return array
+     */
     public function getChildren($parentId = null, $parentName = "")
     {
         $results = $this->select(function (Select $select) use ($parentId){
@@ -79,6 +105,10 @@ class AccountTypeDataAccess extends SundewTableGateway
         return $resultList;
     }
 
+    /**
+     * @param AccountType $accountType
+     * @return AccountType
+     */
     public function saveAccountType(AccountType $accountType)
     {
         $id = $accountType->getAccountTypeId();
@@ -96,6 +126,9 @@ class AccountTypeDataAccess extends SundewTableGateway
         return $accountType;
     }
 
+    /**
+     * @param $id
+     */
     public function deleteAccountType($id)
     {
         $results = $this->select(array("parentTypeId" => $id));

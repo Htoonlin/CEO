@@ -11,6 +11,7 @@ namespace Application\Service;
 use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Cache\StorageFactory;
 
 class SundewAdapterFactory implements FactoryInterface
 {
@@ -24,7 +25,7 @@ class SundewAdapterFactory implements FactoryInterface
     {
         $config = $serviceLocator->get('Config');
         $adapter = new Adapter($config['db']);
-        $authStorage = $serviceLocator->get('Application\Service\SundewAuthStorage');
+        $authStorage = $serviceLocator->get('Sundew\AuthStorage');
         $user = array();
         if(!$authStorage->isEmpty()){
             $user = $authStorage->read();

@@ -21,8 +21,15 @@ use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Db\Sql\Where;
 
+/**
+ * Class CurrencyDataAccess
+ * @package Account\DataAccess
+ */
 class CurrencyDataAccess extends SundewTableGateway
 {
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table='tbl_account_currency';
@@ -31,6 +38,14 @@ class CurrencyDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|Paginator
+     * @throws \Exception
+     */
     public function fetchAll($paginated=false, $filter='', $orderBy='name', $order='ASC')
     {
         if($paginated){
@@ -40,6 +55,11 @@ class CurrencyDataAccess extends SundewTableGateway
 
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     public function getComboData($key, $value)
     {
         $results = $this->select(array('status' => 'A'));
@@ -51,6 +71,10 @@ class CurrencyDataAccess extends SundewTableGateway
         return $selectData;
     }
 
+    /**
+     * @param $currency
+     * @return array|\ArrayObject|null
+     */
     public function getLastCurrency($currency){
         $results = $this->select(function (Select $select) use ($currency){
             $where = new Where();
@@ -64,6 +88,10 @@ class CurrencyDataAccess extends SundewTableGateway
         return $results->current();
     }
 
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     */
     public function  getCurrency($id)
     {
         $id=(int)$id;
@@ -73,6 +101,10 @@ class CurrencyDataAccess extends SundewTableGateway
         return $row;
     }
 
+    /**
+     * @param Currency $currency
+     * @return Currency
+     */
     public function saveCurrency(Currency $currency)
     {
         $id=$currency->getCurrencyId();
@@ -89,9 +121,11 @@ class CurrencyDataAccess extends SundewTableGateway
         return $currency;
     }
 
+    /**
+     * @param $id
+     */
     public function deleteCurrency($id)
     {
-
         $this->delete(array('currencyId'=>(int)$id));
     }
 }

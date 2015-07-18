@@ -9,30 +9,33 @@
 namespace CustomerRelation\Controller;
 
 use Application\DataAccess\ConstantDataAccess;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use CustomerRelation\Entity\Company;
 use CustomerRelation\Helper\CompanyHelper;
 use CustomerRelation\DataAccess\CompanyDataAccess;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class CompanyController extends AbstractActionController
+class CompanyController extends SundewController
 {
+    /**
+     * @return CompanyDataAccess
+     */
     private function companyTable()
     {
-        $sm=$this->getServiceLocator();
-        $adapter=$sm->get('Sundew\Db\Adapter');
-        $dataAccess=new CompanyDataAccess($adapter);
-        return $dataAccess;
+        return new CompanyDataAccess($this->getDbAdapter());
     }
 
     private $statusList;
     private $companyTypes;
+
+    /**
+     *
+     */
     private function init_combos()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $constant = new ConstantDataAccess($adapter);
+        $constant = new ConstantDataAccess($this->getDbAdapter());
 
         if(!$this->statusList)
             $this->statusList = $constant->getComboByName('default_status');
@@ -41,6 +44,9 @@ class CompanyController extends AbstractActionController
             $this->companyTypes = $constant->getComboByName('company_types');
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonAllAction()
     {
         $companies=$this->companyTable()->fetchAll();
@@ -53,6 +59,9 @@ class CompanyController extends AbstractActionController
         return new JsonModel($data);
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page',1);
@@ -73,11 +82,14 @@ class CompanyController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction()
     {
         $this->init_combos();
         $id=(int)$this->params()->fromRoute('id',0);
-        $helper=new CompanyHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
+        $helper=new CompanyHelper($this->getDbAdapter());
         $form=$helper->getForm($this->companyTypes, $this->statusList);
         $company=$this->companyTable()->getCompany($id);
 
@@ -105,6 +117,9 @@ class CompanyController extends AbstractActionController
             'id'=>$id, 'isEdit'=>$isEdit));
     }
 
+    /**
+     * @return \Zend\Http\Response
+     */
     public function deleteAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
@@ -116,6 +131,9 @@ class CompanyController extends AbstractActionController
         return $this->redirect()->toRoute("cr_company");
     }
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->companyTable()->fetchAll(false));
@@ -129,6 +147,9 @@ class CompanyController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonDeleteAction()
     {
         $data=$this->params()->fromPost('chkId', array());

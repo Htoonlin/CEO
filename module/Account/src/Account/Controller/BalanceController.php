@@ -17,6 +17,7 @@ use Account\DataAccess\VoucherDataAccess;
 use Account\Entity\Closing;
 use Account\Entity\Payable;
 use Account\Entity\Receivable;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use HumanResource\DataAccess\StaffDataAccess;
 use Zend\Form\Element;
@@ -25,56 +26,75 @@ use Zend\Uri\Http;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class BalanceController extends AbstractActionController
+/**
+ * Class BalanceController
+ * @package Account\Controller
+ */
+class BalanceController extends SundewController
 {
+    /**
+     * @return VoucherDataAccess
+     */
     private function voucherTable()
     {
-        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new VoucherDataAccess($dbAdapter);
+        return new VoucherDataAccess($this->getDbAdapter());
     }
 
     private $staffId;
+
+    /**
+     * @return int
+     */
     private function getStaffId()
     {
         if(!$this->staffId){
-            $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-            $userId=$this->layout()->current_user->userId;
-            $staffDataAccess=new StaffDataAccess($dbAdapter);
-            $staff=$staffDataAccess->getStaffByUser($userId);
+            $staff=$this->getCurrentStaff();
             $this->staffId=boolval($staff) ? $staff->getStaffId():0;
         }
 
         return $this->staffId;
     }
 
+    /**
+     * @return CurrencyDataAccess
+     */
     private function currencyTable()
     {
-        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new CurrencyDataAccess($dbAdapter);
+        return new CurrencyDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return PayableDataAccess
+     */
     private function payableTable()
     {
-        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new PayableDataAccess($dbAdapter, $this->getStaffId());
+        return new PayableDataAccess($this->getDbAdapter(), $this->getStaffId());
     }
 
+    /**
+     * @return ReceivableDataAccess
+     */
     private function receivableTable()
     {
-        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new ReceivableDataAccess($dbAdapter, $this->getStaffId());
+        return new ReceivableDataAccess($this->getDbAdapter(), $this->getStaffId());
     }
 
+    /**
+     * @return ClosingDataAccess
+     */
     private function closingTable()
     {
-        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new ClosingDataAccess($dbAdapter);
+        return new ClosingDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @param bool $useAllCurrency
+     * @param int $selected
+     * @return Element\Select
+     */
     private function currencyCombo($useAllCurrency = false, $selected = 0)
     {
-        $dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new CurrencyDataAccess($dbAdapter);
+        $dataAccess = new CurrencyDataAccess($this->getDbAdapter());
         $data = $dataAccess->getComboData('currencyId', 'name');
         $currencyCombo = new Element\Select('currency');
         if($useAllCurrency){
@@ -86,6 +106,9 @@ class BalanceController extends AbstractActionController
         return $currencyCombo;
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page',1);
@@ -107,6 +130,10 @@ class BalanceController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return JsonModel|ViewModel
+     * @throws \Exception
+     */
     public function closeAction()
     {
         if($this->getRequest()->isPost())
@@ -152,6 +179,10 @@ class BalanceController extends AbstractActionController
         return new ViewModel();
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     * @throws \Exception
+     */
     public function detailAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
@@ -186,6 +217,10 @@ class BalanceController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     * @throws \Exception
+     */
     public function exportAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
@@ -214,6 +249,9 @@ class BalanceController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * @return array
+     */
     private function getToCloseAccountData()
     {
         $data = array();
@@ -231,6 +269,10 @@ class BalanceController extends AbstractActionController
         return $data;
     }
 
+    /**
+     * @param $closeData
+     * @return array
+     */
     private function getToOpenAccountData($closeData)
     {
         $returnData = array();
@@ -306,6 +348,10 @@ class BalanceController extends AbstractActionController
         return $returnData;
     }
 
+    /**
+     * @param $data
+     * @throws \Exception
+     */
     private function closingProcess($data)
     {
         $db = $this->closingTable()->getAdapter();

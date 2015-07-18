@@ -14,8 +14,15 @@ use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class ContactDataAccess
+ * @package CustomerRelation\DataAccess
+ */
 class ContactDataAccess extends SundewTableGateway
 {
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table="tbl_cr_contact";
@@ -26,6 +33,14 @@ class ContactDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|\Zend\Paginator\Paginator
+     * @throws \Exception
+     */
     public function fetchAll($paginated=false, $filter='', $orderBy='contactName', $order='ASC')
     {
         $view='vw_cr_contact';
@@ -37,6 +52,11 @@ class ContactDataAccess extends SundewTableGateway
         return $contactView->select();
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     public function getComboData($key, $value)
     {
         $results=$this->select();
@@ -48,6 +68,10 @@ class ContactDataAccess extends SundewTableGateway
         return $selectData;
     }
 
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     */
     public function getContact($id)
     {
         $id=(int)$id;
@@ -55,6 +79,10 @@ class ContactDataAccess extends SundewTableGateway
         return $rowset->current();
     }
 
+    /**
+     * @param Contact $contact
+     * @return Contact
+     */
     public function saveContact(Contact $contact)
     {
         $id=$contact->getContactId();
@@ -72,6 +100,9 @@ class ContactDataAccess extends SundewTableGateway
         return $contact;
     }
 
+    /**
+     * @param $id
+     */
     public function deleteContact($id)
     {
         $this->delete(array('contactId'=>(int)$id));

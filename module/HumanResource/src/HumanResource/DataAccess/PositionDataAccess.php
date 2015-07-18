@@ -18,7 +18,15 @@ use Zend\Paginator\Paginator;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 
+/**
+ * Class PositionDataAccess
+ * @package HumanResource\DataAccess
+ */
 class PositionDataAccess extends SundewTableGateway{
+
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table="tbl_hr_position";
@@ -27,6 +35,14 @@ class PositionDataAccess extends SundewTableGateway{
         $this->initialize();
     }
 
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|Paginator
+     * @throws \Exception
+     */
     public function fetchAll($paginated=false,$filter='',$orderBy='name',$order='ASC')
     {
         if($paginated){
@@ -35,6 +51,11 @@ class PositionDataAccess extends SundewTableGateway{
         return $this->select();
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     public function getComboData($key, $value)
     {
         $results=$this->select();
@@ -46,12 +67,21 @@ class PositionDataAccess extends SundewTableGateway{
         return $selectData;
     }
 
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     */
     public function getPosition($id)
     {
         $id=(int)$id;
         $rowset=$this->select(array('positionId'=>$id));
         return $rowset->current();
     }
+
+    /**
+     * @param Position $position
+     * @return Position
+     */
     public function savePosition(Position $position)
     {
         $id=$position->getPositionId();
@@ -71,6 +101,10 @@ class PositionDataAccess extends SundewTableGateway{
         }
         return $position;
     }
+
+    /**
+     * @param $id
+     */
     public function deletePosition($id)
     {
         $this->delete(array('positionId'=>(int)$id));

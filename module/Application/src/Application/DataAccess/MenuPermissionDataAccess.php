@@ -16,9 +16,15 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
 
-
+/**
+ * Class MenuPermissionDataAccess
+ * @package Application\DataAccess
+ */
 class MenuPermissionDataAccess extends SundewTableGateway
 {
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table = "tbl_menu_permission";
@@ -26,11 +32,19 @@ class MenuPermissionDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @param $menuId
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function grantRoles($menuId)
     {
         return $this->select(array('menuId' => $menuId));
     }
 
+    /**
+     * @param $menuId
+     * @param array $roles
+     */
     public function saveMenuPermission($menuId, array $roles)
     {
         $this->delete(array('menuId' => $menuId));
@@ -44,6 +58,9 @@ class MenuPermissionDataAccess extends SundewTableGateway
         }
     }
 
+    /**
+     * @param $menuId
+     */
     public function deleteRoles($menuId)
     {
         $this->delete(array('menuId' => $menuId));

@@ -16,8 +16,15 @@ use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class RoleDataAccess
+ * @package Application\DataAccess
+ */
 class RoleDataAccess extends SundewTableGateway
 {
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table = 'tbl_role';
@@ -26,12 +33,20 @@ class RoleDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @return array
+     */
     public function fetchAll()
     {
         $results = $this->select();
         return $results->toArray();
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     public function getComboData($key, $value)
     {
         $results = $this->select();
@@ -44,6 +59,11 @@ class RoleDataAccess extends SundewTableGateway
         return $selectData;
     }
 
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     * @throws \Exception
+     */
     public function getRole($id)
     {
         $id = (int)$id;
@@ -55,6 +75,11 @@ class RoleDataAccess extends SundewTableGateway
         return $row;
     }
 
+    /**
+     * @param null $parentId
+     * @param string $parentName
+     * @return array
+     */
     public function getChildren($parentId = null, $parentName = "")
     {
         $results = $this->select(function (Select $select) use ($parentId){
@@ -73,6 +98,10 @@ class RoleDataAccess extends SundewTableGateway
         return $resultList;
     }
 
+    /**
+     * @param Role $role
+     * @return Role
+     */
     public function saveRole(Role $role)
     {
         $id = $role->getRoleId();
@@ -90,6 +119,9 @@ class RoleDataAccess extends SundewTableGateway
         return $role;
     }
 
+    /**
+     * @param $id
+     */
     public function deleteRole($id)
     {
         $results = $this->select(array("parentId" => $id));

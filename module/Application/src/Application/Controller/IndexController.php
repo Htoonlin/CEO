@@ -9,9 +9,9 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
+use Application\Service\SundewController;
 
-class IndexController extends AbstractActionController
+class IndexController extends SundewController
 {
     public function indexAction()
     {

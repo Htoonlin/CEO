@@ -9,6 +9,7 @@
 namespace CustomerRelation\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use CustomerRelation\DataAccess\ContractDataAccess;
 use CustomerRelation\Entity\Contract;
@@ -16,41 +17,39 @@ use CustomerRelation\Helper\ContractHelper;
 use CustomerRelation\DataAccess\CompanyDataAccess;
 use CustomerRelation\DataAccess\ContactDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-class ContractController extends AbstractActionController
+
+/**
+ * Class ContractController
+ * @package CustomerRelation\Controller
+ */
+class ContractController extends SundewController
 {
     private $staffId;
     private $staffName;
     private function contractTable()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
         if(!$this->staffId){
-            $userId=$this->layout()->current_user->userId;
-            $staffDataAccess=new StaffDataAccess($adapter);
-            $staff=$staffDataAccess->getStaffByUser($userId);
+            $staff = $this->getCurrentStaff();
             $this->staffId=boolval($staff)?$staff->getStaffId():0;
             $this->staffName=boolval($staff)?$staff->getStaffName():'';
         }
-        return new ContractDataAccess($adapter,$this->staffId);
+        return new ContractDataAccess($this->getDbAdapter(),$this->staffId);
     }
     private function currencyCombos()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess=new CurrencyDataAccess($adapter);
+        $dataAccess=new CurrencyDataAccess($this->getDbAdapter());
         return $dataAccess->getComboData('currencyId','code');
     }
     private function companyCombos()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess=new CompanyDataAccess($adapter);
+        $dataAccess=new CompanyDataAccess($this->getDbAdapter());
         return $dataAccess->getComboData('companyId','name');
     }
     private function contactCombos()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess=new ContactDataAccess($adapter);
+        $dataAccess=new ContactDataAccess($this->getDbAdapter());
         return $dataAccess->getComboData('contactId','name');
     }
     public function indexAction()

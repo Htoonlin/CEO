@@ -6,19 +6,24 @@ namespace Application\Controller;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Entity\Constant;
 use Application\Helper\ConstantHelper;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class ConstantController extends AbstractActionController
+class ConstantController extends SundewController
 {
+    /**
+     * @return ConstantDataAccess
+     */
     private function constantTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new ConstantDataAccess($adapter);
+        return new ConstantDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int) $this->params()->fromQuery('page', 1);
@@ -39,11 +44,14 @@ class ConstantController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
 
-        $helper = new ConstantHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
+        $helper = new ConstantHelper($this->getDbAdapter());
         $form = $helper->getForm();
         $constant = $this->constantTable()->getConstant($id);
         $form->setAttribute("class", "form-horizontal");
@@ -72,6 +80,9 @@ class ConstantController extends AbstractActionController
             'id' => $id, 'isEdit' => $isEdit));
     }
 
+    /**
+     * @return \Zend\Http\Response
+     */
     public function deleteAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
@@ -84,6 +95,9 @@ class ConstantController extends AbstractActionController
         return $this->redirect()->toRoute("constant");
     }
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->constantTable()->fetchAll(false));
@@ -97,6 +111,9 @@ class ConstantController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonDeleteAction()
     {
         $data = $this->params()->fromPost('chkId', array());

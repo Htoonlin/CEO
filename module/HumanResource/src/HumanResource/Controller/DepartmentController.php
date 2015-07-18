@@ -8,22 +8,31 @@
 
 namespace HumanResource\Controller;
 
+use Application\Service\SundewController;
 use HumanResource\Helper\DepartmentHelper;
 use HumanResource\Entity\Department;
 use HumanResource\DataAccess\DepartmentDataAccess;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class DepartmentController extends AbstractActionController
+/**
+ * Class DepartmentController
+ * @package HumanResource\Controller
+ */
+class DepartmentController extends SundewController
 {
+    /**
+     * @return DepartmentDataAccess
+     */
     private function departmentTable()
     {
-        $sm=$this->getServiceLocator();
-        $adapter=$sm->get('Sundew\Db\Adapter');
-        $dataAccess=new DepartmentDataAccess($adapter);
+        $dataAccess=new DepartmentDataAccess($this->getDbAdapter());
         return $dataAccess;
     }
+
+    /**
+     * @return JsonModel
+     */
     public function jsonAllAction()
     {
         $departments = $this->departmentTable()->fetchAll();
@@ -33,6 +42,11 @@ class DepartmentController extends AbstractActionController
         }
         return new JsonModel($data);
     }
+
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     * @throws \Exception
+     */
     public function indexAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);

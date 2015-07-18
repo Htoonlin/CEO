@@ -12,30 +12,33 @@ use Account\Helper\CurrencyHelper;
 use Account\Entity\Currency;
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class CurrencyController extends AbstractActionController
+class CurrencyController extends SundewController
 {
+    /**
+     * @return CurrencyDataAccess
+     */
     private function currencyTable()
     {
-        $sm=$this->getServiceLocator();
-        $adapter=$sm->get('Sundew\Db\Adapter');
-
-        $dataAccess=new CurrencyDataAccess($adapter);
-
-        return $dataAccess;
+        return new CurrencyDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return array
+     */
     private function statusCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new ConstantDataAccess($adapter);
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
         return $dataAccess->getComboByName('default_status');
     }
 
+    /**
+     * @return JsonModel
+     */
     public  function jsonAllAction()
     {
         $currencies=$this->currencyTable()->fetchAll();
@@ -48,6 +51,9 @@ class CurrencyController extends AbstractActionController
         return new JsonModel($data);
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page',1);
@@ -69,10 +75,13 @@ class CurrencyController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
-        $helper=new CurrencyHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
+        $helper=new CurrencyHelper($this->getDbAdapter());
         $form=$helper->getForm($this->statusCombo());
         $currency=$this->currencyTable()->getCurrency($id);
 
@@ -121,6 +130,9 @@ class CurrencyController extends AbstractActionController
             'id'=>$id, 'isEdit'=>$isEdit));
     }
 
+    /**
+     * @return \Zend\Http\Response
+     */
     public function deleteAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
@@ -146,6 +158,9 @@ class CurrencyController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonDeleteAction()
     {
         $data=$this->params()->fromPost('chkId', array());
@@ -167,6 +182,4 @@ class CurrencyController extends AbstractActionController
 
         return new JsonModel(array("message"=>$message));
     }
-
-
 }

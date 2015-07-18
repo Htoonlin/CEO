@@ -18,8 +18,15 @@ use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Db\Sql\Where;
 
+/**
+ * Class CompanyDataAccess
+ * @package CustomerRelation\DataAccess
+ */
 class CompanyDataAccess extends SundewTableGateway
 {
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table='tbl_cr_company';
@@ -28,6 +35,14 @@ class CompanyDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|Paginator
+     * @throws \Exception
+     */
     public function fetchAll($paginated=false, $filter='', $orderBy='name', $order='ASC')
     {
         if($paginated){
@@ -37,6 +52,11 @@ class CompanyDataAccess extends SundewTableGateway
 
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     public function getComboData($key, $value)
     {
         $results=$this->select();
@@ -48,6 +68,10 @@ class CompanyDataAccess extends SundewTableGateway
         return $selectData;
     }
 
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     */
     public function getCompany($id)
     {
         $id=(int)$id;
@@ -57,6 +81,10 @@ class CompanyDataAccess extends SundewTableGateway
         return $row;
     }
 
+    /**
+     * @param Company $company
+     * @return Company
+     */
     public function saveCompany(Company $company)
     {
         $id=$company->getCompanyId();
@@ -75,6 +103,9 @@ class CompanyDataAccess extends SundewTableGateway
         return $company;
     }
 
+    /**
+     * @param $id
+     */
     public function deleteCompany($id)
     {
         $this->delete(array('companyId'=>(int)$id));

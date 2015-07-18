@@ -12,6 +12,10 @@ namespace Application\Service;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
+/**
+ * Class SundewNavigationFactory
+ * @package Application\Service
+ */
 class SundewNavigationFactory implements FactoryInterface
 {
     /**

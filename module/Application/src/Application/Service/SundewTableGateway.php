@@ -9,19 +9,41 @@
 namespace Application\Service;
 
 use Zend\Db\Metadata\Metadata;
-use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\ResultSet\ResultSetInterface;
-use Zend\Db\Sql\Insert;
-use Zend\Db\Sql\Update;
-use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
+use Zend\Cache\StorageFactory;
 
 class SundewTableGateway extends AbstractTableGateway
 {
+    protected $cache;
+
+    /**
+     * @return \Zend\Cache\Storage\StorageInterface
+     */
+    public function getCache()
+    {
+        if(!$this->cache){
+            $cache = StorageFactory::factory(array(
+                'adapter' => array(
+                    'name' => 'filesystem',
+                    'options' => array(
+                        'cache_dir' => './data/cache',
+                        'ttl' => 3600,
+                    )
+                ),
+                'plugins' => array(
+                    'exception_handler' => array('throw_exceptions' => false),
+                    'serializer',
+                ),
+            ));
+            $this->cache = $cache;
+        }
+        return $this->cache;
+    }
+
     protected $executeUser;
     /**
      * @param string $filter

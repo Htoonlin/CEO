@@ -16,9 +16,18 @@ use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class ContractDataAccess
+ * @package CustomerRelation\DataAccess
+ */
 class ContractDataAccess extends SundewTableGateway
 {
     protected $staffId;
+
+    /**
+     * @param Adapter $dbAdapter
+     * @param $staffId
+     */
     public function __construct(Adapter $dbAdapter,$staffId)
     {
         $this->staffId=$staffId;
@@ -27,6 +36,11 @@ class ContractDataAccess extends SundewTableGateway
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Contract());
         $this->initialize();
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function getContractView($id)
     {
         $select=new Select('vw_cr_contract');
@@ -35,6 +49,15 @@ class ContractDataAccess extends SundewTableGateway
         $result=$statement->execute();
         return $result->current();
     }
+
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet
+     * @throws \Exception
+     */
     public function fetchAll($paginated = false, $filter ='', $orderBy= 'contractBy', $order='ASC')
     {
         if($paginated){
@@ -43,6 +66,12 @@ class ContractDataAccess extends SundewTableGateway
         $contractView=new TableGateway($this->table, $this->adapter);
         return $contractView->select(array('contract'=>$this->staffId));
     }
+
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     public function getComboData($key, $value)
     {
         $results=$this->select();
@@ -54,12 +83,21 @@ class ContractDataAccess extends SundewTableGateway
         return $selectData;
     }
 
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     */
     public function getContract($id)
     {
         $id=(int)$id;
         $rowset=$this->select(array('contractId'=>$id,'contractBy'=>$this->staffId));
         return $rowset->current();
     }
+
+    /**
+     * @param Contract $contract
+     * @return Contract
+     */
     public function saveContract(Contract $contract)
     {
         $id = $contract->getContractId();
@@ -83,6 +121,10 @@ class ContractDataAccess extends SundewTableGateway
 
         return $contract;
     }
+
+    /**
+     * @param $id
+     */
     public function deleteContract($id)
     {
         $this->delete(array('contractId'=>(int)$id));

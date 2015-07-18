@@ -15,9 +15,18 @@ use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class ProposalDataAccess
+ * @package CustomerRelation\DataAccess
+ */
 class ProposalDataAccess extends SundewTableGateway
 {
     protected $staffId;
+
+    /**
+     * @param Adapter $dbAdapter
+     * @param $staffId
+     */
     public function __construct(Adapter $dbAdapter,$staffId)
     {
         $this->staffId=$staffId;
@@ -27,6 +36,14 @@ class ProposalDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|\Zend\Paginator\Paginator
+     * @throws \Exception
+     */
     public function fetchAll($paginated = false, $filter ='', $orderBy= 'proposalDate', $order='ASC')
     {
         $view = 'vw_cr_proposal';
@@ -36,12 +53,22 @@ class ProposalDataAccess extends SundewTableGateway
         $proposalView=new TableGateway($view, $this->adapter);
         return $proposalView->select(array('proposalBy'=>$this->staffId));
     }
+
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     */
     public function getProposal($id)
     {
         $id=(int)$id;
         $rowset=$this->select(array('proposalId'=>$id,'proposalBy'=>$this->staffId));
         return $rowset->current();
     }
+
+    /**
+     * @param Proposal $proposal
+     * @return Proposal
+     */
     public function saveProposal(Proposal $proposal)
     {
         $id=$proposal->getProposalId();
@@ -62,6 +89,10 @@ class ProposalDataAccess extends SundewTableGateway
         }
         return $proposal;
     }
+
+    /**
+     * @param $id
+     */
     public function deleteProposal($id)
     {
         $this->delete(array('proposalId'=>(int)$id));

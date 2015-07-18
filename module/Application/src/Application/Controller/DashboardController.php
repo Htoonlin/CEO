@@ -10,29 +10,30 @@ namespace Application\Controller;
 
 
 use Application\DataAccess\CalendarDataAccess;
-use Application\DataAccess\CalendarType;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Helper\DashboardHelper;
+use Application\Service\SundewController;
 use HumanResource\DataAccess\AttendanceDataAccess;
 use HumanResource\DataAccess\LeaveDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Attendance;
 use HumanResource\Entity\Leave;
-use HumanResource\Helper\LeaveHelper;
 use HumanResource\Helper\PayrollHelper;
 use Zend\Json\Json;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class DashboardController extends AbstractActionController
+class DashboardController extends SundewController
 {
     private $staff;
     private $leaveTypeList;
+
+    /**
+     * @return AttendanceDataAccess
+     */
     private function attendanceTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new AttendanceDataAccess($adapter);
+        return new AttendanceDataAccess($this->getDbAdapter());
     }
     private $staffTable;
     private $calendarTable;
@@ -42,23 +43,25 @@ class DashboardController extends AbstractActionController
     private $formulaList;
     private $leaveTable;
 
+    /**
+     *
+     */
     private function init_data(){
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
         if(!$this->staffTable)
-            $this->staffTable = new StaffDataAccess($adapter);
+            $this->staffTable = new StaffDataAccess($this->getDbAdapter());
 
         if(!$this->staff){
-            $userId = $this->layout()->current_user->userId;
+            $userId = $this->getAuthUser()->userId;
             $this->staff = $this->staffTable->getStaffByUser($userId);
         }
 
         if(!$this->leaveTable)
-            $this->leaveTable = new LeaveDataAccess($adapter);
+            $this->leaveTable = new LeaveDataAccess($this->getDbAdapter());
 
         if(!$this->calendarTable)
-            $this->calendarTable = new CalendarDataAccess($adapter);
+            $this->calendarTable = new CalendarDataAccess($this->getDbAdapter());
 
-        $constantTable = new ConstantDataAccess($adapter);
+        $constantTable = new ConstantDataAccess($this->getDbAdapter());
 
         if(!$this->formulaList){
             $this->formulaList = $constantTable->getComboByName('payroll_formula', 'payroll');
@@ -74,7 +77,7 @@ class DashboardController extends AbstractActionController
             $this->leaveValues = $constant->getValue();
         }
 
-        $constantDataAccess = new ConstantDataAccess($adapter);
+        $constantDataAccess = new ConstantDataAccess($this->getDbAdapter());
         if(!$this->lateList){
             $lateData = $constantDataAccess->getConstantByName('late_condition','payroll');
             $lateList = Json::decode($lateData->getValue());

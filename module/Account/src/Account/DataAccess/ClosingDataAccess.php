@@ -8,7 +8,6 @@
 
 namespace Account\DataAccess;
 
-
 use Account\Entity\Closing;
 use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
@@ -22,9 +21,17 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class ClosingDataAccess
+ * @package Account\DataAccess
+ */
 class ClosingDataAccess extends SundewTableGateway
 {
     private $view = 'vw_account_closing';
+
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table = 'tbl_account_closing';
@@ -33,6 +40,13 @@ class ClosingDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @param bool $paginated
+     * @param int $currency
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|Paginator
+     */
     public function fetchAll($paginated=false,$currency = 0, $orderBy = 'closingDate', $order='desc')
     {
         if($paginated){
@@ -49,6 +63,11 @@ class ClosingDataAccess extends SundewTableGateway
         return $tableGateway->select();
     }
 
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     * @throws \Exception
+     */
     public function getClosing($id)
     {
         $result = $this->select(array('closingId' => $id));
@@ -60,6 +79,10 @@ class ClosingDataAccess extends SundewTableGateway
         return $result->current();
     }
 
+    /**
+     * @param Closing $closing
+     * @return Closing
+     */
     public function saveClosing(Closing $closing)
     {
         $id = $closing->getClosingId();
@@ -79,6 +102,9 @@ class ClosingDataAccess extends SundewTableGateway
         return $closing;
     }
 
+    /**
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function getOpenedData()
     {
         $tableGateway = new TableGateway($this->view, $this->adapter);
@@ -91,6 +117,10 @@ class ClosingDataAccess extends SundewTableGateway
         return $results;
     }
 
+    /**
+     * @param array $currency
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function getNewOpeningData(array $currency)
     {
         $tableGateway = new TableGateway('vw_account_voucher', $this->adapter);

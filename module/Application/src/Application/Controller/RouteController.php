@@ -14,37 +14,50 @@ use Application\DataAccess\RouteDataAccess;
 use Application\DataAccess\RoutePermissionDataAccess;
 use Application\Entity\Route;
 use Application\Helper\RouteHelper;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class RouteController extends AbstractActionController
+class RouteController extends SundewController
 {
+    /**
+     * @return RouteDataAccess
+     */
     private function routeTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new RouteDataAccess($adapter);
+        return new RouteDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return RoutePermissionDataAccess
+     */
     private function routePermissionTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new RoutePermissionDataAccess($adapter);
+        return new RoutePermissionDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return array
+     */
     private function roleTreeData()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new RoleDataAccess($adapter);
+        $dataAccess = new RoleDataAccess($this->getDbAdapter());
         return $dataAccess->getChildren();
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonAllAction()
     {
         $data = $this->routeTable()->fetchAll();
         return new JsonModel($data);
     }
+
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page',1);
@@ -64,10 +77,14 @@ class RouteController extends AbstractActionController
             'filter' => $filter,
         ));
     }
+
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
-        $helper = new RouteHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
+        $helper = new RouteHelper($this->getDbAdapter());
         $form = $helper->getForm();
         $route = $this->routeTable()->getRoute($id);
         $isEdit = true;
@@ -109,6 +126,10 @@ class RouteController extends AbstractActionController
             'permissions' => $permissions,
         ));
     }
+
+    /**
+     * @return \Zend\Http\Response
+     */
     public function deleteAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
@@ -129,6 +150,10 @@ class RouteController extends AbstractActionController
         }
         return $this->redirect()->toRoute("route");
     }
+
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->routeTable()->fetchAll(false));
@@ -142,6 +167,10 @@ class RouteController extends AbstractActionController
 
         return $response;
     }
+
+    /**
+     * @return JsonModel
+     */
     public function jsonDeleteAction()
     {
         $data = $this->params()->fromPost('chkId',array());

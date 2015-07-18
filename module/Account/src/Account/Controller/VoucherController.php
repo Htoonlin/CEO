@@ -12,46 +12,56 @@ use Account\DataAccess\PayableDataAccess;
 use Account\DataAccess\ReceivableDataAccess;
 use Account\DataAccess\VoucherDataAccess;
 use Account\Entity\Voucher;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use HumanResource\DataAccess\StaffDataAccess;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class VoucherController extends AbstractActionController
+/**
+ * Class VoucherController
+ * @package Account\Controller
+ */
+class VoucherController extends SundewController
 {
+    /**
+     * @return VoucherDataAccess
+     */
     private function voucherTable()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new VoucherDataAccess($adapter);
+        return new VoucherDataAccess($this->getDbAdapter());
     }
     private $staffId;
+
+    /**
+     * @return ReceivableDataAccess
+     */
     private function receivableTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-
         if(!$this->staffId && $this->staffId <= 0){
-            $userId = $this->layout()->current_user->userId;
-            $staffDataAccess = new StaffDataAccess($adapter);
-            $staff = $staffDataAccess->getStaffByUser($userId);
+            $staff = $this->getCurrentStaff();
             $this->staffId = boolval($staff) ? $staff->getStaffId() : 0;
         }
 
-        return new ReceivableDataAccess($adapter, $this->staffId);
+        return new ReceivableDataAccess($this->getDbAdapter(), $this->staffId);
     }
+
+    /**
+     * @return PayableDataAccess
+     */
     private function payableTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-
         if(!$this->staffId && $this->staffId <= 0){
-            $userId = $this->layout()->current_user->userId;
-            $staffDataAccess = new StaffDataAccess($adapter);
-            $staff = $staffDataAccess->getStaffByUser($userId);
+            $staff = $this->getCurrentStaff();
             $this->staffId = boolval($staff) ? $staff->getStaffId() : 0;
         }
 
-        return new PayableDataAccess($adapter, $this->staffId);
+        return new PayableDataAccess($this->getDbAdapter(), $this->staffId);
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page',1);
@@ -72,6 +82,9 @@ class VoucherController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public  function  detailAction()
     {
         $voucherNo = $this->params()->fromRoute('voucher','');
@@ -89,6 +102,11 @@ class VoucherController extends AbstractActionController
             'redirect' => $backPath,
         ));
     }
+
+    /**
+     * @return \Zend\Http\Response
+     * @throws \Exception
+     */
     public function approveAction()
     {
         $voucherNo = $this->params()->fromRoute('voucher','');
@@ -115,6 +133,11 @@ class VoucherController extends AbstractActionController
 
         return $this->redirect()->toRoute('account_voucher');
     }
+
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     * @throws \Exception
+     */
     public function cancelAction()
     {
         $voucherNo = $this->params()->fromRoute('voucher','');
@@ -153,6 +176,9 @@ class VoucherController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->voucherTable()->fetchAll());

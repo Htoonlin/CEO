@@ -21,11 +21,18 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
-
+/**
+ * Class ReceivableDataAccess
+ * @package Account\DataAccess
+ */
 class ReceivableDataAccess extends SundewTableGateway
 {
     protected $staffId;
 
+    /**
+     * @param Adapter $dbAdapter
+     * @param $staffId
+     */
     public function __construct(Adapter $dbAdapter, $staffId)
     {
         $this->staffId = $staffId;
@@ -35,6 +42,10 @@ class ReceivableDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @param $date
+     * @return string
+     */
     public function getVoucherNo($date)
     {
         $select = new Select($this->table);
@@ -52,6 +63,13 @@ class ReceivableDataAccess extends SundewTableGateway
         return $generate;
     }
 
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|Paginator
+     */
     public function fetchAll($paginated=false,$filter='',$orderBy='voucherNo',$order='ASC')
     {
         $view = 'vw_account_receivable';
@@ -68,6 +86,10 @@ class ReceivableDataAccess extends SundewTableGateway
         return $tableGateway->select(array('depositBy' => $this->staffId));
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function getReceivableView($id)
     {
         $select = new Select('vw_account_receivable');
@@ -77,6 +99,11 @@ class ReceivableDataAccess extends SundewTableGateway
         return $result->current();
     }
 
+    /**
+     * @param $id
+     * @param bool $withPermission
+     * @return array|\ArrayObject|null
+     */
     public function getReceivable($id, $withPermission = true)
     {
         $id=(int)$id;
@@ -88,6 +115,11 @@ class ReceivableDataAccess extends SundewTableGateway
         return $rowset->current();
     }
 
+    /**
+     * @param Receivable $receivable
+     * @return Receivable
+     * @throws \Exception
+     */
     public function saveReceivable(Receivable $receivable)
     {
         $id = $receivable->getReceiveVoucherId();

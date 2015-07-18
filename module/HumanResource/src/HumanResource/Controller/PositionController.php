@@ -2,29 +2,40 @@
 namespace HumanResource\Controller;
 
 use Application\DataAccess\ConstantDataAccess;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use HumanResource\DataAccess\PositionDataAccess;
 use HumanResource\Entity\Position;
 use HumanResource\Helper\PositionHelper;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class PositionController extends AbstractActionController
+/**
+ * Class PositionController
+ * @package HumanResource\Controller
+ */
+class PositionController extends SundewController
 {
+    /**
+     * @return PositionDataAccess
+     */
     private function positionTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new PositionDataAccess($adapter);
+        return new PositionDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return array
+     */
     private function statusCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new ConstantDataAccess($adapter);
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
         return $dataAccess->getComboByName('default_status');
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int) $this->params()->fromQuery('page', 1);
@@ -45,10 +56,14 @@ class PositionController extends AbstractActionController
             'filter'=>$filter,
         ));
     }
+
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
-        $helper = new PositionHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
+        $helper = new PositionHelper($this->getDbAdapter());
         $form = $helper->getForm($this->statusCombo());
         $position = $this->positionTable()->getPosition($id);
         $isEdit = true;
@@ -77,6 +92,9 @@ class PositionController extends AbstractActionController
             'id' => $id, 'isEdit' => $isEdit));
     }
 
+    /**
+     * @return \Zend\Http\Response
+     */
     public function deleteAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
@@ -89,6 +107,9 @@ class PositionController extends AbstractActionController
         return $this->redirect()->toRoute("hr_position");
     }
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->positionTable()->fetchAll(false));
@@ -103,6 +124,9 @@ class PositionController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonDeleteAction()
     {
         $data = $this->params()->fromPost('chkId', array());

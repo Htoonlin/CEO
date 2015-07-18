@@ -14,8 +14,16 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
 use Zend\Stdlib\Hydrator\ClassMethods;
+
+/**
+ * Class DepartmentDataAccess
+ * @package HumanResource\DataAccess
+ */
 class DepartmentDataAccess extends SundewTableGateway
 {
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table='tbl_hr_department';
@@ -23,12 +31,21 @@ class DepartmentDataAccess extends SundewTableGateway
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Department());
         $this->initialize();
     }
+
+    /**
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function fetchAll()
     {
         $results=$this->select();
         return $results;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return array
+     */
     public function getComboData($key, $value)
     {
         $results=$this->select();
@@ -39,6 +56,12 @@ class DepartmentDataAccess extends SundewTableGateway
         }
         return $selectData;
     }
+
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     * @throws \Exception
+     */
     public function getDepartment($id)
     {
         $id=(int)$id;
@@ -49,6 +72,12 @@ class DepartmentDataAccess extends SundewTableGateway
         }
         return $row;
     }
+
+    /**
+     * @param null $parentId
+     * @param string $parentName
+     * @return array
+     */
     public function getChildren($parentId=null,$parentName="")
     {
         $results=$this->select(function (Select $select) use ($parentId){
@@ -65,6 +94,11 @@ class DepartmentDataAccess extends SundewTableGateway
         }
         return $resultList;
     }
+
+    /**
+     * @param Department $department
+     * @return Department
+     */
     public function saveDepartment(Department $department)
     {
         $id=$department->getDepartmentId();
@@ -81,6 +115,10 @@ class DepartmentDataAccess extends SundewTableGateway
         }
         return $department;
     }
+
+    /**
+     * @param $id
+     */
     public function deleteDepartment($id)
     {
         $results=$this->select(array("parentId"=>$id));

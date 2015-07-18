@@ -8,31 +8,41 @@
 
 namespace CustomerRelation\Controller;
 
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use CustomerRelation\DataAccess\ContactDataAccess;
 use CustomerRelation\DataAccess\CompanyDataAccess;
 use CustomerRelation\Entity\Contact;
 use CustomerRelation\Helper\ContactHelper;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
+/**
+ * Class ContactController
+ * @package CustomerRelation\Controller
+ */
+class ContactController extends SundewController{
 
-class ContactController extends AbstractActionController{
-
+    /**
+     * @return ContactDataAccess
+     */
     private function contactTable()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new ContactDataAccess($adapter);
+        return new ContactDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return array
+     */
     private function companyCombos()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess=new CompanyDataAccess($adapter);
+        $dataAccess=new CompanyDataAccess($this->getDbAdapter());
         return $dataAccess->getComboData('companyId', 'name');
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page',1);
@@ -54,10 +64,13 @@ class ContactController extends AbstractActionController{
         ));
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
-        $helper=new ContactHelper($this->companyCombos(), $this->getServiceLocator()->get('Sundew\Db\Adapter'));
+        $helper=new ContactHelper($this->companyCombos(), $this->getDbAdapter());
         $form=$helper->getForm();
         $contact=$this->contactTable()->getContact($id);
         $isEdit=true;
@@ -84,6 +97,9 @@ class ContactController extends AbstractActionController{
             'id'=>$id, 'isEdit'=>$isEdit));
     }
 
+    /**
+     * @return \Zend\Http\Response
+     */
     public function deleteAction()
     {
         $id=(int)$this->params()->fromRoute('id', 0);
@@ -96,6 +112,9 @@ class ContactController extends AbstractActionController{
         return $this->redirect()->toRoute("cr_contact");
     }
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->contactTable()->fetchAll(false));
@@ -110,6 +129,9 @@ class ContactController extends AbstractActionController{
         return $response;
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonDeleteAction()
     {
         $data=$this->params()->fromPost('chkId', array());

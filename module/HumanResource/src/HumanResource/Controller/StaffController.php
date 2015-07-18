@@ -10,6 +10,7 @@ namespace HumanResource\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use HumanResource\DataAccess\DepartmentDataAccess;
 use HumanResource\DataAccess\PositionDataAccess;
@@ -17,52 +18,70 @@ use Application\DataAccess\UserDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Staff;
 use HumanResource\Helper\StaffHelper;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-
-class StaffController extends AbstractActionController
+/**
+ * Class StaffController
+ * @package HumanResource\Controller
+ */
+class StaffController extends SundewController
 {
-    private  function  staffTable()
+    /**
+     * @return StaffDataAccess
+     */
+    private function staffTable()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new StaffDataAccess($adapter);
+        return new StaffDataAccess($this->getDbAdapter());
     }
 
-    private  function  userCombos()
+    /**
+     * @return array
+     */
+    private function userCombos()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess=new UserDataAccess($adapter);
+        $dataAccess=new UserDataAccess($this->getDbAdapter());
         return $dataAccess->getComboData('userId', 'userName');
     }
 
+    /**
+     * @return array
+     */
     private function statusCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new ConstantDataAccess($adapter);
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
         return $dataAccess->getComboByName('default_status');
     }
+
+    /**
+     * @return array
+     */
     private function positionCombos()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess=new PositionDataAccess($adapter);
+        $dataAccess=new PositionDataAccess($this->getDbAdapter());
         return $dataAccess->getComboData('positionId','name');
     }
 
+    /**
+     * @return array
+     */
     private function departments()
     {
-        $adapter=$this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess=new DepartmentDataAccess($adapter);
+        $dataAccess=new DepartmentDataAccess($this->getDbAdapter());
         return $dataAccess->getChildren();
     }
 
+    /**
+     * @return array
+     */
     private function currencyCombo(){
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new CurrencyDataAccess($adapter);
+        $dataAccess = new CurrencyDataAccess($this->getDbAdapter());
         return $dataAccess->getComboData('currencyId', 'code');
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page',1);
@@ -84,10 +103,13 @@ class StaffController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public  function detailAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
-        $helper=new StaffHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
+        $helper=new StaffHelper($this->getDbAdapter());
         $form = $helper->getForm($this->userCombos(), $this->positionCombos(), $this->currencyCombo(), $this->statusCombo());
         $staff = $this->staffTable()->getStaff($id);
         $isEdit = true;
@@ -120,6 +142,9 @@ class StaffController extends AbstractActionController
             'departments' => $this->departments()));
     }
 
+    /**
+     * @return \Zend\Http\Response
+     */
     public function  deleteAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
@@ -131,6 +156,9 @@ class StaffController extends AbstractActionController
         return $this->redirect()->toRoute("hr_staff");
     }
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->staffTable()->fetchAll(false));
@@ -146,6 +174,9 @@ class StaffController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonDeleteAction()
     {
         $data=$this->params()->fromPost('chkId', array());

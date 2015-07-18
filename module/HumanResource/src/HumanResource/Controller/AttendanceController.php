@@ -8,30 +8,42 @@
 
 namespace HumanResource\Controller;
 
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use HumanResource\DataAccess\AttendanceDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Attendance;
 use HumanResource\Helper\AttendanceBoardHelper;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\ArrayObject;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class AttendanceController extends AbstractActionController
+/**
+ * Class AttendanceController
+ * @package HumanResource\Controller
+ */
+class AttendanceController extends SundewController
 {
+    /**
+     * @return AttendanceDataAccess
+     */
     private function attendanceTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new AttendanceDataAccess($adapter);
+        return new AttendanceDataAccess($this->getDbAdapter());
     }
+
+    /**
+     * @return array
+     */
     private function staffCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new StaffDataAccess($adapter);
+        $dataAccess = new StaffDataAccess($this->getDbAdapter());
         return $dataAccess->getComboData('staffId', 'staffCode');
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int) $this->params()->fromQuery('page', 1);
@@ -52,6 +64,9 @@ class AttendanceController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
@@ -108,6 +123,9 @@ class AttendanceController extends AbstractActionController
         return new ViewModel(array('form' => $form, 'id'=>$id));
     }
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->attendanceTable()->fetchAll(false));
@@ -122,6 +140,9 @@ class AttendanceController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonAttendanceAction()
     {
         $staffId = $this->params()->fromQuery('staffId', 0);

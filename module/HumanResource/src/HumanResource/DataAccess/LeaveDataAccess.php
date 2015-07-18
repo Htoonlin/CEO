@@ -15,8 +15,15 @@ use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
+/**
+ * Class LeaveDataAccess
+ * @package HumanResource\DataAccess
+ */
 class LeaveDataAccess extends SundewTableGateway
 {
+    /**
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter){
         $this->table = 'tbl_hr_leave';
         $this->adapter = $dbAdapter;
@@ -24,6 +31,14 @@ class LeaveDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|\Zend\Paginator\Paginator
+     * @throws \Exception
+     */
     public function fetchAll($paginated=false,$filter='',$orderBy='date', $order='DESC')
     {
         $view = 'vw_hr_leave';
@@ -33,17 +48,33 @@ class LeaveDataAccess extends SundewTableGateway
         $tableGateway = new TableGateway($view, $this->adapter);
         return $tableGateway->select();
     }
+
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     */
     public function getLeave($id)
     {
         $id = (int)$id;
         $rowset = $this->select(array('leaveId' => $id));
         return $rowset->current();
     }
+
+    /**
+     * @param $staffId
+     * @param $date
+     * @return array|\ArrayObject|null
+     */
     public function getLeaveByStaff($staffId, $date)
     {
         $rowset = $this->select(array('staffId' => $staffId, 'date' => $date));
         return $rowset->current();
     }
+
+    /**
+     * @param Leave $leave
+     * @return Leave
+     */
     public function saveLeave(Leave $leave)
     {
         $id = $leave->getLeaveId();

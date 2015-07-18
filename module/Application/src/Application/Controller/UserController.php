@@ -8,36 +8,52 @@ use Application\DataAccess\UserDataAccess;
 use Application\Entity\User;
 use Application\Helper\PasswordHelper;
 use Application\Helper\UserHelper;
+use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class UserController extends AbstractActionController
+class UserController extends SundewController
 {
+    /**
+     * @return UserDataAccess
+     */
     private function userTable()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        return new UserDataAccess($adapter);
+        return new UserDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @param $value
+     * @return string
+     */
     private function encryptPassword($value)
     {
         return md5($value);
     }
+
+    /**
+     * @return array
+     */
     private function statusCombo()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new ConstantDataAccess($adapter);
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
         return $dataAccess->getComboByName('default_status');
     }
+
+    /**
+     * @return array
+     */
     private function roleTreeview()
     {
-        $adapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
-        $dataAccess = new RoleDataAccess($adapter);
+        $dataAccess = new RoleDataAccess($this->getDbAdapter());
         return $dataAccess->getChildren();
     }
 
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int) $this->params()->fromQuery('page', 1);
@@ -59,10 +75,13 @@ class UserController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
-        $helper = new UserHelper($this->getServiceLocator()->get('Sundew\Db\Adapter'));
+        $helper = new UserHelper($this->getDbAdapter());
         $form = $helper->getForm($this->statusCombo());
         $user = $this->userTable()->getUser($id);
         $isEdit = true;
@@ -114,6 +133,10 @@ class UserController extends AbstractActionController
             'roles' => $this->roleTreeview(),
         ));
     }
+
+    /**
+     * @return \Zend\Http\Response
+     */
     public function deleteAction()
     {
 
@@ -128,6 +151,9 @@ class UserController extends AbstractActionController
         return $this->redirect()->toRoute("user");
     }
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function imageAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
@@ -152,6 +178,9 @@ class UserController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->userTable()->fetchAll());
@@ -167,6 +196,9 @@ class UserController extends AbstractActionController
         return $response;
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonDeleteAction()
     {
         $data = $this->params()->fromPost('chkId', array());
@@ -189,9 +221,12 @@ class UserController extends AbstractActionController
         return new JsonModel(array("message" => $message));
     }
 
+    /**
+     * @return ViewModel
+     */
     public function profileAction()
     {
-        $user = $this->userTable()->getUser($this->layout()->current_user->userId);
+        $user = $this->userTable()->getUser($this->getAuthUser()->userId);
         $current_image = $user->getImage();
         $message = '';
 
@@ -234,6 +269,9 @@ class UserController extends AbstractActionController
         return new ViewModel(array('form' => $form, 'message' => $message, 'hasImage' => $hasImage));
     }
 
+    /**
+     * @return ViewModel
+     */
     public function passwordAction()
     {
         $message = "";
@@ -247,7 +285,7 @@ class UserController extends AbstractActionController
             $form->setData($request->getPost());
             $form->setInputFilter($helper->getInputFilter());
             if($form->isValid()){
-                $user = $this->userTable()->getUser($this->layout()->current_user->userId);
+                $user = $this->userTable()->getUser($this->getAuthUser()->userId);
                 $current = $form->get('currentPassword', '');
                 $new = $form->get('password', '');
                 if($this->encryptPassword($current->getValue()) != $user->getPassword()) {
