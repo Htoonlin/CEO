@@ -8,7 +8,6 @@
 
 namespace Application\Controller;
 
-
 use Application\DataAccess\CalendarDataAccess;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Helper\DashboardHelper;
@@ -22,6 +21,7 @@ use HumanResource\Helper\PayrollHelper;
 use Zend\Json\Json;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use HumanResource\Entity\Staff;
 
 class DashboardController extends SundewController
 {
@@ -51,8 +51,7 @@ class DashboardController extends SundewController
             $this->staffTable = new StaffDataAccess($this->getDbAdapter());
 
         if(!$this->staff){
-            $userId = $this->getAuthUser()->userId;
-            $this->staff = $this->staffTable->getStaffByUser($userId);
+            $this->staff = $this->getCurrentStaff();
         }
 
         if(!$this->leaveTable)
@@ -104,48 +103,54 @@ class DashboardController extends SundewController
 
     public function indexAction()
     {
-        $this->init_data();
-        $request = $this->getRequest();
-        $attendance = $this->attendanceTable()->checkAttendance($this->staff->getStaffId(), date('Y-m-d', time()));
+        try{
+            $staffId = ($this->staff) ? $this->staff->getStaffId() : 0;
 
-        if(!$attendance){
-            $attendance = new Attendance();
-            $attendance->exchangeArray(array(
-                'staffId' => $this->staff->getStaffId(),
-                'attendanceDate' => date('Y-m-d', time()),
-            ));
-        }
+            $this->init_data();
+            $request = $this->getRequest();
+            $attendance = $this->attendanceTable()->checkAttendance($staffId, date('Y-m-d', time()));
 
-        $helper = new DashboardHelper();
-        $leaveForm = $helper->getLeaveForm($this->leaveTypeList);
-        $leave = new Leave();
-        $leaveForm->bind($leave);
-
-        $salaryHelper = new PayrollHelper();
-        $salaryForm = $salaryHelper->getForm(array());
-
-        if($request->isPost()){
-            $post_data = $request->getPost()->toArray();
-            $leaveForm->setData($post_data);
-            $leaveForm->setInputFilter($helper->getLeaveFilter());
-            if($leaveForm->isValid()){
-                $leave->setStaffId($this->staff->getStaffId());
-                $leave->setStatus('R');
-                $this->leaveTable->saveLeave($leave);
-                $this->flashMessenger()->addWarningMessage('Leave request send to HR.');
-                return $this->redirect()->toRoute('dashboard');
+            if(!$attendance){
+                $attendance = new Attendance();
+                $attendance->exchangeArray(array(
+                    'staffId' => $staffId,
+                    'attendanceDate' => date('Y-m-d', time()),
+                ));
             }
-        }
 
-        return new ViewModel(array(
-            'attendance' => $attendance,
-            'leaveForm' => $leaveForm,
-            'salaryForm' => $salaryForm,
-            'lateList' => $this->lateList,
-            'workingHours' => $this->workingHours,
-            'leaveValues' => $this->leaveValues,
-            'staff' => $this->staff
-        ));
+            $helper = new DashboardHelper();
+            $leaveForm = $helper->getLeaveForm($this->leaveTypeList);
+            $leave = new Leave();
+            $leaveForm->bind($leave);
+
+            $salaryHelper = new PayrollHelper();
+            $salaryForm = $salaryHelper->getForm(array());
+
+            if($request->isPost()){
+                $post_data = $request->getPost()->toArray();
+                $leaveForm->setData($post_data);
+                $leaveForm->setInputFilter($helper->getLeaveFilter());
+                if($leaveForm->isValid()){
+                    $leave->setStaffId($staffId);
+                    $leave->setStatus('R');
+                    $this->leaveTable->saveLeave($leave);
+                    $this->flashMessenger()->addWarningMessage('Leave request send to HR.');
+                    return $this->redirect()->toRoute('dashboard');
+                }
+            }
+
+            return new ViewModel(array(
+                'attendance' => $attendance,
+                'leaveForm' => $leaveForm,
+                'salaryForm' => $salaryForm,
+                'lateList' => $this->lateList,
+                'workingHours' => $this->workingHours,
+                'leaveValues' => $this->leaveValues,
+                'staff' => ($this->staff) ? $this->staff : new Staff(),
+            ));
+        }catch(\Exception $ex){
+            throw $ex;
+        }
     }
 
     public function jsonAttendanceAction()

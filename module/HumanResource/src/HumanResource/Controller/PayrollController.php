@@ -38,8 +38,7 @@ class PayrollController extends SundewController{
             $this->staffTable = new StaffDataAccess($this->getDbAdapter());
 
         if(!$this->staffId){
-            $userId = $this->getAuthUser()->userId;
-            $staff = $this->staffTable->getStaffByUser($userId);
+            $staff = $this->getCurrentStaff();
             $this->staffId = boolval($staff) ? $staff->getStaffId() : 0;
         }
 
