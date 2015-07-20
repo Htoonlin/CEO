@@ -62,7 +62,7 @@ class StaffDataAccess extends SundewTableGateway {
         foreach($data as $staff)
         {
             $staff = $staff->getArrayCopy();
-            $result[$staff[$key]] = $staff[$value];
+            $result[$staff[$key]] = $staff['staffName'] . ' (' . $staff[$value] . ')';
         }
         return $result;
     }

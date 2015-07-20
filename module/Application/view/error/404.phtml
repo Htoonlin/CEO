@@ -1,7 +1,12 @@
 <?php $this->layout('layout/empty'); ?>
 <h1><?php echo $this->translate('A 404 error occurred') ?></h1>
 <h2><?php echo $this->message ?></h2>
-
+<p>
+    <a class="btn btn-default btn-block" href="<?= $this->url('auth', array('action' => 'logout')); ?>" title="Back to login">
+        <span class="glyphicon glyphicon-backward"></span>
+        Please go to login if you can't request this url.
+    </a>
+</p>
 <?php if (isset($this->reason) && $this->reason): ?>
 
 <?php
@@ -106,3 +111,4 @@ if (isset($this->controller_class)
 <?php endif ?>
 
 <?php endif ?>
+

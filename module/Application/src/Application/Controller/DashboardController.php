@@ -76,9 +76,8 @@ class DashboardController extends SundewController
             $this->leaveValues = $constant->getValue();
         }
 
-        $constantDataAccess = new ConstantDataAccess($this->getDbAdapter());
         if(!$this->lateList){
-            $lateData = $constantDataAccess->getConstantByName('late_condition','payroll');
+            $lateData = $constantTable->getConstantByName('late_condition','payroll');
             $lateList = Json::decode($lateData->getValue());
             usort($lateList,  function($a, $b){
                 if($a->minute == $b->minute){
@@ -91,7 +90,7 @@ class DashboardController extends SundewController
         }
 
         if(!$this->leaveTypeList){
-            $result = $constantDataAccess->getConstantByName('leave_type');
+            $result = $constantTable->getConstantByName('leave_type');
             $leaveTypes = json_decode($result->getValue());
             $comboList = array();
             foreach($leaveTypes as $leave){
@@ -104,9 +103,8 @@ class DashboardController extends SundewController
     public function indexAction()
     {
         try{
-            $staffId = ($this->staff) ? $this->staff->getStaffId() : 0;
-
             $this->init_data();
+            $staffId = ($this->staff) ? $this->staff->getStaffId() : 0;
             $request = $this->getRequest();
             $attendance = $this->attendanceTable()->checkAttendance($staffId, date('Y-m-d', time()));
 
@@ -139,6 +137,8 @@ class DashboardController extends SundewController
                 }
             }
 
+
+
             return new ViewModel(array(
                 'attendance' => $attendance,
                 'leaveForm' => $leaveForm,
@@ -159,6 +159,7 @@ class DashboardController extends SundewController
 
         if($request->isPost())
         {
+            $this->init_data();
             $attendance = $this->attendanceTable()->checkAttendance($this->staff->getStaffId(), date('Y-m-d', time()));
 
             if(!$attendance){

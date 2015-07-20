@@ -118,13 +118,14 @@
         var totalDay = settings.end.diff(settings.start, 'days', true);
         var increment = 90 / totalDay;
         var currentProgress = 5;
-        settings.end.add(2, 'day');
+        settings.end.add(1, 'day');
         //Loop Start to End by day
         for(var d = settings.start; d < settings.end; d.add(1, 'day')) {
             currentProgress += increment;
             //Check this date is holiday
             if (checkHoliday(d)) {
                 //Increment to holiday count
+                console.log(d.format('DD-MM') + '=> Holiday');
                 Holiday++;
                 continue;
             }
@@ -167,6 +168,7 @@
 
                     //Calculate and update to absent count for staff
                     Absent = M_WD - (S_WD + Leave);
+                    console.log(d.format('DD-MM') + '=> ' + M_WD + '-(' + S_WD + '+' + Leave + ')');
                     current_row.find('td#Absent').html(Absent);
                 }
             });

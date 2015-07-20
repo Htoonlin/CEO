@@ -14,7 +14,6 @@ $this->headScript()
 <script type="text/javascript">
     function attendance(a)
     {
-        console.log(a);
         $.ajax({
             url: '<?php echo $this->url('dashboard', array('action' => 'jsonAttendance')); ?>',
             data: {status: a},
@@ -41,7 +40,7 @@ $this->headScript()
         $.setPayrollUrl({
             attendance  : '<?= $this->url('hr_attendance', array('action' => 'jsonAttendance')) ?>',
             leave       : '<?= $this->url('hr_leave', array('action' => 'jsonLeave')) ?>',
-            holiday     : '<?= $this->url('hr_holiday', array('action' => 'jsonCheckHoliday')) ?>',
+            holiday     : '<?= $this->url('hr_holiday', array('action' => 'jsonCheckHoliday')) ?>'
         });
 
         $('button#btnCalculate').click(function(){

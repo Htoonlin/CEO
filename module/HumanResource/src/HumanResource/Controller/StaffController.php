@@ -133,7 +133,7 @@ class StaffController extends SundewController
                 $this->flashMessenger()->addSuccessMessage('Save Successful');
                 return $this->redirect()->toRoute('hr_staff');
             }else{
-                var_dump($form->getMessages());
+                $this->flashMessenger()->addErrorMessage($form->getMessages());
             }
         }
         return new ViewModel(array('form'=>$form,

@@ -52,7 +52,7 @@ class DepartmentHelper {
         ));
         $form->add(array(
             'name' => 'team_code',
-            'type' => 'Textarea',
+            'type' => 'Text',
             'options' => array(
                 'label' => 'Team Code',
             ),
