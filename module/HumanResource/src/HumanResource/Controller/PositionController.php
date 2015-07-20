@@ -1,6 +1,7 @@
 <?php
 namespace HumanResource\Controller;
 
+use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Service\SundewController;
 use Application\Service\SundewExporting;
@@ -22,6 +23,14 @@ class PositionController extends SundewController
     private function positionTable()
     {
         return new PositionDataAccess($this->getDbAdapter());
+    }
+
+    /**
+     * @return array
+     */
+    private function currencyCombo(){
+        $dataAccess = new CurrencyDataAccess($this->getDbAdapter());
+        return $dataAccess->getComboData('currencyId', 'code');
     }
 
     /**
@@ -64,7 +73,7 @@ class PositionController extends SundewController
     {
         $id = (int)$this->params()->fromRoute('id', 0);
         $helper = new PositionHelper($this->getDbAdapter());
-        $form = $helper->getForm($this->statusCombo());
+        $form = $helper->getForm($this->statusCombo(), $this->currencyCombo());
         $position = $this->positionTable()->getPosition($id);
         $isEdit = true;
         if(!$position){

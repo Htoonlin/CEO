@@ -13,10 +13,8 @@ use HumanResource\Entity\Position;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Zend\Paginator\Adapter\DbSelect;
+use Zend\Db\TableGateway\TableGateway;
 use Zend\Paginator\Paginator;
-use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Where;
 
 /**
  * Class PositionDataAccess
@@ -45,10 +43,12 @@ class PositionDataAccess extends SundewTableGateway{
      */
     public function fetchAll($paginated=false,$filter='',$orderBy='name',$order='ASC')
     {
+        $view = 'vw_hr_position';
         if($paginated){
-            return $this->paginate($filter, $orderBy, $order);
+            return $this->paginate($filter, $orderBy, $order, $view);
         }
-        return $this->select();
+        $tableGateway = new TableGateway($view, $this->adapter);
+        return $tableGateway->select();
     }
 
     /**

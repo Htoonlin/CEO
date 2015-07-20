@@ -356,6 +356,7 @@ DROP TABLE IF EXISTS `tbl_hr_position`;
 CREATE TABLE `tbl_hr_position` (
   `positionId` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
+  `currencyId` int(11) NOT NULL,
   `min_salary` bigint(20) DEFAULT NULL,
   `max_salary` bigint(20) DEFAULT NULL,
   `status` char(1) NOT NULL,
@@ -1062,4 +1063,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-18 18:30:01
+-- Dump completed on 2015-07-19 18:30:01

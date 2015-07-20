@@ -22,7 +22,7 @@ class PositionHelper
     }
 
     protected $form;
-    public function getForm(array $defaultStatus)
+    public function getForm(array $defaultStatus, array $currencyList)
     {
         if (!$this->form) {
             $positionId = new Element\Hidden();
@@ -43,6 +43,13 @@ class PositionHelper
                 ->setName("max_Salary")
                 ->setAttribute('class', 'form-control');
 
+            $currency = new Element\Select();
+            $currency->setName('currencyId')
+                ->setLabel('Currency Type')
+                ->setAttribute('class', 'form-control')
+                ->setEmptyOption('-- Choose Currency --')
+                ->setValueOptions($currencyList);
+
             $status=new Element\Select();
             $status->setName('status')
                 ->setLabel('Status')
@@ -53,6 +60,7 @@ class PositionHelper
             $form->setAttribute('class', 'form-horizontal');
             $form->add($positionId);
             $form->add($name);
+            $form->add($currency);
             $form->add($minSalary);
             $form->add($maxSalary);
             $form->add($status);
@@ -100,18 +108,16 @@ class PositionHelper
                 ),
             ));
             $filter->add(array(
+                'name' => 'currencyId',
+                'required' => true,
+            ));
+            $filter->add(array(
                 'name' => 'min_Salary',
                 'required' => true,
-                'filters' => array(
-                    array('name' => 'Int'),
-                )
             ));
             $filter->add(array(
                 'name' => 'max_Salary',
                 'required' => true,
-                'filters' => array(
-                    array('name' => 'Int'),
-                )
             ));
 
 

@@ -123,10 +123,10 @@ $this->headTitle($title);
                             </a>
                         </td>
                         <td>
-                            <?php echo $this->escapeHtml($position->min_salary); ?>
+                            <?php echo $this->escapeHtml($position->min_salary) . ' ' . $position->currency; ?>
                         </td>
                         <td>
-                            <?php echo $this->escapeHtml($position->max_salary); ?>
+                            <?php echo $this->escapeHtml($position->max_salary) . ' ' . $position->currency; ?>
                         </td>
                         <td>
                             <?php
