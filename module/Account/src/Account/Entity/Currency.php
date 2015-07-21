@@ -46,7 +46,7 @@ class Currency implements ArraySerializableInterface
         $this->name=(!empty($data['name']))?$data['name']:null;
         $this->rate=(!empty($data['rate']))?$data['rate']:null;
         $this->status=(!empty($data['status']))?$data['status']:'A';
-        $this->entryDate=(!empty($data['entryDate']))?$data['entryDate']:date('Y-m-d h:i:s', time());
+        $this->entryDate=(!empty($data['entryDate']))?$data['entryDate']:date('Y-m-d H:i:s', time());
 
     }
 

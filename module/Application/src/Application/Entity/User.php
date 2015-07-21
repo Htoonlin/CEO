@@ -55,7 +55,7 @@ class User implements ArraySerializableInterface
         $this->description = (!empty($data['description'])) ? $data['description'] : null;
         $this->image = (!empty($data['image'])) ? $data['image'] : null;
         $this->status = (!empty($data['status'])) ? $data['status'] : 'A';
-        $this->lastLogin = (!empty($data['lastLogin'])) ? $data['lastLogin'] : date('Y-m-d h:i:s', time());
+        $this->lastLogin = (!empty($data['lastLogin'])) ? $data['lastLogin'] : date('Y-m-d H:i:s', time());
     }
 
     public function getArrayCopy()

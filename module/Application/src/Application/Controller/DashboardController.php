@@ -175,10 +175,10 @@ class DashboardController extends SundewController
                 $type = $this->params()->fromPost('status', '');
 
                 if($type == 'I' && !$attendance->getInTime()){
-                    $attendance->setInTime(date('h:i:s', time()));
+                    $attendance->setInTime(date('H:i:s', time()));
                     $this->attendanceTable()->saveAttendance($attendance);
                 }else if($type == 'O' && !$attendance->getOutTime()){
-                    $attendance->setOutTime(date('h:i:s', time()));
+                    $attendance->setOutTime(date('H:i:s', time()));
                     $this->attendanceTable()->saveAttendance($attendance);
                 }else{
                     $message = 'You already registered. Please contact to HR if you want to change time.';

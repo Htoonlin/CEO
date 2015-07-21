@@ -32,7 +32,7 @@ CREATE TABLE `tbl_account_closing` (
   `closingDate` datetime DEFAULT NULL,
   `closingAmount` int(11) DEFAULT NULL,
   PRIMARY KEY (`closingId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -50,7 +50,7 @@ CREATE TABLE `tbl_account_currency` (
   `status` char(1) CHARACTER SET latin1 NOT NULL,
   `entryDate` date NOT NULL,
   PRIMARY KEY (`currencyId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +76,7 @@ CREATE TABLE `tbl_account_payable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`payVoucherId`)
-) ENGINE=InnoDB AUTO_INCREMENT=736 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=739 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +102,7 @@ CREATE TABLE `tbl_account_receivable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`receiveVoucherId`)
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -281,7 +281,7 @@ CREATE TABLE `tbl_hr_attendance` (
   `inTime` time DEFAULT NULL,
   `outTime` time DEFAULT NULL,
   PRIMARY KEY (`attendanceId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1583 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1587 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -406,7 +406,7 @@ CREATE TABLE `tbl_menu` (
   `priority` int(11) NOT NULL,
   `hasDivider` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`menuId`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -461,7 +461,7 @@ CREATE TABLE `tbl_role` (
   `icon` varchar(50) DEFAULT NULL,
   `priority` int(11) DEFAULT NULL,
   PRIMARY KEY (`roleId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -517,6 +517,20 @@ CREATE TABLE `tbl_user` (
   PRIMARY KEY (`userId`),
   UNIQUE KEY `userName` (`userName`)
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tbl_user_role`
+--
+
+DROP TABLE IF EXISTS `tbl_user_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tbl_user_role` (
+  `userId` int(11) NOT NULL,
+  `roleId` int(11) NOT NULL,
+  PRIMARY KEY (`userId`,`roleId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -834,7 +848,6 @@ SET character_set_client = utf8;
  1 AS `image`,
  1 AS `status`,
  1 AS `lastLogin`,
- 1 AS `userRole`,
  1 AS `rolename`*/;
 SET character_set_client = @saved_cs_client;
 
@@ -1085,7 +1098,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `vw_user` AS select `u`.`userId` AS `userId`,`u`.`userName` AS `userName`,`u`.`password` AS `password`,`u`.`description` AS `description`,`u`.`image` AS `image`,`u`.`status` AS `status`,`u`.`lastLogin` AS `lastLogin`,`u`.`userRole` AS `userRole`,`r`.`name` AS `rolename` from (`tbl_user` `u` join `tbl_role` `r` on((`u`.`userRole` = `r`.`roleId`))) */;
+/*!50001 VIEW `vw_user` AS select `u`.`userId` AS `userId`,`u`.`userName` AS `userName`,`u`.`password` AS `password`,`u`.`description` AS `description`,`u`.`image` AS `image`,`u`.`status` AS `status`,`u`.`lastLogin` AS `lastLogin`,group_concat(`r`.`name` separator ',') AS `rolename` from ((`tbl_user` `u` left join `tbl_user_role` `ur` on((`u`.`userId` = `ur`.`userId`))) left join `tbl_role` `r` on((`ur`.`roleId` = `r`.`roleId`))) group by `u`.`userId`,`u`.`userName`,`u`.`password`,`u`.`description`,`u`.`image`,`u`.`status`,`u`.`lastLogin` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1099,4 +1112,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-20 18:30:01
+-- Dump completed on 2015-07-21 18:30:01
