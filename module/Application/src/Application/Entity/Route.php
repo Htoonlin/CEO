@@ -39,8 +39,6 @@ class Route implements ArraySerializableInterface
     public function getConstraints() {return $this->constraints;}
     public function setConstraints($value) { $this->constraints=$value;}
 
-
-
     public function exchangeArray(array $data)
     {
         $this->routeId = (!empty($data['routeId'])) ? $data['routeId'] : null;

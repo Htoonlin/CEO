@@ -49,9 +49,9 @@ class ReceivableHelper
                 ->setLabel('Amount')
                 ->setAttribute('class','form-control')
                 ->setattributes(array(
-                    'min' => '100',
+                    'min' => '10',
                     'max' => '99999999999',
-                    'step' => '100'
+                    'step' => '1'
                 ));
 
             $cboCurrency = new Element\Select();

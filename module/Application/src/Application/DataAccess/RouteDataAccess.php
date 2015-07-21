@@ -14,9 +14,6 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
-use Zend\Db\TableGateway\AbstractTableGateway;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
@@ -37,16 +34,31 @@ class RouteDataAccess  extends SundewTableGateway
         $this->initialize();
     }
 
-    public function getRouteData($roleId)
+    /**
+     * @param array $roles
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
+    public function getRouteData(array $roles)
     {
-        $results = $this->select(function(Select $select) use($roleId){
-            $select->join(array('mp' => 'tbl_route_permission'), 'tbl_route.routeId = mp.routeId')
-                ->where(array('mp.roleId' => $roleId));
+        $results = $this->select(function(Select $select) use($roles){
+            $where = new Where();
+            $where->in('rp.roleId', $roles);
+            $select->join(array('rp' => 'tbl_route_permission'), 'tbl_route.routeId = rp.routeId',
+                array('routeId'), Select::JOIN_INNER)
+                ->where($where)->quantifier(Select::QUANTIFIER_DISTINCT);
         });
 
         return $results;
     }
 
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|Paginator
+     * @throws \Exception
+     */
     public function fetchAll($paginated=false,$filter = '',$orderBy='name',$order='ASC')
     {
         if($paginated){
@@ -56,12 +68,21 @@ class RouteDataAccess  extends SundewTableGateway
         return $this->select();
     }
 
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     */
     public function getRoute($id)
     {
         $id=(int)$id;
         $rowset=$this->select(array('routeId'=>$id));
         return $rowset->current();
     }
+
+    /**
+     * @param Route $route
+     * @return Route
+     */
     public function saveRoute(Route $route)
     {
         $id=$route->getRouteId();
@@ -79,8 +100,12 @@ class RouteDataAccess  extends SundewTableGateway
         }
         return $route;
     }
-        public function deleteRoute($id)
-        {
-            $this->delete(array('routeId'=>(int)$id));
-        }
+
+    /**
+     * @param $id
+     */
+    public function deleteRoute($id)
+    {
+        $this->delete(array('routeId'=>(int)$id));
+    }
 }

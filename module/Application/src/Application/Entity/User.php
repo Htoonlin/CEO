@@ -47,10 +47,6 @@ class User implements ArraySerializableInterface
     public function getLastLogin(){ return $this->lastLogin; }
     public function setLastLogin($value){ $this->lastLogin = $value; }
 
-    protected $userRole;
-    public function getUserRole(){ return $this->userRole; }
-    public function setUserRole($value){ $this->userRole = $value; }
-
     public function exchangeArray(array $data)
     {
         $this->userId = (!empty($data['userId'])) ? $data['userId'] : null;
@@ -60,7 +56,6 @@ class User implements ArraySerializableInterface
         $this->image = (!empty($data['image'])) ? $data['image'] : null;
         $this->status = (!empty($data['status'])) ? $data['status'] : 'A';
         $this->lastLogin = (!empty($data['lastLogin'])) ? $data['lastLogin'] : date('Y-m-d h:i:s', time());
-        $this->userRole = (!empty($data['userRole'])) ? $data['userRole'] : null;
     }
 
     public function getArrayCopy()

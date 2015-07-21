@@ -99,7 +99,8 @@ class AttendanceController extends SundewController
             $form->setInputFilter($helper->getInputFilter());
             if($form->isValid())
             {
-                $newData = $this->attendanceTable()->getAttendance($id);
+                $newData = $this->attendanceTable()->getAttendanceByStaff(
+                    $attendance['staffId'], $attendance['attendanceDate']);
 
                 if(!$newData){
                     $newData = new Attendance();

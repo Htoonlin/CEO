@@ -5,6 +5,7 @@ namespace Application\Controller;
 use Application\DataAccess\ConstantDataAccess;
 use Application\DataAccess\RoleDataAccess;
 use Application\DataAccess\UserDataAccess;
+use Application\DataAccess\UserRoleDataAccess;
 use Application\Entity\User;
 use Application\Helper\PasswordHelper;
 use Application\Helper\UserHelper;
@@ -22,6 +23,14 @@ class UserController extends SundewController
     private function userTable()
     {
         return new UserDataAccess($this->getDbAdapter());
+    }
+
+    /**
+     * @return UserRoleDataAccess
+     */
+    private function userRoleTable()
+    {
+        return new UserRoleDataAccess($this->getDbAdapter());
     }
 
     /**
@@ -98,6 +107,7 @@ class UserController extends SundewController
 
         $form->bind($user);
         $request = $this->getRequest();
+        $userRoles = $this->userRoleTable()->grantRoles($id);
 
         if($request->isPost()){
             $post_data = array_merge_recursive($request->getPost()->toArray(),
@@ -113,14 +123,26 @@ class UserController extends SundewController
             $form->setData($post_data);
             $form->setInputFilter($helper->getInputFilter(($isEdit ? $post_data['userId'] : 0), $post_data['userName']));
             if($form->isValid()){
-                $image = $user->getImage();
-                if($post_data['hasImage'] ==  'false' && empty($image['name'])){
-                    $user->setImage(null);
-                }else if($post_data['hasImage'] == 'true' && empty($image['name']) && $isEdit){
-                    $user->setImage($currentImage);
+                $db = $this->userTable()->getAdapter();
+                $conn = $db->getDriver()->getConnection();
+                try{
+                    $image = $user->getImage();
+                    if($post_data['hasImage'] ==  'false' && empty($image['name'])){
+                        $user->setImage(null);
+                    }else if($post_data['hasImage'] == 'true' && empty($image['name']) && $isEdit){
+                        $user->setImage($currentImage);
+                    }
+
+                    $conn->beginTransaction();
+                    $userId = $this->userTable()->saveUser($user)->getUserId();
+                    $grant_roles = isset($post_data['grant_roles']) ? $post_data['grant_roles'] : array();
+                    $this->userRoleTable()->saveRoles($userId, $grant_roles);
+                    $conn->commit();
+                    $this->flashMessenger()->addSuccessMessage('Save successful');
+                }catch(\Exception $ex){
+                    $conn->rollback();
+                    $this->flashMessenger()->addErrorMessage($ex->getMessage());
                 }
-                $this->userTable()->saveUser($user);
-                $this->flashMessenger()->addSuccessMessage('Save successful');
                 return $this->redirect()->toRoute('user');
             }
         }
@@ -131,6 +153,7 @@ class UserController extends SundewController
             'isEdit' => $isEdit,
             'hasImage' => $hasImage,
             'roles' => $this->roleTreeview(),
+            'userRoles' => $userRoles,
         ));
     }
 

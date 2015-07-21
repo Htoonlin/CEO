@@ -10,6 +10,7 @@ namespace Application\Service;
 
 
 use Application\DataAccess\MenuDataAccess;
+use Application\DataAccess\UserRoleDataAccess;
 use Zend\Navigation\Service\DefaultNavigationFactory;
 use Zend\ServiceManager\Exception\InvalidArgumentException;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -19,18 +20,23 @@ class SundewNavigation extends DefaultNavigationFactory
     protected function getPages(ServiceLocatorInterface $serviceLocatorInterface)
     {
         if(null === $this->pages){
+
             $dbAdapter = $serviceLocatorInterface->get('Sundew\Db\Adapter');
             $menuTable = new MenuDataAccess($dbAdapter);
-            $roleId = 0;
+            $userId = 0;
             $authService = $serviceLocatorInterface->get('AuthService');
             if($authService->hasIdentity()){
-                $roleId = $authService->getIdentity()->userRole;
+                $userId = $authService->getIdentity()->userId;
             }
-            $cache_ns = 'menu_cache_' . $roleId;
+            $cache_ns = 'menu_cache_' . $userId;
             $menuList = $menuTable->getCache()->getItem($cache_ns);
-
             if(!$menuList){
-                $menuList = $menuTable->getMenuList(null, $roleId);
+                $userRoleDA = new UserRoleDataAccess($dbAdapter);
+                $roles = array();
+                foreach($userRoleDA->grantRoles($userId) as $role){
+                    array_push($roles,(int)$role->roleId);
+                }
+                $menuList = $menuTable->getMenuList(null, $roles);
                 $menuTable->getCache()->setItem($cache_ns, $menuList);
             }
 

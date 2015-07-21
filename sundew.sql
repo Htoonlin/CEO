@@ -32,7 +32,7 @@ CREATE TABLE `tbl_account_closing` (
   `closingDate` datetime DEFAULT NULL,
   `closingAmount` int(11) DEFAULT NULL,
   PRIMARY KEY (`closingId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -50,7 +50,7 @@ CREATE TABLE `tbl_account_currency` (
   `status` char(1) CHARACTER SET latin1 NOT NULL,
   `entryDate` date NOT NULL,
   PRIMARY KEY (`currencyId`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +76,7 @@ CREATE TABLE `tbl_account_payable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`payVoucherId`)
-) ENGINE=InnoDB AUTO_INCREMENT=202 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=736 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +102,7 @@ CREATE TABLE `tbl_account_receivable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`receiveVoucherId`)
-) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,7 +120,7 @@ CREATE TABLE `tbl_account_type` (
   `baseType` char(1) NOT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`accountTypeId`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -139,7 +139,7 @@ CREATE TABLE `tbl_calendar` (
   `title` varchar(255) COLLATE utf8_bin NOT NULL,
   `linkId` int(11) DEFAULT NULL,
   PRIMARY KEY (`calendarId`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +174,7 @@ CREATE TABLE `tbl_cr_company` (
   `type` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`companyId`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -196,7 +196,7 @@ CREATE TABLE `tbl_cr_contact` (
   `tag` varchar(255) COLLATE utf8_bin NOT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`contactId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,7 +220,7 @@ CREATE TABLE `tbl_cr_contract` (
   `notes` varchar(500) COLLATE utf8_bin DEFAULT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`contractId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -264,7 +264,7 @@ CREATE TABLE `tbl_cr_proposal` (
   `group_code` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`proposalId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -281,7 +281,7 @@ CREATE TABLE `tbl_hr_attendance` (
   `inTime` time DEFAULT NULL,
   `outTime` time DEFAULT NULL,
   PRIMARY KEY (`attendanceId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1553 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1583 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,12 +295,12 @@ CREATE TABLE `tbl_hr_department` (
   `departmentId` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(50) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `team_code` varchar(50) NOT NULL,
+  `team_code` varchar(50) DEFAULT NULL,
   `parentId` int(11) DEFAULT NULL,
   `priority` int(11) NOT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`departmentId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -318,7 +318,7 @@ CREATE TABLE `tbl_hr_leave` (
   `date` date NOT NULL,
   `description` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`leaveId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -343,7 +343,7 @@ CREATE TABLE `tbl_hr_payroll` (
   `managerId` int(11) NOT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`payrollId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -361,7 +361,7 @@ CREATE TABLE `tbl_hr_position` (
   `max_salary` bigint(20) DEFAULT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`positionId`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -385,7 +385,7 @@ CREATE TABLE `tbl_hr_staff` (
   `permanentDate` date NOT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`staffId`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -406,7 +406,7 @@ CREATE TABLE `tbl_menu` (
   `priority` int(11) NOT NULL,
   `hasDivider` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`menuId`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -442,7 +442,7 @@ CREATE TABLE `tbl_pm_project` (
   `status` char(1) COLLATE utf8_bin NOT NULL,
   `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`projectId`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -461,7 +461,7 @@ CREATE TABLE `tbl_role` (
   `icon` varchar(50) DEFAULT NULL,
   `priority` int(11) DEFAULT NULL,
   PRIMARY KEY (`roleId`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -480,7 +480,7 @@ CREATE TABLE `tbl_route` (
   `constraints` varchar(255) NOT NULL,
   PRIMARY KEY (`routeId`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -516,7 +516,7 @@ CREATE TABLE `tbl_user` (
   `userRole` int(11) NOT NULL,
   PRIMARY KEY (`userId`),
   UNIQUE KEY `userName` (`userName`)
-) ENGINE=InnoDB AUTO_INCREMENT=161 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -738,6 +738,24 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
+-- Temporary view structure for view `vw_hr_position`
+--
+
+DROP TABLE IF EXISTS `vw_hr_position`;
+/*!50001 DROP VIEW IF EXISTS `vw_hr_position`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `vw_hr_position` AS SELECT 
+ 1 AS `positionId`,
+ 1 AS `name`,
+ 1 AS `currencyId`,
+ 1 AS `min_salary`,
+ 1 AS `max_salary`,
+ 1 AS `status`,
+ 1 AS `currency`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Temporary view structure for view `vw_hr_staff`
 --
 
@@ -828,9 +846,9 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = latin1 */;
-/*!50001 SET character_set_results     = latin1 */;
-/*!50001 SET collation_connection      = latin1_swedish_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_account_closing` AS select `close`.`closingId` AS `closingId`,`close`.`currencyId` AS `currencyId`,`cur`.`code` AS `currency`,`open`.`voucherNo` AS `receivable_voucher`,`close`.`receivableId` AS `receivableId`,`close`.`openingDate` AS `openingDate`,`close`.`openingAmount` AS `openingAmount`,`close`.`payableId` AS `payableId`,`close`.`closingDate` AS `closingDate`,`close`.`closingAmount` AS `closingAmount`,`pay`.`voucherNo` AS `payable_voucher` from (((`tbl_account_closing` `close` join `tbl_account_currency` `cur` on((`close`.`currencyId` = `cur`.`currencyId`))) left join `tbl_account_receivable` `open` on((`close`.`receivableId` = `open`.`receiveVoucherId`))) left join `tbl_account_payable` `pay` on((`close`.`payableId` = `pay`.`payVoucherId`))) */;
@@ -846,9 +864,9 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = latin1 */;
-/*!50001 SET character_set_results     = latin1 */;
-/*!50001 SET collation_connection      = latin1_swedish_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_account_payable` AS select `pv`.`payVoucherId` AS `payVoucherId`,`pv`.`voucherNo` AS `voucherNo`,`pv`.`voucherDate` AS `voucherDate`,`pv`.`accountType` AS `accountType`,`pv`.`description` AS `description`,`pv`.`amount` AS `amount`,`pv`.`currencyId` AS `currencyId`,`pv`.`withdrawBy` AS `withdrawBy`,`pv`.`approveBy` AS `approveBy`,`pv`.`status` AS `status`,`pv`.`approvedDate` AS `approvedDate`,`pv`.`reason` AS `reason`,`pv`.`requestedDate` AS `requestedDate`,`pv`.`group_code` AS `group_code`,`ty`.`name` AS `type`,`cur`.`code` AS `currencyCode`,concat(`req`.`staffName`,'(',`req`.`staffCode`,')') AS `requester`,concat(`app`.`staffName`,'(',`app`.`staffCode`,')') AS `approver` from ((((`tbl_account_payable` `pv` left join `tbl_account_type` `ty` on((`pv`.`accountType` = `ty`.`accountTypeId`))) left join `tbl_account_currency` `cur` on((`pv`.`currencyId` = `cur`.`currencyId`))) left join `tbl_hr_staff` `req` on((`pv`.`withdrawBy` = `req`.`staffId`))) left join `tbl_hr_staff` `app` on((`pv`.`approveBy` = `app`.`staffId`))) */;
@@ -864,9 +882,9 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = latin1 */;
-/*!50001 SET character_set_results     = latin1 */;
-/*!50001 SET collation_connection      = latin1_swedish_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_account_receivable` AS select `rv`.`receiveVoucherId` AS `receiveVoucherId`,`rv`.`voucherNo` AS `voucherNo`,`rv`.`voucherDate` AS `voucherDate`,`rv`.`accountType` AS `accountType`,`rv`.`description` AS `description`,`rv`.`amount` AS `amount`,`rv`.`currencyId` AS `currencyId`,`rv`.`depositBy` AS `depositBy`,`rv`.`approveBy` AS `approveBy`,`rv`.`status` AS `status`,`rv`.`approvedDate` AS `approvedDate`,`rv`.`reason` AS `reason`,`rv`.`requestedDate` AS `requestedDate`,`rv`.`group_code` AS `group_code`,`ty`.`name` AS `type`,`cur`.`code` AS `currencyCode`,concat(`req`.`staffName`,'(',`req`.`staffCode`,')') AS `requester`,concat(`app`.`staffName`,'(',`app`.`staffCode`,')') AS `approver` from ((((`tbl_account_receivable` `rv` left join `tbl_account_type` `ty` on((`rv`.`accountType` = `ty`.`accountTypeId`))) left join `tbl_account_currency` `cur` on((`rv`.`currencyId` = `cur`.`currencyId`))) left join `tbl_hr_staff` `req` on((`rv`.`depositBy` = `req`.`staffId`))) left join `tbl_hr_staff` `app` on((`rv`.`approveBy` = `app`.`staffId`))) */;
@@ -882,9 +900,9 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = latin1 */;
-/*!50001 SET character_set_results     = latin1 */;
-/*!50001 SET collation_connection      = latin1_swedish_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_account_voucher` AS select 'Receivable' AS `type`,`vw_account_receivable`.`receiveVoucherId` AS `voucherId`,`vw_account_receivable`.`voucherNo` AS `voucherNo`,`vw_account_receivable`.`voucherDate` AS `voucherDate`,`vw_account_receivable`.`accountType` AS `accountTypeId`,`vw_account_receivable`.`type` AS `accountType`,`vw_account_receivable`.`description` AS `description`,`vw_account_receivable`.`amount` AS `amount`,`vw_account_receivable`.`currencyId` AS `currencyId`,`vw_account_receivable`.`currencyCode` AS `currency`,`vw_account_receivable`.`depositBy` AS `requestBy`,`vw_account_receivable`.`requester` AS `requester`,`vw_account_receivable`.`approveBy` AS `approveBy`,`vw_account_receivable`.`approver` AS `approver`,`vw_account_receivable`.`status` AS `status`,`vw_account_receivable`.`approvedDate` AS `approvedDate`,`vw_account_receivable`.`reason` AS `reason`,`vw_account_receivable`.`requestedDate` AS `requestedDate`,`vw_account_receivable`.`group_code` AS `group_code` from `vw_account_receivable` union all select 'Payable' AS `type`,`vw_account_payable`.`payVoucherId` AS `voucherId`,`vw_account_payable`.`voucherNo` AS `voucherNo`,`vw_account_payable`.`voucherDate` AS `voucherDate`,`vw_account_payable`.`accountType` AS `accountTypeId`,`vw_account_payable`.`type` AS `accountType`,`vw_account_payable`.`description` AS `description`,`vw_account_payable`.`amount` AS `amount`,`vw_account_payable`.`currencyId` AS `currencyId`,`vw_account_payable`.`currencyCode` AS `currency`,`vw_account_payable`.`withdrawBy` AS `requestBy`,`vw_account_payable`.`requester` AS `requester`,`vw_account_payable`.`approveBy` AS `approveBy`,`vw_account_payable`.`approver` AS `approver`,`vw_account_payable`.`status` AS `status`,`vw_account_payable`.`approvedDate` AS `approvedDate`,`vw_account_payable`.`reason` AS `reason`,`vw_account_payable`.`requestedDate` AS `requestedDate`,`vw_account_payable`.`group_code` AS `group_code` from `vw_account_payable` */;
@@ -900,9 +918,9 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = latin1 */;
-/*!50001 SET character_set_results     = latin1 */;
-/*!50001 SET collation_connection      = latin1_swedish_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_cr_contact` AS select `c`.`contactId` AS `contactId`,`c`.`name` AS `contactName`,`c`.`phone` AS `Phone`,`c`.`email` AS `Email`,`c`.`address` AS `Address`,`c`.`website` AS `Website`,`c`.`notes` AS `Notes`,`c`.`tag` AS `Tag`,`c`.`status` AS `Status`,`p`.`name` AS `companyname` from (`tbl_cr_contact` `c` left join `tbl_cr_company` `p` on((`c`.`companyId` = `p`.`companyId`))) */;
@@ -918,9 +936,9 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_cr_contract` AS select `c`.`contractId` AS `contractId`,`c`.`companyId` AS `companyId`,`com`.`name` AS `companyName`,`c`.`contactId` AS `contactId`,`co`.`name` AS `contactName`,`c`.`code` AS `code`,`c`.`amount` AS `amount`,`c`.`currencyId` AS `currencyId`,`cr`.`code` AS `currencyCode`,`c`.`contractDate` AS `contractDate`,`c`.`contractFile` AS `contractFile`,`c`.`notes` AS `notes`,`c`.`contractBy` AS `contractBy`,`c`.`status` AS `status` from (((`tbl_cr_contract` `c` join `tbl_account_currency` `cr` on((`c`.`currencyId` = `cr`.`currencyId`))) join `tbl_cr_company` `com` on((`c`.`companyId` = `com`.`companyId`))) join `tbl_cr_contact` `co` on((`c`.`contactId` = `co`.`contactId`))) */;
@@ -936,9 +954,9 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_cr_proposal` AS select `tbl_cr_proposal`.`proposalId` AS `proposalId`,`tbl_cr_proposal`.`companyId` AS `companyId`,`tbl_cr_proposal`.`contactId` AS `contactId`,`tbl_cr_proposal`.`code` AS `code`,`tbl_cr_proposal`.`name` AS `name`,`tbl_cr_proposal`.`amount` AS `amount`,`tbl_account_currency`.`currencyId` AS `currencyId`,`tbl_account_currency`.`code` AS `currencyCode`,`tbl_cr_proposal`.`proposalDate` AS `proposalDate`,`tbl_cr_proposal`.`proposalFile` AS `proposalFile`,`tbl_cr_proposal`.`notes` AS `notes`,`tbl_cr_proposal`.`proposalBy` AS `proposalBy`,`tbl_cr_proposal`.`group_code` AS `group_code`,`tbl_cr_proposal`.`status` AS `status` from (`tbl_cr_proposal` join `tbl_account_currency` on((`tbl_cr_proposal`.`currencyId` = `tbl_account_currency`.`currencyId`))) */;
@@ -983,6 +1001,24 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
+-- Final view structure for view `vw_hr_position`
+--
+
+/*!50001 DROP VIEW IF EXISTS `vw_hr_position`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `vw_hr_position` AS select `pos`.`positionId` AS `positionId`,`pos`.`name` AS `name`,`pos`.`currencyId` AS `currencyId`,`pos`.`min_salary` AS `min_salary`,`pos`.`max_salary` AS `max_salary`,`pos`.`status` AS `status`,`cur`.`code` AS `currency` from (`tbl_hr_position` `pos` join `tbl_account_currency` `cur` on((`pos`.`currencyId` = `cur`.`currencyId`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `vw_hr_staff`
 --
 
@@ -1008,9 +1044,9 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_payment` AS select `p`.`paymentId` AS `paymentId`,`p`.`type` AS `type`,`p`.`amount` AS `amount`,`p`.`paymentDate` AS `paymentDate`,`p`.`status` AS `status`,`c`.`code` AS `contract`,`cu`.`code` AS `currency` from ((`tbl_cr_payment` `p` join `tbl_cr_contract` `c` on((`c`.`contractId` = `p`.`contractId`))) join `tbl_account_currency` `cu` on((`cu`.`currencyId` = `p`.`currencyId`))) */;
@@ -1026,9 +1062,9 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_pm_project` AS select `pm`.`projectId` AS `projectId`,`pm`.`code` AS `code`,`pm`.`name` AS `name`,`pm`.`description` AS `description`,`pm`.`managerId` AS `managerId`,`pm`.`startDate` AS `startDate`,`pm`.`endDate` AS `endDate`,`pm`.`group_code` AS `group_code`,`pm`.`status` AS `status`,`pm`.`remark` AS `remark`,`usr`.`userName` AS `userName` from (`tbl_pm_project` `pm` left join `tbl_user` `usr` on((`pm`.`managerId` = `usr`.`userId`))) */;
@@ -1044,9 +1080,9 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vw_user` AS select `u`.`userId` AS `userId`,`u`.`userName` AS `userName`,`u`.`password` AS `password`,`u`.`description` AS `description`,`u`.`image` AS `image`,`u`.`status` AS `status`,`u`.`lastLogin` AS `lastLogin`,`u`.`userRole` AS `userRole`,`r`.`name` AS `rolename` from (`tbl_user` `u` join `tbl_role` `r` on((`u`.`userRole` = `r`.`roleId`))) */;
@@ -1063,4 +1099,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-19 18:30:01
+-- Dump completed on 2015-07-20 18:30:01

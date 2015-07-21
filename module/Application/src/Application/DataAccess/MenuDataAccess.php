@@ -13,9 +13,8 @@ use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
-use Zend\Db\TableGateway\AbstractTableGateway;
+use Zend\Db\Sql\Where;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Zend\View\Helper\EscapeHtml;
 
 /**
  * Class MenuDataAccess
@@ -77,21 +76,35 @@ class MenuDataAccess extends SundewTableGateway
 
     /**
      * @param null $parentId
-     * @param int $roleId
+     * @param array $roles
      * @return array
      */
-    public function getMenuList($parentId = null, $roleId = 0)
+    public function getMenuList($parentId = null, array $roles)
     {
-        $results = $this->select(function(Select $select) use($parentId, $roleId){
-            $select->join(array('mp' => 'tbl_menu_permission'), 'tbl_menu.menuId = mp.menuId')
-                ->where(array('parentId' => $parentId, 'mp.roleId' => $roleId))->order(array('priority ASC'));
+        $results = $this->select(function(Select $select) use($parentId, $roles){
+            try{
+                $where = new Where();
+                if(empty($parentId)){
+                    $where->isNull('parentId');
+                }else{
+                    $where->equalTo('parentId', $parentId);
+                }
+                $where->AND->in('mp.roleId', $roles);
+
+                $select->join(array('mp' => 'tbl_menu_permission'), 'tbl_menu.menuId = mp.menuId',
+                    array('menuId'), Select::JOIN_INNER)
+                    ->where($where)->quantifier(Select::QUANTIFIER_DISTINCT)->order(array('priority ASC'));
+            }catch (\Exception $ex){
+                throw $ex;
+            }
         });
+
         $menus = array();
         foreach($results as $menu){
             $nav = array();
             $nav['id'] = $menu->getMenuId();
 
-            $pages = $this->getMenuList($menu->getMenuId(), $roleId);
+            $pages = $this->getMenuList($menu->getMenuId(), $roles);
             $caret = '';
             if(!empty($pages)){
                 $nav['pages'] = $pages;

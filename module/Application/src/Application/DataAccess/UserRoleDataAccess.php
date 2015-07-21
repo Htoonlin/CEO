@@ -1,52 +1,52 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: july
- * Date: 3/5/2015
- * Time: 12:27 AM
+ * User: NyanTun
+ * Date: 7/21/2015
+ * Time: 11:06 AM
  */
 
 namespace Application\DataAccess;
+
 use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 
-
 /**
- * Class MenuPermissionDataAccess
+ * Class UserRoleDataAccess
  * @package Application\DataAccess
  */
-class MenuPermissionDataAccess extends SundewTableGateway
+class UserRoleDataAccess extends SundewTableGateway
 {
     /**
      * @param Adapter $dbAdapter
      */
     public function __construct(Adapter $dbAdapter)
     {
-        $this->table = "tbl_menu_permission";
+        $this->table = "tbl_user_role";
         $this->adapter = $dbAdapter;
         $this->initialize();
     }
 
     /**
-     * @param $menuId
+     * @param $userId
      * @return \Zend\Db\ResultSet\ResultSet
      */
-    public function grantRoles($menuId)
+    public function grantRoles($userId)
     {
-        return $this->select(array('menuId' => $menuId));
+        return $this->select(array('userId' => $userId));
     }
 
     /**
-     * @param $menuId
+     * @param $userId
      * @param array $roles
      */
-    public function saveMenuPermission($menuId, array $roles)
+    public function saveRoles($userId, array $roles)
     {
-        $this->delete(array('menuId' => $menuId));
+        $this->delete(array('userId' => $userId));
         foreach($roles as $roleId)
         {
             $data = array(
-                'menuId' => $menuId,
+                'userId' => $userId,
                 'roleId' => $roleId,
             );
             $this->insert($data);
@@ -54,10 +54,10 @@ class MenuPermissionDataAccess extends SundewTableGateway
     }
 
     /**
-     * @param $menuId
+     * @param $userId
      */
-    public function deleteRoles($menuId)
+    public function deleteRoles($userId)
     {
-        $this->delete(array('menuId' => $menuId));
+        $this->delete(array('userId' => $userId));
     }
 }

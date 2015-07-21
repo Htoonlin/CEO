@@ -3,6 +3,7 @@
 namespace Application\Controller;
 
 use Application\DataAccess\UserDataAccess;
+use Application\DataAccess\UserRoleDataAccess;
 use Application\Entity\User;
 use Application\Helper\AuthHelper;
 use Application\Service\SundewController;
@@ -21,6 +22,14 @@ class AuthController extends SundewController
             $this->authService = $this->getServiceLocator()->get('AuthService');
         }
         return $this->authService;
+    }
+
+    /**
+     * @return UserRoleDataAccess
+     */
+    private function userRoleTable()
+    {
+        return new UserRoleDataAccess($this->getDbAdapter());
     }
 
     /**
@@ -83,7 +92,13 @@ class AuthController extends SundewController
                     $user->setLastLogin(date('Y-m-d H:i:s'));
                     $this->userTable()->saveUser($user);
                     $columnsToOmit = array('password');
-                    $this->getAuthService()->getStorage()->write($authAdapter->getResultRowObject(null, $columnsToOmit));
+                    $authUser = $authAdapter->getResultRowObject(null, $columnsToOmit);
+                    $userRoles = array();
+                    foreach ($this->userRoleTable()->grantRoles($authUser->userId) as $userRole) {
+                        array_push($userRoles, $userRole->roleId);
+                    }
+                    $authUser->roles = $userRoles;
+                    $this->getAuthService()->getStorage()->write($authUser);
                     return $this->redirect()->toRoute('home');
                 }else{
                     $message = "Invalid user/password";

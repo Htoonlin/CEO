@@ -8,6 +8,7 @@
 
 namespace Application\Service;
 
+use Zend\Db\Adapter\AdapterInterface;
 use HumanResource\DataAccess\StaffDataAccess;
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -34,7 +35,7 @@ class SundewController extends AbstractActionController
     private $user;
 
     /**
-     * @return mixed
+     * @return AdapterInterface
      */
     protected function getAuthUser()
     {

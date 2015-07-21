@@ -125,25 +125,31 @@ class LeaveController extends SundewController
             $form->setData($post_data);
             $form->setInputFilter($form->getInputFilter());
             if($form->isValid()){
-                $message = 'Save successful.';
-                if( $leave->getStatus() == 'A' &&
-                    in_array($leave->getLeaveType(), array_keys($this->annualLeave))){
-                    $db = $this->leaveTable()->getAdapter();
-                    $conn = $db->getDriver()->getConnection();
-                    $conn->beginTransaction();
-                    try{
-                        $deduct = $this->annualLeave[$leave->getLeaveType()];
-                        $this->staffTable()->updateLeave($deduct, $leave->getStaffId());
-                        $this->leaveTable()->saveLeave($leave);
-                        $conn->commit();
-                    }catch(\Exception $ex){
-                        $conn->rollback();
-                        $message = $ex->getMessage();
-                    }
+
+                $hasLeave = $this->leaveTable()->getLeaveByStaff($leave->getStaffId(), $leave->getDate());
+
+                if($hasLeave){
+                    $this->flashMessenger()->addWarningMessage('Sorry! you already approved leave for this date.');
                 }else{
-                    $this->leaveTable()->saveLeave($leave);
+                    if( $leave->getStatus() == 'A' &&
+                        in_array($leave->getLeaveType(), array_keys($this->annualLeave))){
+                        $db = $this->leaveTable()->getAdapter();
+                        $conn = $db->getDriver()->getConnection();
+                        $conn->beginTransaction();
+                        try{
+                            $deduct = $this->annualLeave[$leave->getLeaveType()];
+                            $this->staffTable()->updateLeave($deduct, $leave->getStaffId());
+                            $this->leaveTable()->saveLeave($leave);
+                            $conn->commit();
+                        }catch(\Exception $ex){
+                            $conn->rollback();
+                            $this->flashMessenger()->addErrorMessage($ex->getMessage());
+                        }
+                    }else{
+                        $this->leaveTable()->saveLeave($leave);
+                    }
+                    $this->flashMessenger()->addSuccessMessage('Save successful.');
                 }
-                $this->flashMessenger()->addSuccessMessage($message);
                 return $this->redirect()->toRoute('hr_leave');
             }
         }

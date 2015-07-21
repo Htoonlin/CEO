@@ -10,6 +10,7 @@
 namespace Application;
 
 use Application\DataAccess\RouteDataAccess;
+use Application\DataAccess\UserRoleDataAccess;
 use Application\Helper\View\GridFilter;
 use Application\Helper\View\GridHeaderCell;
 use Application\Service\SundewAuthStorage;
@@ -53,18 +54,14 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
             $router = $e->getRouter();
             foreach($this->cacheRouteData as $data)
             {
-                $constraints = json_decode($data->getConstraints(), true);
-                $route = Segment::factory(
-                    array(
-                        'route' => $data->getRoute(),
-                        'constraints' => $constraints,
-                        'defaults' => array(
-                            'controller' => $data->getController(),
-                            'action' => 'index',
-                        )
-                    )
+                $constraints = json_decode($data['constraints'], true);
+                $data['constraints'] = $constraints;
+                $data['defaults'] = array(
+                    'controller' => $data['controller'],
+                    'action' => 'index',
                 );
-                $router->addRoute($data->getName(), $route);
+                $route = Segment::factory($data);
+                $router->addRoute($data['name'], $route);
             }
 
             $this->hasRoute = true;
@@ -155,13 +152,19 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                         $routeDataAccess = new RouteDataAccess($dbAdapter);
                         $authService = $sm->get('AuthService');
                         if($authService->hasIdentity()){
-                            $roleId = $authService->getIdentity()->userRole;
-                            $cache_ns = 'route_cache' . $roleId;
+                            $userId = $authService->getIdentity()->userId;
+                            $cache_ns = 'route_cache' . $userId;
                             $routeData = $routeDataAccess->getCache()->getItem($cache_ns);
                             if(!$routeData){
-                                $routeData = $routeDataAccess->getRouteData($roleId);
+                                $userRoleDA = new UserRoleDataAccess($dbAdapter);
+                                $roles = array();
+                                foreach($userRoleDA->grantRoles($userId) as $role){
+                                    array_push($roles,(int)$role->roleId);
+                                }
+                                $routeData = $routeDataAccess->getRouteData($roles)->toArray();
                                 $routeDataAccess->getCache()->setItem($cache_ns, $routeData);
                             }
+
                             return $routeData;
                         }
 

@@ -123,12 +123,11 @@ class MenuController extends SundewController
                         $grant_roles = isset($post_data['grant_roles']) ? $post_data['grant_roles'] : array();
                         $this->menuPermissionTable()->saveMenuPermission($menuId, $grant_roles);
                         $conn->commit();
+                        $this->flashMessenger()->addSuccessMessage('Save successful!');
                     }catch(\Exception $ex){
                         $conn->rollback();
                         $this->flashMessenger()->addErrorMessage($ex->getMessage());
                     }
-
-                    $this->flashMessenger()->addSuccessMessage('Save successful!');
                     return $this->redirect()->toRoute("menu");
                 }
             }

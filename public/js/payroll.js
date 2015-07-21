@@ -133,20 +133,7 @@
             //Increment to monthly working day
             current_row.find('td#M_WD').html(++M_WD);
 
-            //Check attendance by staff and date
-            $.ajax({
-                'url': payroll_url.attendance,
-                'data': {date: d.format('YYYY-MM-DD'), staffId: staffId},
-                'type': 'get',
-                'async': false,
-                'success': function (data) {
-                    if (data.status) {
-                        //Validate late minutes and update Staff Working Day
-                        S_WD += getAttendance(data.result, d.weekday());
-                    }
-                    current_row.find('td#S_WD').html(S_WD);
-                }
-            });
+            var hasLeave = false;
 
             //Check leave by staff and date
             $.ajax({
@@ -162,16 +149,35 @@
                                 //Update and increment leave count
                                 Leave += leave.value;
                                 current_row.find('td#Leave').html(Leave);
+
+                                hasLeave = (leave.value == 1);
                             }
                         });
                     }
-
-                    //Calculate and update to absent count for staff
-                    Absent = M_WD - (S_WD + Leave);
-                    console.log(d.format('DD-MM') + '=> ' + M_WD + '-(' + S_WD + '+' + Leave + ')');
-                    current_row.find('td#Absent').html(Absent);
                 }
             });
+
+            if(!hasLeave){
+                //Check attendance by staff and date
+                $.ajax({
+                    'url': payroll_url.attendance,
+                    'data': {date: d.format('YYYY-MM-DD'), staffId: staffId},
+                    'type': 'get',
+                    'async': false,
+                    'success': function (data) {
+                        if (data.status) {
+                            //Validate late minutes and update Staff Working Day
+                            S_WD += getAttendance(data.result, d.weekday());
+                        }
+                        current_row.find('td#S_WD').html(S_WD);
+                    }
+                });
+            }
+
+            //Calculate and update to absent count for staff
+            Absent = M_WD - (S_WD + Leave);
+            console.log(d.format('DD-MM') + '=> ' + M_WD + '-(' + S_WD + '+' + Leave + ')');
+            current_row.find('td#Absent').html(Absent);
 
             settings.progress(currentProgress);
         }

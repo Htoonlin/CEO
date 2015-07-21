@@ -113,7 +113,7 @@ class VoucherDataAccess extends SundewTableGateway
      * @param string $order
      * @return \Zend\Db\ResultSet\ResultSet|Paginator
      */
-    public function getVouchersByDate($fromDate, $toDate, $paginated = false, $filter='',$orderBy='voucherNo',$order='ASC')
+    public function getVouchersByDate($fromDate, $toDate, $currency, $paginated = false, $filter='',$orderBy='voucherNo',$order='ASC')
     {
         if($paginated)
         {
@@ -121,8 +121,9 @@ class VoucherDataAccess extends SundewTableGateway
 
             $where = new Where();
             $where->in('status', array('A', 'C', 'F'))
+                ->AND->equalTo('currencyId', $currency)
                 ->AND->between('approvedDate', $fromDate, $toDate)
-                ->AND->literal("concat_ws(' ',requester, description, voucherNo, accountType, amount, voucherDate, currency) LIKE ?", '%' . $filter . '%');
+                ->AND->literal("concat_ws(' ',requester, description, voucherNo, accountType, amount, voucherDate) LIKE ?", '%' . $filter . '%');
             $select->where($where);
             $select->order($orderBy . ' ' . $order);
 

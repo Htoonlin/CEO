@@ -155,10 +155,6 @@ class UserHelper
                     ),
                 ),
             ));
-            $filter->add(array(
-               'name' => 'userRole',
-                'required' => true,
-            ));
 
             $fileInput = new FileInput('image');
             $fileInput->setRequired(false);
