@@ -153,7 +153,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                         $authService = $sm->get('AuthService');
                         if($authService->hasIdentity()){
                             $userId = $authService->getIdentity()->userId;
-                            $cache_ns = 'route_cache' . $userId;
+                            $cache_ns = 'route_cache_' . $userId;
                             $routeData = $routeDataAccess->getCache()->getItem($cache_ns);
                             if(!$routeData){
                                 $userRoleDA = new UserRoleDataAccess($dbAdapter);

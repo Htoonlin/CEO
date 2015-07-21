@@ -119,9 +119,9 @@ class AuthController extends SundewController
      */
     public function logoutAction()
     {
+        $this->getSessionStorage()->cacheClear();
         $this->getSessionStorage()->forgetMe();
         $this->getAuthService()->clearIdentity();
-
         return $this->redirect()->toRoute('auth');
     }
 }
