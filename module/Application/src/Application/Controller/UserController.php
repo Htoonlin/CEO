@@ -269,7 +269,6 @@ class UserController extends SundewController
             $post_data['userName'] = $user->getUserName();
             $post_data['password'] = $user->getPassword();
             $post_data['confirmPassword'] = $user->getPassword();
-            $post_data['userRole'] = $user->getUserRole();
 
             $form->setData($post_data);
             $form->setInputFilter($helper->getInputFilter($user->getUserId(), $user->getUserName()));
