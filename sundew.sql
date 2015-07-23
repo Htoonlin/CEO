@@ -281,7 +281,7 @@ CREATE TABLE `tbl_hr_attendance` (
   `inTime` time DEFAULT NULL,
   `outTime` time DEFAULT NULL,
   PRIMARY KEY (`attendanceId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1587 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1588 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -424,6 +424,33 @@ CREATE TABLE `tbl_menu_permission` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `tbl_pm_flow`
+--
+
+DROP TABLE IF EXISTS `tbl_pm_flow`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tbl_pm_flow` (
+  `flowId` int(11) NOT NULL,
+  `projectId` int(11) NOT NULL,
+  `flowType` char(1) COLLATE utf8_bin NOT NULL,
+  `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `description` varchar(500) COLLATE utf8_bin NOT NULL,
+  `topId` int(11) DEFAULT NULL,
+  `bottomId` int(11) DEFAULT NULL,
+  `leftId` int(11) DEFAULT NULL,
+  `rightId` int(11) DEFAULT NULL,
+  `topText` int(11) NOT NULL,
+  `bottomText` int(11) NOT NULL,
+  `leftText` int(11) NOT NULL,
+  `rightText` int(11) NOT NULL,
+  `eventLink` varchar(500) COLLATE utf8_bin NOT NULL,
+  `status` char(1) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`flowId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `tbl_pm_project`
 --
 
@@ -442,6 +469,61 @@ CREATE TABLE `tbl_pm_project` (
   `status` char(1) COLLATE utf8_bin NOT NULL,
   `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`projectId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tbl_pm_task`
+--
+
+DROP TABLE IF EXISTS `tbl_pm_task`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tbl_pm_task` (
+  `taskId` int(11) NOT NULL AUTO_INCREMENT,
+  `projectId` int(11) NOT NULL,
+  `code` varchar(50) COLLATE utf8_bin NOT NULL,
+  `name` varchar(250) COLLATE utf8_bin NOT NULL,
+  `level` smallint(6) DEFAULT NULL,
+  `fromTime` datetime NOT NULL,
+  `toTime` datetime NOT NULL,
+  `parentId` int(11) DEFAULT NULL,
+  `predecessorId` int(11) DEFAULT NULL,
+  `priority` int(11) NOT NULL,
+  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL,
+  `current` float NOT NULL,
+  `finished` datetime DEFAULT NULL,
+  `status` char(1) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`taskId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tbl_pm_task_budget`
+--
+
+DROP TABLE IF EXISTS `tbl_pm_task_budget`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tbl_pm_task_budget` (
+  `taskId` int(11) NOT NULL,
+  `amount` int(11) NOT NULL,
+  `currencyId` int(11) NOT NULL,
+  PRIMARY KEY (`taskId`,`amount`,`currencyId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tbl_pm_task_hr`
+--
+
+DROP TABLE IF EXISTS `tbl_pm_task_hr`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tbl_pm_task_hr` (
+  `taskId` int(11) NOT NULL,
+  `staffId` int(11) NOT NULL,
+  PRIMARY KEY (`taskId`,`staffId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1112,4 +1194,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-21 18:30:01
+-- Dump completed on 2015-07-22 18:30:01

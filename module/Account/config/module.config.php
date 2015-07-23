@@ -16,6 +16,7 @@ return array(
             'Account\Controller\Voucher' => 'Account\Controller\VoucherController',
             'Account\Controller\Currency' => 'Account\Controller\CurrencyController',
             'Account\Controller\Balance' => 'Account\Controller\BalanceController',
+            'Account\Controller\Report' => 'Account\Controller\ReportController',
         ),
     ),
 

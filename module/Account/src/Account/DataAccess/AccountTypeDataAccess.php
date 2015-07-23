@@ -85,18 +85,30 @@ class AccountTypeDataAccess extends SundewTableGateway
     /**
      * @param null $parentId
      * @param string $parentName
+     * @param string $type
      * @return array
      */
-    public function getChildren($parentId = null, $parentName = "")
+    public function getChildren($type = '', $parentId = null, $parentName = "")
     {
-        $results = $this->select(function (Select $select) use ($parentId){
-            $select->where(array('parentTypeId' => $parentId));
+        $results = $this->select(function (Select $select) use ($parentId, $type){
+            if(empty($type)){
+                $select->where(array('parentTypeId' => $parentId));
+            }else{
+                $where = new Where();
+                if(empty($parentId)){
+                    $where->isNull('parentTypeId');
+                }else{
+                    $where->equalTo('parentTypeId', $parentId);
+                }
+                $where->in('baseType', array('B', $type));
+                $select->where($where);
+            }
         });
 
         $resultList = array();
         foreach($results as $accountType)
         {
-            $children = $this->getChildren($accountType->getAccountTypeId(), $parentName);
+            $children = $this->getChildren($type, $accountType->getAccountTypeId(), $parentName);
             if(!empty($children)){
                 $accountType->setChildren($children);
             }

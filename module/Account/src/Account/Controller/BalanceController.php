@@ -17,6 +17,7 @@ use Account\DataAccess\VoucherDataAccess;
 use Account\Entity\Closing;
 use Account\Entity\Payable;
 use Account\Entity\Receivable;
+use Application\DataAccess\ConstantDataAccess;
 use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use HumanResource\DataAccess\StaffDataAccess;
@@ -85,6 +86,18 @@ class BalanceController extends SundewController
     private function closingTable()
     {
         return new ClosingDataAccess($this->getDbAdapter());
+    }
+
+    private function getClosingTypes($type)
+    {
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $result = json_decode($dataAccess->getConstantByName('closing_type_id')->getValue());
+
+        if($result){
+            return $result->{$type};
+        }
+
+        return 0;
     }
 
     /**
@@ -393,7 +406,7 @@ class BalanceController extends SundewController
                 $payable->exchangeArray(array(
                     "voucherNo" => $payVoucher,
                     "voucherDate" => $voucherDate,
-                    "accountType" => 3,
+                    "accountType" => $this->getClosingTypes('close'),
                     "description" => 'Automatic closing.',
                     "amount" => $row['amount'],
                     "currencyId"=> $currencyId,
@@ -420,7 +433,7 @@ class BalanceController extends SundewController
                 $receive->exchangeArray(array(
                     "voucherNo" => $receiveVoucher,
                     "voucherDate" => $voucherDate,
-                    "accountType" => 2,
+                    "accountType" =>  $this->getClosingTypes('open'),
                     "description" => 'Automatic opening.',
                     "amount" => $row['amount'],
                     "currencyId"=> $currencyId,

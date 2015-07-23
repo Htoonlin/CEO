@@ -1,7 +1,7 @@
 [SUNDEW MYANMAR]: http://www.sundewmyanmar.com
 
 # Office_Management
-This framework has included so many modules to manage your office. It is developed by Zend Framework2. It is a open source project of
+This framework has included so many modules to manage your office. It is developed by Zend Framework2. It is a open source (GPL V2.0) project of
 [SUNDEW MYANMAR] company. It is not ready for production. You can see demo following link [CEO / Office Management](http://ceo.sundewmyanmar.com).
 
 >User Name : sundew <br />

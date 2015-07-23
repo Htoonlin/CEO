@@ -43,7 +43,7 @@ class PayableController extends SundewController
     private function accountTypes()
     {
         $dataAccess=new AccountTypeDataAccess($this->getDbAdapter());
-        return $dataAccess->getChildren();
+        return $dataAccess->getChildren("E");
     }
 
     /**
