@@ -128,10 +128,10 @@ class LeaveController extends SundewController
 
                 $hasLeave = $this->leaveTable()->getLeaveByStaff($leave->getStaffId(), $leave->getDate());
 
-                if($hasLeave){
+                if($hasLeave && $hasLeave->getStatus() == 'A'){
                     $this->flashMessenger()->addWarningMessage('Sorry! you already approved leave for this date.');
                 }else{
-                    if( $leave->getStatus() == 'A' &&
+                    if($leave->getStatus() == 'A' &&
                         in_array($leave->getLeaveType(), array_keys($this->annualLeave))){
                         $db = $this->leaveTable()->getAdapter();
                         $conn = $db->getDriver()->getConnection();
