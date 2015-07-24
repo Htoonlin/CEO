@@ -187,7 +187,7 @@ class LeaveController extends SundewController
         $staffId = $this->params()->fromQuery('staffId', 0);
         $date = $this->params()->fromQuery('date', date('Y-m-D', time()));
         $leave = $this->leaveTable()->getLeaveByStaff($staffId, $date);
-        if($leave){
+        if($leave && $leave->getStatus() == 'A'){
             return new JsonModel(array(
                 'status' => true,
                 'result' => $leave->getArrayCopy()
