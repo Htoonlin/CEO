@@ -39,9 +39,9 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
         <?php
         echo $this->form()->openTag($form);
         echo $this->formHorizontal($form->get('departmentId'));
-        echo $this->formHorizontal($form->get('code'));
         echo $this->formHorizontal($form->get('name'));
-        echo $this->formHorizontal($form->get('team_code'));
+        echo $this->formHorizontal($form->get('description'));
+        echo $this->formHorizontal($form->get('group_code'));
         ?>
         <div class="form-group">
             <label class="control-label col-sm-3">Parent Department</label>

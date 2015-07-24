@@ -107,7 +107,7 @@ class DepartmentDataAccess extends SundewTableGateway
         if($id>0){
             $this->update($data,array('departmentId'=>$id));
         }else{
-            unset($data['id']);
+            unset($data['departmentId']);
             $this->insert($data);
         }
         if(!$department->getDepartmentId()){
@@ -125,6 +125,6 @@ class DepartmentDataAccess extends SundewTableGateway
         foreach($results as $department){
             $this->deleteDepartment($department->getDepartmentId());
         }
-        $this->delete(array('id'=>(int)$id));
+        $this->delete(array('departmentId'=>(int)$id));
     }
 }

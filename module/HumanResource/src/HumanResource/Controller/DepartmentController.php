@@ -62,7 +62,7 @@ class DepartmentController extends SundewController
             $department=new Department();
         }
         $departments=$this->departmentTable()->getChildren();
-        $helper=new DepartmentHelper();
+        $helper=new DepartmentHelper($this->getDbAdapter());
         $form=$helper->getForm();
         $form->bind($department);
         $request=$this->getRequest();
@@ -75,6 +75,7 @@ class DepartmentController extends SundewController
                 return $this->redirect()->toRoute("hr_department");
             }else{
                 $form->setData($request->getPost());
+                $form->setInputFilter($helper->getInputFilter($id));
                 if($form->isValid()){
                     $this->departmentTable()->saveDepartment($department);
                     $this->flashMessenger()->addSuccessMessage('Save successful!');

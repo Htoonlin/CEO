@@ -16,6 +16,11 @@ use Zend\InputFilter\InputFilter;
 
 class DepartmentHelper {
 
+    protected $dbAdapter;
+    public function __construct($dbAdapter){
+        $this->dbAdapter = $dbAdapter;
+    }
+
     private $form;
     public function getForm()
     {
@@ -30,16 +35,7 @@ class DepartmentHelper {
             'name' => 'departmentId',
             'type' => 'Hidden',
         ));
-        $form->add(array(
-            'name' => 'code',
-            'type' => 'text',
-            'options' => array(
-                'label' => 'Code',
-            ),
-            'attributes' => array(
-                'class' => 'form-control',
-            ),
-        ));
+
         $form->add(array(
             'name' => 'name',
             'type' => 'text',
@@ -51,10 +47,20 @@ class DepartmentHelper {
             ),
         ));
         $form->add(array(
-            'name' => 'team_code',
+            'name' => 'description',
+            'type' => 'textarea',
+            'options' => array(
+                'label' => 'Description',
+            ),
+            'attributes' => array(
+                'class' => 'form-control',
+            ),
+        ));
+        $form->add(array(
+            'name' => 'group_code',
             'type' => 'Text',
             'options' => array(
-                'label' => 'Team Code',
+                'label' => 'Group Code',
             ),
             'attributes' => array(
                 'class' => 'form-control',
@@ -85,7 +91,6 @@ class DepartmentHelper {
             'name' => 'status',
             'type' => 'text',
         ));
-        $form->setInputFilter($this->getInputFilter());
 
         $this->form = $form;
 
@@ -97,7 +102,7 @@ class DepartmentHelper {
     }
 
     private $inputFilter;
-    public function getInputFilter()
+    public function getInputFilter($departmentId)
     {
         if($this->inputFilter){
             return $this->inputFilter;
@@ -116,25 +121,6 @@ class DepartmentHelper {
         $filter->add(array(
             'name' => 'parentId',
             'required' => false,
-        ));
-
-        $filter->add(array(
-            'name' => 'code',
-            'required' => true,
-            'filters' => array(
-                array('name' => 'StripTags'),
-                array('name' => 'StringTrim'),
-            ),
-            'validators' => array(
-                array(
-                    'name' => 'StringLength',
-                    'options' => array(
-                        'encoding' => 'UTF-8',
-                        'min' => 1,
-                        'max' => 50
-                    ),
-                ),
-            ),
         ));
         $filter->add(array(
             'name' => 'name',
@@ -155,6 +141,14 @@ class DepartmentHelper {
             ),
         ));
 
+        $filter->add(array(
+            'name' => 'description',
+            'required' => false,
+            'filters' => array(
+                array('name' => 'StripTags'),
+                array('name' => 'StringTrim'),
+            ),
+        ));
         $this->inputFilter = $filter;
 
         return $this->inputFilter;
