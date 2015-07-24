@@ -155,7 +155,7 @@ CREATE TABLE `tbl_constant` (
   `value` varchar(500) NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`constantId`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +174,7 @@ CREATE TABLE `tbl_cr_company` (
   `type` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`companyId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -196,7 +196,7 @@ CREATE TABLE `tbl_cr_contact` (
   `tag` varchar(255) COLLATE utf8_bin NOT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`contactId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -293,14 +293,14 @@ DROP TABLE IF EXISTS `tbl_hr_department`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tbl_hr_department` (
   `departmentId` int(11) NOT NULL AUTO_INCREMENT,
-  `code` varchar(50) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `team_code` varchar(50) DEFAULT NULL,
+  `description` varchar(500) DEFAULT NULL,
+  `group_code` varchar(50) DEFAULT NULL,
   `parentId` int(11) DEFAULT NULL,
   `priority` int(11) NOT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`departmentId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -406,7 +406,7 @@ CREATE TABLE `tbl_menu` (
   `priority` int(11) NOT NULL,
   `hasDivider` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`menuId`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -469,7 +469,7 @@ CREATE TABLE `tbl_pm_project` (
   `status` char(1) COLLATE utf8_bin NOT NULL,
   `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`projectId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -481,9 +481,9 @@ DROP TABLE IF EXISTS `tbl_pm_task`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tbl_pm_task` (
   `taskId` int(11) NOT NULL AUTO_INCREMENT,
-  `projectId` int(11) NOT NULL,
-  `code` varchar(50) COLLATE utf8_bin NOT NULL,
+  `projectId` int(11) DEFAULT NULL,
   `name` varchar(250) COLLATE utf8_bin NOT NULL,
+  `tag` varchar(50) COLLATE utf8_bin NOT NULL,
   `level` smallint(6) DEFAULT NULL,
   `fromTime` datetime NOT NULL,
   `toTime` datetime NOT NULL,
@@ -562,7 +562,7 @@ CREATE TABLE `tbl_route` (
   `constraints` varchar(255) NOT NULL,
   PRIMARY KEY (`routeId`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -662,6 +662,7 @@ SET character_set_client = utf8;
  1 AS `group_code`,
  1 AS `type`,
  1 AS `currencyCode`,
+ 1 AS `currencyRate`,
  1 AS `requester`,
  1 AS `approver`*/;
 SET character_set_client = @saved_cs_client;
@@ -691,6 +692,7 @@ SET character_set_client = utf8;
  1 AS `group_code`,
  1 AS `type`,
  1 AS `currencyCode`,
+ 1 AS `currencyRate`,
  1 AS `requester`,
  1 AS `approver`*/;
 SET character_set_client = @saved_cs_client;
@@ -714,6 +716,7 @@ SET character_set_client = utf8;
  1 AS `amount`,
  1 AS `currencyId`,
  1 AS `currency`,
+ 1 AS `rate`,
  1 AS `requestBy`,
  1 AS `requester`,
  1 AS `approveBy`,
@@ -964,7 +967,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `vw_account_payable` AS select `pv`.`payVoucherId` AS `payVoucherId`,`pv`.`voucherNo` AS `voucherNo`,`pv`.`voucherDate` AS `voucherDate`,`pv`.`accountType` AS `accountType`,`pv`.`description` AS `description`,`pv`.`amount` AS `amount`,`pv`.`currencyId` AS `currencyId`,`pv`.`withdrawBy` AS `withdrawBy`,`pv`.`approveBy` AS `approveBy`,`pv`.`status` AS `status`,`pv`.`approvedDate` AS `approvedDate`,`pv`.`reason` AS `reason`,`pv`.`requestedDate` AS `requestedDate`,`pv`.`group_code` AS `group_code`,`ty`.`name` AS `type`,`cur`.`code` AS `currencyCode`,concat(`req`.`staffName`,'(',`req`.`staffCode`,')') AS `requester`,concat(`app`.`staffName`,'(',`app`.`staffCode`,')') AS `approver` from ((((`tbl_account_payable` `pv` left join `tbl_account_type` `ty` on((`pv`.`accountType` = `ty`.`accountTypeId`))) left join `tbl_account_currency` `cur` on((`pv`.`currencyId` = `cur`.`currencyId`))) left join `tbl_hr_staff` `req` on((`pv`.`withdrawBy` = `req`.`staffId`))) left join `tbl_hr_staff` `app` on((`pv`.`approveBy` = `app`.`staffId`))) */;
+/*!50001 VIEW `vw_account_payable` AS select `pv`.`payVoucherId` AS `payVoucherId`,`pv`.`voucherNo` AS `voucherNo`,`pv`.`voucherDate` AS `voucherDate`,`pv`.`accountType` AS `accountType`,`pv`.`description` AS `description`,`pv`.`amount` AS `amount`,`pv`.`currencyId` AS `currencyId`,`pv`.`withdrawBy` AS `withdrawBy`,`pv`.`approveBy` AS `approveBy`,`pv`.`status` AS `status`,`pv`.`approvedDate` AS `approvedDate`,`pv`.`reason` AS `reason`,`pv`.`requestedDate` AS `requestedDate`,`pv`.`group_code` AS `group_code`,`ty`.`name` AS `type`,`cur`.`code` AS `currencyCode`,`cur`.`rate` AS `currencyRate`,concat(`req`.`staffName`,'(',`req`.`staffCode`,')') AS `requester`,concat(`app`.`staffName`,'(',`app`.`staffCode`,')') AS `approver` from ((((`tbl_account_payable` `pv` left join `tbl_account_type` `ty` on((`pv`.`accountType` = `ty`.`accountTypeId`))) left join `tbl_account_currency` `cur` on((`pv`.`currencyId` = `cur`.`currencyId`))) left join `tbl_hr_staff` `req` on((`pv`.`withdrawBy` = `req`.`staffId`))) left join `tbl_hr_staff` `app` on((`pv`.`approveBy` = `app`.`staffId`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -982,7 +985,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `vw_account_receivable` AS select `rv`.`receiveVoucherId` AS `receiveVoucherId`,`rv`.`voucherNo` AS `voucherNo`,`rv`.`voucherDate` AS `voucherDate`,`rv`.`accountType` AS `accountType`,`rv`.`description` AS `description`,`rv`.`amount` AS `amount`,`rv`.`currencyId` AS `currencyId`,`rv`.`depositBy` AS `depositBy`,`rv`.`approveBy` AS `approveBy`,`rv`.`status` AS `status`,`rv`.`approvedDate` AS `approvedDate`,`rv`.`reason` AS `reason`,`rv`.`requestedDate` AS `requestedDate`,`rv`.`group_code` AS `group_code`,`ty`.`name` AS `type`,`cur`.`code` AS `currencyCode`,concat(`req`.`staffName`,'(',`req`.`staffCode`,')') AS `requester`,concat(`app`.`staffName`,'(',`app`.`staffCode`,')') AS `approver` from ((((`tbl_account_receivable` `rv` left join `tbl_account_type` `ty` on((`rv`.`accountType` = `ty`.`accountTypeId`))) left join `tbl_account_currency` `cur` on((`rv`.`currencyId` = `cur`.`currencyId`))) left join `tbl_hr_staff` `req` on((`rv`.`depositBy` = `req`.`staffId`))) left join `tbl_hr_staff` `app` on((`rv`.`approveBy` = `app`.`staffId`))) */;
+/*!50001 VIEW `vw_account_receivable` AS select `rv`.`receiveVoucherId` AS `receiveVoucherId`,`rv`.`voucherNo` AS `voucherNo`,`rv`.`voucherDate` AS `voucherDate`,`rv`.`accountType` AS `accountType`,`rv`.`description` AS `description`,`rv`.`amount` AS `amount`,`rv`.`currencyId` AS `currencyId`,`rv`.`depositBy` AS `depositBy`,`rv`.`approveBy` AS `approveBy`,`rv`.`status` AS `status`,`rv`.`approvedDate` AS `approvedDate`,`rv`.`reason` AS `reason`,`rv`.`requestedDate` AS `requestedDate`,`rv`.`group_code` AS `group_code`,`ty`.`name` AS `type`,`cur`.`code` AS `currencyCode`,`cur`.`rate` AS `currencyRate`,concat(`req`.`staffName`,'(',`req`.`staffCode`,')') AS `requester`,concat(`app`.`staffName`,'(',`app`.`staffCode`,')') AS `approver` from ((((`tbl_account_receivable` `rv` left join `tbl_account_type` `ty` on((`rv`.`accountType` = `ty`.`accountTypeId`))) left join `tbl_account_currency` `cur` on((`rv`.`currencyId` = `cur`.`currencyId`))) left join `tbl_hr_staff` `req` on((`rv`.`depositBy` = `req`.`staffId`))) left join `tbl_hr_staff` `app` on((`rv`.`approveBy` = `app`.`staffId`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1000,7 +1003,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `vw_account_voucher` AS select 'Receivable' AS `type`,`vw_account_receivable`.`receiveVoucherId` AS `voucherId`,`vw_account_receivable`.`voucherNo` AS `voucherNo`,`vw_account_receivable`.`voucherDate` AS `voucherDate`,`vw_account_receivable`.`accountType` AS `accountTypeId`,`vw_account_receivable`.`type` AS `accountType`,`vw_account_receivable`.`description` AS `description`,`vw_account_receivable`.`amount` AS `amount`,`vw_account_receivable`.`currencyId` AS `currencyId`,`vw_account_receivable`.`currencyCode` AS `currency`,`vw_account_receivable`.`depositBy` AS `requestBy`,`vw_account_receivable`.`requester` AS `requester`,`vw_account_receivable`.`approveBy` AS `approveBy`,`vw_account_receivable`.`approver` AS `approver`,`vw_account_receivable`.`status` AS `status`,`vw_account_receivable`.`approvedDate` AS `approvedDate`,`vw_account_receivable`.`reason` AS `reason`,`vw_account_receivable`.`requestedDate` AS `requestedDate`,`vw_account_receivable`.`group_code` AS `group_code` from `vw_account_receivable` union all select 'Payable' AS `type`,`vw_account_payable`.`payVoucherId` AS `voucherId`,`vw_account_payable`.`voucherNo` AS `voucherNo`,`vw_account_payable`.`voucherDate` AS `voucherDate`,`vw_account_payable`.`accountType` AS `accountTypeId`,`vw_account_payable`.`type` AS `accountType`,`vw_account_payable`.`description` AS `description`,`vw_account_payable`.`amount` AS `amount`,`vw_account_payable`.`currencyId` AS `currencyId`,`vw_account_payable`.`currencyCode` AS `currency`,`vw_account_payable`.`withdrawBy` AS `requestBy`,`vw_account_payable`.`requester` AS `requester`,`vw_account_payable`.`approveBy` AS `approveBy`,`vw_account_payable`.`approver` AS `approver`,`vw_account_payable`.`status` AS `status`,`vw_account_payable`.`approvedDate` AS `approvedDate`,`vw_account_payable`.`reason` AS `reason`,`vw_account_payable`.`requestedDate` AS `requestedDate`,`vw_account_payable`.`group_code` AS `group_code` from `vw_account_payable` */;
+/*!50001 VIEW `vw_account_voucher` AS select 'Receivable' AS `type`,`vw_account_receivable`.`receiveVoucherId` AS `voucherId`,`vw_account_receivable`.`voucherNo` AS `voucherNo`,`vw_account_receivable`.`voucherDate` AS `voucherDate`,`vw_account_receivable`.`accountType` AS `accountTypeId`,`vw_account_receivable`.`type` AS `accountType`,`vw_account_receivable`.`description` AS `description`,`vw_account_receivable`.`amount` AS `amount`,`vw_account_receivable`.`currencyId` AS `currencyId`,`vw_account_receivable`.`currencyCode` AS `currency`,`vw_account_receivable`.`currencyRate` AS `rate`,`vw_account_receivable`.`depositBy` AS `requestBy`,`vw_account_receivable`.`requester` AS `requester`,`vw_account_receivable`.`approveBy` AS `approveBy`,`vw_account_receivable`.`approver` AS `approver`,`vw_account_receivable`.`status` AS `status`,`vw_account_receivable`.`approvedDate` AS `approvedDate`,`vw_account_receivable`.`reason` AS `reason`,`vw_account_receivable`.`requestedDate` AS `requestedDate`,`vw_account_receivable`.`group_code` AS `group_code` from `vw_account_receivable` union all select 'Payable' AS `type`,`vw_account_payable`.`payVoucherId` AS `voucherId`,`vw_account_payable`.`voucherNo` AS `voucherNo`,`vw_account_payable`.`voucherDate` AS `voucherDate`,`vw_account_payable`.`accountType` AS `accountTypeId`,`vw_account_payable`.`type` AS `accountType`,`vw_account_payable`.`description` AS `description`,`vw_account_payable`.`amount` AS `amount`,`vw_account_payable`.`currencyId` AS `currencyId`,`vw_account_payable`.`currencyCode` AS `currency`,`vw_account_payable`.`currencyRate` AS `rate`,`vw_account_payable`.`withdrawBy` AS `requestBy`,`vw_account_payable`.`requester` AS `requester`,`vw_account_payable`.`approveBy` AS `approveBy`,`vw_account_payable`.`approver` AS `approver`,`vw_account_payable`.`status` AS `status`,`vw_account_payable`.`approvedDate` AS `approvedDate`,`vw_account_payable`.`reason` AS `reason`,`vw_account_payable`.`requestedDate` AS `requestedDate`,`vw_account_payable`.`group_code` AS `group_code` from `vw_account_payable` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1194,4 +1197,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-23 18:30:02
+-- Dump completed on 2015-07-24 18:30:01

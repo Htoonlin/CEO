@@ -56,9 +56,9 @@ class ReceivableDataAccess extends SundewTableGateway
         $maxVoucherNo = $result->current()['MaxVoucherNo'];
 
         $voucherDate = strtotime($date);
-        $number = ($maxVoucherNo == null)? 0 : substr($maxVoucherNo, -4);
+        $number = ($maxVoucherNo == null)? 0 : substr($maxVoucherNo, -3);
         $number = (int)$number + 1;
-        $generate = 'RV' . date('Ymd', $voucherDate) . sprintf('%04d', $number);
+        $generate = 'RV' . date('Ymd', $voucherDate) . sprintf('%03d', $number);
 
         return $generate;
     }

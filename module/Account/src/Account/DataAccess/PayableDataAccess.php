@@ -53,12 +53,10 @@ class PayableDataAccess extends SundewTableGateway
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $maxVoucherNo = $result->current()['MaxVoucherNo'];
-
         $voucherDate = strtotime($date);
-        $number = ($maxVoucherNo == null)? 0 : substr($maxVoucherNo, -4);
+        $number = ($maxVoucherNo == null)? 0 : substr($maxVoucherNo, -3);
         $number = (int)$number + 1;
-        $generate = 'PV' . date('Ymd', $voucherDate) . sprintf('%04d', $number);
-
+        $generate = 'PV' . date('Ymd', $voucherDate) . sprintf('%03d', $number);
         return $generate;
     }
 

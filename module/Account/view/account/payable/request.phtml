@@ -26,7 +26,7 @@ echo $this->formHidden($form->get('payVoucherId'));
                 method:'POST',
                 data:{date:$(this).datepicker('getFormattedDate')},
                 success:function(data){
-                    $(input[name="voucherNo"]).val(data.generateNo);
+                    $('input[name="voucherNo"]').val(data.generatedNo);
                 }
             })
         });
