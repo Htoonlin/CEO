@@ -32,7 +32,7 @@ CREATE TABLE `tbl_account_closing` (
   `closingDate` datetime DEFAULT NULL,
   `closingAmount` int(11) DEFAULT NULL,
   PRIMARY KEY (`closingId`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +76,7 @@ CREATE TABLE `tbl_account_payable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`payVoucherId`)
-) ENGINE=InnoDB AUTO_INCREMENT=739 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=741 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +102,7 @@ CREATE TABLE `tbl_account_receivable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`receiveVoucherId`)
-) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,7 +120,7 @@ CREATE TABLE `tbl_account_type` (
   `baseType` char(1) NOT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`accountTypeId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -155,7 +155,7 @@ CREATE TABLE `tbl_constant` (
   `value` varchar(500) NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`constantId`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -406,7 +406,7 @@ CREATE TABLE `tbl_menu` (
   `priority` int(11) NOT NULL,
   `hasDivider` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`menuId`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -562,7 +562,7 @@ CREATE TABLE `tbl_route` (
   `constraints` varchar(255) NOT NULL,
   PRIMARY KEY (`routeId`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1194,4 +1194,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-22 18:30:01
+-- Dump completed on 2015-07-23 18:30:02

@@ -11,32 +11,31 @@ $title = 'Reports';
 $this->headTitle($title);
 $this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
 ?>
-<h1><?= $this->escapeHtml($title); ?></h1>
-<hr/>
+<h1><?= $title ?></h1>
 <script type="text/javascript">
     $('document').ready(function(){
         var data = {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            labels: <?= json_encode($labels); ?>,
             datasets: [
                 {
-                    label: "USD",
-                    fillColor: "rgba(255,255,255,0.15)",
-                    strokeColor: "#FF3333",
-                    pointColor: "#FF9999",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "#FA0",
-                    data: [65, 59, 80, 81, 56, 55, 40]
-                },
-                {
-                    label: "SGD",
-                    fillColor: "rgba(255,255,255,0.15)",
+                    label: "Income",
+                    fillColor: "#449977",
                     strokeColor: "#449977",
                     pointColor: "#33BB99",
                     pointStrokeColor: "#fff",
                     pointHighlightFill: "#fff",
                     pointHighlightStroke: "#0A9",
-                    data: [28, 48, 40, 19, 86, 27, 90]
+                    data: <?= json_encode($receivable); ?>
+                },
+                {
+                    label: "Expense",
+                    fillColor: "#FF3333",
+                    strokeColor: "#FF3333",
+                    pointColor: "#FF9999",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "#FA0",
+                    data: <?= json_encode($payable); ?>
                 }
             ]
         };
@@ -46,7 +45,7 @@ $this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
             scaleShowGridLines : true,
 
             //String - Colour of the grid lines
-            scaleGridLineColor : "rgba(0,0,0,.05)",
+            scaleGridLineColor : "#DDD",
 
             //Number - Width of the grid lines
             scaleGridLineWidth : 1,
@@ -58,7 +57,7 @@ $this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
             scaleShowVerticalLines: true,
 
             //Boolean - Whether the line is curved between points
-            bezierCurve : true,
+            bezierCurve : false,
 
             //Number - Tension of the bezier curve between points
             bezierCurveTension : 0.4,
@@ -90,9 +89,18 @@ $this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
         };
 
         var ctx = $('#cashFlow').get(0).getContext("2d");
-        var cashFlow = new Chart(ctx).Line(data, options);
+        var cashFlow = new Chart(ctx).Bar(data, options);
     });
 </script>
-<div class="row">
-    <canvas id="cashFlow" class="col-md-12"  height="150px"></canvas>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">Income/Expense Report by MMK</h4>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <canvas id="cashFlow" class="col-md-12"  height="120px"></canvas>
+        </div>
+    </div>
+    <div class="panel-footer">
+    </div>
 </div>

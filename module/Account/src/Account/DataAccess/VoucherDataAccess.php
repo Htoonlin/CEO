@@ -139,4 +139,25 @@ class VoucherDataAccess extends SundewTableGateway
 
         return $results;
     }
+
+    /**
+     * @param array $skipTypes
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
+    public function getReportData(array $skipTypes)
+    {
+        $results = $this->select(function(Select $select) use($skipTypes){
+            $where = new Where();
+            $where->equalTo('status', 'A')
+                ->AND->notIn('accountTypeId', $skipTypes);
+
+            $select->where($where)->columns(array(
+                'date' => new Expression("DATE_FORMAT(voucherDate, '%Y-%m')"),
+                'type' => 'type',
+                'amount' => new Expression('SUM(amount * rate)')))
+                ->group(array('type', 'date'))->order('date');
+        });
+
+        return $results;
+    }
 }

@@ -88,6 +88,10 @@ class BalanceController extends SundewController
         return new ClosingDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @param $type
+     * @return int
+     */
     private function getClosingTypes($type)
     {
         $dataAccess = new ConstantDataAccess($this->getDbAdapter());
