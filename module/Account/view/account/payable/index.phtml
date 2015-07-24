@@ -72,26 +72,17 @@ $this->headTitle($title);
                 <tbody>
                 <?php foreach($paginator as $payable): ?>
                     <?php
-                    $status = '';
+                    $status = $this->constantConverter($payable->status, 'account_status');
                     $class = '';
                     switch($payable->status){
-                        case 'R':
-                            $status = 'Requested';
-                            break;
                         case 'A':
-                            $status = 'Approved';
                             $class = 'info';
                             break;
                         case 'C':
-                            $status = 'Canceled';
                             $class = 'warning';
                             break;
                         case 'F':
-                            $staus = 'Finished';
                             $class = 'success';
-                            break;
-                        default:
-                            $status = 'Error';
                             break;
                     }?>
                     <tr class="<?php echo $class; ?>">

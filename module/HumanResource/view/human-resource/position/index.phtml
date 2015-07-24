@@ -129,20 +129,7 @@ $this->headTitle($title);
                             <?php echo $this->escapeHtml($position->max_salary) . ' ' . $position->currency; ?>
                         </td>
                         <td>
-                            <?php
-                            switch($position->status)
-                            {
-                                case'A':
-                                    echo 'Active';
-                                    break;
-                                case 'D':
-                                    echo 'Inactive';
-                                    break;
-                                default:
-                                    echo 'Invalid';
-                                    break;
-                            }
-                            ?>
+                            <?php echo $this->constantConverter($position->status, 'default_status'); ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

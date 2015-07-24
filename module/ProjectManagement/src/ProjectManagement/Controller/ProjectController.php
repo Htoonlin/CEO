@@ -8,9 +8,9 @@
 
 namespace ProjectManagement\Controller;
 
-use Application\DataAccess\UserDataAccess;
 use Application\Service\SundewController;
 use Application\Service\SundewExporting;
+use HumanResource\DataAccess\StaffDataAccess;
 use ProjectManagement\DataAccess\ProjectDataAccess;
 use ProjectManagement\Entity\Project;
 use ProjectManagement\Helper\ProjectHelper;
@@ -30,8 +30,8 @@ class ProjectController extends SundewController{
      * @return array
      */
     private function userCombos(){
-        $dataAccess=new UserDataAccess($this->getDbAdapter());
-        return $dataAccess->getComboData('userId','userName');
+        $dataAccess=new StaffDataAccess($this->getDbAdapter());
+        return $dataAccess->getComboData('staffId', 'staffCode');
     }
 
     /* Insert Action */

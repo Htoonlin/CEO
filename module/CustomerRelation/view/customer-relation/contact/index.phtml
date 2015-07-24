@@ -134,19 +134,7 @@ $this->headTitle($title);
                             <?php echo $this->escapeHtml($contact->Tag);?>
                         </td>
                         <td>
-                            <?php
-                            switch($contact->Status){
-                                case'A':
-                                    echo 'Active';
-                                    break;
-                                case'D':
-                                    echo 'Inactive';
-                                    break;
-                                default:
-                                    echo 'Invalid';
-                                    break;
-                            }
-                            ?>
+                            <?php echo $this->constantConverter($contact->Status, 'default_status'); ?>
                         </td>
 
                     </tr>

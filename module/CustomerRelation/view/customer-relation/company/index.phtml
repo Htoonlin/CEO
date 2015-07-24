@@ -86,10 +86,10 @@ $this->headTitle($title);
                                 </label>
                             </div>
                         </th>
-                        <th>
+                        <th width="250px">
                             <?php echo $this->gridHeaderCell('Company Name', 'name');?>
                         </th>
-                        <th>
+                        <th width="180px">
                             <?php echo $this->gridHeaderCell('Phone', 'phone');?>
                         </th>
                         <th width="250px">
@@ -127,34 +127,10 @@ $this->headTitle($title);
                             </a>
                         </td>
                         <td>
-                            <?php
-                            switch($company->type){
-                                case'A':
-                                    echo 'TypeA';
-                                    break;
-                                case 'B':
-                                    echo 'TypeB';
-                                    break;
-                                case 'C':
-                                    echo 'TypeC';
-                                    break;
-                            }
-                            ?>
+                            <?php echo $this->constantConverter($company->type, 'company_types'); ?>
                         </td>
                         <td>
-                            <?php
-                            switch($company->status){
-                                case'A':
-                                    echo 'Active';
-                                    break;
-                                case'B':
-                                    echo 'Inactive';
-                                    break;
-                                case'C':
-                                    echo 'Invalid';
-                                    break;
-                            }
-                            ?>
+                            <?php echo $this->constantConverter($company->status, 'default_status'); ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

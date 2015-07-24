@@ -133,19 +133,7 @@ $this->headTitle($title);
                             <?php echo $this->escapeHtml($user->rolename); ?>
                         </td>
                         <td class="text-center">
-                            <?php
-                            switch($user->status){
-                                case 'A':
-                                    echo 'Active';
-                                    break;
-                                case 'D':
-                                    echo 'Inactive';
-                                    break;
-                                default:
-                                    echo 'Invalid';
-                                    break;
-                            }
-                            ?>
+                           <?php echo $this->constantConverter($user->status, 'default_status'); ?>
                         </td>
                         <td class="text-center">
                             <?php echo $this->escapeHtml($user->lastLogin); ?>

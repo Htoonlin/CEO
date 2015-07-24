@@ -9,8 +9,10 @@
 
 namespace Application;
 
+use Application\DataAccess\ConstantDataAccess;
 use Application\DataAccess\RouteDataAccess;
 use Application\DataAccess\UserRoleDataAccess;
+use Application\Helper\View\ConstantConverter;
 use Application\Helper\View\GridFilter;
 use Application\Helper\View\GridHeaderCell;
 use Application\Service\SundewAuthStorage;
@@ -205,6 +207,11 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                     'gridFilter' => function($sm){
                         $app = $sm->getServiceLocator()->get('Application');
                         return new GridFilter($app->getRequest());
+                    },
+                    'constantConverter' => function($sm){
+                        $dbAdapter = $sm->getServiceLocator()->get('Sundew\Db\Adapter');
+                        $constantDA = new ConstantDataAccess($dbAdapter);
+                        return new ConstantConverter($constantDA);
                     }
                 ),
                 'invokables' => array(

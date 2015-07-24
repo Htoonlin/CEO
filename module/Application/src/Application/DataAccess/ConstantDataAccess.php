@@ -79,7 +79,7 @@ class ConstantDataAccess extends SundewTableGateway {
     /**
      * @param $name
      * @param string $group_code
-     * @return array|\ArrayObject|null
+     * @return Constant|array|\ArrayObject|null
      */
     public function getConstantByName($name, $group_code = '')
     {

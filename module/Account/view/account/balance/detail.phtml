@@ -75,19 +75,16 @@ $this->headTitle($title);
                 <tbody>
                 <?php foreach($paginator as $voucher):?>
                     <?php
-                    $status = '';
+                    $status = $this->constantConvertr($voucher->status, 'account_status');
                     $class = '';
                     switch($voucher->status){
                         case 'A':
-                            $status = 'Approved';
                             $class = 'info';
                             break;
                         case 'C':
-                            $status = 'Canceled';
                             $class = 'warning';
                             break;
                         case 'F':
-                            $staus = 'Finished';
                             $class = 'success';
                             break;
                         default:

@@ -129,19 +129,7 @@ $this->headTitle($title);
                          <?php echo $this->escapeHtml($currency->rate);?>
                      </td>
                      <td>
-                         <?php
-                         switch($currency->status){
-                             case'A':
-                                 echo 'Active';
-                                 break;
-                             case 'D':
-                                 echo 'Inactive';
-                                 break;
-                             default:
-                                 echo 'Invalid';
-                                 break;
-                         }
-                         ?>
+                         <?php echo $this->constantConverter($currency->status, 'default_status'); ?>
                      </td>
                      <td>
                          <?php echo $this->escapeHtml($currency->entryDate);?>

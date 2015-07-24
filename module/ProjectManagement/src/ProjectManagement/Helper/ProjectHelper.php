@@ -51,6 +51,7 @@ class ProjectHelper{
 
             $manager=new Element\Select();
             $manager->setLabel('Manager')
+                ->setAttribute('class', 'form-control')
                 ->setName('managerId')
                 ->setEmptyOption('---Choose Manager---')
                 ->setValueOptions($managers);

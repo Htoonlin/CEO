@@ -133,20 +133,7 @@
                          <?php echo $this->escapeHtml($staff->PermanentDate);?>
                      </td>
                      <td>
-                         <?php
-                         switch($staff->Status)
-                         {
-                             case'A':
-                                 echo 'Active';
-                                 break;
-                             case 'D':
-                                 echo 'Inactive';
-                                 break;
-                             default:
-                                 echo 'Invalid';
-                                 break;
-                         }
-                         ?>
+                         <?php echo $this->constantConverter($staff->Status, 'default_status'); ?>
                      </td>
                  </tr>
                  <?php endforeach; ?>

@@ -138,19 +138,7 @@ $flashMesssages = $this->flashMessenger()->getMessages();
                             <?php echo $this->escapeHtml($contract->notes); ?>
                         </td>
                         <td>
-                            <?php
-                            switch($contract->status){
-                                case 'A':
-                                    echo 'Active';
-                                    break;
-                                case 'D':
-                                    echo 'Inactive';
-                                    break;
-                                default:
-                                    echo 'Invalid';
-                                    break;
-                            }
-                            ?>
+                            <?php echo $this->constantConverter($contract->status, 'default_status'); ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
