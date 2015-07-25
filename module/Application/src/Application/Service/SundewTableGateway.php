@@ -19,7 +19,6 @@ use Zend\Cache\StorageFactory;
 class SundewTableGateway extends AbstractTableGateway
 {
     protected $cache;
-
     /**
      * @return \Zend\Cache\Storage\StorageInterface
      */
@@ -45,11 +44,13 @@ class SundewTableGateway extends AbstractTableGateway
     }
 
     protected $executeUser;
+
     /**
-     * @param string $filter
-     * @param string $orderBy
-     * @param string $order
+     * @param $filter
+     * @param $orderBy
+     * @param $order
      * @param string $source
+     * @param null $where
      * @return Paginator
      * @throws \Exception
      */

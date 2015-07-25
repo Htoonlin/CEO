@@ -88,7 +88,7 @@ class PayrollController extends SundewController{
         $form = $helper->getForm($this->formulaList);
 
         return new ViewModel(array(
-            'staffs' => $this->staffTable->fetchAll(false),
+            'staffs' => $this->staffTable->getActiveStaffs(),
             'lateList' => $this->lateList,
             'workingHours' => $this->workingHours,
             'leaveValues' => $this->leaveValues,

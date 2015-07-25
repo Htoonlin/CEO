@@ -12,6 +12,7 @@ use Application\Service\SundewTableGateway;
 use HumanResource\Entity\Staff;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
+use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
@@ -20,6 +21,8 @@ use Zend\Stdlib\Hydrator\ClassMethods;
  * @package HumanResource\DataAccess
  */
 class StaffDataAccess extends SundewTableGateway {
+    protected $view = 'vw_hr_staff';
+
     /**
      * @param Adapter $dpAdapter
      */
@@ -41,13 +44,21 @@ class StaffDataAccess extends SundewTableGateway {
      */
     public function fetchAll($paginated=false, $filter='', $orderBy='staffName', $order='ASC')
     {
-        $view='vw_hr_staff';
         if($paginated)
         {
-            return $this->paginate($filter, $orderBy, $order, $view);
+            return $this->paginate($filter, $orderBy, $order, $this->view);
         }
-        $staffView=new TableGateway($view, $this->adapter);
+
+        $staffView=new TableGateway($this->view, $this->adapter);
         return $staffView->select();
+    }
+
+    /**
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
+    public function getActiveStaffs(){
+        $staffView=new TableGateway($this->view, $this->adapter);
+        return $staffView->select(array('Status' => 'A'));
     }
 
     /**
