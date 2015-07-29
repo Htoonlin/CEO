@@ -150,7 +150,7 @@ class ReceivableController extends SundewController
     {
         $export = new SundewExporting($this->receivableTable()->fetchAll(false));
         $response = $this->getResponse();
-        $filename = 'attachment; filename="Receivable-' . date('Ymdhis') . '.xlsx"';
+        $filename = 'attachment; filename="Receivable-' . date('YmdHis') . '.xlsx"';
 
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');

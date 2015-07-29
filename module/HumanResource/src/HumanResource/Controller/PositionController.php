@@ -123,7 +123,7 @@ class PositionController extends SundewController
     {
         $export = new SundewExporting($this->positionTable()->fetchAll(false));
         $response = $this->getResponse();
-        $filename = 'attachment; filename="Position-' . date('Ymdhis') . '.xlsx"';
+        $filename = 'attachment; filename="Position-' . date('YmdHis') . '.xlsx"';
 
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');

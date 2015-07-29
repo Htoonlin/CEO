@@ -138,7 +138,7 @@ class CompanyController extends SundewController
     {
         $export = new SundewExporting($this->companyTable()->fetchAll(false));
         $response=$this->getResponse();
-        $filename='attachment; filename="Company-'.date('Ymdhis').'.xlsx"';
+        $filename='attachment; filename="Company-'.date('YmdHis').'.xlsx"';
         $headers=$response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');
         $headers->addHeaderLine('Content-Disposition', $filename);

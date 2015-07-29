@@ -207,7 +207,7 @@ class UserController extends SundewController
     public function exportAction()
     {
         $export = new SundewExporting($this->userTable()->fetchAll());
-        $filename = 'attachment; filename="User-' . date('Ymdhis') . '.xlsx"';
+        $filename = 'attachment; filename="User-' . date('YmdHis') . '.xlsx"';
         $excel = $export->getExcel();
 
         $response = $this->getResponse();

@@ -248,13 +248,13 @@ class BalanceController extends SundewController
 
         if(!$closing && $fromPath = '/account/balance'){
             $results = $this->closingTable()->fetchAll(false);
-            $filename = 'attachment; filename="Closing-' . date('Ymdhis') . '.xlsx"';
+            $filename = 'attachment; filename="Closing-' . date('YmdHis') . '.xlsx"';
         }else{
             $currency = $closing->getCurrencyId();
             $fromDate = $closing->getOpeningDate();
             $toDate = (is_null($closing->getClosingDate())) ? date('Y-m-d H:i:s', time()) : $closing->getClosingDate();
             $results = $this->voucherTable()->getVouchersByDate($fromDate, $toDate, $currency, false);
-            $filename = 'attachment; filename="BalanceReport-' . date('Ymdhis') . '.xlsx"';
+            $filename = 'attachment; filename="BalanceReport-' . date('YmdHis') . '.xlsx"';
         }
 
         $export = new SundewExporting($results);

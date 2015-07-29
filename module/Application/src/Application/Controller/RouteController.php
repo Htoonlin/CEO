@@ -157,7 +157,7 @@ class RouteController extends SundewController
     {
         $export = new SundewExporting($this->routeTable()->fetchAll(false));
         $response = $this->getResponse();
-        $filename = 'attachment; filename="Route-' . date('Ymdhis') . '.xlsx"';
+        $filename = 'attachment; filename="Route-' . date('YmdHis') . '.xlsx"';
 
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');

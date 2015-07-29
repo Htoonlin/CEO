@@ -145,7 +145,7 @@ class PayableController extends SundewController
         $export = new SundewExporting($this->payableTable()->fetchAll(false));
 
         $response = $this->getResponse();
-        $filename = 'attachment; filename="Payable-' . date('Ymdhis') . '.xlsx"';
+        $filename = 'attachment; filename="Payable-' . date('YmdHis') . '.xlsx"';
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');
         $headers->addHeaderLine('Content-Disposition', $filename);

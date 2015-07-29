@@ -164,7 +164,7 @@ class StaffController extends SundewController
         $export = new SundewExporting($this->staffTable()->fetchAll(false));
 
         $response=$this->getResponse();
-        $filename='attachment; filename="Staff-'.date('Ymdhis').'.xlsx"';
+        $filename='attachment; filename="Staff-'.date('YmdHis').'.xlsx"';
 
         $headers=$response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');

@@ -183,7 +183,7 @@ class VoucherController extends SundewController
     {
         $export = new SundewExporting($this->voucherTable()->fetchAll());
         $response = $this->getResponse();
-        $filename = 'attachment; filename="Voucher-' . date('Ymdhis') . '.xlsx"';
+        $filename = 'attachment; filename="Voucher-' . date('YmdHis') . '.xlsx"';
 
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');

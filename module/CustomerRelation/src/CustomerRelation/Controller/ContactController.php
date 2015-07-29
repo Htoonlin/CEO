@@ -119,7 +119,7 @@ class ContactController extends SundewController{
     {
         $export = new SundewExporting($this->contactTable()->fetchAll(false));
         $response=$this->getResponse();
-        $filename='attachment; filename="Contact-'. date('Ymdhis').'xlsx"';
+        $filename='attachment; filename="Contact-'. date('YmdHis').'xlsx"';
 
         $headers=$response->getHeaders();
         $headers->addHeaderLine('Content-Type','application/ms-excel; charset=UTF-8');

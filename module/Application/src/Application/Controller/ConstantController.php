@@ -102,7 +102,7 @@ class ConstantController extends SundewController
     {
         $export = new SundewExporting($this->constantTable()->fetchAll(false));
         $response = $this->getResponse();
-        $filename = 'attachment; filename="Constant-' . date('Ymdhis') . '.xlsx"';
+        $filename = 'attachment; filename="Constant-' . date('YmdHis') . '.xlsx"';
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');
         $headers->addHeaderLine('Content-Disposition', $filename);

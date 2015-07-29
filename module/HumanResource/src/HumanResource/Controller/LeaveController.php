@@ -169,7 +169,7 @@ class LeaveController extends SundewController
     {
         $export = new SundewExporting($this->leaveTable()->fetchAll(false));
         $response = $this->getResponse();
-        $filename = 'attachment; filename="Leave-' . date('Ymdhis') . '.xlsx"';
+        $filename = 'attachment; filename="Leave-' . date('YmdHis') . '.xlsx"';
 
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');

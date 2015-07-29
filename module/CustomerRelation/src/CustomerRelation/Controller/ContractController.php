@@ -134,7 +134,7 @@ class ContractController extends SundewController
     {
         $export = new SundewExporting($this->contractTable()->fetchAll(false));
         $response = $this->getResponse();
-        $filename = 'attachment; filename="Contract-' . date('Ymdhis') . '.xlsx"';
+        $filename = 'attachment; filename="Contract-' . date('YmdHis') . '.xlsx"';
 
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');

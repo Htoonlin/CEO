@@ -181,7 +181,7 @@ class ProposalController extends SundewController
     {
         $export = new SundewExporting($this->proposalTable()->fetchAll(false));
         $response = $this->getResponse();
-        $filename = 'attachment; filename="Proposal-' . date('Ymdhis') . '.xlsx"';
+        $filename = 'attachment; filename="Proposal-' . date('YmdHis') . '.xlsx"';
 
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');

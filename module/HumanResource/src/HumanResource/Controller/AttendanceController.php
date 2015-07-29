@@ -131,7 +131,7 @@ class AttendanceController extends SundewController
     {
         $export = new SundewExporting($this->attendanceTable()->fetchAll(false));
         $response = $this->getResponse();
-        $filename = 'attachment; filename="Attendance-' . date('Ymdhis') . '.xlsx"';
+        $filename = 'attachment; filename="Attendance-' . date('YmdHis') . '.xlsx"';
 
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');

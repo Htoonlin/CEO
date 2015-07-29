@@ -146,7 +146,7 @@ class CurrencyController extends SundewController
     public function exportAction()
     {
         $export = new SundewExporting($this->currencyTable()->fetchAll());
-        $filename = 'attachment; filename="Currency-' . date('Ymdhis') . '.xlsx"';
+        $filename = 'attachment; filename="Currency-' . date('YmdHis') . '.xlsx"';
         $excel = $export->getExcel();
 
         $response = $this->getResponse();
