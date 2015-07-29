@@ -147,7 +147,7 @@ class AttendanceController extends SundewController
     public function jsonAttendanceAction()
     {
         $staffId = $this->params()->fromQuery('staffId', 0);
-        $date = $this->params()->fromQuery('date', date('Y-m-D', time()));
+        $date = $this->params()->fromQuery('date', date('Y-m-d', time()));
         $attendance = $this->attendanceTable()->checkAttendance($staffId, $date);
         if($attendance){
             return new JsonModel(array(

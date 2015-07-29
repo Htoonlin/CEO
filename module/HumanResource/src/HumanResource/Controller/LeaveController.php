@@ -185,7 +185,7 @@ class LeaveController extends SundewController
     public function jsonLeaveAction()
     {
         $staffId = $this->params()->fromQuery('staffId', 0);
-        $date = $this->params()->fromQuery('date', date('Y-m-D', time()));
+        $date = $this->params()->fromQuery('date', date('Y-m-d', time()));
         $leave = $this->leaveTable()->getLeaveByStaff($staffId, $date);
         if($leave && $leave->getStatus() == 'A'){
             return new JsonModel(array(

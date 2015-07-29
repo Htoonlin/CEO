@@ -65,7 +65,7 @@ class HolidayController extends SundewController
      */
     public function jsonCheckHolidayAction()
     {
-        $date = $this->params()->fromQuery('date', date('Y-m-D', time()));
+        $date = $this->params()->fromQuery('date', date('Y-m-d', time()));
         $isHoliday = $this->calendarTable()->checkHoliday($date);
         return new JsonModel(array("status" => $isHoliday));
     }
