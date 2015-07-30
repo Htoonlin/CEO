@@ -60,6 +60,10 @@ class Staff implements  ArraySerializableInterface
     public function getCurrencyId(){return $this->currencyId;}
     public function setCurrencyId($value){$this->currencyId = $value;}
 
+    protected $bankCode;
+    public function getBankCode(){return $this->bankCode;}
+    public function setBankCode($value){$this->bankCode = $value;}
+
     public function exchangeArray(array $data)
     {
         $this->staffId = (!empty($data['staffId'])) ? $data['staffId'] : null;
@@ -74,6 +78,7 @@ class Staff implements  ArraySerializableInterface
         $this->status = (!empty($data['status']))? $data['status']: null;
         $this->birthday = (!empty($data['birthday']))? $data['birthday'] : null;
         $this->currencyId = (!empty($data['currencyId'])) ? $data['currencyId'] : null;
+        $this->bankCode = (!empty($data['bankCode'])) ? $data['bankCode'] : null;
     }
     public function getArrayCopy()
     {
@@ -89,7 +94,8 @@ class Staff implements  ArraySerializableInterface
             'permanentDate' => $this->permanentDate,
             'status' => $this->status,
             'birthday' => $this->birthday,
-            'currencyId' => $this->currencyId
+            'currencyId' => $this->currencyId,
+            'bankCode' => $this->bankCode,
         );
     }
 

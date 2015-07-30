@@ -36,25 +36,10 @@ echo $this->form()->openTag($form);
                 <?php echo $this->formSelect($form->get('currencyId')); ?>
             </div>
         </div>
-        <?php echo $this->formHorizontal($form->get('status')); ?>
-        <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-                <button type="submit" value="Save" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-floppy-save"></span>
-                    Save
-                </button>
-                <?php if($isEdit):?>
-                <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('hr_staff', array('action'=>'delete', 'id'=>$id)); ?>" class="btn btn-danger">
-                    <span class="glyphicon glyphicon-trash"></span>
-                    Remove
-                </a>
-                <?php endif; ?>
-                <a href="<?php echo $this->url('hr_staff'); ?>" class="btn btn-default">
-                    <span class="glyphicon glyphicon-th-list"></span>
-                    Back to List
-                </a>
-            </div>
-        </div>
+        <?php
+        echo $this->formHorizontal($form->get('bankCode'));
+        echo $this->formHorizontal($form->get('status'));
+        ?>
     </div>
     <div class="col-md-6">
         <?php
@@ -79,6 +64,24 @@ echo $this->form()->openTag($form);
         echo $this->formHorizontal($form->get('permanentDate'));
         echo $this->formHorizontal($form->get('annual_leave'));
         ?>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <button type="submit" value="Save" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-floppy-save"></span>
+                    Save
+                </button>
+                <?php if($isEdit):?>
+                    <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('hr_staff', array('action'=>'delete', 'id'=>$id)); ?>" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        Remove
+                    </a>
+                <?php endif; ?>
+                <a href="<?php echo $this->url('hr_staff'); ?>" class="btn btn-default">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                    Back to List
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 

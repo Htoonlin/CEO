@@ -101,6 +101,10 @@ class StaffHelper
                 ->setAttribute('class', 'form-control')
                 ->setValueOptions($defaultStatus);
 
+            $bankCode = new Element\Text('bankCode');
+            $bankCode->setLabel('Bank Account')
+                ->setAttributes(array('class'=>'form-control', 'placeholder'=>'Aya Bank Account No'));
+
             $form = new Form();
             $form->setAttribute('class', 'form-horizontal');
             $form->add($hidId);
@@ -115,6 +119,7 @@ class StaffHelper
             $form->add($status);
             $form->add($birthDay);
             $form->add($selectCurrency);
+            $form->add($bankCode);
             $this->form = $form;
         }
         return $this->form;
@@ -216,6 +221,10 @@ class StaffHelper
                 'required'=>true,
             ));
 
+            $filter->add(array(
+                'name' => 'bankCode',
+                'required' => false,
+            ));
             $this->inputFilter=$filter;
         }
         return $this->inputFilter;
