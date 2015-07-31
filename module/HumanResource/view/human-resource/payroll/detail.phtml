@@ -1,0 +1,155 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 7/30/2015
+ * Time: 3:36 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+$title = 'Pay Slip';
+$this->headTitle($title);
+$this->headScript()
+    ->appendFile($this->basePath() . '/js/math.min.js')
+    ->appendFile($this->basePath() . '/js/FileSaver.js');
+
+$currency_pattern = '#,##0.00 ' . $payroll->Currency;
+$perDay =  $payroll->salary / $payroll->s_wd;
+$absentDeduction = $payroll->absent * $perDay;
+$lateList = json_decode($payroll->Late);
+?>
+<script type="text/javascript">
+    $(function () {
+        $("#btnPrint").click(function () {
+            $("#paySlipContent").saveAs();
+        });
+    });
+    function addCommas(nStr)
+    {
+        nStr += '';
+        x = nStr.split('.');
+        x1 = x[0];
+        x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+        }
+        return x1 + x2;
+    }
+</script>
+<div class="panel panel-default" id="paySlipContent">
+    <div class="panel-heading">
+        <h1 class="text-center"><?= $title ?></h1>
+        <hr style="border:1px solid #616161;width:220px;margin:4px auto;"/>
+        <hr style="border:1px solid #616161;width:250px;margin:4px auto;"/>
+        <hr style="border:1px solid #616161;width:320px;margin:4px auto 30px auto;"/>
+        <div class="row">
+            <div class="col-sm-1">
+                <img src="<?= $this->basePath() . '/img/logo-black.png' ?>" height="80px" title="LOGO" />
+            </div>
+            <div class="col-sm-5">
+                <address>
+                    <strong>SUNDEW MYANMAR</strong> <br />
+                    No(21), 5th Floor, Shwe Bo Street, <br />
+                    Tarmwe Township, Yangon Division, Myanmar. <br />
+                    Ph: +95 9 4200 20 355, +95 01 8604303 <br />
+                </address>
+            </div>
+            <div class="col-sm-5 col-sm-offset-1">
+                <table class="table table-bordered table-condensed" style="margin-bottom: 0;">
+                    <tr>
+                        <th width="160px">Staff</th>
+                        <td class="text-center"><?= $this->escapeHtml($payroll->staffCode . ' (' . $payroll->staffName . ')'); ?></td>
+                    </tr>
+                    <tr>
+                        <th width="160px">Period of Payment</th>
+                        <td class="text-center"><?= $payroll->fromDate . ' <strong>-</strong> ' . $payroll->toDate; ?></td>
+                    </tr>
+                    <tr>
+                        <th width="160px">Bank Account No.</th>
+                        <td class="text-center"><?= $payroll->bankCode; ?></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table table-bordered table-striped table-hovered">
+            <tr>
+                <th class="text-center" width="250px">Description</th>
+                <th class="text-center" width="80px">Days</th>
+                <th class="text-center" width="250px">Description</th>
+                <th class="text-center" width="120px">Amount (<?= $payroll->Currency; ?>)</th>
+            </tr>
+            <tr>
+                <td>Standard Working Days in Period</td>
+                <td class="text-center"><?= $payroll->m_wd; ?></td>
+                <td>Basic Pay for a Month</td>
+                <td class="text-right"><?= $this->currencyFormat($payroll->salary, $payroll->Currency, true, 'en_US', $currency_pattern); ?></td>
+            </tr>
+            <tr>
+                <td>Staff Working Days in Period</td>
+                <td class="text-center"><?= $payroll->s_wd; ?></td>
+                <td>Daily Pay Rate</td>
+                <td class="text-right"><?= $this->currencyFormat($perDay, $payroll->Currency, true, 'en_US', $currency_pattern); ?></td>
+            </tr>
+            <tr>
+                <td>Staff Leave Days in Period</td>
+                <td class="text-center"><?= $payroll->leave; ?></td>
+                <td>There is no deduction for leave.</td>
+                <td class="text-right"><?= $this->currencyFormat(0, $payroll->Currency, true, 'en_US', $currency_pattern); ?></td>
+            </tr>
+            <tr>
+                <td>Absent Days in Period</td>
+                <td class="text-center"><?= $payroll->absent; ?></td>
+                <td>Absent deduction in period</td>
+                <td class="text-right"> - <?= $this->currencyFormat($absentDeduction, $payroll->Currency, true, 'en_US', $currency_pattern); ?></td>
+            </tr>
+            <tr>
+                <th colspan="4" class="text-center">Late Days in Period</th>
+            </tr>
+            <?php foreach($lateList as $code => $count): ?>
+                <tr>
+                    <td><?= $code ?></td>
+                    <td class="text-center"><?= $count ?></td>
+                    <td>-</td>
+                    <td class="text-right">-</td>
+                </tr>
+            <?php endforeach; ?>
+            <tr>
+                <td>Executed payroll formula in period</td>
+                <td colspan="3"><?= $payroll->formula; ?></td>
+            </tr>
+            <tr>
+                <th colspan="3" class="text-right">Gross salary (Before Tax)</th>
+                <th class="text-right">
+                    <script type="text/javascript">
+                        var data = {
+                            S: <?= $payroll->salary ?>,
+                            M: <?= $payroll->m_wd; ?>,
+                            P: parseFloat(<?= $perDay ?>),
+                            W: parseFloat(<?= $payroll->s_wd ?>),
+                            L: parseFloat(<?= $payroll->leave ?>),
+                            A: parseFloat(<?= $payroll->absent ?>)
+                        };
+
+                        $.each(<?= $payroll->Late ?>, function(key, value){
+                            data[key] = parseInt(value);
+                        });
+
+                        var result = math.eval('<?= $payroll->formula ?>', data);
+                        document.write(addCommas(math.round(result, 2)) + ' ' + '<?= $payroll->Currency ?>');
+                    </script>
+                </th>
+            </tr>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <div class="text-right">
+            <a href="<?php echo $this->url('hr_payroll'); ?>" class="btn btn-default">
+                <span class="glyphicon glyphicon-th-list"></span>
+                Back to List
+            </a>
+        </div>
+    </div>
+</div>

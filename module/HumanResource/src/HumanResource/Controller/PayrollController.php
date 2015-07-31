@@ -82,7 +82,7 @@ class PayrollController extends SundewController{
     /**
      * @return ViewModel
      */
-    public function indexAction(){
+    public function processAction(){
         $this->init_data();
         $helper = new PayrollHelper();
         $form = $helper->getForm($this->formulaList);
@@ -93,6 +93,51 @@ class PayrollController extends SundewController{
             'workingHours' => $this->workingHours,
             'leaveValues' => $this->leaveValues,
             'form' => $form,
+        ));
+    }
+
+    /**
+     * @return ViewModel
+     */
+    public function indexAction(){
+        $page = (int)$this->params()->fromQuery('page',1);
+        $sort = $this->params()->fromQuery('sort', 'fromDate');
+        $sortBy = $this->params()->fromQuery('by', 'desc');
+        $filter = $this->params()->fromQuery('filter','');
+        $pageSize = (int)$this->params()->fromQuery('size', 10);
+
+        $this->init_data();
+
+        $paginator=$this->payrollTable->fetchAll(true, $filter, $sort, $sortBy);
+
+        $paginator->setCurrentPageNumber($page);
+
+        $paginator->setItemCountPerPage($pageSize);
+
+        return new ViewModel(array(
+            'paginator'=>$paginator,
+            'sort'=>$sort,
+            'sortBy'=>$sortBy,
+            'filter'=>$filter,
+        ));
+    }
+
+    /**
+     * @return ViewModel
+     */
+    public function detailAction()
+    {
+        $id = $this->params()->fromRoute('id', 0);
+        $this->init_data();
+        $payroll = $this->payrollTable->getPayroll($id);
+
+        if(!$payroll){
+            $this->flashMessenger()->addWarningMessage('Invalid Payroll Detail.');
+            return $this->redirect()->toRoute('hr_payroll');
+        }
+
+        return new ViewModel(array(
+            'payroll' => $payroll,
         ));
     }
 
@@ -113,12 +158,18 @@ class PayrollController extends SundewController{
             $existPayroll = $this->payrollTable->checkPayroll($payroll['fromDate'],
                 $payroll['toDate'], $payroll['staffId']);
 
+            $staff = $this->staffTable->getStaff($payroll['staffId']);
+
+            $payroll['currencyId'] = $staff->getCurrencyId();
+            $payroll['bankCode'] = $staff->getBankCode();
+
             if($existPayroll){
                 $payroll['payrollId'] = $existPayroll->payrollId;
+                $payroll['status'] = $existPayroll->status;
             }
 
             $result = $this->payrollTable->savePayroll($payroll);
-
+            $this->flashMessenger()->addSuccessMessage('Save process successful.');
             return new JsonModel(array(
                 'status' => 'success',
                 'result' => $result

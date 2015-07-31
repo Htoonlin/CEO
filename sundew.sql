@@ -32,7 +32,7 @@ CREATE TABLE `tbl_account_closing` (
   `closingDate` datetime DEFAULT NULL,
   `closingAmount` int(11) DEFAULT NULL,
   PRIMARY KEY (`closingId`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +76,7 @@ CREATE TABLE `tbl_account_payable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`payVoucherId`)
-) ENGINE=InnoDB AUTO_INCREMENT=749 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=751 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +102,7 @@ CREATE TABLE `tbl_account_receivable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`receiveVoucherId`)
-) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +174,7 @@ CREATE TABLE `tbl_cr_company` (
   `type` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`companyId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -196,7 +196,7 @@ CREATE TABLE `tbl_cr_contact` (
   `tag` varchar(255) COLLATE utf8_bin NOT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`contactId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -281,7 +281,7 @@ CREATE TABLE `tbl_hr_attendance` (
   `inTime` time DEFAULT NULL,
   `outTime` time DEFAULT NULL,
   PRIMARY KEY (`attendanceId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1588 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1613 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -293,9 +293,9 @@ DROP TABLE IF EXISTS `tbl_hr_department`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tbl_hr_department` (
   `departmentId` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(50) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `description` varchar(500) DEFAULT NULL,
-  `group_code` varchar(50) DEFAULT NULL,
+  `team_code` varchar(50) DEFAULT NULL,
   `parentId` int(11) DEFAULT NULL,
   `priority` int(11) NOT NULL,
   `status` char(1) NOT NULL,
@@ -318,7 +318,7 @@ CREATE TABLE `tbl_hr_leave` (
   `date` date NOT NULL,
   `description` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`leaveId`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -336,14 +336,17 @@ CREATE TABLE `tbl_hr_payroll` (
   `m_wd` tinyint(4) NOT NULL,
   `s_wd` float NOT NULL,
   `salary` float NOT NULL,
+  `currencyId` int(11) NOT NULL,
+  `bankCode` varchar(50) DEFAULT NULL,
   `leave` float NOT NULL,
   `absent` float NOT NULL,
   `formula` varchar(500) NOT NULL,
   `Late` varchar(500) DEFAULT NULL,
+  `netSalary` float NOT NULL,
   `managerId` int(11) NOT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`payrollId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -361,7 +364,7 @@ CREATE TABLE `tbl_hr_position` (
   `max_salary` bigint(20) DEFAULT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`positionId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -383,9 +386,10 @@ CREATE TABLE `tbl_hr_staff` (
   `currencyId` int(11) NOT NULL,
   `annual_leave` float NOT NULL,
   `permanentDate` date NOT NULL,
+  `bankCode` varchar(50) DEFAULT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`staffId`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -406,7 +410,7 @@ CREATE TABLE `tbl_menu` (
   `priority` int(11) NOT NULL,
   `hasDivider` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`menuId`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -469,7 +473,7 @@ CREATE TABLE `tbl_pm_project` (
   `status` char(1) COLLATE utf8_bin NOT NULL,
   `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`projectId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -562,7 +566,7 @@ CREATE TABLE `tbl_route` (
   `constraints` varchar(255) NOT NULL,
   PRIMARY KEY (`routeId`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -598,7 +602,7 @@ CREATE TABLE `tbl_user` (
   `userRole` int(11) NOT NULL,
   PRIMARY KEY (`userId`),
   UNIQUE KEY `userName` (`userName`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -834,6 +838,37 @@ SET character_set_client = utf8;
  1 AS `description`,
  1 AS `staffCode`,
  1 AS `staffName`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `vw_hr_payroll`
+--
+
+DROP TABLE IF EXISTS `vw_hr_payroll`;
+/*!50001 DROP VIEW IF EXISTS `vw_hr_payroll`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `vw_hr_payroll` AS SELECT 
+ 1 AS `payrollId`,
+ 1 AS `staffId`,
+ 1 AS `fromDate`,
+ 1 AS `toDate`,
+ 1 AS `m_wd`,
+ 1 AS `s_wd`,
+ 1 AS `salary`,
+ 1 AS `currencyId`,
+ 1 AS `bankCode`,
+ 1 AS `leave`,
+ 1 AS `absent`,
+ 1 AS `formula`,
+ 1 AS `Late`,
+ 1 AS `managerId`,
+ 1 AS `status`,
+ 1 AS `staffCode`,
+ 1 AS `staffName`,
+ 1 AS `Currency`,
+ 1 AS `Position`,
+ 1 AS `Department`*/;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -1099,6 +1134,24 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
+-- Final view structure for view `vw_hr_payroll`
+--
+
+/*!50001 DROP VIEW IF EXISTS `vw_hr_payroll`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `vw_hr_payroll` AS select `p`.`payrollId` AS `payrollId`,`p`.`staffId` AS `staffId`,`p`.`fromDate` AS `fromDate`,`p`.`toDate` AS `toDate`,`p`.`m_wd` AS `m_wd`,`p`.`s_wd` AS `s_wd`,`p`.`salary` AS `salary`,`p`.`currencyId` AS `currencyId`,`p`.`bankCode` AS `bankCode`,`p`.`leave` AS `leave`,`p`.`absent` AS `absent`,`p`.`formula` AS `formula`,`p`.`Late` AS `Late`,`p`.`managerId` AS `managerId`,`p`.`status` AS `status`,`s`.`staffCode` AS `staffCode`,`s`.`staffName` AS `staffName`,`s`.`Currency` AS `Currency`,`s`.`Position` AS `Position`,`s`.`Department` AS `Department` from (`tbl_hr_payroll` `p` join `vw_hr_staff` `s` on((`p`.`staffId` = `s`.`staffId`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `vw_hr_position`
 --
 
@@ -1197,4 +1250,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-28 18:30:02
+-- Dump completed on 2015-07-30 18:30:02

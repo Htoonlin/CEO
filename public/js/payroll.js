@@ -232,7 +232,7 @@
         $.each(payroll_data.lateList, function(idx, late){
             var ptr = '#' + late.code + '-' + staffId;
             var lateCount = parseInt($(ptr).html());
-            lateList[late.code] = lateCount;
+            lateList[late.code] = parseInt(lateCount);
         });
 
         var settings = $.extend({

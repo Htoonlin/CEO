@@ -11,12 +11,15 @@ namespace HumanResource\DataAccess;
 use Application\Service\SundewTableGateway;
 use HumanResource\Entity\Payroll;
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\TableGateway\TableGateway;
 
 /**
  * Class PayrollDataAccess
  * @package HumanResource\DataAccess
  */
 class PayrollDataAccess extends SundewTableGateway{
+
+    protected $view = 'vw_hr_payroll';
     /**
      * @param Adapter $dpAdapter
      */
@@ -25,6 +28,30 @@ class PayrollDataAccess extends SundewTableGateway{
         $this->table="tbl_hr_payroll";
         $this->adapter=$dpAdapter;
         $this->initialize();
+    }
+
+    /**
+     * @param bool $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Db\ResultSet\ResultSet|\Zend\Paginator\Paginator
+     * @throws \Exception
+     */
+    public function fetchAll($paginated = false, $filter='', $orderBy='fromDate', $order='DESC'){
+        if($paginated)
+        {
+            return $this->paginate($filter, $orderBy, $order, $this->view);
+        }
+
+        $staffView=new TableGateway($this->view, $this->adapter);
+        return $staffView->select();
+    }
+
+    public function getPayroll($id){
+        $view = new TableGateway($this->view, $this->adapter);
+        $result = $view->select(array('payrollId' => $id));
+        return $result->current();
     }
 
     /**

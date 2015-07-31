@@ -1,282 +1,102 @@
-<?php 
+<?php
 /**
  * Created by PhpStorm.
  * User: NyanTun
- * Date: 6/25/2015
- * Time: 2:16 PM
+ * Date: 7/30/2015
+ * Time: 11:50 AM
  * Zend Code Completion
- * @var $this \Zend\View\Renderer\PhpRenderer 
+ * @var $this \Zend\View\Renderer\PhpRenderer
  */
-$title = 'Payroll process';
+$title = 'Payroll List';
 $this->headTitle($title);
 $this->headScript()
-    ->appendFile($this->basePath() . '/js/math.min.js')
-    ->appendFile($this->basePath() . '/js/payroll.js');
+    ->appendFile($this->basePath() . '/js/math.min.js');
 ?>
-<script type="text/javascript">
-    $('document').ready(function(){
-        $("input#chkAll").change(function(){
-            if($(this).checkbox('isChecked')){
-                $('input[name="chkId[]"]').checkbox('check');
-            }else{
-                $('input[name="chkId[]"]').checkbox('uncheck');
-            }
-        });
-        $('input[name="chkId[]"]').change(function(){
-            var total=$('input[name="chkId[]"]').length;
-            var checks=$('input[name="chkId[]"]:checked').length;
-            if(total==checks){
-                $("input#chkAll").checkbox('check');
-            }else{
-                $("input#chkAll").checkbox('uncheck');
-            }
-        });
-
-        $('button#btnProcess').hide();
-        $('select[name="formula"]').hide();
-        $('button#btnSave').hide();
-
-        $.setPayrollData({
-            workingHours    : <?= $workingHours ?>,
-            lateList        : <?= json_encode($lateList); ?>,
-            leaveValues     : <?= $leaveValues; ?>
-        });
-
-        $.setPayrollUrl({
-            attendance  : '<?= $this->url('hr_attendance', array('action' => 'jsonAttendance')) ?>',
-            leave       : '<?= $this->url('hr_leave', array('action' => 'jsonLeave')) ?>',
-            holiday     : '<?= $this->url('hr_holiday', array('action' => 'jsonCheckHoliday')) ?>',
-            payroll     : '<?= $this->url('hr_payroll', array('action' => 'jsonSave')) ?>'
-        });
-
-        $('button#btnAttendance').click(function(){
-            var totalProgress = $("#payroll-staffs>tbody").find('input[type="checkbox"]:checked').length;
-            var perStaff = Math.ceil(100/totalProgress);
-
-            if(totalProgress <= 0){
-                alert('Please check at least one.');
-                return;
-            }
-
-            $("#payroll-staffs>tbody").find('input[type="checkbox"]:checked').each(function(idx){
-                $(this).closest('tr').collectAttendance({
-                    start: moment($('input[name=fromDate]').val(), 'YYYY-MM-DD'),
-                    end: moment($('input[name=toDate]').val(), 'YYYY-MM-DD'),
-                    progress: function(val){
-                        var percentage = math.round((idx * perStaff) + ((val/100) * perStaff), 2) + '%';
-                        $('#payrollProcess>.progress-bar').css('width', percentage).html(percentage);
-                    }
-                });
-            });
-
-            $(this).attr('disabled', 'disabled').hide();
-            $('div#fromDate').hide();
-            $('div#toDate').hide();
-            $('button#btnProcess').fadeIn();
-            $('select[name="formula"]').fadeIn();
-            $('span#current-step').removeClass('label-primary')
-                .html('Step 2: Ready to run payroll by formula.')
-                .addClass('label-success').slideDown();
-
-            $('#payrollProcess>.progress-bar').css('width', '100%').html('Finished collecting attendance info.');
-        });
-
-        $('select[name="formula"]').change(function(){
-            $('span#current-step').html('Step 2: Ready to run payroll by formula => ' + $(this).val())
-            $('button#btnProcess').removeAttr('disabled');
-            $('#payrollProcess>.progress-bar').removeClass('progress-bar-primary')
-                .addClass('progress-bar-success')
-                .html('').css('width', '0%');
-        });
-
-        $('button#btnProcess').click(function(){
-            var totalProgress = $("#payroll-staffs>tbody").find('input[type="checkbox"]:checked').length;
-            var perStaff = Math.ceil(95/totalProgress);
-
-            if(totalProgress <= 0){
-                alert('Please check at least one.');
-                return;
-            }
-
-            if($('select[name="formula"]').val().length <= 0){
-                alert('Please choose a payroll formula.');
-                return;
-            }
-
-            //Restart progress bar
-            $('#payrollProcess>.progress-bar').css('width', '5%').html('5%');
-
-            var currentProgress = 5;
-
-            $("#payroll-staffs>tbody").find('input[type="checkbox"]:checked').each(function(idx){
-                var netField  = $(this).closest('tr').children('td#Net');
-                $(this).closest('tr').calculatePayroll({
-                    start: moment($('input[name=fromDate]').val(), 'YYYY-MM-DD'),
-                    end: moment($('input[name=toDate]').val(), 'YYYY-MM-DD'),
-                    formula: $('select[name="formula"]').val(),
-                    success: function(salary){
-                        netField.html(math.round(salary, 2));
-                        currentProgress += perStaff;
-                        var percentage = currentProgress + '%';
-                        $('#payrollProcess>.progress-bar').css('width', percentage).html(percentage);
-                    }
-                });
-            });
-
-            $('#payrollProcess>.progress-bar').css('width', '100%').html('Completed payroll process.');
-            $('span#current-step').html('Step 3: Ready to save.');
-            $(this).hide();
-            $('select[name="formula"]').hide();
-            $('button#btnSave').removeAttr('disabled').show();
-        });
-
-        $('button#btnSave').click(function(){
-            var totalProgress = $("#payroll-staffs>tbody").find('input[type="checkbox"]:checked').length;
-            var perStaff = Math.ceil(95/totalProgress);
-
-            if(totalProgress <= 0){
-                alert('Please check at least one.');
-                return;
-            }
-
-            //Restart progress bar
-            $('#payrollProcess>.progress-bar').css('width', '5%').html('5%');
-
-            var currentProgress = 5;
-
-            $("#payroll-staffs>tbody").find('input[type="checkbox"]:checked').each(function(){
-                $(this).closest('tr').savePayroll({
-                    start: moment($('input[name=fromDate]').val(), 'YYYY-MM-DD'),
-                    end: moment($('input[name=toDate]').val(), 'YYYY-MM-DD'),
-                    formula: $('select[name="formula"]').val(),
-                    success: function(data){
-                        currentProgress += perStaff;
-                        var percentage = currentProgress + '%';
-                        $('#payrollProcess>.progress-bar').css('width', percentage).html(percentage);
-                        if(currentProgress >= 100){
-                            $('#payrollProcess>.progress-bar').css('width', '100%').html('Save successful.');
-                            $('span#current-step').html('Finished!: Payroll process was success.');
-                            $('input[name="chkId[]"]').checkbox('uncheck');
-                            $(this).hide();
-                            alert('Save successful.');
-                            window.location.href = '<?= $this->url('hr_payroll'); ?>';
-                        }
-                    }
-                });
-            });
-        });
-    });
-</script>
-<h1><?= $this->escapeHtml($title) ?></h1>
+<h1><?php echo $title; ?></h1>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <div class="row">
-            <div class="col-md-6">
-                <p class="panel-title">
-                    <span id="current-step" class="label label-primary" style="padding: 11px;display:inline-block;">Step 1: Collect attendance info.</span>
-                </p>
-            </div>
-            <div class="col-md-6">
-                <div class="text-right">
-                    <?php
-                        $form->setAttribute('action', $this->url('hr_payroll', array('action'=> 'process')));
-                        echo $this->form()->openTag($form);
-                        echo $this->formRow($form->get('fromDate'));
-                        echo $this->formRow($form->get('toDate'));
-                        echo $this->formRow($form->get('formula'));
-                    ?>
-                    <button type="button" id="btnAttendance" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-compressed"></span> Collect
-                    </button>
-                    <button type="button" id="btnProcess" class="btn btn-success" disabled="disabled">
-                        <span class="fa fa-play"></span>
-                        Run
-                    </button>
-                    <button type="button" id="btnSave" class="btn btn-primary" disabled="disabled">
-                        <span class="glyphicon glyphicon-save"></span>
-                        Save
-                    </button>
-                    <a class="btn btn-default" href="<?= $this->url('hr_payroll')?>">
-                        <span class="fa fa-refresh"></span>
-                        Reload
-                    </a>
-                    <?php
-                        echo $this->form()->closeTag();
-                    ?>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="progress" id="payrollProcess" style="margin-top:10px; margin-bottom: 0;">
-                    <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-                    </div>
-                </div>
+        <div class="text-right">
+            <div class="btn-group">
+                <a href="<?php echo $this->url("hr_payroll", array('action'=>'process'));?>" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-tasks"></span>
+                    Process
+                </a>
             </div>
         </div>
     </div>
     <div class="panel-body">
         <div class="grid">
-            <table class="table table-bordered" id="payroll-staffs">
+            <table class="table table-bordered table-striped table-hover">
                 <thead>
-                    <tr>
-                        <th colspan="2" class="text-center">
-                            Formula key
-                        </th>
-                        <th class="text-center">S</th>
-                        <th class="text-center">M</th>
-                        <th class="text-center">P</th>
-                        <th class="text-center">W</th>
-                        <th class="text-center">L</th>
-                        <th class="text-center">A</th>
-                        <?php foreach($lateList as $late): ?>
-                            <th class="text-center"><?= $late->code ?></th>
-                        <?php endforeach; ?>
-                        <th class="text-center"><span class="fa fa-money"></span></th>
-                    </tr>
-                    <tr>
-                        <th class="text-center" width="30px">
-                            <div class="checkbox" style="margin: 0">
-                                <label class="checkbox-custom" data-initialize="checkbox">
-                                    <input type="checkbox" id="chkAll" />
-                                </label>
-                            </div>
-                        </th>
-                        <th width="200px">Staff</th>
-                        <th width="100px">Salary</th>
-                        <th class="text-center" width="80px">M_WD</th>
-                        <th width="90px" class="text-center">Per Day</th>
-                        <th class="text-center" width="80px">S_WD</th>
-                        <th class="text-center" width="80px">Leave</th>
-                        <th class="text-center" width="80px">Absent</th>
-                        <?php foreach($lateList as $late): ?>
-                            <th class="text-center" width="80px"><?= $late->title ?></th>
-                        <?php endforeach; ?>
-                        <th class="text-center" width="100px">Net</th>
-                    </tr>
+                <tr>
+                    <th width="70px" class="text-center">
+                        <?php echo $this->gridHeaderCell('From','fromDate');?>
+                    </th>
+                    <th width="70px" class="text-center">
+                        <?php echo $this->gridHeaderCell('To','toDate');?>
+                    </th>
+                    <th width="120px">
+                        <?php echo $this->gridHeaderCell('Staff','staffName');?>
+                    </th>
+                    <th width="100px">
+                        <?php echo $this->gridHeaderCell('Salary','salary');?>
+                    </th>
+                    <th width="60px" class="text-center">
+                        <?php echo $this->gridHeaderCell('M_WD','m_wd');?>
+                    </th>
+                    <th width="60px" class="text-center">
+                        <?php echo $this->gridHeaderCell('S_WD','s_wd');?>
+                    </th>
+                    <th width="60px" class="text-center">
+                        <?php echo $this->gridHeaderCell('L','leave');?>
+                    </th>
+                    <th width="100px">
+                        <?php echo $this->gridHeaderCell('Late','Late');?>
+                    </th>
+                    <th width="120px">
+                        Net
+                    </th>
+                    <th width="50px" class="text-center">
+                        Print
+                    </th>
+                </tr>
                 </thead>
                 <tbody>
-                <?php foreach($staffs as $staff):?>
-                    <tr data-salary="<?= $staff->Salary ?>" data-id="<?= $staff->staffId ?>" id="row-<?= $staff->staffId ?>">
-                        <td class="text-center" id="isMark">
-                            <div class="checkbox" style="margin: 0">
-                                <label class="checkbox-custom" data-initialize="checkbox">
-                                    <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($staff->staffId);?>" />
-                                </label>
-                            </div>
+                <?php foreach($paginator as $payroll):?>
+                    <tr>
+                        <td class="text-center"><?= $payroll->fromDate ?></td>
+                        <td class="text-center"><?= $payroll->toDate ?></td>
+                        <td><?= $this->escapeHtml($payroll->staffName . '(' . $payroll->staffCode . ')') ?></td>
+                        <td><?= $this->escapeHtml($payroll->salary . ' ' . $payroll->Currency) ?></td>
+                        <td class="text-center"><?= $payroll->m_wd ?></td>
+                        <td class="text-center"><?= $payroll->s_wd ?></td>
+                        <td class="text-center"><?= $payroll->leave ?></td>
+                        <td><?= $this->escapeHtml($payroll->Late); ?></td>
+                        <td>
+                            <script type="text/javascript">
+                                var data = {
+                                    S: <?= $payroll->salary ?>,
+                                    M: <?= $payroll->m_wd; ?>,
+                                    P: parseFloat(<?= $payroll->salary / $payroll->s_wd; ?>),
+                                    W: parseFloat(<?= $payroll->s_wd ?>),
+                                    L: parseFloat(<?= $payroll->leave ?>),
+                                    A: parseFloat(<?= $payroll->absent ?>)
+                                };
+
+                                $.each(<?= $payroll->Late ?>, function(key, value){
+                                    data[key] = parseInt(value);
+                                });
+
+                                var result = math.eval('<?= $payroll->formula ?>', data);
+                                document.write(math.round(result, 2) + ' ' + '<?= $payroll->Currency ?>');
+                            </script>
+
                         </td>
-                        <td id="staff"><?= $this->escapeHtml($staff->staffName . ' (' . $staff->staffCode . ')') ?></td>
-                        <td id="salary"><?= $this->escapeHtml($staff->Salary . ' ' . $staff->Currency) ?></td>
-                        <td id="M_WD" class="text-center">0</td>
-                        <td id="Per_Day" class="text-center">0</td>
-                        <td id="S_WD" class="text-center">0</td>
-                        <td id="Leave" class="text-center">0</td>
-                        <td id="Absent" class="text-center">0</td>
-                        <?php foreach($lateList as $late): ?>
-                            <td class="text-center" id="<?= $late->code . '-' . $staff->staffId ?>">0</td>
-                        <?php endforeach; ?>
-                        <td id="Net" class="text-center">
-                            0
+                        <td class="text-center">
+                            <a href="<?= $this->url('hr_payroll', array('action' => 'detail', 'id' => $payroll->payrollId)); ?>"
+                               title="Show slip" class="btn btn-sm btn-info">
+                                <span class="glyphicon glyphicon-print"></span>
+                            </a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -285,5 +105,8 @@ $this->headScript()
         </div>
     </div>
     <div class="panel-footer">
+        <div class="text-center">
+            <?php echo $this->paginationControl($paginator, 'Sliding','shared/paginator.phtml', array('route'=>'hr_payroll', 'sort'=>$sort, 'sortBy'=>$sortBy)); ?>
+        </div>
     </div>
 </div>
