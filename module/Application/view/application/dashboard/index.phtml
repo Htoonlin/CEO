@@ -54,6 +54,12 @@ $this->headScript()
                 }
             });
         });
+
+        $('button#btnPaySlip').click(function(){
+            var from = $('input[name=fromDate]').val();
+            var to = $('input[name=toDate]').val();
+            window.location.href = '<?= $this->url('dashboard', array('action' => 'paySlip')); ?>?from=' + from + '&to=' + to;
+        });
     });
 </script>
 <div class="row">
@@ -156,12 +162,20 @@ $this->headScript()
                         echo $this->form()->closeTag();
                         ?>
                         </p>
-                        <p>
-                            <button type="button" id="btnCalculate" class="btn btn-block btn-primary">
-                                <span class="fa fa-calculator"></span>
-                                Calculate
-                            </button>
-                        </p>
+                        <div class="btn-group btn-group-justified">
+                            <div class="btn-group">
+                                <button type="button" id="btnPaySlip" class="btn btn-info">
+                                    <span class="fa fa-file"></span>
+                                    Pay Slip
+                                </button>
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" id="btnCalculate" class="btn btn-primary">
+                                    <span class="fa fa-calculator"></span>
+                                    Calculate
+                                </button>
+                            </div>
+                        </div>
                         <p>
                             <table data-id="<?= $staff->getStaffId() ?>" class="table table-bordered table-striped"
                                    id="payrollTable-<?= $staff->getStaffId() ?>" data-salary="<?= $staff->getSalary() ?>">

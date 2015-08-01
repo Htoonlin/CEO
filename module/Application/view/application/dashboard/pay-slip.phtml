@@ -1,11 +1,11 @@
-<?php 
+<?php
 /**
  * Created by PhpStorm.
  * User: NyanTun
  * Date: 7/30/2015
  * Time: 3:36 PM
  * Zend Code Completion
- * @var $this \Zend\View\Renderer\PhpRenderer 
+ * @var $this \Zend\View\Renderer\PhpRenderer
  */
 $title = 'Pay Slip';
 $this->headTitle($title);
@@ -145,7 +145,7 @@ $lateList = json_decode($payroll->Late);
     </div>
     <div class="panel-footer">
         <div class="text-right">
-            <a href="<?php echo $this->url('hr_payroll'); ?>" class="btn btn-default">
+            <a href="<?php echo $this->url('dashboard'); ?>" class="btn btn-default">
                 <span class="glyphicon glyphicon-th-list"></span>
                 Back to List
             </a>

@@ -48,9 +48,29 @@ class PayrollDataAccess extends SundewTableGateway{
         return $staffView->select();
     }
 
+    /**
+     * @param $id
+     * @return array|\ArrayObject|null
+     */
     public function getPayroll($id){
         $view = new TableGateway($this->view, $this->adapter);
         $result = $view->select(array('payrollId' => $id));
+        return $result->current();
+    }
+
+    /**
+     * @param $fromDate
+     * @param $toDate
+     * @param $staffId
+     * @return array|\ArrayObject|null
+     */
+    public function getPayrollByDate($fromDate, $toDate, $staffId){
+        $view = new TableGateway($this->view, $this->adapter);
+        $result = $view->select(array(
+            'staffId' => $staffId,
+            'fromDate' => $fromDate,
+            'toDate' => $toDate
+        ));
         return $result->current();
     }
 

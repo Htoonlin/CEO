@@ -14,6 +14,7 @@ use Application\Helper\DashboardHelper;
 use Application\Service\SundewController;
 use HumanResource\DataAccess\AttendanceDataAccess;
 use HumanResource\DataAccess\LeaveDataAccess;
+use HumanResource\DataAccess\PayrollDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Attendance;
 use HumanResource\Entity\Leave;
@@ -100,6 +101,14 @@ class DashboardController extends SundewController
         }
     }
 
+    /**
+     * @return PayrollDataAccess
+     */
+    public function payrollTable()
+    {
+        return new PayrollDataAccess($this->getDbAdapter());
+    }
+
     public function indexAction()
     {
         try{
@@ -151,6 +160,26 @@ class DashboardController extends SundewController
         }catch(\Exception $ex){
             throw $ex;
         }
+    }
+
+    /**
+     * @return ViewModel
+     */
+    public function paySlipAction()
+    {
+        $fromDate = $this->params()->fromQuery('from', date('Y-m-d', time()));
+        $toDate = $this->params()->fromQuery('to', date('Y-m-d', strtotime('-1 month')));
+
+        $payroll = $this->payrollTable()->getPayrollByDate($fromDate, $toDate, $this->getCurrentStaff()->getStaffId());
+
+        if(!$payroll){
+            $this->flashMessenger()->addWarningMessage("Payslip is not ready for your requested date ({$fromDate} - {$toDate}).");
+            return $this->redirect()->toRoute('dashboard');
+        }
+
+        return new ViewModel(array(
+            'payroll' => $payroll,
+        ));
     }
 
     public function jsonAttendanceAction()
