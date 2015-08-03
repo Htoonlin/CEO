@@ -75,7 +75,7 @@ $this->headTitle($title);
                 <tbody>
                 <?php foreach($paginator as $voucher):?>
                     <?php
-                    $status = $this->constantConvertr($voucher->status, 'account_status');
+                    $status = $this->constantConverter($voucher->status, 'account_status');
                     $class = '';
                     switch($voucher->status){
                         case 'A':
