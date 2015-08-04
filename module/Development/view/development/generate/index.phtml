@@ -1,0 +1,90 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: NyanTun
+ * Date: 8/4/2015
+ * Time: 2:07 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ */
+$title = 'Code Generator';
+$this->headTitle($title);
+
+$this->headLink()->appendStylesheet($this->basePath() . '/codemirror/lib/codemirror.css')
+    ->appendStylesheet($this->basePath() . '/codemirror/theme/mbo.css')
+    ->appendStylesheet($this->basePath() . '/codemirror/addon/fold/foldgutter.css')
+    ->appendStylesheet($this->basePath() . '/codemirror/addon/lint/lint.css');
+
+$this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.js')
+    ->appendFile($this->basePath() . '/codemirror/addon/edit/matchbrackets.js')
+    ->appendFile($this->basePath() . '/codemirror/addon/fold/foldcode.js')
+    ->appendFile($this->basePath() . '/codemirror/addon/fold/foldgutter.js')
+    ->appendFile($this->basePath() . '/codemirror/addon/fold/xml-fold.js')
+    ->appendFile($this->basePath() . '/codemirror/addon/fold/markdown-fold.js')
+    ->appendFile($this->basePath() . '/codemirror/addon/fold/comment-fold.js')
+    ->appendFile($this->basePath() . '/codemirror/addon/fold/brace-fold.js')
+    ->appendFile($this->basePath() . '/codemirror/mode/clike/clike.js')
+    ->appendFile($this->basePath() . '/codemirror/mode/htmlmixed/htmlmixed.js')
+    ->appendFile($this->basePath() . '/codemirror/mode/xml/xml.js')
+    ->appendFile($this->basePath() . '/codemirror/mode/javascript/javascript.js')
+    ->appendFile($this->basePath() . '/codemirror/mode/css/css.js')
+    ->appendFile($this->basePath() . '/codemirror/mode/php/php.js');
+?>
+<script type="text/javascript">
+    $().ready(function(){
+        var myEditor = CodeMirror.fromTextArea($('textarea[name="txtGenerate"]').get(0),
+            {
+                lineNumbers: true,
+                indentUnit: 4,
+                smartIndent: false,
+                foldGutter: true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                mode: "application/x-httpd-php",
+                theme:"mbo"
+            });
+        myEditor.setSize("100%", "580px");
+
+        $('button#btnGenerate').click(function(){
+            if($('select[name="type"]').val() == "E"){
+                $.ajax({
+                    url : '<?php echo $this->url('development_generate', array('action' => 'entity')) ?>',
+                    data : $('#frmGenerate').serialize(),
+                    type : 'POST',
+                    success : function(data){
+                        if(data.status){
+                            myEditor.setValue(data.code);
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+<h1><?= $this->escapeHtml($title); ?></h1>
+<form class="form-horizontal" id="frmGenerate">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-sm-3">
+                    <?= $this->formSelect($cboTable); ?>
+                </div>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="txtModule"
+                           placeholder="Module Name" />
+                </div>
+                <div class="col-sm-2">
+                    <?= $this->formSelect($cboGenerate); ?>
+                </div>
+                <div class="col-sm-4 text-right">
+                    <button type="button" id="btnGenerate" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        Generate
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <textarea name="txtGenerate"></textarea>
+        </div>
+    </div>
+</form>

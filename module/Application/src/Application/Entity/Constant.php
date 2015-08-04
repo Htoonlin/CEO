@@ -1,40 +1,66 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: linn
- * Date: 3/5/2015
- * Time: 12:27 PM
- */
-
 namespace Application\Entity;
 
-
 use Zend\Stdlib\ArraySerializableInterface;
-use Zend\Form\Annotation;
 
 /**
- * Class Constant
+ * System Generated Code
+ *
+ * User : Htoonlin
+ * Date : 2015-08-04 18:52:44
+ *
  * @package Application\Entity
- * @Annotation\Name("constant")
  */
+class Constant implements ArraySerializableInterface
+{
 
-class Constant implements ArraySerializableInterface{
+    protected $constantId = null;
 
-    protected $constantId;
-    public function getConstantId(){return $this->constantId;}
-    public function setConstantId($value){$this->constantId=$value;}
+    protected $name = null;
 
-    protected $name;
-    public function getName(){return $this->name;}
-    public function setName($value){$this->name=$value;}
+    protected $value = null;
 
-    protected $value;
-    public function getValue(){return $this->value;}
-    public function setValue($value){$this->value=$value;}
+    protected $groupCode = null;
 
-    protected $groupCode;
-    public function getGroupCode(){return $this->groupCode;}
-    public function setGroupCode($value){$this->groupCode=$value;}
+    public function getConstantId()
+    {
+        return $this->constantId;
+    }
+
+    public function setConstantId($value)
+    {
+        $this->constantId = $value;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($value)
+    {
+        $this->name = $value;
+    }
+
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
+    public function getGroupCode()
+    {
+        return $this->groupCode;
+    }
+
+    public function setGroupCode($value)
+    {
+        $this->groupCode = $value;
+    }
 
     public function exchangeArray(array $data)
     {
@@ -53,4 +79,6 @@ class Constant implements ArraySerializableInterface{
             'group_code' => $this->groupCode,
         );
     }
+
+
 }

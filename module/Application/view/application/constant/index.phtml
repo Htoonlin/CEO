@@ -28,16 +28,15 @@ $this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.
 <script type="text/javascript">
     $(document).ready(function(){
         $('.code-value').each(function() {
-            var $this = $(this),
-                $code = $this.html(),
-                $unescaped = $('<div/>').html($code).text();
+            var code = $(this).html(),
+                unescaped = $('<div/>').html(code).text();
 
-            $this.empty();
+            $(this).empty();
 
             var jsonEditor = CodeMirror(this, {
-                value: $unescaped,
+                value: unescaped,
                 mode: 'javascript',
-                lineNumbers: !$this.is('.inline'),
+                lineNumbers: !$(this).is('.inline'),
                 readOnly: true,
                 theme: 'mbo'
             });

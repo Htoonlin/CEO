@@ -4,11 +4,6 @@
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
   height: 300px;
-    border:1px solid #cccccc;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -o-border-radius: 5px;
   color: black;
 }
 
