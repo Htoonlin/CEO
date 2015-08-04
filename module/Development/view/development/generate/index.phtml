@@ -61,30 +61,35 @@ $this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.
     });
 </script>
 <h1><?= $this->escapeHtml($title); ?></h1>
-<form class="form-horizontal" id="frmGenerate">
+<?= $this->form()->openTag($form); ?>
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="row">
                 <div class="col-sm-3">
-                    <?= $this->formSelect($cboTable); ?>
+                    <?= $this->formSelect($form->get('tbl_name')); ?>
                 </div>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" name="txtModule"
-                           placeholder="Module Name" />
+                    <?= $this->formSelect($form->get('module')); ?>
                 </div>
                 <div class="col-sm-2">
-                    <?= $this->formSelect($cboGenerate); ?>
+                    <?= $this->formSelect($form->get('type')); ?>
                 </div>
                 <div class="col-sm-4 text-right">
-                    <button type="button" id="btnGenerate" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                        Generate
-                    </button>
+                    <div class="btn-group">
+                        <button type="button" id="btnGenerate" class="btn btn-default">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            Generate
+                        </button>
+                        <button type="submit" id="btnExport" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-save"></span>
+                            Export
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="panel-body">
-            <textarea name="txtGenerate"></textarea>
+            <?= $this->formTextArea($form->get('txtGenerate')); ?>
         </div>
     </div>
-</form>
+<?= $this->form()->closeTag(); ?>

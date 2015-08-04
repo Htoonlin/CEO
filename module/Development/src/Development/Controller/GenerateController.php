@@ -12,6 +12,7 @@ namespace Development\Controller;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Service\SundewController;
 use Development\DataAccess\GenerateDataAccess;
+use Development\Helper\GenerateHelper;
 use phpDocumentor\Reflection\DocBlock;
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlockGenerator;
@@ -31,54 +32,68 @@ class GenerateController extends SundewController
     {
         return new GenerateDataAccess($this->getDbAdapter());
     }
-    /**
-     * @return Select
-     */
+
     private function getTableList()
     {
         $dataAccess = $this->getDbMeta();
-
         $tables = array();
         foreach($dataAccess->getTableNames() as $tbl){
             $tables[$tbl] = $tbl;
         }
-
-        $cboTable = new Select('tbl_name');
-        $cboTable->setAttributes(array('class' => 'form-control'))
-            ->setValueOptions($tables)
-            ->setEmptyOption("-- Choose Table --");
-
-        return $cboTable;
+        return $tables;
     }
 
-    /**
-     * @return Select
-     */
-    private function getGenerateType()
+    private function getTypeList()
     {
         $dataAccess = new ConstantDataAccess($this->getDbAdapter());
-        $cboGenerate = new Select('type');
-        $cboGenerate->setAttribute('class', 'form-control')
-            ->setValueOptions($dataAccess->getComboByName('generate_types '))
-            ->setEmptyOption('-- Choose Type --');
-        return $cboGenerate;
+        return $dataAccess->getComboByName('generate_types');
     }
 
+    private function getModuleList()
+    {
+        $manager = $this->getServiceLocator()->get('ModuleManager');
+        $result = array();
+        foreach($manager->getLoadedModules() as $key=>$value){
+            $result[$key] = $key;
+        }
+        return $result;
+    }
 
     public function indexAction()
     {
+        $helper = new GenerateHelper();
+        $form = $helper->getForm($this->getTableList(), $this->getTypeList(), $this->getModuleList());
         $request = $this->getRequest();
 
+        if($request->isPost()){
+            $form->setData($request->getPost());
+            $toCamelCase = new UnderscoreToCamelCase();
+            $type = $this->params()->fromPost('type', '');
+            $tblName = $this->params()->fromPost('tbl_name', '');
+            $code = $this->params()->fromPost('txtGenerate', '');
+            $filename = '';
+            if($type === 'E'){
+                $filename = 'attachment; filename="' . $toCamelCase->filter(substr($tblName, 4)) . '.php"';
+            }
+
+            $response = $this->getResponse();
+            $headers = $response->getHeaders();
+            $headers->addHeaderLine('Content-Type', 'application/x-httpd-php; charset=UTF-8');
+            $headers->addHeaderLine('Content-Disposition', $filename);
+            $response->setContent($code);
+
+            return $response;
+        }
+
         return new ViewModel(array(
-            'cboTable' => $this->getTableList(),
-            'cboGenerate' => $this->getGenerateType(),
+            'form' => $form
         ));
     }
 
     public function entityAction()
     {
         $tblName = $this->params()->fromPost('tbl_name', '');
-        $module = $this->params()->fromPost('txtModule', '');
+        $module = $this->params()->fromPost('module', '');
         $module = empty($module) ? 'Application' : $module;
 
         if(empty($tblName)){
