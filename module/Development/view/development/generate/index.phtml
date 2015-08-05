@@ -43,9 +43,12 @@ $this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.
                 theme:"mbo"
             });
         myEditor.setSize("100%", "580px");
+        $('#generateLoader').loader().hide();
 
         $('button#btnGenerate').click(function(){
-            if($('select[name="type"]').val() == "E"){
+            var type = $('select[name="type"]').val();
+            if(type == "E"){
+                $('#generateLoader').loader().show();
                 $.ajax({
                     url : '<?php echo $this->url('development_generate', array('action' => 'entity')) ?>',
                     data : $('#frmGenerate').serialize(),
@@ -53,7 +56,25 @@ $this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.
                     success : function(data){
                         if(data.status){
                             myEditor.setValue(data.code);
+                        }else{
+                            alert(data.message);
                         }
+                        $('#generateLoader').loader().hide();
+                    }
+                });
+            }else if(type == "H"){
+                $('#generateLoader').loader().show();
+                $.ajax({
+                    url : '<?php echo $this->url('development_generate', array('action' => 'helper')) ?>',
+                    data : $('#frmGenerate').serialize(),
+                    type : 'POST',
+                    success : function(data){
+                        if(data.status){
+                            myEditor.setValue(data.code);
+                        }else{
+                            alert(data.message);
+                        }
+                        $('#generateLoader').loader().hide();
                     }
                 });
             }
@@ -89,6 +110,8 @@ $this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.
             </div>
         </div>
         <div class="panel-body">
+            <div class="loader" style="position:absolute;z-index:99999;color:#fff;margin-top:100px;margin-left:505px;"
+                 data-initialize="loader" id="generateLoader"></div>
             <?= $this->formTextArea($form->get('txtGenerate')); ?>
         </div>
     </div>

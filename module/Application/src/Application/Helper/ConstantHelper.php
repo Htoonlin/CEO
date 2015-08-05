@@ -8,15 +8,15 @@
 
 namespace Application\Helper;
 
+use Zend\Db\Adapter\Adapter;
 use Zend\Form\Element;
 use Zend\Form\Form;
-use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
 
 class ConstantHelper {
     protected $dbAdapter;
-    public function __construct($dbAdapter)
+    public function __construct(Adapter $dbAdapter)
     {
         $this->dbAdapter = $dbAdapter;
     }
@@ -56,7 +56,7 @@ class ConstantHelper {
         return $this->form;
     }
 
-    public function setForm($form)
+    public function setForm(Form $form)
     {
         $this->form = $form;
     }
@@ -130,7 +130,7 @@ class ConstantHelper {
         return $this->inputFilter;
     }
 
-    public function setInputFilter($filter)
+    public function setInputFilter(InputFilter $filter)
     {
         $this->inputFilter = $filter;
     }

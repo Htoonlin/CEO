@@ -18,8 +18,10 @@ use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\PropertyGenerator;
+use Zend\Db\Metadata\Object\ColumnObject;
+use Zend\Filter\Word\CamelCaseToSeparator;
 use Zend\Filter\Word\UnderscoreToCamelCase;
-use Zend\Form\Element\Select;
+use Zend\Filter\Word\UnderscoreToSeparator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -33,6 +35,9 @@ class GenerateController extends SundewController
         return new GenerateDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return array
+     */
     private function getTableList()
     {
         $dataAccess = $this->getDbMeta();
@@ -43,12 +48,18 @@ class GenerateController extends SundewController
         return $tables;
     }
 
+    /**
+     * @return array
+     */
     private function getTypeList()
     {
         $dataAccess = new ConstantDataAccess($this->getDbAdapter());
         return $dataAccess->getComboByName('generate_types');
     }
 
+    /**
+     * @return array
+     */
     private function getModuleList()
     {
         $manager = $this->getServiceLocator()->get('ModuleManager');
@@ -59,6 +70,151 @@ class GenerateController extends SundewController
         return $result;
     }
 
+    /**
+     * @return bool|JsonModel
+     */
+    private function checkValidate()
+    {
+        $tblName = $this->params()->fromPost('tbl_name', '');
+        $columns = $this->getDbMeta()->getColumnNames($tblName);
+        if(empty($tblName) || empty($columns)){
+            return new JsonModel(array(
+                'status' => false,
+                'request' => $this->params()->fromPost(),
+                'message' => 'Invalid Table',
+            ));
+        }
+
+        if(!$this->getRequest()->isPost()){
+            return new JsonModel(array(
+                'status' => false,
+                'request' => $this->params()->fromPost(),
+                'message' => 'Invalid Request',
+            ));
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $className
+     * @param $nameSpace
+     * @return ClassGenerator
+     */
+    private function initClass($className, $nameSpace)
+    {
+        $user = $this->getCurrentStaff()->getStaffName();
+        $date = date('Y-m-d H:i:s', time());
+        $class = new ClassGenerator($className);
+        $class->setDocBlock(DocBlockGenerator::fromArray(array(
+            'shortDescription' => 'System Generated Code',
+            'longDescription' => "User : {$user}\nDate : {$date}",
+            'tags' => array(
+                array('name' => 'package', 'description' => $nameSpace)
+            ),
+        )));
+        $class->setNamespaceName($nameSpace);
+
+        return $class;
+    }
+
+    const typeNum = array('int', 'tinyint', 'smallint', 'mediumint', 'bigint');
+    const typeFloat = array('decimal', 'float', 'double', 'real');
+    const typeDate = array('date', 'datetime', 'timestamp');
+    const typeString = array('char', 'varchar', 'tinytext', 'text', 'mediumtext', 'longtext');
+
+    /**
+     * @param $name
+     * @param $type
+     * @return string
+     */
+    private function createControl($name, $type, $length = 0, $isPrimary = false)
+    {
+        $isForeign = (!$isPrimary && strpos($name, 'Id') && $type == 'int');
+
+        $toCamelCase = new UnderscoreToCamelCase();
+        $var = lcfirst($toCamelCase->filter($name));
+        $toSeperator = new CamelCaseToSeparator(array(" "));
+        $label = $toSeperator->filter($toCamelCase->filter($name));
+
+        $code = '';
+        if($isPrimary){
+            $code .= "\t\${$var} = new Element\\Hidden('{$name}');\n";
+        }else if($isForeign){
+            $code .= "\t\${$var} = new Element\\Select('{$name}');\n";
+            $code .= "\t\${$var}->setAttribute('class', 'form-control');\n";
+        }else if(in_array($type, self::typeNum) || in_array($type, self::typeFloat)){
+            $code .= "\t\${$var} = new Element\\Number('{$name}');\n";
+            if(in_array($type, self::typeNum)){
+                $code .= "\t\${$var}->setAttributes(array(\n";
+                $code .= "\t\t'min' => '0',\n";
+                $code .= "\t\t'max' => '99999999999',\n";
+                $code .= "\t\t'step' => '1',\n";
+                $code .= "\t));\n";
+            }elseif(in_array($type, self::typeNum)){
+                $code .= "\t\${$var}->setAttributes(array(\n";
+                $code .= "\t\t'min' => '0',\n";
+                $code .= "\t\t'max' => '99999999999',\n";
+                $code .= "\t\t'step' => '0.5',\n";
+                $code .= "\t));\n";
+            }
+        }else if(in_array($type, self::typeDate)){
+            $code .= "\t\${$var} = new Element\\Date('{$name}');\n";
+            $code .= "\t\${$var}->setAttributes(array(\n";
+            $code .= "\t\t'allowPastDates' => true,\n";
+            $code .= "\t\t'momentConfig' => array('format' => 'YYYY-MM-DD'),\n";
+            $code .= "\t));\n";
+        }else{
+            if($length >= 500){
+                $code .= "\t" . '$' . $var . " = new Element\\Textarea('{$name}');\n";
+            }else{
+                $code .= "\t" . '$' . $var . " = new Element\\Text('{$name}');\n";
+            }
+            $code .= "\t\${$var}->setAttribute('class', 'form-control');\n";
+        }
+
+        if(!$isPrimary){
+            $code .= "\t\${$var}->setLabel('{$label}');\n";
+        }
+        $code .= "\t\$form->add(\${$var});\n";
+
+        return $code;
+    }
+
+    private function createFilter($name, $type, $isNull, $length = 0)
+    {
+        $null = $isNull ? 'false' : 'true';
+
+        $code = "\t\$filter->add(array(\n";
+        $code .= "\t\t'name' => '{$name}',\n";
+        $code .= "\t\t'required' => {$null},\n";
+
+        if(in_array($type, self::typeNum)){
+            $code .= "\t\t'filters' => array(array('name' => 'Int')),\n";
+        }else if(in_array($type, self::typeFloat)){
+            $code .= "\t\t'filters' => array(array('name' => 'Float')),\n";
+        }else if(in_array($type, self::typeString)){
+            $code .= "\t\t'filters' => array(\n";
+            $code .= "\t\t\tarray('name' => 'StripTags'),\n";
+            $code .= "\t\t\tarray('name' => 'StringTirm'),\n";
+            $code .= "\t\t),\n";
+            $code .= "\t\t'validators' => array(\n";
+            $code .= "\t\t\tarray(\n";
+            $code .= "\t\t\t\t'name' => 'StringLength',\n";
+            $code .= "\t\t\t\t'max' => {$length},\n";
+            $code .= "\t\t\t\t'min' => 1,\n";
+            $code .= "\t\t\t\t'encoding' => 'UTF-8',\n";
+            $code .= "\t\t\t),\n";
+            $code .= "\t\t),\n";
+        }
+
+        $code .= "\t));";
+        return $code;
+    }
+
+    /**
+     * @return \Zend\Stdlib\ResponseInterface|ViewModel
+     */
     public function indexAction()
     {
         $helper = new GenerateHelper();
@@ -70,10 +226,18 @@ class GenerateController extends SundewController
             $toCamelCase = new UnderscoreToCamelCase();
             $type = $this->params()->fromPost('type', '');
             $tblName = $this->params()->fromPost('tbl_name', '');
+            $module = $this->params()->fromPost('module', '');
             $code = $this->params()->fromPost('txtGenerate', '');
             $filename = '';
+            if($module == 'Application'){
+                $name = $toCamelCase->filter(substr($tblName, 4));
+            }else{
+                $name = $toCamelCase->filter(explode('_', $tblName, 3)[2]);
+            }
             if($type === 'E'){
-                $filename = 'attachment; filename="' . $toCamelCase->filter(substr($tblName, 4)) . '.php"';
+                $filename = 'attachment; filename="' . $name . '.php"';
+            }else if($type === 'H'){
+                $filename = 'attachment; filename="' . $name . 'Helper.php"';
             }
 
             $response = $this->getResponse();
@@ -90,45 +254,100 @@ class GenerateController extends SundewController
         ));
     }
 
-    public function entityAction()
+    public function helperAction()
     {
+        $isOK = $this->checkValidate();
+        if($isOK !== true){
+            return $isOK;
+        }
+
         $tblName = $this->params()->fromPost('tbl_name', '');
         $module = $this->params()->fromPost('module', '');
         $module = empty($module) ? 'Application' : $module;
 
-        if(empty($tblName)){
-            return new JsonModel(array(
-                'status' => false,
-                'request' => $this->params()->fromPost(),
-                'message' => 'Invalid Table',
-            ));
+        $toCamelCase = new UnderscoreToCamelCase();
+        $className = $toCamelCase->filter(substr($tblName, 4)) . 'Helper';
+        $nameSpace = $module . '\\Helper';
+
+        $class = $this->initClass($className, $nameSpace);
+        $class->addUse('Zend\Form\Element');
+        $class->addUse('Zend\Form\Form');
+        $class->addUse('Zend\InputFilter\InputFilter');
+
+        $class->addProperties(array(
+            array('dbAdapter', null, PropertyGenerator::FLAG_PROTECTED),
+            array('form', null, PropertyGenerator::FLAG_PROTECTED),
+            array('inputFilter', null, PropertyGenerator::FLAG_PROTECTED)
+        ));
+
+        $getForm = new MethodGenerator('getForm');
+        $getFormCode = 'if(!$this->form){' . "\n\t" . '$form = new Form();' . PHP_EOL;
+
+        $getFilter = new MethodGenerator('getInputFilter');
+        $getFilterCode = 'if(!$this->inputFilter){' . "\n\t" . '$filter = new InputFilter();' . PHP_EOL;
+
+        $columns = $this->getDbMeta()->getColumns($tblName);
+
+        foreach($columns as $col)
+        {
+            $name = $col->getName();
+            $type = $col->getDataType();
+            $maxLength = $col->getCharacterMaximumLength();
+            $primary = $this->getDbMeta()->isPrimary($tblName, $name);
+            $isNull = $col->getIsNullable();
+            $getFormCode .= $this->createControl($name, $type, $maxLength, $primary) . PHP_EOL;
+            $getFilterCode .= $this->createFilter($name, $type, $isNull, $maxLength) . PHP_EOL;
         }
 
-        if(!$this->getRequest()->isPost()){
-            return new JsonModel(array(
-                'status' => false,
-                'request' => $this->params()->fromPost(),
-                'message' => 'Invalid Request',
-            ));
+        $getFormCode .= "\t" . '$this->form = $form;';
+        $getFormCode .= "\n}\n" . 'return $this->form;';
+        $getForm->setBody($getFormCode);
+
+        $getFilterCode .= "\t" . '$this->inputFilter = $filter;';
+        $getFilterCode .= "\n}\n" . 'return $this->inputFilter;';
+        $getFilter->setBody($getFilterCode);
+
+        $setForm = new MethodGenerator('setForm');
+        $setForm->setParameter(array('type' => 'Form', 'name' => 'form'));
+        $setForm->setBody('$this->form = $form;');
+
+        $setFilter = new MethodGenerator('setInputFilter');
+        $setFilter->setParameter(array('type' => 'InputFilter', 'name' => 'filter'));
+        $setFilter->setBody('$this->inputFilter = $filter;');
+
+
+        $class->addMethods(array($getForm, $setForm, $getFilter, $setFilter));
+        $code = '<?php' . PHP_EOL . $class->generate();
+        return new JsonModel(array(
+            'status' => true,
+            'code' => $code,
+        ));
+    }
+
+
+    /**
+     * Entity Generator
+     * @return JsonModel
+     */
+    public function entityAction()
+    {
+        $isOK = $this->checkValidate();
+        if($isOK !== true){
+            return $isOK;
         }
+
+        $tblName = $this->params()->fromPost('tbl_name', '');
+        $module = $this->params()->fromPost('module', '');
+        $module = empty($module) ? 'Application' : $module;
 
         $toCamelCase = new UnderscoreToCamelCase();
         $className = $toCamelCase->filter(substr($tblName, 4));
         $nameSpace = $module . '\\Entity';
 
-        $user = $this->getCurrentStaff()->getStaffName();
-        $date = date('Y-m-d H:i:s', time());
-        $class = new ClassGenerator($className);
-        $class->setDocBlock(DocBlockGenerator::fromArray(array(
-            'shortDescription' => 'System Generated Code',
-            'longDescription' => "User : {$user}\nDate : {$date}",
-            'tags' => array(
-                array('name' => 'package', 'description' => $nameSpace)
-            ),
-        )));
+        $class = $this->initClass($className, $nameSpace);
+
         $class->addUse('Zend\Stdlib\ArraySerializableInterface');
         $class->setImplementedInterfaces(array('ArraySerializableInterface'));
-        $class->setNamespaceName($nameSpace);
 
         $columns = $this->getDbMeta()->getColumnNames($tblName);
         $exchangeBody = '';

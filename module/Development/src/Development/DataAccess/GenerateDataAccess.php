@@ -20,4 +20,17 @@ class GenerateDataAccess extends Metadata
     {
         parent::__construct($adapter);
     }
+
+    public function isPrimary($tableName, $columnName)
+    {
+        $constraints = $this->getConstraints($tableName);
+        $result = false;
+        foreach($constraints as $key){
+            if($key->isPrimaryKey()){
+                $result = in_array($columnName, $key->getColumns());
+            }
+            if($result) break;
+        }
+        return $result;
+    }
 }
