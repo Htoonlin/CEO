@@ -45,12 +45,34 @@ class AuthController extends SundewController
     /**
      * @return array|object
      */
-    public function getSessionStorage()
+    private function getSessionStorage()
     {
         if(!$this->storage){
             $this->storage = $this->getServiceLocator()->get('Sundew\AuthStorage');
         }
         return $this->storage;
+    }
+
+    const CAPTCHA_DIR = './data/captcha/';
+
+    public function captchaAction()
+    {
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'image/png');
+
+        $captcha = $this->params()->fromRoute('id', false);
+        if($captcha){
+            $image = self::CAPTCHA_DIR . $captcha;
+            if(file_exists($image) !== false){
+                $imageContent = @file_get_contents($image);
+                $response->setStatusCode(200);
+                $response->setContent($imageContent);
+                if(file_exists($image) == true){
+                    unlink($image);
+                }
+            }
+        }
+        return $response;
     }
 
     /**
@@ -63,7 +85,8 @@ class AuthController extends SundewController
         }
 
         $helper = new AuthHelper();
-        $form = $helper->getForm();
+        $url = $this->getRequest()->getBaseUrl().'/auth/captcha/';
+        $form = $helper->getForm($url, self::CAPTCHA_DIR);
         $request = $this->getRequest();
         $message = "";
 
@@ -75,10 +98,8 @@ class AuthController extends SundewController
             {
                 $user = $request->getPost('username');
                 $pass = $request->getPost('password');
-
                 $authAdapter = $this->getAuthService()->getAdapter();
                 $authAdapter->setIdentity($user)->setCredential($pass);
-
                 $result = $authAdapter->authenticate();
                 if($result->isValid()){
                     if($request->getPost('remember') == 1){

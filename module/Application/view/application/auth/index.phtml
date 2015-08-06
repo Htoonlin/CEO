@@ -13,6 +13,9 @@ $title = 'Welcome!';
 $this->headTitle($title);
 $user_error = $form->getMessages('username');
 $password_error = $form->getMessages('password');
+if(empty($message) && !empty($form->getMessages('isHuman'))){
+    $message = $form->getMessages('isHuman')['badCaptcha'];
+}
 ?>
 <script type="text/javascript">
     $('document').ready(function(){
@@ -56,6 +59,11 @@ $password_error = $form->getMessages('password');
             </label>
             <div class="col-sm-9">
                 <?php echo $this->formPassword($form->get('password')); ?>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <?php echo $this->formCaptcha($form->get('isHuman')); ?>
             </div>
         </div>
         <div class="form-group">
