@@ -17,10 +17,12 @@ use Zend\InputFilter\InputFilter;
 class AuthHelper
 {
     protected $form;
-    public function getForm($url, $captchaPath)
+    public function getForm($hasCaptcha, $url = '', $captchaPath = '')
     {
         if(!$this->form)
         {
+            $form = new Form();
+
             $txtUser = new Element\Text('username');
             $txtUser->setLabel('User Name')
                 ->setAttribute('class', 'form-control')
@@ -35,25 +37,26 @@ class AuthHelper
             $remember->setLabel('Save authentication?')
                 ->setAttribute('class', 'form-control');
 
-            $captchaImage = new Image();
-            $captchaImage->setFont('./data/font/CAMBRIA.TTC')
-                ->setWidth(200)
-                ->setHeight(60)
-                ->setDotNoiseLevel(40)
-                ->setLineNoiseLevel(4)
-                ->setExpiration(90);
-            $captchaImage->setImgUrl($url);
-            $captchaImage->setImgDir($captchaPath);
-            $captcha = new Element\Captcha('isHuman');
-            $captcha->setCaptcha($captchaImage)
-                ->setAttributes(array('class' => 'form-control'));
+            if($hasCaptcha){
+                $captchaImage = new Image();
+                $captchaImage->setFont('./data/font/CAMBRIA.TTC')
+                    ->setWidth(200)
+                    ->setHeight(60)
+                    ->setDotNoiseLevel(40)
+                    ->setLineNoiseLevel(4)
+                    ->setExpiration(90);
+                $captchaImage->setImgUrl($url);
+                $captchaImage->setImgDir($captchaPath);
+                $captcha = new Element\Captcha('isHuman');
+                $captcha->setCaptcha($captchaImage)
+                    ->setAttributes(array('class' => 'form-control'));
+                $form->add($captcha);
+            }
 
-            $form = new Form();
             $form->setAttribute('class', 'form-horizontal');
             $form->add($txtUser);
             $form->add($password);
             $form->add($remember);
-            $form->add($captcha);
 
             $this->form = $form;
         }

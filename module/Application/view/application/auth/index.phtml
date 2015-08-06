@@ -13,9 +13,6 @@ $title = 'Welcome!';
 $this->headTitle($title);
 $user_error = $form->getMessages('username');
 $password_error = $form->getMessages('password');
-if(empty($message) && !empty($form->getMessages('isHuman'))){
-    $message = $form->getMessages('isHuman')['badCaptcha'];
-}
 ?>
 <script type="text/javascript">
     $('document').ready(function(){
@@ -61,11 +58,13 @@ if(empty($message) && !empty($form->getMessages('isHuman'))){
                 <?php echo $this->formPassword($form->get('password')); ?>
             </div>
         </div>
+        <?php if($hasCaptcha) : ?>
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
                 <?php echo $this->formCaptcha($form->get('isHuman')); ?>
             </div>
         </div>
+        <?php endif; ?>
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
                 <button type="submit" class="btn btn-block btn-success">

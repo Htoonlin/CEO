@@ -7,6 +7,7 @@ use Application\DataAccess\UserRoleDataAccess;
 use Application\Entity\User;
 use Application\Helper\AuthHelper;
 use Application\Service\SundewController;
+use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
 
 class AuthController extends SundewController
@@ -40,6 +41,19 @@ class AuthController extends SundewController
         return new UserDataAccess($this->getDbAdapter());
     }
 
+    const SESSION_NS = 'ceo_auth_session';
+
+    /**
+     * @param int $increment
+     * @return mixed
+     */
+    private function sessionCount($increment = 0)
+    {
+        $auth = new Container(self::SESSION_NS);
+        $auth->failed = $auth->failed + $increment;
+        return $auth->failed;
+    }
+
     private $storage;
 
     /**
@@ -55,6 +69,9 @@ class AuthController extends SundewController
 
     const CAPTCHA_DIR = './data/captcha/';
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function captchaAction()
     {
         $response = $this->getResponse();
@@ -85,8 +102,19 @@ class AuthController extends SundewController
         }
 
         $helper = new AuthHelper();
-        $url = $this->getRequest()->getBaseUrl().'/auth/captcha/';
-        $form = $helper->getForm($url, self::CAPTCHA_DIR);
+        if($this->sessionCount() == 0){
+            $this->sessionCount(1);
+        }
+        $hasCaptcha = ($this->sessionCount() >= 3);
+
+        if($hasCaptcha){
+            $plugin = $this->plugin('url');
+            $url = $plugin->fromRoute('auth', array('action' => 'captcha'));
+            $form = $helper->getForm($hasCaptcha, $url, self::CAPTCHA_DIR);
+        }else{
+            $form = $helper->getForm($hasCaptcha);
+        }
+
         $request = $this->getRequest();
         $message = "";
 
@@ -120,10 +148,11 @@ class AuthController extends SundewController
                     }
                     $authUser->roles = $userRoles;
                     $this->getAuthService()->getStorage()->write($authUser);
+                    $this->sessionCount(-$this->sessionCount());
                     return $this->redirect()->toRoute('home');
-                }else{
-                    $message = "Invalid user/password";
                 }
+                $message = "Invalid user/password";
+                $this->sessionCount(1);
             }
         }
 
@@ -132,6 +161,7 @@ class AuthController extends SundewController
         return new ViewModel(array(
             'form' => $form,
             'message' => $message,
+            'hasCaptcha' => $hasCaptcha,
         ));
     }
 
