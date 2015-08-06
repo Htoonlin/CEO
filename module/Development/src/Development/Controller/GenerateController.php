@@ -118,10 +118,10 @@ class GenerateController extends SundewController
         return $class;
     }
 
-    const typeNum = array('int', 'tinyint', 'smallint', 'mediumint', 'bigint');
-    const typeFloat = array('decimal', 'float', 'double', 'real');
-    const typeDate = array('date', 'datetime', 'timestamp');
-    const typeString = array('char', 'varchar', 'tinytext', 'text', 'mediumtext', 'longtext');
+    protected $typeNum = array('int', 'tinyint', 'smallint', 'mediumint', 'bigint');
+    protected $typeFloat = array('decimal', 'float', 'double', 'real');
+    protected $typeDate = array('date', 'datetime', 'timestamp');
+    protected $typeString = array('char', 'varchar', 'tinytext', 'text', 'mediumtext', 'longtext');
 
     /**
      * @param $name
@@ -143,22 +143,22 @@ class GenerateController extends SundewController
         }else if($isForeign){
             $code .= "\t\${$var} = new Element\\Select('{$name}');\n";
             $code .= "\t\${$var}->setAttribute('class', 'form-control');\n";
-        }else if(in_array($type, self::typeNum) || in_array($type, self::typeFloat)){
+        }else if(in_array($type, $this->typeNum) || in_array($type, $this->typeFloat)){
             $code .= "\t\${$var} = new Element\\Number('{$name}');\n";
-            if(in_array($type, self::typeNum)){
+            if(in_array($type, $this->typeNum)){
                 $code .= "\t\${$var}->setAttributes(array(\n";
                 $code .= "\t\t'min' => '0',\n";
                 $code .= "\t\t'max' => '99999999999',\n";
                 $code .= "\t\t'step' => '1',\n";
                 $code .= "\t));\n";
-            }elseif(in_array($type, self::typeNum)){
+            }elseif(in_array($type, $this->typeNum)){
                 $code .= "\t\${$var}->setAttributes(array(\n";
                 $code .= "\t\t'min' => '0',\n";
                 $code .= "\t\t'max' => '99999999999',\n";
                 $code .= "\t\t'step' => '0.5',\n";
                 $code .= "\t));\n";
             }
-        }else if(in_array($type, self::typeDate)){
+        }else if(in_array($type, $this->typeDate)){
             $code .= "\t\${$var} = new Element\\Date('{$name}');\n";
             $code .= "\t\${$var}->setAttributes(array(\n";
             $code .= "\t\t'allowPastDates' => true,\n";
@@ -189,11 +189,11 @@ class GenerateController extends SundewController
         $code .= "\t\t'name' => '{$name}',\n";
         $code .= "\t\t'required' => {$null},\n";
 
-        if(in_array($type, self::typeNum)){
+        if(in_array($type, $this->typeNum)){
             $code .= "\t\t'filters' => array(array('name' => 'Int')),\n";
-        }else if(in_array($type, self::typeFloat)){
+        }else if(in_array($type, $this->typeFloat)){
             $code .= "\t\t'filters' => array(array('name' => 'Float')),\n";
-        }else if(in_array($type, self::typeString)){
+        }else if(in_array($type, $this->typeString)){
             $code .= "\t\t'filters' => array(\n";
             $code .= "\t\t\tarray('name' => 'StripTags'),\n";
             $code .= "\t\t\tarray('name' => 'StringTirm'),\n";
