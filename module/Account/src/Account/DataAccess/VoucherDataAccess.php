@@ -10,6 +10,7 @@ namespace Account\DataAccess;
 
 use Account\Entity\Closing;
 use Account\Entity\Voucher;
+use Application\DataAccess\ConstantDataAccess;
 use Application\Service\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
@@ -107,26 +108,32 @@ class VoucherDataAccess extends SundewTableGateway
     /**
      * @param $fromDate
      * @param $toDate
-     * @param bool $paginated
+     * @param int $currency
+     * @param bool|false $paginated
      * @param string $filter
      * @param string $orderBy
      * @param string $order
+     * @param array $skipTypes
      * @return \Zend\Db\ResultSet\ResultSet|Paginator
      */
-    public function getVouchersByDate($fromDate, $toDate, $currency, $paginated = false, $filter='',$orderBy='voucherNo',$order='ASC')
+    public function getVouchersByDate($fromDate, $toDate, $currency = 0, $skipTypes = array(),
+                                      $paginated = false, $filter='', $orderBy='voucherNo',$order='ASC')
     {
         if($paginated)
         {
             $select = new Select($this->table);
-
             $where = new Where();
             $where->in('status', array('A', 'C', 'F'))
-                ->AND->equalTo('currencyId', $currency)
                 ->AND->between('approvedDate', $fromDate, $toDate)
                 ->AND->literal("concat_ws(' ',requester, description, voucherNo, accountType, amount, voucherDate) LIKE ?", '%' . $filter . '%');
+            if(!empty($skipTypes)){
+                $where->notIn('accountTypeId', $skipTypes);
+            }
+            if($currency > 0){
+                $where->equalTo('currencyId', $currency);
+            }
             $select->where($where);
             $select->order($orderBy . ' ' . $order);
-
             return $this->paginateWith($select);
         }
 
@@ -152,7 +159,7 @@ class VoucherDataAccess extends SundewTableGateway
                 ->AND->notIn('accountTypeId', $skipTypes);
 
             $select->where($where)->columns(array(
-                'date' => new Expression("DATE_FORMAT(voucherDate, '%Y-%m')"),
+                'date' => new Expression("DATE_FORMAT(approvedDate, '%Y-%m')"),
                 'type' => 'type',
                 'amount' => new Expression('SUM(amount * rate)')))
                 ->group(array('type', 'date'))->order('date');

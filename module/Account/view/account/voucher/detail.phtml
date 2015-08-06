@@ -95,7 +95,7 @@ $this->headTitle($title);
             </div>
             <div class="col-sm-offset-3 col-sm-5">
                 <p class="text-right">
-                    <?php if(strpos($redirect, 'voucher') > 0): ?>
+                    <?php if($isApprove): ?>
                     <a href="<?php echo $this->url('account_voucher', array('action' => 'approve', 'voucher' => $voucher->voucherNo)); ?>"
                        class="btn btn-primary">
                         <span class="glyphicon glyphicon-ok"></span>

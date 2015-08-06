@@ -15,6 +15,7 @@ use Account\Entity\Voucher;
 use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use HumanResource\DataAccess\StaffDataAccess;
+use Zend\Http\Request;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -59,6 +60,18 @@ class VoucherController extends SundewController
         return new PayableDataAccess($this->getDbAdapter(), $this->staffId);
     }
 
+    private function prevController($uri)
+    {
+        $request = new Request();
+        $request->setUri($uri);
+        $router = $this->serviceLocator->get('Router');
+        $routeMatch = $router->match($request);
+        if($routeMatch){
+            return $routeMatch->getParam('controller');
+        }
+        return '';
+    }
+
     /**
      * @return ViewModel
      */
@@ -89,10 +102,20 @@ class VoucherController extends SundewController
     {
         $voucherNo = $this->params()->fromRoute('voucher','');
         $voucher = $this->voucherTable()->getVoucher($voucherNo);
+        $isApprove = false;
 
-        $backPath = $this->getRequest()->getHeader('Referer')->getUri();
+        $referer = $this->getRequest()->getHeader('Referer');
+        if($referer){
+            $backPath = $this->getRequest()->getHeader('Referer')->getUri();
+            if($this->params('controller') == $this->prevController($backPath)){
+                $isApprove = true;
+            }
+        }else{
+            $plugin = $this->plugin('url');
+            $backPath = $plugin->fromRoute('account_voucher');
+        }
 
-        if($voucher == null){
+        if($voucher == null || $backPath === false){
             $this->flashMessenger()->addWarningMessage('Invalid  voucher.');
             return $this->redirect()->toRoute('account_voucher');
         }
@@ -100,6 +123,7 @@ class VoucherController extends SundewController
         return new ViewModel(array(
             'voucher'=>$voucher,
             'redirect' => $backPath,
+            'isApprove' => $isApprove,
         ));
     }
 

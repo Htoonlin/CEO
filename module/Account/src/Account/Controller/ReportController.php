@@ -11,6 +11,7 @@ namespace Account\Controller;
 use Account\DataAccess\VoucherDataAccess;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Service\SundewController;
+use Application\Service\SundewExporting;
 use Zend\View\Model\ViewModel;
 use Zend\Form\Element;
 
@@ -77,5 +78,67 @@ class ReportController extends SundewController
             'payable' => $payable,
             'receivable' => $receivable,
         ));
+    }
+
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     * @throws \Exception
+     */
+    public function detailAction()
+    {
+        $year = $this->params()->fromRoute('year', date('Y'));
+        $month = $this->params()->fromRoute('month', date('m'));
+        $page=(int)$this->params()->fromQuery('page',1);
+        $filter=$this->params()->fromQuery('filter', '');
+        $sort=$this->params()->fromQuery('sort','voucherNo');
+        $sortBy=$this->params()->fromQuery('by','asc');
+        $pageSize = $this->params()->fromQuery('size', 10);
+
+        $fromDate = $year . '-' . $month . '-01';
+        $toDate = date('Y-m-t', strtotime($fromDate));
+
+        $paginator = $this->voucherTable()->getVouchersByDate($fromDate, $toDate, 0,
+            $this->getSkipTypes(), true, $filter, $sort, $sortBy);
+
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setItemCountPerPage($pageSize);
+
+        return new ViewModel(array(
+            'date' => $fromDate . ' to ' . $toDate,
+            'year' => $year,
+            'month' => $month,
+            'paginator'=>$paginator,
+            'sort'=>$sort,
+            'sortBy'=>$sortBy,
+            'filter' => $filter
+        ));
+    }
+
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function exportAction()
+    {
+        $year = $this->params()->fromRoute('year', date('Y'));
+        $month = $this->params()->fromRoute('month', date('m'));
+
+        $fromDate = $year . '-' . $month . '-01';
+        $toDate = date('Y-m-t', strtotime($fromDate));
+
+        $vouchers = $this->voucherTable()->getVouchersByDate($fromDate, $toDate, 0,
+            $this->getSkipTypes(), false);
+
+        $response = $this->getResponse();
+
+        $filename = 'attachment; filename="Vouchers(' . $year . '-' . $month . ')-' . date('YmdHis') . '.xlsx"';
+        $export = new SundewExporting($vouchers);
+        $excel = $export->getExcel();
+
+        $headers = $response->getHeaders();
+        $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');
+        $headers->addHeaderLine('Content-Disposition', $filename);
+        $response->setContent($excel);
+
+        return $response;
     }
 }

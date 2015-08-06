@@ -1852,20 +1852,20 @@
         },
         {
             "name": "zendframework/zend-feed",
-            "version": "2.5.1",
+            "version": "2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-feed.git",
-                "reference": "c5528e2fd632a5dc09b5487fabca125e4b88d9c0"
+                "reference": "0661345b82b51428619e05d3aadd3de65b57fa54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-feed/zipball/c5528e2fd632a5dc09b5487fabca125e4b88d9c0",
-                "reference": "c5528e2fd632a5dc09b5487fabca125e4b88d9c0",
+                "url": "https://api.github.com/repos/zendframework/zend-feed/zipball/0661345b82b51428619e05d3aadd3de65b57fa54",
+                "reference": "0661345b82b51428619e05d3aadd3de65b57fa54",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.23",
+                "php": ">=5.5",
                 "zendframework/zend-escaper": "~2.5",
                 "zendframework/zend-stdlib": "~2.5"
             },
@@ -1907,7 +1907,7 @@
                 "feed",
                 "zf2"
             ],
-            "time": "2015-06-03 15:32:01"
+            "time": "2015-08-04 21:39:18"
         },
         {
             "name": "zendframework/zend-file",
@@ -2095,20 +2095,20 @@
         },
         {
             "name": "zendframework/zend-http",
-            "version": "2.5.1",
+            "version": "2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-http.git",
-                "reference": "6cc6dee9a27fc07e0167d8779ab2258747108ed5"
+                "reference": "abe2e56464cd467214489672f103669957047548"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-http/zipball/6cc6dee9a27fc07e0167d8779ab2258747108ed5",
-                "reference": "6cc6dee9a27fc07e0167d8779ab2258747108ed5",
+                "url": "https://api.github.com/repos/zendframework/zend-http/zipball/abe2e56464cd467214489672f103669957047548",
+                "reference": "abe2e56464cd467214489672f103669957047548",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.23",
+                "php": ">=5.5",
                 "zendframework/zend-loader": "~2.5",
                 "zendframework/zend-stdlib": "~2.5",
                 "zendframework/zend-uri": "~2.5",
@@ -2141,7 +2141,7 @@
                 "http",
                 "zf2"
             ],
-            "time": "2015-06-03 15:32:01"
+            "time": "2015-08-05 15:47:13"
         },
         {
             "name": "zendframework/zend-i18n",
@@ -2295,20 +2295,20 @@
         },
         {
             "name": "zendframework/zend-json",
-            "version": "2.5.1",
+            "version": "2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-json.git",
-                "reference": "c74eaf17d2dd37dc1e964be8dfde05706a821ebc"
+                "reference": "4a3add6505fd8618728239d8ce35f182dfbdac02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-json/zipball/c74eaf17d2dd37dc1e964be8dfde05706a821ebc",
-                "reference": "c74eaf17d2dd37dc1e964be8dfde05706a821ebc",
+                "url": "https://api.github.com/repos/zendframework/zend-json/zipball/4a3add6505fd8618728239d8ce35f182dfbdac02",
+                "reference": "4a3add6505fd8618728239d8ce35f182dfbdac02",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.23",
+                "php": ">=5.5",
                 "zendframework/zend-stdlib": "~2.5"
             },
             "require-dev": {
@@ -2345,7 +2345,7 @@
                 "json",
                 "zf2"
             ],
-            "time": "2015-06-03 15:32:01"
+            "time": "2015-08-05 14:45:17"
         },
         {
             "name": "zendframework/zend-loader",

@@ -220,7 +220,7 @@ class BalanceController extends SundewController
         $fromDate = $closing->getOpeningDate();
         $toDate = (is_null($closing->getClosingDate())) ? date('Y-m-d 23:59:59', time()) : $closing->getClosingDate();
 
-        $paginator = $this->voucherTable()->getVouchersByDate($fromDate, $toDate, $currency,
+        $paginator = $this->voucherTable()->getVouchersByDate($fromDate, $toDate, $currency, array(),
             true, $filter, $sort, $sortBy);
 
         $paginator->setCurrentPageNumber($page);
@@ -253,7 +253,7 @@ class BalanceController extends SundewController
             $currency = $closing->getCurrencyId();
             $fromDate = $closing->getOpeningDate();
             $toDate = (is_null($closing->getClosingDate())) ? date('Y-m-d H:i:s', time()) : $closing->getClosingDate();
-            $results = $this->voucherTable()->getVouchersByDate($fromDate, $toDate, $currency, false);
+            $results = $this->voucherTable()->getVouchersByDate($fromDate, $toDate, $currency, array(), false);
             $filename = 'attachment; filename="BalanceReport-' . date('YmdHis') . '.xlsx"';
         }
 

@@ -2,17 +2,16 @@
 /**
  * Created by PhpStorm.
  * User: NyanTun
- * Date: 5/25/2015
- * Time: 4:41 PM
+ * Date: 8/6/2015
+ * Time: 4:51 PM
  * Zend Code Completion
  * @var $this \Zend\View\Renderer\PhpRenderer 
  */
-
-$title="Balance sheet (Detail)";
+$title= 'Balance Sheet (' . $date . ')';
 $this->headTitle($title);
-$main_url = $this->url('account_balance', array('action' => 'detail', 'id' => $id));
+$main_url = $this->url('account_report', array('action' => 'detail', 'year' => $year, 'month' => $month));
 ?>
-<h1><?php echo $title;?></h1>
+<h2><?php echo $title;?></h2>
 <script type="text/javascript">
     $(document).ready(function(){
         $("[data-toggle=popover]").popover();
@@ -27,11 +26,12 @@ $main_url = $this->url('account_balance', array('action' => 'detail', 'id' => $i
             <div class="col-md-4 col-md-offset-5">
                 <div class="text-right">
                     <div class="btn-group">
-                        <a href="<?php echo $this->url('account_balance');?>" class="btn btn-primary">
+                        <a href="<?php echo $this->url('account_report');?>" class="btn btn-primary">
                             <span class="glyphicon glyphicon-th-list"></span>
                             Back to list
                         </a>
-                        <a href="<?php echo $this->url('account_balance',array('action'=>'export', 'id' => $id));?>" class="btn btn-default">
+                        <a href="<?php echo $this->url('account_report',array('action'=>'export', 'year' => $year, 'month' => $month));?>"
+                           class="btn btn-default">
                             <span class="glyphicon glyphicon-download"></span>
                             Export
                         </a>
@@ -46,24 +46,19 @@ $main_url = $this->url('account_balance', array('action' => 'detail', 'id' => $i
                 <thead>
                 <tr>
                     <th width="150px">
-                        <?php echo $this->gridHeaderCell('Voucher No','voucherNo',
-                            $main_url);?>
+                        <?php echo $this->gridHeaderCell('Voucher No','voucherNo', $main_url);?>
                     </th>
                     <th width="100px">
-                        <?php echo $this->gridHeaderCell('Date','approvedDate',
-                            $main_url);?>
+                        <?php echo $this->gridHeaderCell('Date','approvedDate', $main_url);?>
                     </th>
                     <th width="200px">
-                        <?php echo $this->gridHeaderCell('Requester','requester',
-                            $main_url);?>
+                        <?php echo $this->gridHeaderCell('Requester','requester', $main_url);?>
                     </th>
                     <th>
-                        <?php echo $this->gridHeaderCell('Description','description',
-                            $main_url);?>
+                        <?php echo $this->gridHeaderCell('Description','description', $main_url);?>
                     </th>
                     <th width="180px">
-                        <?php echo $this->gridHeaderCell('Amount','amount',
-                            $main_url);?>
+                        <?php echo $this->gridHeaderCell('Amount','amount', $main_url);?>
                     </th>
                     <th width="80px">
                         Status
@@ -131,4 +126,5 @@ $main_url = $this->url('account_balance', array('action' => 'detail', 'id' => $i
         </div>
     </div>
 </div>
+
 

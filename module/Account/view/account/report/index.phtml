@@ -19,77 +19,48 @@ $this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
             datasets: [
                 {
                     label: "Income",
-                    fillColor: "#449977",
+                    fillColor: "#339966",
                     strokeColor: "#449977",
-                    pointColor: "#33BB99",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "#0A9",
+                    highlightFill: "#449977",
                     data: <?= json_encode($receivable); ?>
                 },
                 {
                     label: "Expense",
-                    fillColor: "#FF3333",
+                    fillColor: "rgba(255,50,50,1.0)",
                     strokeColor: "#FF3333",
-                    pointColor: "#FF9999",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "#FA0",
+                    highlightFill: "#FF4444",
                     data: <?= json_encode($payable); ?>
                 }
             ]
         };
 
         var options = {
-            ///Boolean - Whether grid lines are shown across the chart
             scaleShowGridLines : true,
-
-            //String - Colour of the grid lines
-            scaleGridLineColor : "#DDD",
-
-            //Number - Width of the grid lines
+            scaleGridLineColor : "#e1e1e1",
             scaleGridLineWidth : 1,
-
-            //Boolean - Whether to show horizontal lines (except X axis)
             scaleShowHorizontalLines: true,
-
-            //Boolean - Whether to show vertical lines (except Y axis)
             scaleShowVerticalLines: true,
-
-            //Boolean - Whether the line is curved between points
-            bezierCurve : false,
-
-            //Number - Tension of the bezier curve between points
-            bezierCurveTension : 0.4,
-
-            //Boolean - Whether to show a dot for each point
-            pointDot : true,
-
-            //Number - Radius of each point dot in pixels
-            pointDotRadius : 4,
-
-            //Number - Pixel width of point dot stroke
-            pointDotStrokeWidth : 1,
-
-            //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-            pointHitDetectionRadius : 20,
-
-            //Boolean - Whether to show a stroke for datasets
-            datasetStroke : true,
-
-            //Number - Pixel width of dataset stroke
-            datasetStrokeWidth : 2,
-
-            //Boolean - Whether to fill the dataset with a colour
-            datasetFill : true,
-
-            //String - A legend template
-            legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-
+            barShowStroke : true,
+            barStrokeWidth : 1,
+            barValueSpacing: 5,
+            barDatasetSpacing:2,
+            legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
         };
 
         var ctx = $('#cashFlow').get(0).getContext("2d");
         var cashFlow = new Chart(ctx).Bar(data, options);
+        $("#cashFlow").click(function(evt){
+            var activeBars = cashFlow.getBarsAtEvent(evt);
+            if(activeBars.length > 0){
+                var label = activeBars[0].label;
+
+                if(label.length != 7) return;
+
+                var year = label.split("-")[0];
+                var month = label.split("-")[1];
+                window.location.href = "<?php echo $this->url('account_report', array('action' => 'detail')) ?>/" + year + "/" + month;
+            }
+        });
     });
 </script>
 <div class="panel panel-default">
