@@ -160,11 +160,16 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                             if(!$routeData){
                                 $userRoleDA = new UserRoleDataAccess($dbAdapter);
                                 $roles = array();
-                                foreach($userRoleDA->grantRoles($userId) as $role){
+                                $userRoles = $userRoleDA->grantRoles($userId);
+                                if(!$userRoles) return array();
+                                foreach($userRoles as $role){
                                     array_push($roles,(int)$role->roleId);
                                 }
-                                $routeData = $routeDataAccess->getRouteData($roles)->toArray();
-                                $routeDataAccess->getCache()->setItem($cache_ns, $routeData);
+                                $routeData = $routeDataAccess->getRouteData($roles);
+                                if(!$routeData){
+                                    return array();
+                                }
+                                $routeDataAccess->getCache()->setItem($cache_ns, $routeData->toArray());
                             }
 
                             return $routeData;

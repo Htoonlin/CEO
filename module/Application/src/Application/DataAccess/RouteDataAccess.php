@@ -42,7 +42,11 @@ class RouteDataAccess  extends SundewTableGateway
     {
         $results = $this->select(function(Select $select) use($roles){
             $where = new Where();
-            $where->in('rp.roleId', $roles);
+            if(!empty($roles)){
+                $where->in('rp.roleId', $roles);
+            }else{
+                $where->expression(' 1 = ?', 0);
+            }
             $select->join(array('rp' => 'tbl_route_permission'), 'tbl_route.routeId = rp.routeId',
                 array('routeId'), Select::JOIN_INNER)
                 ->where($where)->quantifier(Select::QUANTIFIER_DISTINCT);

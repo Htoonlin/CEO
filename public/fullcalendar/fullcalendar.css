@@ -21,11 +21,22 @@
     font-weight: bold;
 }
 .fc td > div.holiday > span.glyphicon{
-    color: #07b03b;
-    margin: 2px 3px;
-    border: none;
-    font-size: 21px;
-    text-shadow: 1px 1px 1px #999;
+	color: #606906;
+	margin: 3px 0.1em;
+	font-size: 18px;
+	text-shadow: 1px 1px 1px #999;
+}
+.fc td > div.birthday {
+	font-size: 11px;
+	margin: 5px 5px 0px;
+	color: #2857A8;
+	font-weight: bold;
+	text-shadow: 0.1em 0.1em 0.1em #FFF;
+}
+.fc td > div.birthday > i.fa{
+	margin: 3px 0.1em;
+	font-size: 13px;
+	text-shadow: 1px 1px 1px #999;
 }
 
 .fc .fc-widget-header>.fc-row{

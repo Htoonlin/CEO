@@ -10,6 +10,7 @@ namespace HumanResource\DataAccess;
 
 use Application\Service\SundewTableGateway;
 use HumanResource\Entity\Staff;
+use PhpOffice\PhpWord\Exception\Exception;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Where;
@@ -81,11 +82,15 @@ class StaffDataAccess extends SundewTableGateway {
     /**
      * @param $userId
      * @return array|\ArrayObject|null
+     * @throws Exception
      */
     public function getStaffByUser($userId)
     {
         $id=(int)$userId;
         $rowset = $this->select(array('userId' => $id));
+        if(!$rowset){
+            throw new Exception('Invalid userId for staff.');
+        }
         return $rowset->current();
     }
 

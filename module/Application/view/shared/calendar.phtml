@@ -23,6 +23,7 @@ $this->headScript()->appendFile($this->basePath() . '/fullcalendar/fullcalendar.
     var weeklyHoliday = new Array();
     var currentYear = 0;
     var holidays = new Array();
+    var birthdays = new Array();
     function fillHolidays() {
         $.ajax({
             url     : '<?php echo $this->url('hr_holiday', array('action' => 'jsonHoliday')) ?>',
@@ -31,6 +32,20 @@ $this->headScript()->appendFile($this->basePath() . '/fullcalendar/fullcalendar.
             async   : false,
             success : function(data){
                 holidays = data;
+            }
+        });
+
+        fillBirthdays();
+    }
+
+    function fillBirthdays(){
+        $.ajax({
+            url     : '<?php echo $this->url('hr_staff', array('action' => 'jsonBirthday')) ?>',
+            data    : {year:currentYear},
+            type    : 'POST',
+            async   : false,
+            success : function(data){
+                birthdays = data;
             }
         });
     }
@@ -134,7 +149,21 @@ $this->headScript()->appendFile($this->basePath() . '/fullcalendar/fullcalendar.
                         cell.css('background-color', '#D9F3CF');
                         cell.html('<div class="holiday">' +
                         '<span class="glyphicon glyphicon-tree-conifer"></span>' +
-                        $(this)[0].title + '</div>');
+                        '<span class="glyphicon glyphicon-tree-conifer"></span>' +
+                        '<span class="glyphicon glyphicon-tree-conifer"></span>' +
+                        ' <br/>' + $(this)[0].title + '</div>');
+                    }
+                });
+                $.each(birthdays, function(idx, value) {
+                    if(value.birthday == date.format('MM-DD')){
+                        var text = value.staff + "'s " + value.age + " birthday.";
+                        cell.attr('title' , text);
+                        cell.css('background-color', '#EED8F9');
+                        cell.html('<div class="birthday">' +
+                            ' <i class="fa fa-birthday-cake fa" style="color:#078F72"></i> ' +
+                            ' <i class="fa fa-birthday-cake fa" style="color:#5B09A7"></i> ' +
+                            ' <i class="fa fa-birthday-cake fa" style="color:#D8005B"></i> ' +
+                            '<br />' + text + '</div>');
                     }
                 });
             }

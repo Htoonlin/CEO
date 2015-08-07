@@ -89,7 +89,11 @@ class MenuDataAccess extends SundewTableGateway
                 }else{
                     $where->equalTo('parentId', $parentId);
                 }
-                $where->AND->in('mp.roleId', $roles);
+                if(!empty($roles)){
+                    $where->in('mp.roleId', $roles);
+                }else{
+                    $where->expression(' 1 = ?', 0);
+                }
 
                 $select->join(array('mp' => 'tbl_menu_permission'), 'tbl_menu.menuId = mp.menuId',
                     array('menuId'), Select::JOIN_INNER)

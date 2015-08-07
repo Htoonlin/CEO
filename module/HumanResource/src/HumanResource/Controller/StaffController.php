@@ -206,4 +206,26 @@ class StaffController extends SundewController
         }
         return new JsonModel(array("message"=>$message));
     }
+
+    public function jsonBirthdayAction()
+    {
+        $year = $this->params()->fromPost('year', date('Y', time()));
+        $staffs = $this->staffTable()->getActiveStaffs();
+        $result = array();
+
+        /**
+         * @var staff Staff
+         */
+        foreach($staffs as $staff)
+        {
+            $age = $year - date('Y', strtotime($staff->Birthday));
+            $result[] = array(
+                'staff' => $staff->staffName,
+                'birthday' => date('m-d', strtotime($staff->Birthday)),
+                'age' => $age,
+            );
+        }
+
+        return new JsonModel($result);
+    }
 }

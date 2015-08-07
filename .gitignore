@@ -11,6 +11,7 @@ config/autoload/*.local.php
 *.mo
 
 # Data
+data/captcha
 data/logs/
 data/cache/
 data/uploads/

@@ -8,6 +8,7 @@
 
 namespace Application\Service;
 
+use PhpOffice\PhpWord\Exception\Exception;
 use Zend\Db\Metadata\Metadata;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
@@ -50,7 +51,6 @@ class SundewTableGateway extends AbstractTableGateway
      * @param $orderBy
      * @param $order
      * @param string $source
-     * @param null $where
      * @return Paginator
      * @throws \Exception
      */
