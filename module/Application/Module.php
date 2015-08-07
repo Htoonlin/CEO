@@ -47,7 +47,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
     private $cacheRouteData;
     private function generateRoute(MvcEvent $e)
     {
-        if(!$this->cacheRouteData){
+        if($this->cacheRouteData == null){
             $sm = $e->getApplication()->getServiceManager();
             $this->cacheRouteData = $sm->get('RouteData');
         }
@@ -157,21 +157,15 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                             $userId = $authService->getIdentity()->userId;
                             $cache_ns = 'route_cache_' . $userId;
                             $routeData = $routeDataAccess->getCache()->getItem($cache_ns);
-                            if(!$routeData){
+                            if(!empty($routeData) || $routeData == null){
                                 $userRoleDA = new UserRoleDataAccess($dbAdapter);
                                 $roles = array();
-                                $userRoles = $userRoleDA->grantRoles($userId);
-                                if(!$userRoles) return array();
-                                foreach($userRoles as $role){
+                                foreach($userRoleDA->grantRoles($userId) as $role){
                                     array_push($roles,(int)$role->roleId);
                                 }
-                                $routeData = $routeDataAccess->getRouteData($roles);
-                                if(!$routeData){
-                                    return array();
-                                }
-                                $routeDataAccess->getCache()->setItem($cache_ns, $routeData->toArray());
+                                $routeData = $routeDataAccess->getRouteData($roles)->toArray();
+                                $routeDataAccess->getCache()->setItem($cache_ns, $routeData);
                             }
-
                             return $routeData;
                         }
 
