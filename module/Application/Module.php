@@ -157,7 +157,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                             $userId = $authService->getIdentity()->userId;
                             $cache_ns = 'route_cache_' . $userId;
                             $routeData = $routeDataAccess->getCache()->getItem($cache_ns);
-                            if(!empty($routeData) || $routeData == null){
+                            if(empty($routeData) || $routeData == null){
                                 $userRoleDA = new UserRoleDataAccess($dbAdapter);
                                 $roles = array();
                                 foreach($userRoleDA->grantRoles($userId) as $role){

@@ -50,26 +50,25 @@ class ReportController extends SundewController
         $payable[$count] = 0;
         $receivable[$count] = 0;
 
-        foreach($data as $row){
-            if(!empty($prev_label) && $prev_label != $row->date){
+        foreach ($data as $row) {
+            if (!empty($prev_label) && $prev_label != $row->date) {
                 $labels[$count] = $prev_label;
                 $count++;
                 $payable[$count] = 0;
                 $receivable[$count] = 0;
             }
 
-            if(strtolower($row->type) == 'payable'){
+            if (strtolower($row->type) == 'payable') {
                 $payable[$count] = $row->amount;
             }
 
-            if(strtolower($row->type) == 'receivable'){
+            if (strtolower($row->type) == 'receivable') {
                 $receivable[$count] = $row->amount;
             }
 
             $prev_label = $row->date;
         }
-
-        if(!empty($prev_label)){
+        if (!empty($prev_label)) {
             $labels[$count] = $prev_label;
         }
 
@@ -88,14 +87,18 @@ class ReportController extends SundewController
     {
         $year = $this->params()->fromRoute('year', date('Y'));
         $month = $this->params()->fromRoute('month', date('m'));
-        $page=(int)$this->params()->fromQuery('page',1);
-        $filter=$this->params()->fromQuery('filter', '');
-        $sort=$this->params()->fromQuery('sort','voucherNo');
-        $sortBy=$this->params()->fromQuery('by','asc');
+        $page = (int)$this->params()->fromQuery('page', 1);
+        $filter = $this->params()->fromQuery('filter', '');
+        $sort = $this->params()->fromQuery('sort', 'voucherNo');
+        $sortBy = $this->params()->fromQuery('by', 'asc');
         $pageSize = $this->params()->fromQuery('size', 10);
 
         $fromDate = $year . '-' . $month . '-01';
-        $toDate = date('Y-m-t', strtotime($fromDate));
+        if($month == 12){
+            $toDate = ($year + 1) . '-01-01';
+        }else{
+            $toDate = $year . '-' . ($month + 1) . '-01';
+        }
 
         $paginator = $this->voucherTable()->getVouchersByDate($fromDate, $toDate, 0,
             $this->getSkipTypes(), true, $filter, $sort, $sortBy);
@@ -104,12 +107,12 @@ class ReportController extends SundewController
         $paginator->setItemCountPerPage($pageSize);
 
         return new ViewModel(array(
-            'date' => $fromDate . ' to ' . $toDate,
+            'date' => date('M, Y', strtotime($fromDate)),
             'year' => $year,
             'month' => $month,
-            'paginator'=>$paginator,
-            'sort'=>$sort,
-            'sortBy'=>$sortBy,
+            'paginator' => $paginator,
+            'sort' => $sort,
+            'sortBy' => $sortBy,
             'filter' => $filter
         ));
     }
@@ -123,7 +126,11 @@ class ReportController extends SundewController
         $month = $this->params()->fromRoute('month', date('m'));
 
         $fromDate = $year . '-' . $month . '-01';
-        $toDate = date('Y-m-t', strtotime($fromDate));
+        if($month == 12){
+            $toDate = ($year + 1) . '-01-01';
+        }else{
+            $toDate = $year . '-' . ($month + 1) . '-01';
+        }
 
         $vouchers = $this->voucherTable()->getVouchersByDate($fromDate, $toDate, 0,
             $this->getSkipTypes(), false);
