@@ -52,6 +52,11 @@ echo $this->form()->openTag($form);
                     Save
                 </button>
                 <?php if($isEdit): ?>
+                    <a href="<?php echo $this->url('route', array('action' => 'detail', 'id' => $id)); ?>?action=clone"
+                       class="btn btn-warning">
+                        <span class="glyphicon glyphicon-copy"></span>
+                        Clone
+                    </a>
                     <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('route', array('action' => 'delete', 'id' => $id)); ?>" class="btn btn-danger">
                         <span class="glyphicon glyphicon-trash"></span>
                         Remove

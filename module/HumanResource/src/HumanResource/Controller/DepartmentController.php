@@ -50,11 +50,19 @@ class DepartmentController extends SundewController
     public function indexAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
+        $action = $this->params()->fromQuery('action', '');
+
+        if($action == "delete" && $id > 0){
+            $this->departmentTable()->deleteDepartment($id);
+            $this->flashMessenger()->addInfoMessage('Delete successful!');
+            return $this->redirect()->toRoute("hr_department");
+        }
+
         $parentDepartment=new Department();
         $edit=false;
         if($id>0){
             $department=$this->departmentTable()->getDepartment($id);
-            if($department->getParentId()){
+            if(!empty($department->getParentId())){
                 $parentDepartment=$this->departmentTable()->getDepartment($department->getParentId());
             }
             $edit=true;
@@ -64,23 +72,23 @@ class DepartmentController extends SundewController
         $departments=$this->departmentTable()->getChildren();
         $helper=new DepartmentHelper($this->getDbAdapter());
         $form=$helper->getForm();
+
+        if($action == 'clone'){
+            $edit = false;
+            $id = 0;
+            $department->setDepartmentId(0);
+        }
+
         $form->bind($department);
         $request=$this->getRequest();
         if($request->isPost())
         {
-            $isDelete=$request->getPost('is_delete','no');
-            if($isDelete=='yes' && $id>0){
-                $this->departmentTable()->deleteDepartment($id);
-                $this->flashMessenger()->addInfoMessage('Delete successful!');
+            $form->setData($request->getPost());
+            $form->setInputFilter($helper->getInputFilter());
+            if($form->isValid()){
+                $this->departmentTable()->saveDepartment($department);
+                $this->flashMessenger()->addSuccessMessage('Save successful!');
                 return $this->redirect()->toRoute("hr_department");
-            }else{
-                $form->setData($request->getPost());
-                $form->setInputFilter($helper->getInputFilter($id));
-                if($form->isValid()){
-                    $this->departmentTable()->saveDepartment($department);
-                    $this->flashMessenger()->addSuccessMessage('Save successful!');
-                    return $this->redirect()->toRoute("hr_department");
-                }
             }
         }
         return new ViewModel(array(

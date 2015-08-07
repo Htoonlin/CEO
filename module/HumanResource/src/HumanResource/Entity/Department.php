@@ -26,8 +26,8 @@ class Department implements TreeViewEntityInterface, ArraySerializableInterface
     public function setDescription($value){$this->description = $value;}
 
     protected $group_code;
-    public function getTeamCode(){return $this->group_code;}
-    public function setTeamCode($value){$this->group_code=$value;}
+    public function getGroupCode(){return $this->group_code;}
+    public function setGroupCode($value){$this->group_code=$value;}
 
     protected $parentId;
     public function getParentId(){return $this->parentId;}

@@ -50,13 +50,13 @@ echo $this->form()->openTag($form);
             <label class="control-label col-sm-3">Department</label>
             <div class="col-sm-9">
                 <script type="text/javascript">
-                    role_choosed = function(value){
+                    role_chose = function(value){
                         $('input[name=departmentId]').val(value);
                     }
                 </script>
                 <?= $this->formHidden($form->get('departmentId')); ?>
                 <?= $this->partial('shared/tree_chooser.phtml', array('data' => $departments,
-                    'name' => 'rolePicker', 'callback' => 'role_choosed',
+                    'name' => 'rolePicker', 'callback' => 'role_chose',
                     'active' => $form->get('departmentId')->getValue())) ?>
             </div>
         </div>
@@ -71,6 +71,11 @@ echo $this->form()->openTag($form);
                     Save
                 </button>
                 <?php if($isEdit):?>
+                    <a href="<?php echo $this->url('hr_staff', array('action'=>'detail', 'id'=>$id)); ?>?action=clone"
+                       class="btn btn-warning">
+                        <span class="glyphicon glyphicon-copy"></span>
+                        Clone
+                    </a>
                     <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('hr_staff', array('action'=>'delete', 'id'=>$id)); ?>" class="btn btn-danger">
                         <span class="glyphicon glyphicon-trash"></span>
                         Remove

@@ -30,9 +30,9 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js');
             <label class="control-label col-sm-3">Parent Role</label>
             <div class="col-sm-9" id="parentRole">
                 <script type="text/javascript">
-                    role_choosed = function(value){
-                        $currentId = $("input[name=roleId]").val();
-                        if(value == $currentId){
+                    role_chose = function(value){
+                        var currentId = parseInt($("input[name=roleId]").val());
+                        if(value == currentId && currentId > 0){
                             alert("Parent can't same with current role.");
                             $("input[name=parentId]").val("");
                             return true;
@@ -42,7 +42,7 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js');
                 </script>
                 <?= $this->formHidden($form->get('parentId')); ?>
                 <?= $this->partial('shared/tree_chooser.phtml', array('data' => $roles,
-                    'name' => 'rolePicker', 'callback' => 'role_choosed',
+                    'name' => 'rolePicker', 'callback' => 'role_chose',
                     'active' => $form->get('parentId')->getValue())) ?>
             </div>
         </div>
@@ -53,11 +53,11 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js');
             </div>
             <div class="col-sm-3">
                 <script type="text/javascript">
-                    icon_choosed = function(icon){
+                    icon_chose = function(icon){
                         $("input[name=icon]").val(icon);
                     }
                 </script>
-                <?php echo $this->partial('shared/icon_chooser.phtml', array('callback' => 'icon_choosed')); ?>
+                <?php echo $this->partial('shared/icon_chooser.phtml', array('callback' => 'icon_chose')); ?>
             </div>
         </div>
         <?php echo $this->formHorizontal($form->get('priority')); ?>
@@ -72,22 +72,16 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js');
                     Save
                 </button>
                 <?php if($this->isEdit): ?>
-                    <script type="text/javascript">
-                        function del_click(sender){
-                            if(confirm('Are you sure to remove this role?')){
-                                $("input[name=is_delete]").val("yes");
-                                return true;
-                            }
-                            $("input[name=is_delete]").val("no");
-                            return false;
-                        }
-                    </script>
-                    <input type="hidden" value="no" name="is_delete" />
-                    <button type="submit" class="btn btn-danger"
-                            onclick="return del_click(this);">
+                    <a href="<?= $this->url('role'); ?>/index/<?= $id ?>?action=clone"
+                       class="btn btn-warning">
+                        <span class="glyphicon glyphicon-copy"></span>
+                        Clone
+                    </a>
+                    <a onclick="return confirm('Are you sure to delete?')" href="<?= $this->url('role'); ?>/index/<?= $id ?>?action=delete"
+                        class="btn btn-danger">
                         <span class="glyphicon glyphicon-trash"></span>
                         Remove
-                    </button>
+                    </a>
                 <?php endif; ?>
             </div>
         </div>

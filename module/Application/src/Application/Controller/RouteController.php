@@ -84,6 +84,8 @@ class RouteController extends SundewController
     public function detailAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
+        $action = $this->params()->fromQuery('action', '');
+
         $helper = new RouteHelper($this->getDbAdapter());
         $form = $helper->getForm();
         $route = $this->routeTable()->getRoute($id);
@@ -93,6 +95,12 @@ class RouteController extends SundewController
             $route = new Route();
         }
         $permissions = $this->routePermissionTable()->grantRoles($id);
+
+        if($action == 'clone'){
+            $isEdit = false;
+            $id = 0;
+            $route->setRouteId(0);
+        }
 
         $form->bind($route);
         $request=$this->getRequest();

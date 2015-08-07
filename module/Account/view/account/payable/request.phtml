@@ -49,7 +49,7 @@ echo $this->formHidden($form->get('payVoucherId'));
                 <label class="control-label">Account Type</label>
                 <div class="form-control">
                     <script type="text/javascript">
-                        acocuntType_choosed = function(value){
+                        acocuntType_chose = function(value){
                             if(value > 0){
                                 $('input[name=accountType]').val(value);
                             }else{
@@ -59,7 +59,7 @@ echo $this->formHidden($form->get('payVoucherId'));
                     </script>
                     <?= $this->formHidden($form->get('accountType')); ?>
                     <?= $this->partial('shared/tree_chooser.phtml', array('data' => $accountTypes,
-                        'name' => 'accountTypePicker', 'callback' => 'acocuntType_choosed',
+                        'name' => 'accountTypePicker', 'callback' => 'acocuntType_chose',
                         'active' => $form->get('accountType')->getValue())) ?>
                     <?php if(!empty($form->getMessages('accountType'))) : ?>
                         <?php foreach($form->getMessages('accountType') as $val) : ?>

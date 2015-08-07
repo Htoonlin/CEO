@@ -109,6 +109,8 @@ class StaffController extends SundewController
     public  function detailAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
+        $action = $this->params()->fromQuery('action', '');
+
         $helper=new StaffHelper($this->getDbAdapter());
         $form = $helper->getForm($this->userCombos(), $this->positionCombos(), $this->currencyCombo(), $this->statusCombo());
         $staff = $this->staffTable()->getStaff($id);
@@ -120,6 +122,11 @@ class StaffController extends SundewController
             $staff=new Staff();
         }
 
+        if($action == 'clone'){
+            $isEdit = false;
+            $id = 0;
+            $staff->setStaffId(0);
+        }
         $form->bind($staff);
         $request = $this->getRequest();
 

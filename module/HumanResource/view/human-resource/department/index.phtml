@@ -25,8 +25,8 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
             $(function(){
                 $.get('<?php echo $this->url('hr_department', array('action' => 'jsonAll')); ?>', function(data){
                     $('#parentDepartment #typeahead').typeahead({source: data, afterSelect:function(item){
-                        $currentId = $("input[name=departmentId]").val();
-                        if(item.departmentId == $currentId){
+                        var currentId = parseInt($("input[name=departmentId]").val());
+                        if(item.departmentId == currentId && currentId > 0){
                             alert("Parent can't same with current department.");
                             $("input[name=parentId]").val("");
                             return;
@@ -47,9 +47,9 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
             <label class="control-label col-sm-3">Parent Department</label>
             <div class="col-sm-9" id="parentDepartment">
                 <script type="text/javascript">
-                    department_choosed = function(value){
-                        $currentId = $("input[name=departmentId]").val();
-                        if(value == $currentId){
+                    department_chose = function(value){
+                        var currentId = parseInt($("input[name=departmentId]").val());
+                        if(value == currentId && currentId > 0){
                             alert("Parent can't same with current department.");
                             $("input[name=parentId]").val("");
                             return true;
@@ -59,7 +59,7 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
                 </script>
                 <?= $this->formHidden($form->get('parentId')); ?>
                 <?= $this->partial('shared/tree_chooser.phtml', array('data' => $departments,
-                    'name' => 'departmentPicker', 'callback' => 'department_choosed',
+                    'name' => 'departmentPicker', 'callback' => 'department_chose',
                     'active' => $form->get('parentId')->getValue())) ?>
             </div>
         </div>
@@ -76,22 +76,15 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
                     Save
                 </button>
                 <?php if($this->isEdit): ?>
-                    <script type="text/javascript">
-                        function del_click(sender){
-                            if(confirm('Are you sure to remove this department?')){
-                                $("input[name=is_delete]").val("yes");
-                                return true;
-                            }
-                            $("input[name=is_delete]").val("no");
-                            return false;
-                        }
-                    </script>
-                    <input type="hidden" value="no" name="is_delete" />
-                    <button type="submit" class="btn btn-danger"
-                            onclick="return del_click(this);">
-                        <span class="glyphicon glyphicon-trash"></span>
-                        Remove
-                    </button>
+                <a href="<?php echo $this->url("hr_department"); ?>/index/<?= $id ?>?action=clone" class="btn btn-warning">
+                    <span class="glyphicon glyphicon-copy"></span>
+                    Clone
+                </a>
+                <a href="<?php echo $this->url("hr_department"); ?>/index/<?= $id ?>?action=delete"
+                   class="btn btn-danger" onclick="return confirm('Are you sure to delete?')">
+                    <span class="glyphicon glyphicon-trash"></span>
+                    Remove
+                </a>
                 <?php endif; ?>
             </div>
         </div>

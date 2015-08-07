@@ -16,7 +16,7 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
 ?>
 <script type="text/javascript">
     var <?= $callback ?>;
-    function choosed(value){
+    function chose(value){
         if(this.<?= $callback ?>){
             return this.<?= $callback ?>(value);
         }
@@ -24,8 +24,8 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
         return false;
     }
 
-    function void_choosed(){
-        var go = choosed(0);
+    function void_chose(){
+        var go = chose(0);
         if(!go){
             $('#tree-display').val('');
             $('#<?= $name ?>Modal').modal('hide');
@@ -39,7 +39,7 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
             e.preventDefault();
             $('#<?= $name ?>Modal .sundew-tree li').removeClass('active');
             $(this).closest('li').addClass('active');
-            var go = choosed($(this).closest('li').attr('value'));
+            var go = chose($(this).closest('li').attr('value'));
             if(!go){
                 $('#tree-display').val($(this).html());
                 $('#<?= $name ?>Modal').modal('hide');
@@ -67,7 +67,7 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
                 <?php echo $this->formTreeView($data, $active); ?>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="void_choosed()">
+                <button type="button" class="btn btn-danger" onclick="void_chose()">
                     No choose
                 </button>
             </div>

@@ -72,6 +72,8 @@ class PositionController extends SundewController
     public function detailAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
+        $action = $this->params()->fromQuery('action', '');
+
         $helper = new PositionHelper($this->getDbAdapter());
         $form = $helper->getForm($this->statusCombo(), $this->currencyCombo());
         $position = $this->positionTable()->getPosition($id);
@@ -79,6 +81,12 @@ class PositionController extends SundewController
         if(!$position){
             $isEdit = false;
             $position = new Position();
+        }
+
+        if($action == 'clone'){
+            $isEdit = false;
+            $id = 0;
+            $position->setPositionId(0);
         }
 
         $form->bind($position);
@@ -139,6 +147,7 @@ class PositionController extends SundewController
     public function jsonDeleteAction()
     {
         $data = $this->params()->fromPost('chkId', array());
+        $message = 'success';
         $db = $this->positionTable()->getAdapter();
         $conn = $db->getDriver()->getConnection();
         $conn->beginTransaction();

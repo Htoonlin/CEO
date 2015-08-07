@@ -50,6 +50,7 @@ class ConstantController extends SundewController
     public function detailAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
+        $isClone = $this->params()->fromQuery('action', '');
 
         $helper = new ConstantHelper($this->getDbAdapter());
         $form = $helper->getForm();
@@ -60,6 +61,12 @@ class ConstantController extends SundewController
         if(!$constant){
             $isEdit = false;
             $constant = new Constant();
+        }
+
+        if($constant && $isClone == 'clone'){
+            $isEdit = false;
+            $id = 0;
+            $constant->setConstantId($id);
         }
 
         $form->bind($constant);

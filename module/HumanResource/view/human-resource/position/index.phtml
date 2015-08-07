@@ -28,6 +28,7 @@ $this->headTitle($title);
                     data:$('input[name="chkId[]"]:checked'),
                     type:'POST',
                     success:function(data){
+                        console.log(data);
                         if(data.message=="success"){
                             window.location.href="<?php echo $this->url('hr_position');?>"
                         }else{

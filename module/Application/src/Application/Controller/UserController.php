@@ -90,6 +90,7 @@ class UserController extends SundewController
     public function detailAction()
     {
         $id = (int)$this->params()->fromRoute('id', 0);
+        $action = $this->params()->fromQuery('action', '');
         $helper = new UserHelper($this->getDbAdapter());
         $form = $helper->getForm($this->statusCombo());
         $user = $this->userTable()->getUser($id);
@@ -105,9 +106,16 @@ class UserController extends SundewController
             $currentImage = $user->getImage();
         }
 
+        $userRoles = $this->userRoleTable()->grantRoles($id);
+
+        if($action == 'clone'){
+            $isEdit = false;
+            $id = 0;
+            $user->setUserId(0);
+        }
+
         $form->bind($user);
         $request = $this->getRequest();
-        $userRoles = $this->userRoleTable()->grantRoles($id);
 
         if($request->isPost()){
             $post_data = array_merge_recursive($request->getPost()->toArray(),

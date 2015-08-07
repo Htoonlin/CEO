@@ -36,6 +36,14 @@ class RoleController extends SundewController
     public function indexAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
+        $action = $this->params()->fromQuery('action', '');
+
+        if($action == 'delete' && $id > 0){
+            $this->roleTable()->deleteRole($id);
+            $this->flashMessenger()->addInfoMessage('Delete successful!');
+            return $this->redirect()->toRoute("role");
+        }
+
         $parentRole = new Role();
         $edit = false;
         if($id > 0){
@@ -51,22 +59,22 @@ class RoleController extends SundewController
         $roles = $this->roleTable()->getChildren();
         $helper = new RoleHelper();
         $form = $helper->getForm();
+
+        if($action == 'clone'){
+            $edit = false;
+            $id = 0;
+            $role->setRoleId(0);
+        }
+
         $form->bind($role);
         $request = $this->getRequest();
         if($request->isPost())
         {
-            $isDelete = $request->getPost('is_delete', 'no');
-            if($isDelete == 'yes' && $id > 0){
-                $this->roleTable()->deleteRole($id);
-                $this->flashMessenger()->addInfoMessage('Delete successful!');
+            $form->setData($request->getPost());
+            if($form->isValid()){
+                $this->roleTable()->saveRole($role);
+                $this->flashMessenger()->addSuccessMessage('Save successful!');
                 return $this->redirect()->toRoute("role");
-            }else{
-                $form->setData($request->getPost());
-                if($form->isValid()){
-                    $this->roleTable()->saveRole($role);
-                    $this->flashMessenger()->addSuccessMessage('Save successful!');
-                    return $this->redirect()->toRoute("role");
-                }
             }
         }
 

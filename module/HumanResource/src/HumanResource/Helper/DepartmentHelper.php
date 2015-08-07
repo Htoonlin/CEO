@@ -102,7 +102,7 @@ class DepartmentHelper {
     }
 
     private $inputFilter;
-    public function getInputFilter($departmentId)
+    public function getInputFilter()
     {
         if($this->inputFilter){
             return $this->inputFilter;

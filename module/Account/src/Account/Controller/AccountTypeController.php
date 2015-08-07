@@ -66,6 +66,14 @@ class AccountTypeController extends SundewController
     public function indexAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
+        $action = $this->params()->fromQuery('action', '');
+
+        if($action == 'delete' && $id > 0){
+            $this->accountTypeTable()->deleteAccountType($id);
+            $this->flashMessenger()->addInfoMessage('Delete successful!');
+            return $this->redirect()->toRoute("account_type");
+        }
+
         $parentAccountType = new AccountType();
         $edit = false;
         if($id > 0){
@@ -81,22 +89,20 @@ class AccountTypeController extends SundewController
         $accountTypes = $this->accountTypeTable()->getChildren();
         $helper = new AccountTypeHelper();
         $form = $helper->getForm($this->baseTypeCombo(), $this->defaultStatusCombo());
+        if($action == 'clone'){
+            $edit = false;
+            $id = 0;
+            $accountType->setAccountTypeId(0);
+        }
         $form->bind($accountType);
         $request = $this->getRequest();
         if($request->isPost())
         {
-            $isDelete = $request->getPost('is_delete', 'no');
-            if($isDelete == 'yes' && $id > 0){
-                $this->accountTypeTable()->deleteAccountType($id);
-                $this->flashMessenger()->addInfoMessage('Delete successful!');
+            $form->setData($request->getPost());
+            if($form->isValid()){
+                $this->accountTypeTable()->saveAccountType($accountType);
+                $this->flashMessenger()->addSuccessMessage('Save successful!');
                 return $this->redirect()->toRoute("account_type");
-            }else{
-                $form->setData($request->getPost());
-                if($form->isValid()){
-                    $this->accountTypeTable()->saveAccountType($accountType);
-                    $this->flashMessenger()->addSuccessMessage('Save successful!');
-                    return $this->redirect()->toRoute("account_type");
-                }
             }
         }
 

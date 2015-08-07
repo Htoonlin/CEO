@@ -25,8 +25,8 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
             $(function(){
                 $.get('<?php echo $this->url('account_type', array('action' => 'jsonAll')); ?>', function(data){
                     $('#parentType #typeahead').typeahead({source: data, afterSelect:function(item){
-                        $currentId = $("input[name=accountTypeId]").val();
-                        if(item.accountTypeId == $currentId){
+                        var currentId = parseInt($("input[name=accountTypeId]").val());
+                        if(item.accountTypeId == currentId && currentId > 0){
                             alert("Parent can't same with current menu.");
                             $("input[name=parentTypeId]").val("");
                             return;
@@ -47,9 +47,9 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
             <label class="control-label col-sm-3">Parent Type</label>
             <div class="col-sm-9" id="parentType">
                 <script type="text/javascript">
-                    parent_choosed = function(value){
-                        $currentId = $("input[name=accountTypeId]").val();
-                        if(value == $currentId){
+                    parent_chose = function(value){
+                        var currentId = parseInt($("input[name=accountTypeId]").val());
+                        if(value == currentId && currentId > 0){
                             alert("Parent can't same with current type.");
                             $("input[name=parentTypeId]").val("");
                             return true;
@@ -59,7 +59,7 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
                 </script>
                 <?= $this->formHidden($form->get('parentTypeId')); ?>
                 <?= $this->partial('shared/tree_chooser.phtml', array('data' => $accountTypes,
-                    'name' => 'parentPicker', 'callback' => 'parent_choosed',
+                    'name' => 'parentPicker', 'callback' => 'parent_chose',
                     'active' => $form->get('parentTypeId')->getValue())) ?>
             </div>
         </div>
@@ -75,22 +75,16 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
                     Save
                 </button>
                 <?php if($this->isEdit): ?>
-                    <script type="text/javascript">
-                        function del_click(sender){
-                            if(confirm('Are you sure to remove this account Type?')){
-                                $("input[name=is_delete]").val("yes");
-                                return true;
-                            }
-                            $("input[name=is_delete]").val("no");
-                            return false;
-                        }
-                    </script>
-                    <input type="hidden" value="no" name="is_delete" />
-                    <button type="submit" class="btn btn-danger"
-                            onclick="return del_click(this);">
+                    <a href="<?php echo $this->url("account_type"); ?>/index/<?= $id ?>?action=clone"
+                        class="btn btn-warning">
+                        <span class="glyphicon glyphicon-copy"></span>
+                        Clone
+                    </a>
+                    <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url("account_type"); ?>/index/<?= $id ?>?action=delete"
+                       class="btn btn-danger">
                         <span class="glyphicon glyphicon-trash"></span>
                         Remove
-                    </button>
+                    </a>
                 <?php endif; ?>
             </div>
         </div>

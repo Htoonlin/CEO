@@ -70,9 +70,14 @@ echo $this->form()->openTag($form);
                     <span class="glyphicon glyphicon-floppy-save"></span>
                     Save
                 </button>
-                <?php if($isEdit): ?>
                 <?php echo $this->partial('shared/role_chooser.phtml', array('roles' => $roles, 'name' => 'grant_roles',
                     'permissions' => $userRoles, 'text' => 'Access Roles')); ?>
+                <?php if($isEdit): ?>
+                <a href="<?php echo $this->url('user', array('action' => 'detail', 'id' => $id)); ?>?action=clone"
+                   class="btn btn-warning">
+                    <span class="glyphicon glyphicon-copy"></span>
+                    Clone
+                </a>
                 <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('user', array('action' => 'delete', 'id' => $id)); ?>" class="btn btn-danger">
                     <span class="glyphicon glyphicon-trash"></span>
                     Remove

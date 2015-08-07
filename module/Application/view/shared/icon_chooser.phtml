@@ -806,7 +806,7 @@ $callback = isset($callback) ? $callback : 'afterSelect';
 ?>
 <script type="text/javascript">
     var <?= $callback ?>;
-    function choosed_icon(icon){
+    function chose_icon(icon){
         if(this.<?= $callback ?>){
             this.<?= $callback ?>(icon);
         }
@@ -842,7 +842,7 @@ $callback = isset($callback) ? $callback : 'afterSelect';
                             <div style="height: 500px; overflow-y: scroll;display: block;">
                                 <?php foreach($glyphIcons as $ico): ?>
                                     <div class="col-sm-1" style="margin:5px;">
-                                        <button type="button" class="btn btn-lg btn-default" onclick="choosed_icon('<?php echo $ico; ?>')"
+                                        <button type="button" class="btn btn-lg btn-default" onclick="chose_icon('<?php echo $ico; ?>')"
                                                 data-dismiss="modal">
                                             <span class="<?php echo $ico; ?>"></span>
                                         </button>
@@ -854,7 +854,7 @@ $callback = isset($callback) ? $callback : 'afterSelect';
                             <div style="height: 500px; overflow-y: scroll;display: block;">
                                 <?php foreach($fontAwesomeIcons as $ico): ?>
                                     <div class="col-sm-1" style="margin:5px;">
-                                        <button style="width:52px; height:46px;" type="button" class="btn btn-lg btn-default" onclick="choosed_icon('<?php echo $ico; ?>')"
+                                        <button style="width:52px; height:46px;" type="button" class="btn btn-lg btn-default" onclick="chose_icon('<?php echo $ico; ?>')"
                                                 data-dismiss="modal">
                                             <span class="<?php echo $ico; ?>"></span>
                                         </button>
