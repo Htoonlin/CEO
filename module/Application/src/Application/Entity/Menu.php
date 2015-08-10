@@ -48,7 +48,7 @@ class Menu implements TreeViewEntityInterface, ArraySerializableInterface
     public  function  setPriority($value){$this->priority=$value;}
 
     protected $hasDivider;
-    public function getHasDivider(){return boolval($this->hasDivider);}
+    public function getHasDivider(){return $this->hasDivider;}
     public function setHasDivider($value){$this->hasDivider = $value;}
 
     public function exchangeArray(array $data)
