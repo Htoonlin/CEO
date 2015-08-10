@@ -16,6 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `tbl_account_asset`
+--
+
+DROP TABLE IF EXISTS `tbl_account_asset`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tbl_account_asset` (
+  `assetId` int(11) NOT NULL,
+  `assetType` char(1) COLLATE utf8_bin NOT NULL,
+  `category` varchar(50) COLLATE utf8_bin NOT NULL,
+  `description` varchar(500) COLLATE utf8_bin NOT NULL,
+  `amount` float NOT NULL,
+  `currencyId` int(11) NOT NULL,
+  `linkCode` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `isLiquid` tinyint(1) NOT NULL,
+  `isTangible` tinyint(1) NOT NULL,
+  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL,
+  `status` char(1) COLLATE utf8_bin NOT NULL,
+  `created_at` datetime NOT NULL,
+  `modified_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `tbl_account_closing`
 --
 
@@ -32,7 +56,7 @@ CREATE TABLE `tbl_account_closing` (
   `closingDate` datetime DEFAULT NULL,
   `closingAmount` int(11) DEFAULT NULL,
   PRIMARY KEY (`closingId`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +100,7 @@ CREATE TABLE `tbl_account_payable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`payVoucherId`)
-) ENGINE=InnoDB AUTO_INCREMENT=751 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=761 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +126,7 @@ CREATE TABLE `tbl_account_receivable` (
   `requestedDate` datetime NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`receiveVoucherId`)
-) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -281,7 +305,7 @@ CREATE TABLE `tbl_hr_attendance` (
   `inTime` time DEFAULT NULL,
   `outTime` time DEFAULT NULL,
   PRIMARY KEY (`attendanceId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1613 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1631 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,7 +319,8 @@ CREATE TABLE `tbl_hr_department` (
   `departmentId` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(50) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `team_code` varchar(50) DEFAULT NULL,
+  `description` varchar(500) DEFAULT NULL,
+  `group_code` varchar(50) NOT NULL,
   `parentId` int(11) DEFAULT NULL,
   `priority` int(11) NOT NULL,
   `status` char(1) NOT NULL,
@@ -346,7 +371,7 @@ CREATE TABLE `tbl_hr_payroll` (
   `managerId` int(11) NOT NULL,
   `status` char(1) NOT NULL,
   PRIMARY KEY (`payrollId`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1250,4 +1275,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-06 18:30:01
+-- Dump completed on 2015-08-09 18:30:03
