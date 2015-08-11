@@ -8,7 +8,6 @@
 
 namespace Application\Service;
 
-use PhpOffice\PhpWord\Exception\Exception;
 use Zend\Db\Metadata\Metadata;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
@@ -30,6 +29,7 @@ class SundewTableGateway extends AbstractTableGateway
             $data = $record->getArrayCopy();
             $selectData[$data[$key]] = $data[$value];
         }
+        return $selectData;
     }
 
     protected $cache;
