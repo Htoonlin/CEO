@@ -12,10 +12,6 @@ use Application\Service\SundewTableGateway;
 use ProjectManagement\Entity\Project;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
-use Zend\Db\Sql\Where;
-use Zend\Db\TableGateway\AbstractTableGateway;
-use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
@@ -51,21 +47,6 @@ class ProjectDataAccess extends SundewTableGateway{
         }
 
         return $this->select();
-    }
-
-    /**
-     * @param $key
-     * @param $value
-     * @return array
-     */
-    public function getComboData($key, $value){
-        $results=$this->select();
-        $selectData=array();
-        foreach($results as $project){
-            $data=$project->getArrayCopy();
-            $selectData[$data[$key]]=$data[$value];
-        }
-        return $selectData;
     }
 
     /**

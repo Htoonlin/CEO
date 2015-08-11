@@ -37,24 +37,6 @@ class AttendanceDataAccess extends SundewTableGateway{
     }
 
     /**
-     * @param $key
-     * @param $value
-     * @return array
-     */
-    public function getComboData($key, $value)
-    {
-        $results = $this->select();
-        $selectData = array();
-        foreach($results as $staff)
-        {
-            $data = $staff->getArrayCopy();
-            $selectData[$data[$key]] = $data[$value];
-        }
-
-        return $selectData;
-    }
-
-    /**
      * @param bool $paginated
      * @param string $filter
      * @param string $orderBy

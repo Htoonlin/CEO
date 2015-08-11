@@ -63,23 +63,6 @@ class StaffDataAccess extends SundewTableGateway {
     }
 
     /**
-     * @param $key
-     * @param $value
-     * @return array
-     */
-    public function getComboData($key, $value)
-    {
-        $data = $this->select();
-        $result = array();
-        foreach($data as $staff)
-        {
-            $staff = $staff->getArrayCopy();
-            $result[$staff[$key]] = $staff['staffName'] . ' (' . $staff[$value] . ')';
-        }
-        return $result;
-    }
-
-    /**
      * @param $userId
      * @return array|\ArrayObject|null
      * @throws Exception

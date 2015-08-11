@@ -53,22 +53,6 @@ class CompanyDataAccess extends SundewTableGateway
     }
 
     /**
-     * @param $key
-     * @param $value
-     * @return array
-     */
-    public function getComboData($key, $value)
-    {
-        $results=$this->select();
-        $selectData=array();
-        foreach($results as $company){
-            $data=$company->getArrayCopy();
-            $selectData[$data[$key]]=$data[$value];
-        }
-        return $selectData;
-    }
-
-    /**
      * @param $id
      * @return array|\ArrayObject|null
      */

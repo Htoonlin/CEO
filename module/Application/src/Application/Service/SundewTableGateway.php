@@ -19,6 +19,19 @@ use Zend\Cache\StorageFactory;
 
 class SundewTableGateway extends AbstractTableGateway
 {
+    /**
+     * @param unknown $key
+     * @param unknown $value
+     */
+    public function getComboData($key, $value){
+        $result = $this->select();
+        $selectData = array();
+        foreach($results as $record){
+            $data = $record->getArrayCopy();
+            $selectData[$data[$key]] = $data[$value];
+        }
+    }
+
     protected $cache;
     /**
      * @return \Zend\Cache\Storage\StorageInterface
