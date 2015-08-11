@@ -26,7 +26,7 @@ class SundewTableGateway extends AbstractTableGateway
     public function getComboData($key, $value){
         $result = $this->select();
         $selectData = array();
-        foreach($results as $record){
+        foreach($result as $record){
             $data = $record->getArrayCopy();
             $selectData[$data[$key]] = $data[$value];
         }
