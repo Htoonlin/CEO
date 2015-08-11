@@ -1,34 +1,39 @@
-<?php 
+<?php
 /**
  * Created by PhpStorm.
  * User: NyanTun
  * Date: 7/24/2015
  * Time: 4:29 PM
  * Zend Code Completion
- * @var $this \Zend\View\Renderer\PhpRenderer 
+ * @var $this \Zend\View\Renderer\PhpRenderer
  */
 $title = "Project";
 $this->headTitle($title);
 ?>
-    <h1><?php echo $title; ?></h1>
-    <hr />
+<h1><?php echo $title; ?></h1>
+<hr />
 <?php
 $form->setAttribute('action', $this->url('pm_project', array('action' => 'detail', 'id' => $id)));
 $form->prepare();
 echo $this->form()->openTag($form);
 ?>
-
-    <div class="col-md-8">
+<div class="row">
+    <div class="col-sm-6">
         <?php
         echo $this->formHidden($form->get('projectId'));
         echo $this->formHorizontal($form->get('code'));
         echo $this->formHorizontal($form->get('name'));
-        echo $this->formHorizontal($form->get('description'));
         echo $this->formHorizontal($form->get('managerId'));
+        echo $this->formHorizontal($form->get('description'));
+        echo $this->formHorizontal($form->get('remark'));
+        ?>
+    </div>
+    <div class="col-sm-6">
+        <?php
         echo $this->formHorizontal($form->get('startDate'));
         echo $this->formHorizontal($form->get('endDate'));
+        echo $this->formHorizontal($form->get('repository'));
         echo $this->formHorizontal($form->get('group_code'));
-        echo $this->formHorizontal($form->get('remark'));
         echo $this->formHorizontal($form->get('status'));
         ?>
         <div class="form-group">
@@ -38,19 +43,24 @@ echo $this->form()->openTag($form);
                     Save
                 </button>
                 <?php if($isEdit):?>
-                    <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('hr_position', array('action'=>'delete', 'id'=>$id)); ?>" class="btn btn-danger">
-                        <span class="glyphicon glyphicon-trash"></span>
-                        Remove
-                    </a>
+                <a class="btn btn-warning"
+                    href="<?php echo $this->url('pm_project', array('action'=>'detail', 'id'=>$id)); ?>?action=clone">
+                    <span class="glyphicon glyphicon-trash"></span>
+                    Clone
+                </a>
+                <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('pm_project', array('action'=>'delete', 'id'=>$id)); ?>" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-trash"></span>
+                    Remove
+                </a>
                 <?php endif; ?>
-                <a href="<?php echo $this->url('hr_position'); ?>" class="btn btn-default">
+                <a href="<?php echo $this->url('pm_project'); ?>" class="btn btn-default">
                     <span class="glyphicon glyphicon-th-list"></span>
                     Back to List
                 </a>
             </div>
         </div>
     </div>
-
+</div>
 <?php
 echo $this->form()->closeTag();
 ?>

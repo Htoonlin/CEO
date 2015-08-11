@@ -75,12 +75,19 @@ class ProjectHelper{
                 ));
 
             $group_code=new Element\Text();
-            $group_code->setLabel('group_code')
+            $group_code->setLabel('Group code *')
                 ->setName('group_code')
                 ->setAttributes(array(
                     'class'=>'form-control',
-                    'placeholder'=>'Enter Group Code'
                 ));
+
+            $repository=new Element\Text();
+            $repository->setLabel('Repository *')
+            ->setName('repository')
+            ->setAttributes(array(
+                'class'=>'form-control',
+                'placeholder' => 'Enter svn/github repo'
+            ));
 
             $status=new Element\Select();
             $status->setLabel('Status')
@@ -95,8 +102,7 @@ class ProjectHelper{
             $remark->setLabel('Remark')
                 ->setName('remark')
                 ->setAttributes(array(
-                    'class'=>'form-control',
-                    'placeholder'=>'Enter Remark'
+                    'class'=>'form-control'
                 ));
 
             $form=new Form();
@@ -113,6 +119,7 @@ class ProjectHelper{
             $form->add($startDate);
             $form->add($endDate);
             $form->add($group_code);
+            $form->add($repository);
             $form->add($status);
             $form->add($remark);
 
@@ -212,10 +219,15 @@ class ProjectHelper{
                 'required'=>true
             ));
 
+            $filter->add(array(
+                'name' => 'repository',
+                'required' => false,
+            ));
+
             /*Group Code*/
             $filter->add(array(
                 'name'=>'group_code',
-                'required'=>true,
+                'required'=>false,
                 'filters'=>array(
                     array('name'=>'StripTags'),
                     array('name'=>'StringTrim')),

@@ -491,6 +491,7 @@ CREATE TABLE `tbl_pm_project` (
   `code` varchar(50) COLLATE utf8_bin NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `description` varchar(500) COLLATE utf8_bin NOT NULL,
+  `repository` varchar(500) COLLATE utf8_bin DEFAULT NULL,
   `managerId` int(11) NOT NULL,
   `startDate` date NOT NULL,
   `endDate` date NOT NULL,
@@ -1275,4 +1276,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-09 18:30:03
+-- Dump completed on 2015-08-10 18:30:01

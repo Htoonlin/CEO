@@ -1,80 +1,182 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Sundew
- * Date: 5/25/2015
- * Time: 1:22 PM
- */
 namespace ProjectManagement\Entity;
 
 use Zend\Stdlib\ArraySerializableInterface;
 
-class Project implements ArraySerializableInterface{
-    protected  $projectId;
-    public function getProjectId(){return $this->projectId;}
-    public function setProjectId($value){$this->projectId=$value;}
+/**
+ * System Generated Code
+ *
+ * User : Htoonlin
+ * Date : 2015-08-10 18:22:09
+ *
+ * @package ProjectManagement\Entity
+ */
+class Project implements ArraySerializableInterface
+{
 
-    protected  $code;
-    public function getCode(){return $this->code;}
-    public function setCode($value){$this->code=$value;}
+    protected $projectId = null;
 
-    protected  $name;
-    public function getName(){return $this->name;}
-    public function setName($value){$this->name=$value;}
+    protected $code = null;
 
-    protected  $description;
-    public function getDescription(){return $this->description;}
-    public function setDescription($value){$this->description=$value;}
+    protected $name = null;
 
-    protected $managerId;
-    public function getManagerId(){return $this->managerId;}
-    public function setManagerId($value){$this->managerId=$value;}
+    protected $description = null;
 
-    protected  $startDate;
-    public function getStartDate(){return $this->startDate;}
-    public function setStartDate($value){$this->startDate=$value;}
+    protected $repository = null;
 
-    protected  $endDate;
-    public function getEndDate(){return $this->endDate;}
-    public function setEndDate($value){$this->endDate=$value;}
+    protected $managerId = null;
 
-    protected  $group_code;
-    public function getGroupCode(){return $this->group_code;}
-    public function setGroupCode($value){$this->group_code=$value;}
+    protected $startDate = null;
 
-    protected  $status;
-    public function getStatus(){return $this->status;}
-    public function setStatus($value){$this->status=$value;}
+    protected $endDate = null;
 
-    protected $remark;
-    public function getRemark(){return $this->remark;}
-    public function setRemark($value){$this->remark=$value;}
+    protected $groupCode = null;
 
-    public function exchangeArray(array $data){
-        $this->projectId=(!empty($data['projectId']))?$data['projectId'] : null;
-        $this->code=(!empty($data['code']))?$data['code'] : null;
-        $this->name=(!empty($data['name']))?$data['name'] : null;
-        $this->description=(!empty($data['description']))?$data['description'] : null;
-        $this->managerId=(!empty($data['managerId']))?$data['managerId'] : null;
-        $this->startDate=(!empty($data['startDate']))?$data['startDate'] : null;
-        $this->endDate=(!empty($data['endDate']))?$data['endDate'] : null;
-        $this->group_code=(!empty($data['group_code']))?$data['group_code'] : null;
-        $this->status=(!empty($data['status']))?$data['status'] : null;
-        $this->remark=(!empty($data['remark']))?$data['remark'] : null;
+    protected $status = null;
+
+    protected $remark = null;
+
+    public function getProjectId()
+    {
+        return $this->projectId;
     }
 
-    public function getArrayCopy(){
+    public function setProjectId($value)
+    {
+        $this->projectId = $value;
+    }
+
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    public function setCode($value)
+    {
+        $this->code = $value;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($value)
+    {
+        $this->name = $value;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function setDescription($value)
+    {
+        $this->description = $value;
+    }
+
+    public function getRepository()
+    {
+        return $this->repository;
+    }
+
+    public function setRepository($value)
+    {
+        $this->repository = $value;
+    }
+
+    public function getManagerId()
+    {
+        return $this->managerId;
+    }
+
+    public function setManagerId($value)
+    {
+        $this->managerId = $value;
+    }
+
+    public function getStartDate()
+    {
+        return $this->startDate;
+    }
+
+    public function setStartDate($value)
+    {
+        $this->startDate = $value;
+    }
+
+    public function getEndDate()
+    {
+        return $this->endDate;
+    }
+
+    public function setEndDate($value)
+    {
+        $this->endDate = $value;
+    }
+
+    public function getGroupCode()
+    {
+        return $this->groupCode;
+    }
+
+    public function setGroupCode($value)
+    {
+        $this->groupCode = $value;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function setStatus($value)
+    {
+        $this->status = $value;
+    }
+
+    public function getRemark()
+    {
+        return $this->remark;
+    }
+
+    public function setRemark($value)
+    {
+        $this->remark = $value;
+    }
+
+    public function exchangeArray(array $data)
+    {
+        $this->projectId = (!empty($data['projectId'])) ? $data['projectId'] : null;
+        $this->code = (!empty($data['code'])) ? $data['code'] : null;
+        $this->name = (!empty($data['name'])) ? $data['name'] : null;
+        $this->description = (!empty($data['description'])) ? $data['description'] : null;
+        $this->repository = (!empty($data['repository'])) ? $data['repository'] : null;
+        $this->managerId = (!empty($data['managerId'])) ? $data['managerId'] : null;
+        $this->startDate = (!empty($data['startDate'])) ? $data['startDate'] : null;
+        $this->endDate = (!empty($data['endDate'])) ? $data['endDate'] : null;
+        $this->groupCode = (!empty($data['group_code'])) ? $data['group_code'] : null;
+        $this->status = (!empty($data['status'])) ? $data['status'] : null;
+        $this->remark = (!empty($data['remark'])) ? $data['remark'] : null;
+    }
+
+    public function getArrayCopy()
+    {
         return array(
-            'projectId'=>$this->projectId,
-            'code'=>$this->code,
-            'name'=>$this->name,
-            'description'=>$this->description,
-            'managerId'=>$this->managerId,
-            'startDate'=>$this->startDate,
-            'endDate'=>$this->endDate,
-            'group_code'=>$this->group_code,
-            'status'=>$this->status,
-            'remark'=>$this->remark,
+        	'projectId' => $this->projectId,
+        	'code' => $this->code,
+        	'name' => $this->name,
+        	'description' => $this->description,
+        	'repository' => $this->repository,
+        	'managerId' => $this->managerId,
+        	'startDate' => $this->startDate,
+        	'endDate' => $this->endDate,
+        	'group_code' => $this->groupCode,
+        	'status' => $this->status,
+        	'remark' => $this->remark,
         );
     }
+
+
 }

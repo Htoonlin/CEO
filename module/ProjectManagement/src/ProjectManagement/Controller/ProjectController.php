@@ -64,14 +64,24 @@ class ProjectController extends SundewController{
      */
     public function detailAction(){
         $id=(int)$this->params()->fromRoute('id',0);
+        $action = $this->params()->fromQuery('action', '');
+
         $helper=new ProjectHelper($this->getDbAdapter());
         $form=$helper->getform($this->userCombos());
         $project=$this->projectTable()->getProject($id);
 
         $isEdit=true;
         if(!$project){
-            $isEdit=false;
-            $project=new Project();
+            $isEdit = false;
+            $project = new Project();
+            $staffId = $this->getCurrentStaff()->getStaffId();
+            $project->setManagerId($staffId);
+        }
+
+        if($action == 'clone'){
+            $isEdit = false;
+            $id = 0;
+            $project->setProjectId(0);
         }
 
         $form->bind($project);

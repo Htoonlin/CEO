@@ -211,6 +211,17 @@ class GenerateController extends SundewController
         $code .= "\t));";
         return $code;
     }
+    private function getClassName($module, $tblName, $suffix = ''){
+
+        $toCamelCase = new UnderscoreToCamelCase();
+        if($module == 'Application'){
+            $name = $toCamelCase->filter(substr($tblName, 4));
+        }else{
+            $name = $toCamelCase->filter(explode('_', $tblName, 3)[2]);
+        }
+
+        return $name . $suffix;
+    }
 
     /**
      * @return \Zend\Stdlib\ResponseInterface|ViewModel
@@ -223,17 +234,12 @@ class GenerateController extends SundewController
 
         if($request->isPost()){
             $form->setData($request->getPost());
-            $toCamelCase = new UnderscoreToCamelCase();
             $type = $this->params()->fromPost('type', '');
             $tblName = $this->params()->fromPost('tbl_name', '');
             $module = $this->params()->fromPost('module', '');
             $code = $this->params()->fromPost('txtGenerate', '');
             $filename = '';
-            if($module == 'Application'){
-                $name = $toCamelCase->filter(substr($tblName, 4));
-            }else{
-                $name = $toCamelCase->filter(explode('_', $tblName, 3)[2]);
-            }
+            $name = $this->getClassName($module, $tblName);
             if($type === 'E'){
                 $filename = 'attachment; filename="' . $name . '.php"';
             }else if($type === 'H'){
@@ -265,8 +271,7 @@ class GenerateController extends SundewController
         $module = $this->params()->fromPost('module', '');
         $module = empty($module) ? 'Application' : $module;
 
-        $toCamelCase = new UnderscoreToCamelCase();
-        $className = $toCamelCase->filter(substr($tblName, 4)) . 'Helper';
+        $className = $this->getClassName($module, $tblName, 'Helper');
         $nameSpace = $module . '\\Helper';
 
         $class = $this->initClass($className, $nameSpace);
@@ -340,8 +345,7 @@ class GenerateController extends SundewController
         $module = $this->params()->fromPost('module', '');
         $module = empty($module) ? 'Application' : $module;
 
-        $toCamelCase = new UnderscoreToCamelCase();
-        $className = $toCamelCase->filter(substr($tblName, 4));
+        $className = $this->getClassName($module, $tblName);
         $nameSpace = $module . '\\Entity';
 
         $class = $this->initClass($className, $nameSpace);
@@ -352,7 +356,7 @@ class GenerateController extends SundewController
         $columns = $this->getDbMeta()->getColumnNames($tblName);
         $exchangeBody = '';
         $getArrayBody = 'return array(' . PHP_EOL;
-
+        $toCamelCase = new UnderscoreToCamelCase();
         foreach($columns as $col)
         {
             $name = $toCamelCase->filter($col);
