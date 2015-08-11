@@ -59,7 +59,7 @@ class StaffController extends SundewController
     private function positionCombos()
     {
         $dataAccess=new PositionDataAccess($this->getDbAdapter());
-        return $dataAccess->getComboData('positionId','name');
+        return $dataAccess->getComboData('positionId', 'name');
     }
 
     /**
