@@ -45,38 +45,31 @@ $this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.
         myEditor.setSize("100%", "580px");
         $('#generateLoader').loader().hide();
 
+       	var generateCode = function(generateUrl){
+       		$('#generateLoader').loader().show();
+            $.ajax({
+                url : generateUrl,
+                data : $('#frmGenerate').serialize(),
+                type : 'POST',
+                success : function(data){
+                    if(data.status){
+                        myEditor.setValue(data.code);
+                    }else{
+                        alert(data.message);
+                    }
+                    $('#generateLoader').loader().hide();
+                }
+            });
+       	};
+
         $('button#btnGenerate').click(function(){
             var type = $('select[name="type"]').val();
             if(type == "E"){
-                $('#generateLoader').loader().show();
-                $.ajax({
-                    url : '<?php echo $this->url('development_generate', array('action' => 'entity')) ?>',
-                    data : $('#frmGenerate').serialize(),
-                    type : 'POST',
-                    success : function(data){
-                        if(data.status){
-                            myEditor.setValue(data.code);
-                        }else{
-                            alert(data.message);
-                        }
-                        $('#generateLoader').loader().hide();
-                    }
-                });
+                generateCode('<?php echo $this->url('development_generate', array('action' => 'entity')) ?>');
             }else if(type == "H"){
-                $('#generateLoader').loader().show();
-                $.ajax({
-                    url : '<?php echo $this->url('development_generate', array('action' => 'helper')) ?>',
-                    data : $('#frmGenerate').serialize(),
-                    type : 'POST',
-                    success : function(data){
-                        if(data.status){
-                            myEditor.setValue(data.code);
-                        }else{
-                            alert(data.message);
-                        }
-                        $('#generateLoader').loader().hide();
-                    }
-                });
+                generateCode('<?php echo $this->url('development_generate', array('action' => 'helper')) ?>');
+            }else if(type == "D"){
+            	generateCode('<?php echo $this->url('development_generate', array('action' => 'gateway')) ?>');
             }
         });
     });

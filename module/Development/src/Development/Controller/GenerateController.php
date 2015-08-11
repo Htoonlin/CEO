@@ -13,15 +13,12 @@ use Application\DataAccess\ConstantDataAccess;
 use Application\Service\SundewController;
 use Development\DataAccess\GenerateDataAccess;
 use Development\Helper\GenerateHelper;
-use phpDocumentor\Reflection\DocBlock;
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlockGenerator;
 use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\PropertyGenerator;
-use Zend\Db\Metadata\Object\ColumnObject;
 use Zend\Filter\Word\CamelCaseToSeparator;
 use Zend\Filter\Word\UnderscoreToCamelCase;
-use Zend\Filter\Word\UnderscoreToSeparator;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -181,6 +178,13 @@ class GenerateController extends SundewController
         return $code;
     }
 
+    /**
+     *
+     * @param unknown $name
+     * @param unknown $type
+     * @param unknown $isNull
+     * @param number $length
+     */
     private function createFilter($name, $type, $isNull, $length = 0)
     {
         $null = $isNull ? 'false' : 'true';
@@ -211,6 +215,13 @@ class GenerateController extends SundewController
         $code .= "\t));";
         return $code;
     }
+    /**
+     *
+     * @param unknown $module
+     * @param unknown $tblName
+     * @param string $suffix
+     * @return string
+     */
     private function getClassName($module, $tblName, $suffix = ''){
 
         $toCamelCase = new UnderscoreToCamelCase();
@@ -260,6 +271,104 @@ class GenerateController extends SundewController
         ));
     }
 
+    public function gatewayAction()
+    {
+        $isOK = $this->checkValidate();
+        if($isOK != true){
+            return $isOK;
+        }
+
+        $tblName = $this->params()->fromPost('tbl_name', '');
+        $module = $this->params()->fromPost('module', '');
+        $module = empty($module) ? 'Application' : $module;
+
+        $entity = $this->getClassName($module, $tblName);
+        $className = $this->getClassName($module, $tblName, 'DataAccess');
+        $nameSpace = $module . '\\DataAccess';
+        $class = $this->initClass($className, $nameSpace);
+        $class->addUse('Application\Service\SundewTableGateway');
+        $class->addUse($module . '\\Entity\\' . $entity);
+        $class->addUse('Zend\Db\Adapter\Adapter');
+        $class->addUse('Zend\Db\ResultSet\HydratingResultSet');
+        $class->addUse('Zend\Stdlib\Hydrator\ClassMethods');
+        $class->setExtendedClass('SundewTableGateway');
+
+        $constructorBody = '$this->table = "' . $tblName . '";' . PHP_EOL;
+        $constructorBody .= '$this->adapter = $dbAdapter;' . PHP_EOL;
+        $constructorBody .= '$this->resultSetPrototype = new HydratingResultSet(new ClassMethods(), new ' . $entity . '());' . PHP_EOL;
+        $constructorBody .= '$this->initialize();';
+        $constructor = MethodGenerator::fromArray(array(
+            'name' => '__construct',
+            'parameters' => array(
+                array('type' => 'Adapter', 'name' => 'dbAdapter')
+            ),
+            'body' => $constructorBody,
+        ));
+
+        $fetchAllBody = 'if($paginated){' . PHP_EOL;
+        $fetchAllBody .= "\t" . 'return $this->paginate($filter, $orderBy, $order);' . PHP_EOL;
+        $fetchAllBody .= '}' . PHP_EOL;
+        $fetchAllBody .= 'return $this->select();';
+        $fetchAll = MethodGenerator::fromArray(array(
+            'name' => 'fetchAll',
+            'parameters' => array(
+                array('name' => 'paginated', 'defaultvalue' => false),
+                array('name' => 'filter', 'defaultvalue' => ''),
+                array('name' => 'orderBy', 'defaultvalue' => ''),
+                array('name' => 'order', 'defaultvalue' => ''),
+            ),
+            'body' => $fetchAllBody,
+        ));
+
+        $primaryKey = $this->getDbMeta()->getColumnNames($tblName)[0];
+        $getRecordBody = '$id = (int)$id;' . PHP_EOL;
+        $getRecordBody .= '$rowSet = $this->select(array("' . $primaryKey . '" => $id));' . PHP_EOL;
+        $getRecordBody .= 'if($rowSet == null){' . PHP_EOL;
+        $getRecordBody .= "\t throw new \\Exception('Invalid data');\n}\n";
+        $getRecordBody .= 'return $rowSet->current();';
+        $getRecord = MethodGenerator::fromArray(array(
+            'name' => 'get' . $entity,
+            'parameters' => array('id'),
+            'body' => $getRecordBody,
+        ));
+
+        $saveRecordBody = '$id = $' . lcfirst($entity). '->get' . ucfirst($primaryKey) . '();' . PHP_EOL;
+        $saveRecordBody .= '$data = $' . lcfirst($entity) . '->getArrayCopy();' . PHP_EOL;
+        $saveRecordBody .= 'if($id > 0){' . PHP_EOL;
+        $saveRecordBody .= "\t" . '$this->update($data, array("' . $primaryKey . '" => $id));' . PHP_EOL;
+        $saveRecordBody .= "} else {\n";
+        $saveRecordBody .= "\t" . 'unset($data["' . $primaryKey . '"]);' . PHP_EOL;
+        $saveRecordBody .= "\t" . '$this->insert($data);' . PHP_EOL;
+        $saveRecordBody .= "\t" . '$' . lcfirst($entity) . '->set' . ucfirst($primaryKey) . '($this->getLastInsertValue());' . PHP_EOL;
+        $saveRecordBody .= "}" . PHP_EOL;
+        $saveRecordBody .= 'return $' . lcfirst($entity) . ';';
+        $saveRecord = MethodGenerator::fromArray(array(
+            'name' => 'save' . $entity,
+            'parameters' => array(
+                array('type' => $entity, 'name' => lcfirst($entity)),
+            ),
+            'body' => $saveRecordBody,
+        ));
+
+        $deleteRecordBody = '$this->delete(array("' . $primaryKey . '" => (int)$id));';
+        $deleteRecord = MethodGenerator::fromArray(array(
+            'name' => 'delete' . $entity,
+            'parameters' => array('id'),
+            'body' => $deleteRecordBody
+        ));
+
+        $class->addMethods(array($constructor, $fetchAll, $getRecord, $saveRecord, $deleteRecord));
+        $code = '<?php' . PHP_EOL . $class->generate();
+        return new JsonModel(array(
+            'status' => true,
+            'code' => $code,
+        ));
+    }
+
+    /**
+     *
+     * @return Ambigous <boolean, \Zend\View\Model\JsonModel>|\Zend\View\Model\JsonModel
+     */
     public function helperAction()
     {
         $isOK = $this->checkValidate();

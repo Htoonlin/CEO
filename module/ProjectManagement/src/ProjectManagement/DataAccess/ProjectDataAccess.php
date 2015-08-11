@@ -56,6 +56,9 @@ class ProjectDataAccess extends SundewTableGateway{
     public function getProject($id){
         $id=(int)$id;
         $rowSet=$this->select(array('projectId'=>$id));
+        if($rowSet == null){
+            throw new \Exception('Invalid data.');
+        }
         return $rowSet->current();
     }
 
