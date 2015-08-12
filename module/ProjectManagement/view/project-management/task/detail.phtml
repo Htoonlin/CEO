@@ -15,59 +15,86 @@ $form->setAttributes(array(
     'id' => 'form'
 ));
 echo $this->form()->openTag($form);
+echo $this->formHidden($form->get('taskId'));
 ?>
-<div class="row">
-	<div class="col-sm-9">
-   <?php echo $this->formrow($form->get('name')); ?>
-   </div>
-	<div class="col-sm-3">
-   <?php echo $this->formrow($form->get('current')); ?>
-   </div>
-</div>
-<div class="row">
-	<div class="col-sm-4">
-   <?php echo $this->formrow($form->get('staffId'));?>
-   </div>
-	<div class="col-sm-4">
-   <?php echo $this->formrow($form->get('fromTime'));?>
-   </div>
-	<div class="col-sm-4">
-   <?php echo $this->formrow($form->get('toTime'));?>
-   </div>
-</div>
-<div class="row">
-	<div class="col-sm-4">
-    <?php echo $this->formrow($form->get('projectId'));?>
-    </div>
-	<div class="col-sm-4">
-    <?php echo $this->formrow($form->get('predecessorId'));?>
-    </div>
-	<div class="col-sm-4">
-    <?php echo $this->formrow($form->get('level')); ?>
-    </div>
-</div>
-<div class="row">
-	<div class="col-sm-4">
-    <?php echo $this->formrow($form->get('maxBudget'));?>
-    </div>
-	<div class="col-sm-2">
-    <?php echo $this->formrow($form->get('currencyId'));?>
-    </div>
-	<div class="col-sm-2">
-    <?php echo $this->formrow($form->get('priority'));?>
-    </div>
-	<div class="col-sm-4">
-    <?php echo $this->formrow($form->get('status'));?>
-    </div>
-</div>
-<div class="row">
-	<div class="col-sm-12">
-    <?php echo $this->formrow($form->get('remark'));?>
-    </div>
-</div>
-<div class="row">
-	<div class="col-sm-12">
-    <?php echo $this->formrow($form->get('tag'));?>
-    </div>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<div class="row">
+			<div class="col-sm-9">
+           <?php echo $this->formrow($form->get('name')); ?>
+           </div>
+			<div class="col-sm-3">
+           <?php echo $this->formrow($form->get('current')); ?>
+           </div>
+		</div>
+	</div>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-sm-3">
+            <?php echo $this->formrow($form->get('staffId'));?>
+            </div>
+			<div class="col-sm-3">
+            <?php echo $this->formrow($form->get('fromTime'));?>
+            </div>
+			<div class="col-sm-3">
+            <?php echo $this->formrow($form->get('toTime'));?>
+            </div>
+            <div class="col-sm-3">
+            <?php echo $this->formrow($form->get('level')); ?>
+            </div>
+		</div>
+		<div class="row">
+			<div class="col-sm-4">
+            <?php echo $this->formrow($form->get('projectId'));?>
+            </div>
+            <div class="col-sm-3">
+            <?php echo $this->formrow($form->get('maxBudget'));?>
+            </div>
+			<div class="col-sm-2">
+            <?php echo $this->formrow($form->get('currencyId'));?>
+            </div>
+            <div class="col-sm-3">
+            <?php echo $this->formrow($form->get('priority'));?>
+            </div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+            <?php echo $this->formrow($form->get('remark'));?>
+            </div>
+		</div>
+		<div class="row">
+			<div class="col-sm-9">
+            <?php echo $this->formrow($form->get('tag'));?>
+            </div>
+            <div class="col-sm-3">
+            <?php echo $this->formrow($form->get('status'));?>
+            </div>
+        </div>
+	</div>
+	<div class="panel-footer">
+        <div class="form-group text-right">
+            <label></label>
+            <button type="submit" value="Save" class="btn btn-primary">
+                <span class="glyphicon glyphicon-floppy-save"></span>
+                Save
+            </button>
+            <?php if($isEdit):?>
+            <a class="btn btn-warning"
+                href="<?php echo $this->url('pm_task', array('action'=>'detail', 'id'=>$id)); ?>?action=clone">
+                <span class="glyphicon glyphicon-trash"></span>
+                Clone
+            </a>
+            <a onclick="return confirm('Are you sure to delete?')" class="btn btn-danger"
+            href="<?php echo $this->url('pm_task', array('action'=>'delete', 'id'=>$id)); ?>">
+                <span class="glyphicon glyphicon-trash"></span>
+                Remove
+            </a>
+            <?php endif; ?>
+            <a href="<?php echo $this->url('pm_task'); ?>" class="btn btn-default">
+                <span class="glyphicon glyphicon-th-list"></span>
+                Back to List
+            </a>
+        </div>
+	</div>
 </div>
 <?php echo $this->form()->closeTag(); ?>

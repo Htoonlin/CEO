@@ -132,7 +132,7 @@ class TaskHelper
 
         	$status = new Element\Select('status');
         	$status->setAttribute('class', 'form-control');
-        	$status->setLabel('Status');
+        	$status->setLabel('Status:');
         	$status->setValueOptions($statusList);
         	$form->add($status);
 
@@ -159,31 +159,11 @@ class TaskHelper
         if(!$this->inputFilter){
         	$filter = new InputFilter();
         	$filter->add(array(
-        		'name' => 'taskId',
-        		'required' => true,
-        		'filters' => array(array('name' => 'Int')),
-        	));
-        	$filter->add(array(
-        	    'name' => 'staffId',
-        	    'required' => true,
-        	    'filters' => array(array('name' => 'Int')),
-        	));
-        	$filter->add(array(
-        		'name' => 'projectId',
-        		'required' => false,
-        		'filters' => array(array('name' => 'Int')),
-        	));
-        	$filter->add(array(
-        	    'name' => 'currencyId',
-        	    'required' => false,
-        	    'filters' => array(array('name' => 'Int')),
-        	));
-        	$filter->add(array(
         		'name' => 'name',
         		'required' => true,
         		'filters' => array(
-        			array('name' => 'StripTags'),
-        			array('name' => 'StringTirm'),
+        			array('name' => 'Zend\Filter\StripTags'),
+        			array('name' => 'Zend\Filter\StringTrim'),
         		),
         		'validators' => array(
         			array(
@@ -195,11 +175,58 @@ class TaskHelper
         		),
         	));
         	$filter->add(array(
+        		'name' => 'current',
+        		'required' => true,
+        		'validators' => array(array('name' => 'Zend\I18n\Validator\IsFloat')),
+        	));
+        	$filter->add(array(
+        		'name' => 'staffId',
+        		'required' => true,
+        		'validators' => array(array('name' => 'Zend\I18n\Validator\IsInt')),
+        	));
+        	$filter->add(array(
+        		'name' => 'fromTime',
+        		'required' => true,
+        	));
+        	$filter->add(array(
+        		'name' => 'toTime',
+        		'required' => true,
+        	));
+        	$filter->add(array(
+        		'name' => 'projectId',
+        		'required' => false,
+        	));
+        	$filter->add(array(
+        		'name' => 'predecessorId',
+        		'required' => false,
+        	));
+        	$filter->add(array(
+        		'name' => 'level',
+        		'required' => false,
+        	));
+        	$filter->add(array(
+        		'name' => 'maxBudget',
+        		'required' => false,
+        	));
+        	$filter->add(array(
+        		'name' => 'currencyId',
+        		'required' => false,
+        	));
+        	$filter->add(array(
+        		'name' => 'priority',
+        		'required' => true,
+        		'validators' => array(array('name' => 'Zend\I18n\Validator\IsInt')),
+        	));
+        	$filter->add(array(
+        		'name' => 'remark',
+        		'required' => false,
+        	));
+        	$filter->add(array(
         		'name' => 'tag',
         		'required' => true,
         		'filters' => array(
-        			array('name' => 'StripTags'),
-        			array('name' => 'StringTirm'),
+        			array('name' => 'Zend\Filter\StripTags'),
+        			array('name' => 'Zend\Filter\StringTrim'),
         		),
         		'validators' => array(
         			array(
@@ -211,70 +238,15 @@ class TaskHelper
         		),
         	));
         	$filter->add(array(
-        		'name' => 'level',
+        		'name' => 'finished',
         		'required' => false,
-        		'filters' => array(array('name' => 'Int')),
-        	));
-        	$filter->add(array(
-        	    'name' => 'maxBudget',
-        	    'required' => false,
-        	    'filters' => array(array('name' => 'Float')),
-        	));
-        	$filter->add(array(
-        		'name' => 'managerId',
-        		'required' => true,
-        		'filters' => array(array('name' => 'Int')),
-        	));
-        	$filter->add(array(
-        		'name' => 'fromTime',
-        		'required' => true,
-        	));
-        	$filter->add(array(
-        		'name' => 'toTime',
-        		'required' => true,
-        	));
-        	$filter->add(array(
-        		'name' => 'parentId',
-        		'required' => false,
-        		'filters' => array(array('name' => 'Int')),
-        	));
-        	$filter->add(array(
-        		'name' => 'predecessorId',
-        		'required' => false,
-        		'filters' => array(array('name' => 'Int')),
-        	));
-        	$filter->add(array(
-        		'name' => 'priority',
-        		'required' => true,
-        		'filters' => array(array('name' => 'Int')),
-        	));
-        	$filter->add(array(
-        		'name' => 'remark',
-        		'required' => false,
-        		'filters' => array(
-        			array('name' => 'StripTags'),
-        			array('name' => 'StringTirm'),
-        		),
-        		'validators' => array(
-        			array(
-        				'name' => 'StringLength',
-        				'max' => 500,
-        				'min' => 1,
-        				'encoding' => 'UTF-8',
-        			),
-        		),
-        	));
-        	$filter->add(array(
-        		'name' => 'current',
-        		'required' => true,
-        		'filters' => array(array('name' => 'Float')),
         	));
         	$filter->add(array(
         		'name' => 'status',
         		'required' => true,
         		'filters' => array(
-        			array('name' => 'StripTags'),
-        			array('name' => 'StringTirm'),
+        			array('name' => 'Zend\Filter\StripTags'),
+        			array('name' => 'Zend\Filter\StringTrim'),
         		),
         		'validators' => array(
         			array(

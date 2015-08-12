@@ -6,6 +6,9 @@ use ProjectManagement\Entity\Task;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Select;
+use Zend\Db\TableGateway\TableGateway;
 
 /**
  * System Generated Code
@@ -25,12 +28,20 @@ class TaskDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
-    public function fetchAll($paginated = false, $filter = '', $orderBy = '', $order = '')
+    public function fetchAll($projectId, $paginated = false, $filter = '', $orderBy = '', $order = '')
     {
+        $view = 'vw_pm_task';
+        $select = new Select($view);
+        $select->order($orderBy . ' ' . $order);
+        $where = new Where();
+        $where->equalTo('projectId', $projectId);
+        $where->literal("CONCAT_WS(' ', tag, name, fromTime, toTime) LIKE ?", '%' . $filter . '%');
+        $select->where($where);
         if($paginated){
-        	return $this->paginate($filter, $orderBy, $order);
+        	return $this->paginateWith($select);
         }
-        return $this->select();
+        $gateway = new TableGateway($view, $this->adapter);
+        return $gateway->select(array('projectId' => $projectId));
     }
 
     public function getTask($id)

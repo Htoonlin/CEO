@@ -86,8 +86,7 @@ class SundewTableGateway extends AbstractTableGateway
                 $select->where($where);
             }
 
-            $paginatorAdapter = new DbSelect($select, $this->adapter);
-            return new Paginator($paginatorAdapter);
+            return $this->paginateWith($select);
 
         }catch(\Exception $ex){
             throw $ex;

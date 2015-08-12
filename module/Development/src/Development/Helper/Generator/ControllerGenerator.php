@@ -59,7 +59,7 @@ class ControllerGenerator extends SundewGenerator
         $varEntity = lcfirst($entity);
         $mainColumn = $this->dbMeta->getColumnNames($this->tbl_name)[1];
         $indexActionBody = '$page = (int)$this->params()->fromQuery("page", 1);' . PHP_EOL;
-        $indexActionBody .= '$sort = $this->params()->fromQuery("page", "' . $mainColumn . '");' . PHP_EOL;
+        $indexActionBody .= '$sort = $this->params()->fromQuery("sort", "' . $mainColumn . '");' . PHP_EOL;
         $indexActionBody .= '$sortBy = $this->params()->fromQuery("by", "asc");' . PHP_EOL;
         $indexActionBody .= '$filter = $this->params()->fromQuery("filter", "");' . PHP_EOL;
         $indexActionBody .= '$pageSize = (int)$this->params()->fromQuery("size", 10);' . PHP_EOL;
@@ -97,7 +97,7 @@ class ControllerGenerator extends SundewGenerator
         $detailActionBody .= "\t\$form->setData(\$post_data);\n";
         $detailActionBody .= "\t\$form->setInputFilter(\$helper->getInputFilter(\$id));\n\n";
         $detailActionBody .= "\tif(\$form->isValid()){\n";
-        $detailActionBody .= "\t\t\$this->{$dataAccessMethod}()->save{$entity}({$varEntity});\n";
+        $detailActionBody .= "\t\t\$this->{$dataAccessMethod}()->save{$entity}(\${$varEntity});\n";
         $detailActionBody .= "\t\t\$this->flashMessenger()->addSuccessMessage('Save successful');\n";
         $detailActionBody .= "\t\treturn \$this->redirect()->toRoute('{$this->module}_{$varEntity}');\n";
         $detailActionBody .= "\t}\n";
@@ -127,7 +127,7 @@ class ControllerGenerator extends SundewGenerator
         $jsonDeleteActionBody .= "\tforeach(\$data as \$id){\n";
         $jsonDeleteActionBody .= "\t\t\$this->{$varEntity}Table()->delete{$entity}(\$id);\n\t}\n";
         $jsonDeleteActionBody .= "\t\$conn->commit();\n";
-        $jsonDeleteActionBody .= "\t\$messge = 'success';\n";
+        $jsonDeleteActionBody .= "\t\$message = 'success';\n";
         $jsonDeleteActionBody .= "\t\$this->flashMessenger()->addInfoMessage('Delete successful');\n";
         $jsonDeleteActionBody .= "} catch(\\Exception \$ex) {\n";
         $jsonDeleteActionBody .= "\t\$conn->rollback();\n";

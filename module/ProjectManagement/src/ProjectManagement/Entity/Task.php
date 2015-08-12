@@ -7,7 +7,7 @@ use Zend\Stdlib\ArraySerializableInterface;
  * System Generated Code
  *
  * User : Htoonlin
- * Date : 2015-08-11 10:45:17
+ * Date : 2015-08-12 14:08:44
  *
  * @package ProjectManagement\Entity
  */
@@ -16,29 +16,33 @@ class Task implements ArraySerializableInterface
 
     protected $taskId = null;
 
-    protected $projectId = null;
-
     protected $name = null;
 
-    protected $tag = null;
+    protected $current = null;
 
-    protected $level = null;
-
-    protected $managerId = null;
+    protected $staffId = null;
 
     protected $fromTime = null;
 
     protected $toTime = null;
 
-    protected $parentId = null;
+    protected $projectId = null;
 
     protected $predecessorId = null;
+
+    protected $level = null;
+
+    protected $maxBudget = null;
+
+    protected $currencyId = null;
 
     protected $priority = null;
 
     protected $remark = null;
 
-    protected $current = null;
+    protected $tag = null;
+
+    protected $managerId = null;
 
     protected $finished = null;
 
@@ -54,16 +58,6 @@ class Task implements ArraySerializableInterface
         $this->taskId = $value;
     }
 
-    public function getProjectId()
-    {
-        return $this->projectId;
-    }
-
-    public function setProjectId($value)
-    {
-        $this->projectId = $value;
-    }
-
     public function getName()
     {
         return $this->name;
@@ -74,34 +68,24 @@ class Task implements ArraySerializableInterface
         $this->name = $value;
     }
 
-    public function getTag()
+    public function getCurrent()
     {
-        return $this->tag;
+        return $this->current;
     }
 
-    public function setTag($value)
+    public function setCurrent($value)
     {
-        $this->tag = $value;
+        $this->current = $value;
     }
 
-    public function getLevel()
+    public function getStaffId()
     {
-        return $this->level;
+        return $this->staffId;
     }
 
-    public function setLevel($value)
+    public function setStaffId($value)
     {
-        $this->level = $value;
-    }
-
-    public function getManagerId()
-    {
-        return $this->managerId;
-    }
-
-    public function setManagerId($value)
-    {
-        $this->managerId = $value;
+        $this->staffId = $value;
     }
 
     public function getFromTime()
@@ -124,14 +108,14 @@ class Task implements ArraySerializableInterface
         $this->toTime = $value;
     }
 
-    public function getParentId()
+    public function getProjectId()
     {
-        return $this->parentId;
+        return $this->projectId;
     }
 
-    public function setParentId($value)
+    public function setProjectId($value)
     {
-        $this->parentId = $value;
+        $this->projectId = $value;
     }
 
     public function getPredecessorId()
@@ -142,6 +126,36 @@ class Task implements ArraySerializableInterface
     public function setPredecessorId($value)
     {
         $this->predecessorId = $value;
+    }
+
+    public function getLevel()
+    {
+        return $this->level;
+    }
+
+    public function setLevel($value)
+    {
+        $this->level = $value;
+    }
+
+    public function getMaxBudget()
+    {
+        return $this->maxBudget;
+    }
+
+    public function setMaxBudget($value)
+    {
+        $this->maxBudget = $value;
+    }
+
+    public function getCurrencyId()
+    {
+        return $this->currencyId;
+    }
+
+    public function setCurrencyId($value)
+    {
+        $this->currencyId = $value;
     }
 
     public function getPriority()
@@ -164,14 +178,24 @@ class Task implements ArraySerializableInterface
         $this->remark = $value;
     }
 
-    public function getCurrent()
+    public function getTag()
     {
-        return $this->current;
+        return $this->tag;
     }
 
-    public function setCurrent($value)
+    public function setTag($value)
     {
-        $this->current = $value;
+        $this->tag = $value;
+    }
+
+    public function getManagerId()
+    {
+        return $this->managerId;
+    }
+
+    public function setManagerId($value)
+    {
+        $this->managerId = $value;
     }
 
     public function getFinished()
@@ -197,18 +221,20 @@ class Task implements ArraySerializableInterface
     public function exchangeArray(array $data)
     {
         $this->taskId = (!empty($data['taskId'])) ? $data['taskId'] : null;
-        $this->projectId = (!empty($data['projectId'])) ? $data['projectId'] : null;
         $this->name = (!empty($data['name'])) ? $data['name'] : null;
-        $this->tag = (!empty($data['tag'])) ? $data['tag'] : null;
-        $this->level = (!empty($data['level'])) ? $data['level'] : null;
-        $this->managerId = (!empty($data['managerId'])) ? $data['managerId'] : null;
+        $this->current = (!empty($data['current'])) ? $data['current'] : 0;
+        $this->staffId = (!empty($data['staffId'])) ? $data['staffId'] : null;
         $this->fromTime = (!empty($data['fromTime'])) ? $data['fromTime'] : null;
         $this->toTime = (!empty($data['toTime'])) ? $data['toTime'] : null;
-        $this->parentId = (!empty($data['parentId'])) ? $data['parentId'] : null;
+        $this->projectId = (!empty($data['projectId'])) ? $data['projectId'] : null;
         $this->predecessorId = (!empty($data['predecessorId'])) ? $data['predecessorId'] : null;
-        $this->priority = (!empty($data['priority'])) ? $data['priority'] : null;
+        $this->level = (!empty($data['level'])) ? $data['level'] : null;
+        $this->maxBudget = (!empty($data['maxBudget'])) ? $data['maxBudget'] : null;
+        $this->currencyId = (!empty($data['currencyId'])) ? $data['currencyId'] : null;
+        $this->priority = (!empty($data['priority'])) ? $data['priority'] : 0;
         $this->remark = (!empty($data['remark'])) ? $data['remark'] : null;
-        $this->current = (!empty($data['current'])) ? $data['current'] : null;
+        $this->tag = (!empty($data['tag'])) ? $data['tag'] : null;
+        $this->managerId = (!empty($data['managerId'])) ? $data['managerId'] : null;
         $this->finished = (!empty($data['finished'])) ? $data['finished'] : null;
         $this->status = (!empty($data['status'])) ? $data['status'] : null;
     }
@@ -216,21 +242,23 @@ class Task implements ArraySerializableInterface
     public function getArrayCopy()
     {
         return array(
-            'taskId' => $this->taskId,
-            'projectId' => $this->projectId,
-            'name' => $this->name,
-            'tag' => $this->tag,
-            'level' => $this->level,
-            'managerId' => $this->managerId,
-            'fromTime' => $this->fromTime,
-            'toTime' => $this->toTime,
-            'parentId' => $this->parentId,
-            'predecessorId' => $this->predecessorId,
-            'priority' => $this->priority,
-            'remark' => $this->remark,
-            'current' => $this->current,
-            'finished' => $this->finished,
-            'status' => $this->status,
+        	'taskId' => $this->taskId,
+        	'name' => $this->name,
+        	'current' => floatval($this->current),
+        	'staffId' => intval($this->staffId),
+        	'fromTime' => $this->fromTime,
+        	'toTime' => $this->toTime,
+        	'projectId' => intval($this->projectId),
+        	'predecessorId' => $this->predecessorId,
+        	'level' => intval($this->level),
+        	'maxBudget' => $this->maxBudget,
+        	'currencyId' => $this->currencyId,
+        	'priority' => intval($this->priority),
+        	'remark' => $this->remark,
+        	'tag' => $this->tag,
+        	'managerId' => $this->managerId,
+        	'finished' => $this->finished,
+        	'status' => $this->status,
         );
     }
 

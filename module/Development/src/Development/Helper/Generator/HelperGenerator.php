@@ -164,23 +164,25 @@ class HelperGenerator extends SundewGenerator
         $code .= "\t\t'name' => '{$name}',\n";
         $code .= "\t\t'required' => {$null},\n";
 
-        if(in_array($type, $this->typeNum)){
-            $code .= "\t\t'filters' => array(array('name' => 'Int')),\n";
-        }else if(in_array($type, $this->typeFloat)){
-            $code .= "\t\t'filters' => array(array('name' => 'Float')),\n";
-        }else if(in_array($type, $this->typeString)){
-            $code .= "\t\t'filters' => array(\n";
-            $code .= "\t\t\tarray('name' => 'StripTags'),\n";
-            $code .= "\t\t\tarray('name' => 'StringTirm'),\n";
-            $code .= "\t\t),\n";
-            $code .= "\t\t'validators' => array(\n";
-            $code .= "\t\t\tarray(\n";
-            $code .= "\t\t\t\t'name' => 'StringLength',\n";
-            $code .= "\t\t\t\t'max' => {$length},\n";
-            $code .= "\t\t\t\t'min' => 1,\n";
-            $code .= "\t\t\t\t'encoding' => 'UTF-8',\n";
-            $code .= "\t\t\t),\n";
-            $code .= "\t\t),\n";
+        if(!$isNull){
+            if(in_array($type, $this->typeNum)){
+                $code .= "\t\t'validators' => array(array('name' => 'Zend\\I18n\\Validator\\IsInt')),\n";
+            }else if(in_array($type, $this->typeFloat)){
+                $code .= "\t\t'validators' => array(array('name' => 'Zend\\I18n\\Validator\\IsFloat')),\n";
+            }else if(in_array($type, $this->typeString)){
+                $code .= "\t\t'filters' => array(\n";
+                $code .= "\t\t\tarray('name' => 'Zend\\Filter\\StripTags'),\n";
+                $code .= "\t\t\tarray('name' => 'Zend\\Filter\\StringTrim'),\n";
+                $code .= "\t\t),\n";
+                $code .= "\t\t'validators' => array(\n";
+                $code .= "\t\t\tarray(\n";
+                $code .= "\t\t\t\t'name' => 'StringLength',\n";
+                $code .= "\t\t\t\t'max' => {$length},\n";
+                $code .= "\t\t\t\t'min' => 1,\n";
+                $code .= "\t\t\t\t'encoding' => 'UTF-8',\n";
+                $code .= "\t\t\t),\n";
+                $code .= "\t\t),\n";
+            }
         }
 
         $code .= "\t));";
