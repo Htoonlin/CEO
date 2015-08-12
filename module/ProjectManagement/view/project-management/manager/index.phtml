@@ -6,10 +6,50 @@
  * Time: 5:10 PM
  * Zend Code Completion
  * @var $this \Zend\View\Renderer\PhpRenderer
+ * @var $form \Zend\Form\Form
  */
 $title = 'Task Manager';
 $this->headtitle($title);
 ?>
+<script type="text/javascript">
+	$().ready(function(){
+		$('#taskList').treegrid();
+	});
+</script>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
-<hr/>
+<hr />
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<div class="row">
+			<div class="col-md-3">
+            <?php echo $this->gridFilter('projectFilter'); ?>
+            </div>
+			<div class="col-md-3">
+				<div class="text-right">
+                <?php echo $this->formselect($cboProject); ?>
+                </div>
+			</div>
+			<div class="col-md-3 col-md-offset-3">
+				<div class="text-right">
+					<div class="btn-group">
+						<button class="btn btn-primary" type="button" id="btnNew"
+							data-toggle="modal" data-target="#taskDetail">
+							<span class="glyphicon glyphicon-plus"></span> New Task
+						</button>
+						<a
+							href="<?php echo $this->url('pm_task',array('action'=>'export'));?>"
+							class="btn btn-default"> <span
+							class="glyphicon glyphicon-download"></span> Export
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel-body">
+		<div class="grid">
+		</div>
+	</div>
+	<div class="panel-footer"></div>
+</div>
 
