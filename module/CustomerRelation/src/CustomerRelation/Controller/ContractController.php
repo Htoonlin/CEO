@@ -9,6 +9,7 @@
 namespace CustomerRelation\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
+use Application\DataAccess\ConstantDataAccess;
 use Application\Service\SundewController;
 use Application\Service\SundewExporting;
 use CustomerRelation\DataAccess\ContractDataAccess;
@@ -16,6 +17,7 @@ use CustomerRelation\Entity\Contract;
 use CustomerRelation\Helper\ContractHelper;
 use CustomerRelation\DataAccess\CompanyDataAccess;
 use CustomerRelation\DataAccess\ContactDataAccess;
+use ProjectManagement\DataAccess\ProjectDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -28,6 +30,7 @@ class ContractController extends SundewController
 {
     private $staffId;
     private $staffName;
+
     private function contractTable()
     {
         if(!$this->staffId){
@@ -37,26 +40,39 @@ class ContractController extends SundewController
         }
         return new ContractDataAccess($this->getDbAdapter(),$this->staffId);
     }
-    private function currencyCombos()
+    private $currencyList;
+    private $companyList;
+    private $contactList;
+    private $statusList;
+
+    private function init_combos()
     {
-        $dataAccess=new CurrencyDataAccess($this->getDbAdapter());
-        return $dataAccess->getComboData('currencyId','code');
+        if(!$this->currencyList){
+            $currencyDataAccess = new CurrencyDataAccess($this->getDbAdapter());
+            $this->currencyList = $currencyDataAccess->getComboData('currencyId','code');
+        }
+        if(!$this->companyList){
+            $companyDataAccess = new CompanyDataAccess($this->getDbAdapter()) ;
+            $this->companyList = $companyDataAccess->getComboData('companyId','name');
+        }
+        if(!$this->contactList){
+            $contactDataAccess = new ContactDataAccess($this->getDbAdapter());
+            $this->contactList = $contactDataAccess->getComboData('contactId','name');
+        }
+        if(!$this->statusList){
+            $constantDataAccess = new ConstantDataAccess($this->getDbAdapter());
+            $this->statusList = $constantDataAccess->getComboByName('default_status');
+        }
     }
-    private function companyCombos()
-    {
-        $dataAccess=new CompanyDataAccess($this->getDbAdapter());
-        return $dataAccess->getComboData('companyId','name');
-    }
-    private function contactCombos()
-    {
-        $dataAccess=new ContactDataAccess($this->getDbAdapter());
-        return $dataAccess->getComboData('contactId','name');
-    }
+
+    /**
+     * @return ViewModel
+     */
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page',1);
         $sort = $this->params()->fromQuery('sort','contractDate');
-        $sortBy = $this->params()->fromQuery('by','dsc');
+        $sortBy = $this->params()->fromQuery('by','desc');
         $filter = $this->params()->fromQuery('filter','');
         $pageSize = (int)$this->params()->fromQuery('size', 10);
 
@@ -70,52 +86,50 @@ class ContractController extends SundewController
             'filter'=>$filter,
         ));
     }
+
+    /**
+     * @return \Zend\Http\Response|ViewModel
+     */
     public function detailAction()
     {
-        $id = (int)$this->params()->fromRoute('id', 0);
-        $helper = new ContractHelper();
-        $form = $helper->getForm($this->currencyCombos(),$this->companyCombos(),$this->contactCombos());
-        $contract = $this->contractTable()->getContractView($id);
-        $isEdit = true;
-        $hasFile = 'false';
-        $currentFile = "";
+       $this->init_combos();
+        $id = (int)$this->params()->fromRoute('id',0);
+        $helper = new ContractHelper($this->getDbAdapter());
+        $form = $helper->getForm($this->currencyList, $this->companyList,
+            $this->contactList, $this->statusList);
 
+        $contract = $this->contractTable()->getContract($id);
+        $isEdit = true;
         if(!$contract){
-            $isEdit = false;
+            $isEdit=false;
             $contract = new Contract();
-        }else{
-            $currentFile = $contract->getContractFile();
         }
+
         $form->bind($contract);
         $request = $this->getRequest();
-
         if($request->isPost()){
-            $post_data = array_merge_recursive($request->getPost()->toArray(),
+            $post_data = array_merge_recursive(
+                $request->getPost()->toArray(),
                 $request->getFiles()->toArray());
             $form->setData($post_data);
-            $form->setInputFilter($helper->getInputFilter(($isEdit ? $post_data['contractId'] : 0), $post_data['code']));
+            $form->setInputFilter($helper->getInputFilter($id, $post_data['code']));
+            $post_data['contractBy'] = $this->staffId;
             if($form->isValid()){
-                $file = $contract->getContractFile();
-
-                if($post_data['contractFile'] ==  'false' && empty($file['name'])){
-                    $contract->setContractFile(null);
-                }else if($post_data['contractFile'] == 'true' && empty($file['name']) && $isEdit){
-                    $contract->setContractFile($currentFile);
-                }
                 $this->contractTable()->saveContract($contract);
-                $this->flashMessenger()->addMessage('Save successful');
+                $this->flashMessenger()->addSuccessMessage('Save successful');
                 return $this->redirect()->toRoute('cr_contract');
             }
         }
-
         return new ViewModel(array(
             'form' => $form,
             'id' => $id,
-            'contract'=>$contract,
-            'isEdit' => $isEdit,
-            'hasFile' => $hasFile,
-            'staffName'=>$this->staffName,));
+            'isEdit'=>$isEdit
+        ));
     }
+
+    /**
+     * @return \Zend\Http\Response
+     */
     public function deleteAction()
     {
 
@@ -130,6 +144,9 @@ class ContractController extends SundewController
         return $this->redirect()->toRoute("cr_contract");
     }
 
+    /**
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->contractTable()->fetchAll(false));
@@ -144,6 +161,9 @@ class ContractController extends SundewController
         return $response;
     }
 
+    /**
+     * @return JsonModel
+     */
     public function jsonDeleteAction()
     {
         $data=$this->params()->fromPost('chkId',array());

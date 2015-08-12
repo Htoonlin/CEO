@@ -8,17 +8,25 @@
 
 namespace CustomerRelation\Helper;
 
+use Zend\Db\Adapter\Adapter;
 use Zend\Form\Element;
 use Zend\Form\Form;
 use Zend\InputFilter\FileInput;
-use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
-use Zend\Validator\Db\NoRecordExists;
-use Zend\Validator\File\IsImage;
-class ContractHelper
+use Zend\InputFilter\InputFilterInterface;
+use Zend\Validator\File\Extension;
+
+class ContractHelper extends Form
 {
+    protected $dbAdapter;
+    public function __construct($dbAdapter)
+    {
+        $this->dbAdapter = $dbAdapter;
+    }
+
     protected $form;
-    public function getForm(array $currencies, array $companies, array $contacts)
+    public function getForm(array $currencies, array $companies,
+                            array $contacts,array $statusList)
     {
         if(!$this->form){
             $hidId=new Element\Hidden();
@@ -66,8 +74,7 @@ class ContractHelper
                 ->setValueOptions($currencies);
 
             $txtContractFile=new Element\File('contractFile');
-            $txtContractFile->setLabel('File Upload')
-                ->setAttribute('class','form-control');
+            $txtContractFile->setLabel('File Upload');
 
             $txtContractBy=new Element\Text();
             $txtContractBy->setLabel('Contract By')
@@ -84,7 +91,7 @@ class ContractHelper
                     )
                 ));
 
-            $txtNotes=new Element\Text();
+            $txtNotes=new Element\Textarea();
             $txtNotes->setLabel('Notes')
                 ->setName('notes')
                 ->setAttribute('class','form-control');
@@ -93,10 +100,7 @@ class ContractHelper
             $txtStatus->setName('status')
                 ->setLabel('Status')
                 ->setAttribute('class','form-control')
-                ->setValueOptions(array(
-                    'A'=>'Active',
-                    'D'=>'Inactive',
-                ));
+                ->setValueOptions($statusList);
 
             $form=new Form();
             $form->setAttribute('class','form-horizontal');
@@ -137,13 +141,6 @@ class ContractHelper
                     array('name'=>'Int'),
                 )
             ));
-            $filter->add(array(
-                'name'=>'contactID',
-                'required'=>false,
-                'filters'=>array(
-                    array('name'=>'Int'),
-                )
-            ));
 
             $filter->add(array(
                 'name'=>'code',
@@ -155,6 +152,19 @@ class ContractHelper
                             'max'=>50,
                             'min'=>1,
                             'encoding'=>'UTF-8',
+                        ),
+                    ),
+                    array(
+                        'name' => 'Db/NoRecordExists',
+                        'options' => array(
+                            'table' => 'tbl_cr_contract',
+                            'field' => 'code',
+                            'adapter' => $this->dbAdapter,
+                            'exclude' =>array(
+                                'field' => 'contractId',
+                                'value' => $contractId
+                            ),
+                            'message' => 'This contract code is already exists.',
                         ),
                     ),
                 ),
@@ -176,7 +186,9 @@ class ContractHelper
 
             $fileInput = new FileInput('contractFile');
             $fileInput->setRequired(false);
-
+            $fileInput->getValidatorChain()
+                ->attach(new Extension(array('doc','docx', 'pdf')))
+                ->attachByName('filesize',array('max' => '50MB'));
             $fileInput->getFilterChain()->attachByName(
                 'filerenameupload',
                 array(
