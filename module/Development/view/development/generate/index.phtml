@@ -45,10 +45,10 @@ $this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.
         myEditor.setSize("100%", "580px");
         $('#generateLoader').loader().hide();
 
-       	var generateCode = function(generateUrl){
-       		$('#generateLoader').loader().show();
+        $('button#btnGenerate').click(function(){
+            $('#generateLoader').loader().show();
             $.ajax({
-                url : generateUrl,
+                url : '<?php echo $this->url('development_generate', array('action' => 'generate'));?>',
                 data : $('#frmGenerate').serialize(),
                 type : 'POST',
                 success : function(data){
@@ -60,17 +60,6 @@ $this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.
                     $('#generateLoader').loader().hide();
                 }
             });
-       	};
-
-        $('button#btnGenerate').click(function(){
-            var type = $('select[name="type"]').val();
-            if(type == "E"){
-                generateCode('<?php echo $this->url('development_generate', array('action' => 'entity')) ?>');
-            }else if(type == "H"){
-                generateCode('<?php echo $this->url('development_generate', array('action' => 'helper')) ?>');
-            }else if(type == "D"){
-            	generateCode('<?php echo $this->url('development_generate', array('action' => 'gateway')) ?>');
-            }
         });
     });
 </script>

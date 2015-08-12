@@ -93,7 +93,6 @@ class ProjectController extends SundewController{
             $form->setInputFilter($helper->getInputFilter($id));
 
             if($form->isValid()){
-                var_dump("form is valid");
                 $this->projectTable()->saveProject($project);
                 $this->flashMessenger()->addSuccessMessage('Save Successful');
                 return $this->redirect()->toRoute('pm_project');
@@ -155,7 +154,7 @@ class ProjectController extends SundewController{
         $export = new SundewExporting($this->projectTable()->fetchAll(false));
         $response=$this->getResponse();
 
-        $filename='attachment; filename="Project-'.date('Ymdhms').'.xlsx"';
+        $filename='attachment; filename="Project-'.date('Ymdhis').'.xlsx"';
 
         $headers=$response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');

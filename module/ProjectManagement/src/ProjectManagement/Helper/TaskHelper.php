@@ -22,48 +22,57 @@ class TaskHelper
 
     protected $inputFilter = null;
 
-    public function getForm()
+    /**
+     *
+     * @param array $projects
+     * @return \Zend\Form\Form
+     */
+    public function getForm(array $projectList, array $staffList,
+        array $currencyList, array $statusList)
     {
         if(!$this->form){
         	$form = new Form();
         	$taskId = new Element\Hidden('taskId');
         	$form->add($taskId);
 
+        	$staffId = new Element\Select('staffId');
+        	$staffId->setAttribute('class', 'form-control');
+        	$staffId->setLabel('To Assign:');
+        	$staffId->setValueOptions($staffList);
+        	$form->add($staffId);
+
         	$projectId = new Element\Select('projectId');
         	$projectId->setAttribute('class', 'form-control');
-        	$projectId->setLabel('Project Id');
+        	$projectId->setLabel('Project *:');
+        	$projectId->setValueOptions($projectList);
+        	$projectId->setEmptyOption('- No project --');
         	$form->add($projectId);
 
         	$name = new Element\Text('name');
         	$name->setAttribute('class', 'form-control');
-        	$name->setLabel('Name');
+        	$name->setLabel('Name:');
         	$form->add($name);
 
         	$tag = new Element\Text('tag');
         	$tag->setAttribute('class', 'form-control');
-        	$tag->setLabel('Tag');
+        	$tag->setLabel('Tag:');
         	$form->add($tag);
 
         	$level = new Element\Number('level');
         	$level->setAttributes(array(
         		'min' => '0',
-        		'max' => '99999999999',
+        		'max' => '10',
         		'step' => '1',
         	));
         	$level->setLabel('Level');
         	$form->add($level);
-
-        	$managerId = new Element\Select('managerId');
-        	$managerId->setAttribute('class', 'form-control');
-        	$managerId->setLabel('Manager Id');
-        	$form->add($managerId);
 
         	$fromTime = new Element\Date('fromTime');
         	$fromTime->setAttributes(array(
         		'allowPastDates' => true,
         		'momentConfig' => array('format' => 'YYYY-MM-DD'),
         	));
-        	$fromTime->setLabel('From Time');
+        	$fromTime->setLabel('From Time:');
         	$form->add($fromTime);
 
         	$toTime = new Element\Date('toTime');
@@ -71,12 +80,26 @@ class TaskHelper
         		'allowPastDates' => true,
         		'momentConfig' => array('format' => 'YYYY-MM-DD'),
         	));
-        	$toTime->setLabel('To Time');
+        	$toTime->setLabel('To Time:');
         	$form->add($toTime);
 
-        	$parentId = new Element\Select('parentId');
-        	$parentId->setAttribute('class', 'form-control');
-        	$parentId->setLabel('Parent Id');
+        	$maxBudget = new Element\Number('maxBudget');
+        	$maxBudget->setAttributes(array(
+        		'min' => '0',
+        		'max' => '99999999999',
+        		'step' => '1',
+        	));
+        	$maxBudget->setLabel('Max Budget:');
+        	$form->add($maxBudget);
+
+        	$currencyId = new Element\Select('currencyId');
+        	$currencyId->setAttribute('class', 'form-control');
+        	$currencyId->setLabel('Currency:');
+        	$currencyId->setEmptyOption('-Currency-');
+        	$currencyId->setValueOptions($currencyList);
+        	$form->add($currencyId);
+
+        	$parentId = new Element\Hidden('parentId');
         	$form->add($parentId);
 
         	$predecessorId = new Element\Select('predecessorId');
@@ -90,29 +113,27 @@ class TaskHelper
         		'max' => '99999999999',
         		'step' => '1',
         	));
-        	$priority->setLabel('Priority');
+        	$priority->setLabel('Priority:');
         	$form->add($priority);
 
         	$remark = new Element\Textarea('remark');
         	$remark->setAttribute('class', 'form-control');
-        	$remark->setLabel('Remark');
+        	$remark->setLabel('Remark:');
         	$form->add($remark);
 
         	$current = new Element\Number('current');
-        	$current->setLabel('Current');
+        	$current->setLabel('Current(%):');
+        	$current->setAttributes(array(
+        	    'min' => '0',
+        	    'max' => '100',
+        	    'step' => '0.25',
+        	));
         	$form->add($current);
 
-        	$finished = new Element\Date('finished');
-        	$finished->setAttributes(array(
-        		'allowPastDates' => true,
-        		'momentConfig' => array('format' => 'YYYY-MM-DD'),
-        	));
-        	$finished->setLabel('Finished');
-        	$form->add($finished);
-
-        	$status = new Element\Text('status');
+        	$status = new Element\Select('status');
         	$status->setAttribute('class', 'form-control');
         	$status->setLabel('Status');
+        	$status->setValueOptions($statusList);
         	$form->add($status);
 
         	$this->form = $form;
@@ -120,11 +141,19 @@ class TaskHelper
         return $this->form;
     }
 
+    /**
+     *
+     * @param Form $form
+     */
     public function setForm(Form $form)
     {
         $this->form = $form;
     }
 
+    /**
+     *
+     * @return \Zend\InputFilter\InputFilter
+     */
     public function getInputFilter()
     {
         if(!$this->inputFilter){
@@ -135,9 +164,19 @@ class TaskHelper
         		'filters' => array(array('name' => 'Int')),
         	));
         	$filter->add(array(
+        	    'name' => 'staffId',
+        	    'required' => true,
+        	    'filters' => array(array('name' => 'Int')),
+        	));
+        	$filter->add(array(
         		'name' => 'projectId',
         		'required' => false,
         		'filters' => array(array('name' => 'Int')),
+        	));
+        	$filter->add(array(
+        	    'name' => 'currencyId',
+        	    'required' => false,
+        	    'filters' => array(array('name' => 'Int')),
         	));
         	$filter->add(array(
         		'name' => 'name',
@@ -175,6 +214,11 @@ class TaskHelper
         		'name' => 'level',
         		'required' => false,
         		'filters' => array(array('name' => 'Int')),
+        	));
+        	$filter->add(array(
+        	    'name' => 'maxBudget',
+        	    'required' => false,
+        	    'filters' => array(array('name' => 'Float')),
         	));
         	$filter->add(array(
         		'name' => 'managerId',
@@ -224,10 +268,6 @@ class TaskHelper
         		'name' => 'current',
         		'required' => true,
         		'filters' => array(array('name' => 'Float')),
-        	));
-        	$filter->add(array(
-        		'name' => 'finished',
-        		'required' => false,
         	));
         	$filter->add(array(
         		'name' => 'status',

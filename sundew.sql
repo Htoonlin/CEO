@@ -179,7 +179,7 @@ CREATE TABLE `tbl_constant` (
   `value` varchar(500) NOT NULL,
   `group_code` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`constantId`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -435,7 +435,7 @@ CREATE TABLE `tbl_menu` (
   `priority` int(11) NOT NULL,
   `hasDivider` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`menuId`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -499,7 +499,7 @@ CREATE TABLE `tbl_pm_project` (
   `status` char(1) COLLATE utf8_bin NOT NULL,
   `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`projectId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -511,49 +511,23 @@ DROP TABLE IF EXISTS `tbl_pm_task`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tbl_pm_task` (
   `taskId` int(11) NOT NULL AUTO_INCREMENT,
-  `projectId` int(11) DEFAULT NULL,
   `name` varchar(250) COLLATE utf8_bin NOT NULL,
-  `tag` varchar(50) COLLATE utf8_bin NOT NULL,
-  `level` smallint(6) DEFAULT NULL,
+  `current` float NOT NULL,
+  `staffId` int(11) NOT NULL,
   `fromTime` datetime NOT NULL,
   `toTime` datetime NOT NULL,
-  `parentId` int(11) DEFAULT NULL,
+  `projectId` int(11) DEFAULT NULL,
   `predecessorId` int(11) DEFAULT NULL,
+  `level` smallint(6) DEFAULT NULL,
+  `maxBudget` float DEFAULT NULL,
+  `currencyId` int(11) DEFAULT NULL,
   `priority` int(11) NOT NULL,
   `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL,
-  `current` float NOT NULL,
+  `tag` varchar(50) COLLATE utf8_bin NOT NULL,
+  `managerId` int(11) NOT NULL,
   `finished` datetime DEFAULT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`taskId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tbl_pm_task_budget`
---
-
-DROP TABLE IF EXISTS `tbl_pm_task_budget`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_pm_task_budget` (
-  `taskId` int(11) NOT NULL,
-  `amount` int(11) NOT NULL,
-  `currencyId` int(11) NOT NULL,
-  PRIMARY KEY (`taskId`,`amount`,`currencyId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tbl_pm_task_hr`
---
-
-DROP TABLE IF EXISTS `tbl_pm_task_hr`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tbl_pm_task_hr` (
-  `taskId` int(11) NOT NULL,
-  `staffId` int(11) NOT NULL,
-  PRIMARY KEY (`taskId`,`staffId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -592,7 +566,7 @@ CREATE TABLE `tbl_route` (
   `constraints` varchar(255) NOT NULL,
   PRIMARY KEY (`routeId`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1276,4 +1250,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-10 18:30:01
+-- Dump completed on 2015-08-11 18:30:12
