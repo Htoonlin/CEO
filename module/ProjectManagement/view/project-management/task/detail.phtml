@@ -1,0 +1,73 @@
+<?php
+/**
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ * @var $form \Zend\Form\Form
+ */
+$title = 'Task Detail';
+$this->headtitle($title);
+?>
+<h1><?php echo $title;?></h1>
+<hr />
+<?php
+$form->setAttributes(array(
+    'role' => 'form',
+    'id' => 'form'
+));
+echo $this->form()->openTag($form);
+?>
+<div class="row">
+	<div class="col-sm-9">
+   <?php echo $this->formrow($form->get('name')); ?>
+   </div>
+	<div class="col-sm-3">
+   <?php echo $this->formrow($form->get('current')); ?>
+   </div>
+</div>
+<div class="row">
+	<div class="col-sm-4">
+   <?php echo $this->formrow($form->get('staffId'));?>
+   </div>
+	<div class="col-sm-4">
+   <?php echo $this->formrow($form->get('fromTime'));?>
+   </div>
+	<div class="col-sm-4">
+   <?php echo $this->formrow($form->get('toTime'));?>
+   </div>
+</div>
+<div class="row">
+	<div class="col-sm-4">
+    <?php echo $this->formrow($form->get('projectId'));?>
+    </div>
+	<div class="col-sm-4">
+    <?php echo $this->formrow($form->get('predecessorId'));?>
+    </div>
+	<div class="col-sm-4">
+    <?php echo $this->formrow($form->get('level')); ?>
+    </div>
+</div>
+<div class="row">
+	<div class="col-sm-4">
+    <?php echo $this->formrow($form->get('maxBudget'));?>
+    </div>
+	<div class="col-sm-2">
+    <?php echo $this->formrow($form->get('currencyId'));?>
+    </div>
+	<div class="col-sm-2">
+    <?php echo $this->formrow($form->get('priority'));?>
+    </div>
+	<div class="col-sm-4">
+    <?php echo $this->formrow($form->get('status'));?>
+    </div>
+</div>
+<div class="row">
+	<div class="col-sm-12">
+    <?php echo $this->formrow($form->get('remark'));?>
+    </div>
+</div>
+<div class="row">
+	<div class="col-sm-12">
+    <?php echo $this->formrow($form->get('tag'));?>
+    </div>
+</div>
+<?php echo $this->form()->closeTag(); ?>

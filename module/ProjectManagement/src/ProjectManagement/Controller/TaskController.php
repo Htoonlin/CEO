@@ -1,28 +1,29 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: NyanTun
- * Date: 7/24/2015
- * Time: 5:10 PM
- */
 namespace ProjectManagement\Controller;
 
 use Application\Service\SundewController;
+use Application\Service\SundewExporting;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
-use Zend\Form\Element;
-use ProjectManagement\DataAccess\ProjectDataAccess;
-use ProjectManagement\Helper\TaskHelper;
-use Application\DataAccess\ConstantDataAccess;
-use HumanResource\DataAccess\StaffDataAccess;
-use Account\DataAccess\CurrencyDataAccess;
-use ProjectManagement\DataAccess\TaskDataAccess;
 use ProjectManagement\Entity\Task;
-use Application\Service\SundewExporting;
+use ProjectManagement\Helper\TaskHelper;
+use ProjectManagement\DataAccess\TaskDataAccess;
+use ProjectManagement\DataAccess\ProjectDataAccess;
+use Account\DataAccess\CurrencyDataAccess;
+use HumanResource\DataAccess\StaffDataAccess;
+use Application\DataAccess\ConstantDataAccess;
+use Zend\Form\Element;
 
-class ManagerController extends SundewController
+/**
+ * System Generated Code
+ *
+ * User : Htoonlin
+ * Date : 2015-08-12 12:09:23
+ *
+ * @package ProjectManagement\Controller
+ */
+class TaskController extends SundewController
 {
-
     /**
      *
      * @return multitype:Ambigous <>
@@ -77,11 +78,18 @@ class ManagerController extends SundewController
         return $combo;
     }
 
+    /**
+     * @return \ProjectManagement\DataAccess\TaskDataAccess
+     */
     public function taskTable()
     {
         return new TaskDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     */
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery("page", 1);
@@ -90,7 +98,7 @@ class ManagerController extends SundewController
         $filter = $this->params()->fromQuery("filter", "");
         $pageSize = (int)$this->params()->fromQuery("size", 10);
 
-        $paginator = $this->projectTable()->fetchAll(true, $filter, $sort, $sortBy);
+        $paginator = $this->taskTable()->fetchAll(true, $filter, $sort, $sortBy);
         $paginator->setCurrentPageNumber($page);
         $paginator->setItemCountPerPage($pageSize);
 
@@ -103,12 +111,16 @@ class ManagerController extends SundewController
         ));
     }
 
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
     public function detailAction()
     {
         $id = (int)$this->params()->fromRoute("id", 0);
         $action = $this->params()->fromQuery("action", "");
         $helper = new TaskHelper();
-        $form = $helper->getForm($this->getProjectList(), $this->getStaffList(), $this->getCurrencyList(), $this->getStatusList());
+        $form = $helper->getform();
         $task = $this->taskTable()->getTask($id);
 
         $isEdit = true;
@@ -133,12 +145,16 @@ class ManagerController extends SundewController
         	if($form->isValid()){
         		$this->taskTable()->saveTask(task);
         		$this->flashMessenger()->addSuccessMessage('Save successful');
-        		return $this->redirect()->toRoute('ProjectManagement_task');
+        		return $this->redirect()->toRoute('pm_task');
         	}
         }
         return new ViewModel(array('form' => $form, 'id' => $id, 'isEdit' => $isEdit));
     }
 
+    /**
+     *
+     * @return \Zend\Http\Response
+     */
     public function deleteAction()
     {
         $id = (int)$this->params()->fromRoute("id", 0);
@@ -149,13 +165,17 @@ class ManagerController extends SundewController
         	$this->flashMessenger()->addInfoMessage('Delete successful');
         }
 
-        return $this->redirect()->toRoute('ProjectManagement_task');
+        return $this->redirect()->toRoute('pm_task');
     }
 
+    /**
+     *
+     * @return \Zend\View\Model\JsonModel
+     */
     public function jsonDeleteAction()
     {
         $data = $this->params()->fromPost("chkId", array());
-        $db = $ths->taskTable()->getAdapter();
+        $db = $this->taskTable()->getAdapter();
         $conn = $db->getDriver()->getConnection();
         try{
         	$conn->beginTransaction();
@@ -172,6 +192,10 @@ class ManagerController extends SundewController
         return new JsonModel(array('message' => $message));
     }
 
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function exportAction()
     {
         $export = new SundewExporting($this->taskTable()->fetchAll(false));
@@ -183,4 +207,6 @@ class ManagerController extends SundewController
         $response->setContent($export->getExcel());
         return $response;
     }
+
+
 }
