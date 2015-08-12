@@ -7,7 +7,7 @@ use Zend\Stdlib\ArraySerializableInterface;
  * System Generated Code
  *
  * User : Htoonlin
- * Date : 2015-08-12 14:08:44
+ * Date : 2015-08-12 19:45:21
  *
  * @package ProjectManagement\Entity
  */
@@ -38,7 +38,7 @@ class Task implements ArraySerializableInterface
 
     protected $priority = null;
 
-    protected $remark = null;
+    protected $description = null;
 
     protected $tag = null;
 
@@ -168,14 +168,14 @@ class Task implements ArraySerializableInterface
         $this->priority = $value;
     }
 
-    public function getRemark()
+    public function getDescription()
     {
-        return $this->remark;
+        return $this->description;
     }
 
-    public function setRemark($value)
+    public function setDescription($value)
     {
-        $this->remark = $value;
+        $this->description = $value;
     }
 
     public function getTag()
@@ -228,13 +228,13 @@ class Task implements ArraySerializableInterface
         $this->toTime = (!empty($data['toTime'])) ? $data['toTime'] : null;
         $this->projectId = (!empty($data['projectId'])) ? $data['projectId'] : null;
         $this->predecessorId = (!empty($data['predecessorId'])) ? $data['predecessorId'] : null;
-        $this->level = (!empty($data['level'])) ? $data['level'] : null;
+        $this->level = (!empty($data['level'])) ? $data['level'] : 0;
         $this->maxBudget = (!empty($data['maxBudget'])) ? $data['maxBudget'] : null;
         $this->currencyId = (!empty($data['currencyId'])) ? $data['currencyId'] : null;
         $this->priority = (!empty($data['priority'])) ? $data['priority'] : 0;
-        $this->remark = (!empty($data['remark'])) ? $data['remark'] : null;
+        $this->description = (!empty($data['description'])) ? $data['description'] : null;
         $this->tag = (!empty($data['tag'])) ? $data['tag'] : null;
-        $this->managerId = (!empty($data['managerId'])) ? $data['managerId'] : null;
+        $this->managerId = (!empty($data['managerId'])) ? $data['managerId'] : 0;
         $this->finished = (!empty($data['finished'])) ? $data['finished'] : null;
         $this->status = (!empty($data['status'])) ? $data['status'] : null;
     }
@@ -244,17 +244,17 @@ class Task implements ArraySerializableInterface
         return array(
         	'taskId' => $this->taskId,
         	'name' => $this->name,
-        	'current' => floatval($this->current),
-        	'staffId' => intval($this->staffId),
+        	'current' => $this->current,
+        	'staffId' => $this->staffId,
         	'fromTime' => $this->fromTime,
         	'toTime' => $this->toTime,
-        	'projectId' => intval($this->projectId),
+        	'projectId' => $this->projectId,
         	'predecessorId' => $this->predecessorId,
-        	'level' => intval($this->level),
+        	'level' => $this->level,
         	'maxBudget' => $this->maxBudget,
         	'currencyId' => $this->currencyId,
-        	'priority' => intval($this->priority),
-        	'remark' => $this->remark,
+        	'priority' => $this->priority,
+        	'description' => $this->description,
         	'tag' => $this->tag,
         	'managerId' => $this->managerId,
         	'finished' => $this->finished,

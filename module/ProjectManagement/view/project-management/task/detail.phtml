@@ -44,6 +44,11 @@ echo $this->formHidden($form->get('taskId'));
             </div>
 		</div>
 		<div class="row">
+			<div class="col-sm-12">
+            <?php echo $this->formrow($form->get('description'));?>
+            </div>
+		</div>
+		<div class="row">
 			<div class="col-sm-4">
             <?php echo $this->formrow($form->get('projectId'));?>
             </div>
@@ -55,11 +60,6 @@ echo $this->formHidden($form->get('taskId'));
             </div>
             <div class="col-sm-3">
             <?php echo $this->formrow($form->get('priority'));?>
-            </div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12">
-            <?php echo $this->formrow($form->get('remark'));?>
             </div>
 		</div>
 		<div class="row">

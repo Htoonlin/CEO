@@ -128,8 +128,22 @@ $current_url = $this->url('pm_task') . '/index/' . $projectId;
 					</tr>
 				</thead>
 				<tbody>
-                <?php foreach($paginator as $task):?>
-                    <tr>
+                    <?php
+                    foreach($paginator as $task):
+                    $coloring = '';
+                    switch($task->status){
+                        case 'P':
+                            $coloring = 'info';
+                            break;
+                        case 'F':
+                            $coloring = 'warning';
+                            break;
+                        case 'C':
+                            $coloring = 'success';
+                            break;
+                    }
+                    ?>
+                    <tr class="<?php echo $coloring; ?>">
 						<td class="text-center">
 							<div class="checkbox" style="margin: 0">
 								<label class="checkbox-custom" data-initialize="checkbox"> <input

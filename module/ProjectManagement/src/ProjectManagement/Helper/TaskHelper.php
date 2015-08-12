@@ -116,10 +116,10 @@ class TaskHelper
         	$priority->setLabel('Priority:');
         	$form->add($priority);
 
-        	$remark = new Element\Textarea('remark');
-        	$remark->setAttribute('class', 'form-control');
-        	$remark->setLabel('Remark:');
-        	$form->add($remark);
+        	$desc = new Element\Textarea('description');
+        	$desc->setAttribute('class', 'form-control');
+        	$desc->setLabel('Description:');
+        	$form->add($desc);
 
         	$current = new Element\Number('current');
         	$current->setLabel('Current(%):');
@@ -218,7 +218,7 @@ class TaskHelper
         		'validators' => array(array('name' => 'Zend\I18n\Validator\IsInt')),
         	));
         	$filter->add(array(
-        		'name' => 'remark',
+        		'name' => 'description',
         		'required' => false,
         	));
         	$filter->add(array(

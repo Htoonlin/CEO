@@ -1,15 +1,15 @@
-<?php 
+<?php
 /**
  * Created by PhpStorm.
  * User: NyanTun
  * Date: 6/9/2015
  * Time: 6:18 PM
  * Zend Code Completion
- * @var $this \Zend\View\Renderer\PhpRenderer 
+ * @var $this \Zend\View\Renderer\PhpRenderer
  */
 
 if(empty($height))
-    $height = 600;
+    $height = 500;
 
 if(empty($name))
     $name = 'calendar';
@@ -148,9 +148,9 @@ $this->headScript()->appendFile($this->basePath() . '/fullcalendar/fullcalendar.
                         cell.attr('data-holiday-id', $(this)[0].id);
                         cell.css('background-color', '#D9F3CF');
                         cell.html('<div class="holiday">' +
-                        '<span class="glyphicon glyphicon-tree-conifer"></span>' +
-                        '<span class="glyphicon glyphicon-tree-conifer"></span>' +
-                        '<span class="glyphicon glyphicon-tree-conifer"></span>' +
+                        ' <i class="fa fa-bell"></i>' +
+                        ' <i class="fa fa-bell"></i>' +
+                        ' <i class="fa fa-bell"></i>' +
                         ' <br/>' + $(this)[0].title + '</div>');
                     }
                 });
