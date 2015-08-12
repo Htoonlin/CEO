@@ -13,18 +13,13 @@ use Application\DataAccess\ConstantDataAccess;
 use Application\Service\SundewController;
 use Development\DataAccess\GenerateDataAccess;
 use Development\Helper\GenerateHelper;
-use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\DocBlockGenerator;
-use Zend\Code\Generator\MethodGenerator;
-use Zend\Code\Generator\PropertyGenerator;
-use Zend\Filter\Word\CamelCaseToSeparator;
-use Zend\Filter\Word\UnderscoreToCamelCase;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Development\Helper\Generator\EntityGenerator;
 use Development\Helper\Generator\HelperGenerator;
 use Development\Helper\Generator\GatewayGenerator;
 use Development\Helper\Generator\ControllerGenerator;
+use Development\Helper\Generator\SundewGenerator;
 
 class GenerateController extends SundewController
 {
@@ -71,6 +66,38 @@ class GenerateController extends SundewController
         return $result;
     }
 
+   /**
+    * @return SundewGenerator
+    */
+    private function getGenerator()
+    {
+        $type = $this->params()->fromPost('type', '');
+        $tblName = $this->params()->fromPost('tbl_name', '');
+        $module = $this->params()->fromPost('module', '');
+        $module = empty($module) ? 'Application' : $module;
+
+        $generator = null;
+        switch($type){
+            case "E":
+                $generator = new EntityGenerator($this->getDbMeta(), $tblName,
+                $module, $this->getCurrentStaff());
+                break;
+            case "H":
+                $generator = new HelperGenerator($this->getDbMeta(), $tblName,
+                $module, $this->getCurrentStaff());
+                break;
+            case "D":
+                $generator = new GatewayGenerator($this->getDbMeta(), $tblName,
+                $module, $this->getCurrentStaff());
+                break;
+            case "C":
+                $generator = new ControllerGenerator($this->getDbMeta(), $tblName,
+                $module, $this->getCurrentStaff());
+                break;
+        }
+        return $generator;
+    }
+
     /**
      * @return bool|JsonModel
      */
@@ -108,18 +135,13 @@ class GenerateController extends SundewController
 
         if($request->isPost()){
             $form->setData($request->getPost());
-            $type = $this->params()->fromPost('type', '');
-            $tblName = $this->params()->fromPost('tbl_name', '');
-            $module = $this->params()->fromPost('module', '');
             $code = $this->params()->fromPost('txtGenerate', '');
-            $filename = '';
-            $name = $this->getClassName($module, $tblName);
-            if($type === 'E'){
-                $filename = 'attachment; filename="' . $name . '.php"';
-            }else if($type === 'H'){
-                $filename = 'attachment; filename="' . $name . 'Helper.php"';
+            $generator = $this->getGenerator();
+            if(!$generator){
+                throw new \Exception("Invalid generator.");
             }
-
+            $name = $generator->getClassName();
+            $filename = 'attachement; filename="' . $name . '.php"';
             $response = $this->getResponse();
             $headers = $response->getHeaders();
             $headers->addHeaderLine('Content-Type', 'application/x-httpd-php; charset=UTF-8');
@@ -141,30 +163,7 @@ class GenerateController extends SundewController
             return $isOK;
         }
 
-        $type = $this->params()->fromPost('type', '');
-        $tblName = $this->params()->fromPost('tbl_name', '');
-        $module = $this->params()->fromPost('module', '');
-        $module = empty($module) ? 'Application' : $module;
-
-        $generator = null;
-        switch($type){
-            case "E":
-                $generator = new EntityGenerator($this->getDbMeta(), $tblName,
-                    $module, $this->getCurrentStaff());
-                break;
-            case "H":
-                $generator = new HelperGenerator($this->getDbMeta(), $tblName,
-                    $module, $this->getCurrentStaff());
-                break;
-            case "D":
-                $generator = new GatewayGenerator($this->getDbMeta(), $tblName,
-                    $module, $this->getCurrentStaff());
-                break;
-            case "C":
-                $generator = new ControllerGenerator($this->getDbMeta(), $tblName,
-                    $module, $this->getCurrentStaff());
-                break;
-        }
+        $generator = $this->getGenerator();
 
         if($generator == null){
             return new JsonModel(array(

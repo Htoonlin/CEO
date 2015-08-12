@@ -10,7 +10,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'ProjectManagement\Controller\Project' => 'ProjectManagement\Controller\ProjectController',
-            'ProjectManagement\Controller\Manager' => 'ProjectManagement\Controller\ManagerController',
+            'ProjectManagement\Controller\Task' => 'ProjectManagement\Controller\TaskController',
         ),
     ),
     'view_manager' => array(
