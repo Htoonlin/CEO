@@ -43,11 +43,12 @@ class TaskDataAccess extends SundewTableGateway
      * @param string $order
      * @return \Zend\Paginator\Paginator|\Zend\Db\ResultSet\ResultSet
      */
-    public function fetchAll($projectId = null, $paginated = false, $filter = '', $orderBy = '', $order = '')
+    public function fetchAll($managerId,$projectId = null, $paginated = false, $filter = '', $orderBy = '', $order = '')
     {
         $select = new Select($this->view);
         $select->order($orderBy . ' ' . $order);
         $where = new Where();
+        $where->equalTo('managerId', $managerId);
         if($projectId > 0){
             $where->equalTo('projectId', $projectId);
         }else{

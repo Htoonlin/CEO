@@ -201,7 +201,7 @@ class ProjectHelper{
                         'options'=>array(
                             'encoding'=>'UTF-8',
                             'min'=>1,
-                            'max'=>50
+                            'max'=>500
                         )
                     )
                 )

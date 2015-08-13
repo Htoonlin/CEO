@@ -101,7 +101,8 @@ class TaskController extends SundewController
         $filter = $this->params()->fromQuery("filter", "");
         $pageSize = (int)$this->params()->fromQuery("size", 10);
 
-        $paginator = $this->taskTable()->fetchAll($projectId, true, $filter, $sort, $sortBy);
+        $paginator = $this->taskTable()->fetchAll($this->getCurrentStaff()->getStaffId(),
+            $projectId, true, $filter, $sort, $sortBy);
         $paginator->setCurrentPageNumber($page);
         $paginator->setItemCountPerPage($pageSize);
 
@@ -204,7 +205,8 @@ class TaskController extends SundewController
     {
         $projectId = (int)$this->params()->fromRoute('id', 0);
 
-        $export = new SundewExporting($this->taskTable()->fetchAll($projectId, false));
+        $export = new SundewExporting($this->taskTable()->fetchAll(
+            $this->getCurrentStaff()->getStaffId(), $projectId, false));
         $response = $this->getResponse();
         $filename = 'attachment; filename="Task-' . date('Ymdhis') . '.xlsx"';
         $headers = $response->getHeaders();
