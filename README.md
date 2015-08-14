@@ -12,7 +12,7 @@ Password  : sundew
     - Account (50%)
     - Human Resource (80%)
     - CRM (20%)
-    - Project Management (1%)
+    - Project Management (20%)
     - Development (5%)
 
 If you want to contribute for this project. Please send email to wizard.htoon@gmail.com
