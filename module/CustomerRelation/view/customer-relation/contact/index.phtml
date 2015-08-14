@@ -75,39 +75,68 @@ $this->headTitle($title);
     <div class="panel-body">
         <div class="grid">
             <table class="table table-bordered table-striped table-hover">
-                <thead>
-                <tr>
-                    <th width="50px">
-                        <div class="checkbox" style="...">
-                            <label class="checkbox-custom" data-initialize="checkbox">
-                                <input type="checkbox" id="chkAll"/>
-                            </label>
-                        </div>
-                    </th>
-                    <th>
-                        <?php echo $this->gridHeaderCell('Contact Name', 'name');?>
-                    </th>
-                    <th width="200px">
-                        <?php echo $this->gridHeaderCell('Phone', 'phone');?>
-                    </th>
-                    <th width="200px">
-                        <?php echo $this->gridHeaderCell('Email', 'email');?>
-                    </th>
-                    <th width="180px">
-                        <?php echo $this->gridHeaderCell('CompanyName','companyname');?>
-                    </th>
-                    <th width="120px">
-                        <?php echo $this->gridHeaderCell('Tag', 'tag');?>
-                    </th>
-                    <th width="80px">
-                        <?php echo $this->gridHeaderCell('Status','status');?>
-                    </th>
-                </tr>
-                </thead>
+                <?php
+                $columns = array(
+                    array(
+                        'type' => 'checkbox',
+                        'value' => array('id' => 'chkAll'),
+                        'attr' => array('class' => 'text-center', 'width' => '50px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Contact Name',
+                            'col' => 'name',
+                        ),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Phone',
+                            'col' => 'phone',
+                        ),
+                        'attr' => array('width' => '200px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Email',
+                            'col' => 'email',
+                        ),
+                        'attr' => array('width' => '200px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Company Name',
+                            'col' => 'companyname',
+                        ),
+                        'attr' => array('width' => '180px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Tag',
+                            'col' => 'tag',
+                        ),
+                        'attr' => array('width' => '120px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Status',
+                            'col' => 'status',
+                        ),
+                        'attr' => array('width' => '80px'),
+                    ),
+                );
+
+                echo $this->gridHeader($columns);
+                ?>
                 <tbody>
                 <?php foreach($paginator as $contact):?>
                     <tr>
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox" style="margin: 0">
                                 <label class="checkbox-custom" data-initialize="checkbox">
                                     <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($contact->contactId);?>"/>

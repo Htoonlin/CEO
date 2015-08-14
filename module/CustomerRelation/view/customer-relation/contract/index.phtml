@@ -55,7 +55,7 @@ $flashMesssages=$this->flashMessenger()->getMessages();
             <div class="col-md-3">
                 <?php echo $this->gridFilter('contractFilter'); ?>
             </div>
-            <div class="col-md-4 col-md-offset-5">
+            <div class="col-md-offset-5 col-md-4 ">
                 <div class="text-right">
                     <div class="btn-group">
                         <a href="<?php echo $this->url("cr_contract",array('action'=>'detail','id'=>0));?>" class="btn btn-default">
@@ -78,32 +78,54 @@ $flashMesssages=$this->flashMessenger()->getMessages();
     <div class="panel-body">
         <div class="grid">
             <table class="table table-bordered table-striped table-hover">
-                <thead>
-                <tr>
-                    <th width="50px" class="text-center">
-                        <div class="checkbox" style="margin: 0">
-                            <label class="checkbox-custom" data-initialize="checkbox">
-                                <input type="checkbox" id="chkAll" />
-                            </label>
-                        </div>
-                    </th>
-                    <th width="180px">
-                        <?php echo $this->gridHeaderCell('Code','code');?>
-                    </th>
-                    <th width="150px">
-                        <?php echo $this->gridHeaderCell('Date','contractDate');?>
-                    </th>
-                    <th width="180px">
-                        <?php echo $this->gridHeaderCell('Amount','amount');?>
-                    </th>
-                    <th width="120px">
-                        <?php echo $this->gridHeaderCell('Status','status');?>
-                    </th>
-                    <th width="80px" class="text-center">
-                        File
-                    </th>
-                </tr>
-                </thead>
+                <?php
+                $columns = array(
+                    array(
+                        'type' => 'checkbox',
+                        'value' => array('id' => 'chkAll'),
+                        'attr' => array('class' => 'text-center', 'width' => '50px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Code',
+                            'col' => 'code',
+                        ),
+                        'attr' => array('width' => '180px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Date',
+                            'col' => 'contractDate',
+                        ),
+                        'attr' => array('width' => '150px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Amount',
+                            'col' => 'amount',
+                        ),
+                        'attr' => array('width' => '150px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Status',
+                            'col' => 'status',
+                        ),
+                        'attr' => array('width' => '120px'),
+                    ),
+                    array(
+                        'type' => 'custom',
+                        'value' => 'File',
+                        'attr' => array('class' => 'text-center', 'width' => '80px'),
+                    )
+                );
+
+                echo $this->gridHeader($columns);
+                ?>
                 <tbody>
                 <?php foreach($paginator as $contract) : ?>
                     <tr>

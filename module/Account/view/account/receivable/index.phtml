@@ -50,25 +50,51 @@ $this->headTitle($title);
     <div class="panel-body">
         <div class="grid">
             <table class="table table-bordered table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th width="100px">
-                            <?php echo $this->gridHeaderCell('Date','voucherDate');?>
-                        </th>
-                        <th width="150px">
-                            <?php echo $this->gridHeaderCell('Voucher No','voucherNo');?>
-                        </th>
-                        <th>
-                            <?php echo $this->gridHeaderCell('Description','description');?>
-                        </th>
-                        <th width="180px">
-                            <?php echo $this->gridHeaderCell('Amount','amount');?>
-                        </th>
-                        <th width="80px">
-                            <?php echo $this->gridHeaderCell('Status','status');?>
-                        </th>
-                    </tr>
-                </thead>
+                <?php
+                $columns = array(
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Date',
+                            'col' => 'voucherDate',
+                        ),
+                        'attr' => array('width' => '100px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Voucher No',
+                            'col' => 'voucherNo',
+                        ),
+                        'attr' => array('width' => '150px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Description',
+                            'col' => 'description',
+                        )
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Amount',
+                            'col' => 'amount',
+                        ),
+                        'attr' => array('width' => '180px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Status',
+                            'col' => 'status',
+                        ),
+                        'attr' => array('width' => '80px'),
+                    ),
+                );
+
+                echo $this->gridHeader($columns);
+                ?>
                 <tbody>
                 <?php foreach($paginator as $receivable): ?>
                     <?php

@@ -85,33 +85,60 @@ $this->headTitle($title);
     <div class="panel-body">
         <div class="grid">
             <table class="table table-bordered table-striped table-hover">
-                <thead>
-                <tr>
-                    <th width="50px">
-                        <div class="checkbox" style="margin:0">
-                            <label class="checkbox-custom" data-initialize="checkbox">
-                                <input type="checkbox" id="chkAll" />
-                            </label>
-                        </div>
-                    </th>
-                    <th width="160px">
-                        <?php echo $this->gridHeaderCell('Route Name', 'name'); ?>
-                    </th>
-                    <th width="80px">
-                        <?php echo $this->gridHeaderCell('Module', 'module'); ?>
-                    </th>
-                    <th width="100px">
-                        <?php echo $this->gridHeaderCell('Route', 'route'); ?>
-                    </th>
-                    <th width="100px">
-                        <?php echo $this->gridHeaderCell('Controller', 'controller'); ?>
-                    </th>
-                </tr>
-                </thead>
+                <?php
+                $columns = array(
+                    array(
+                        'type' => 'checkbox',
+                        'value' => array('id' => 'chkAll'),
+                        'attr' => array('class' => 'text-center', 'width' => '50px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Route Name',
+                            'col' => 'name',
+                        ),
+                        'attr' => array('width' => '160px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Module',
+                            'col' => 'module',
+                        ),
+                        'attr' => array('width' => '80px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Route',
+                            'col' => 'route',
+                        ),
+                        'attr' => array('width' => '100px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Controller',
+                            'col' => 'controller',
+                        ),
+                        'attr' => array('width' => '100px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Value',
+                            'col' => 'value',
+                        )
+                    ),
+                );
+
+                echo $this->gridHeader($columns);
+                ?>
                 <tbody>
                 <?php foreach($paginator as $route) : ?>
                     <tr>
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox" style="margin:0">
                                 <label class="checkbox-custom" data-initialize="checkbox">
                                     <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($route->routeId); ?>" />

@@ -79,32 +79,56 @@
      <div class="panel-body">
          <div class="grid">
              <table class="table table-bordered table-striped table-hover">
-                 <thead>
-                    <tr>
-                        <th width="50px">
-                            <div class="checkbox">
-                                <label class="checkbox-custom" data-initialize="checkbox">
-                                    <input type="checkbox" id="chkAll"/>
-                                </label>
-                            </div>
-                        </th>
-                        <th width="150px">
-                            <?php echo $this->gridHeaderCell('Staff Code','staffCode');?>
-                        </th>
-                        <th>
-                            <?php echo $this->gridHeaderCell('Staff Name','staffName');?>
-                        </th>
-                        <th width="90px">
-                            <?php echo $this->gridHeaderCell('Leave','Leave');?>
-                        </th>
-                        <th width="120px">
-                            <?php echo $this->gridHeaderCell('P-Date','PermanentDate');?>
-                        </th>
-                        <th width="100px">
-                            <?php echo $this->gridHeaderCell('Status','status');?>
-                        </th>
-                    </tr>
-                 </thead>
+                 <?php
+                 $columns = array(
+                     array(
+                         'type' => 'checkbox',
+                         'value' => array('id' => 'chkAll'),
+                         'attr' => array('class' => 'text-center', 'width' => '50px'),
+                     ),
+                     array(
+                         'type' => 'db',
+                         'value' => array(
+                             'title' => 'Staff Code',
+                             'col' => 'staffCode',
+                         ),
+                         'attr' => array('width' => '150px'),
+                     ),
+                     array(
+                         'type' => 'db',
+                         'value' => array(
+                             'title' => 'Staff Name',
+                             'col' => 'staffName',
+                         ),
+                     ),
+                     array(
+                         'type' => 'db',
+                         'value' => array(
+                             'title' => 'Leave',
+                             'col' => 'Leave',
+                         ),
+                         'attr' => array('width' => '90px'),
+                     ),
+                     array(
+                         'type' => 'db',
+                         'value' => array(
+                             'title' => 'P-Date',
+                             'col' => 'PermanentDate',
+                         ),
+                         'attr' => array('width' => '120px'),
+                     ),
+                     array(
+                         'type' => 'db',
+                         'value' => array(
+                             'title' => 'Status',
+                             'col' => 'status',
+                         ),
+                         'attr' => array('width' => '100px'),
+                     ),
+                 );
+
+                 echo $this->gridHeader($columns);
+                 ?>
                  <tbody>
                  <?php foreach($paginator as $staff):?>
                  <tr>

@@ -95,38 +95,80 @@ $current_url = $this->url('pm_task') . '/index/' . $projectId;
 	<div class="panel-body">
 		<div class="grid">
 			<table class="table table-bordered table-striped table-hover">
-				<thead>
-					<tr>
-						<th width="30px" class="text-center">
-							<div class="checkbox" style="margin: 0">
-								<label class="checkbox-custom" data-initialize="checkbox">
-								    <input type="checkbox" id="chkAll" />
-								</label>
-							</div>
-						</th>
-						<th width="250px">
-                        <?php echo $this->gridHeaderCell('Name','name', $current_url);?>
-                        </th>
-                        <th width="100px">
-                        <?php echo $this->gridHeaderCell('Manager', 'managerName', $current_url); ?>
-                        </th>
-                        <th width="100px">
-                        <?php echo $this->gridHeaderCell('Staff', 'staffName', $current_url); ?>
-                        </th>
-						<th width="80px" class="text-center">
-                        <?php echo $this->gridHeaderCell('Start','fromTime', $current_url);?>
-                        </th>
-						<th width="80px" class="text-center">
-                        <?php echo $this->gridHeaderCell('End','toTime', $current_url);?>
-                        </th>
-						<th width="50px" class="text-center">
-                        <?php echo $this->gridHeaderCell('(%)','current', $current_url);?>
-                        </th>
-						<th width="50px" class="text-center">
-                        <?php echo $this->gridHeaderCell('Status','status', $current_url);?>
-                        </th>
-					</tr>
-				</thead>
+                <?php
+                $columns = array(
+                    array(
+                        'type' => 'checkbox',
+                        'value' => array('id' => 'chkAll'),
+                        'attr' => array('class' => 'text-center', 'width' => '30px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Name',
+                            'col' => 'name',
+                            'url' => $current_url,
+                        ),
+                        'attr' => array('width' => '250px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Manager',
+                            'col' => 'managerName',
+                            'url' => $current_url,
+                        ),
+                        'attr' => array('width' => '100px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Staff',
+                            'col' => 'staffName',
+                            'url' => $current_url,
+                        ),
+                        'attr' => array('width' => '100px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Start',
+                            'col' => 'fromTime',
+                            'url' => $current_url,
+                        ),
+                        'attr' => array('class' => 'text-center', 'width' => '80px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'End',
+                            'col' => 'toTime',
+                            'url' => $current_url,
+                        ),
+                        'attr' => array('class' => 'text-center', 'width' => '80px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => '(%)',
+                            'col' => 'current',
+                            'url' => $current_url,
+                        ),
+                        'attr' => array('class' => 'text-center', 'width' => '50px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Status',
+                            'col' => 'status',
+                            'url' => $current_url,
+                        ),
+                        'attr' => array('class' => 'text-center', 'width' => '50px'),
+                    ),
+                );
+
+                echo $this->gridHeader($columns);
+                ?>
 				<tbody>
                     <?php
                     foreach($paginator as $task):
