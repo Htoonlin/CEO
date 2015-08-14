@@ -77,36 +77,61 @@ $this->headTitle($title);
     <div class="panel-body">
         <div class="grid">
             <table class="table table-bordered table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th width="50px">
-                            <div class="checkbox" style="...">
-                                <label class="checkbox-custom" data-initialize="checkbox">
-                                    <input type="checkbox" id="chkAll"/>
-                                </label>
-                            </div>
-                        </th>
-                        <th width="250px">
-                            <?php echo $this->gridHeaderCell('Company Name', 'name');?>
-                        </th>
-                        <th width="180px">
-                            <?php echo $this->gridHeaderCell('Phone', 'phone');?>
-                        </th>
-                        <th width="250px">
-                            <?php echo $this->gridHeaderCell('Website', 'website');?>
-                        </th>
-                        <th width="100px">
-                            <?php echo $this->gridHeaderCell('Type', 'type');?>
-                        </th>
-                        <th width="80px">
-                            <?php echo $this->gridHeaderCell('Status','status');?>
-                        </th>
-                    </tr>
-                </thead>
+                <?php
+                $columns = array(
+                    array(
+                        'type' => 'checkbox',
+                        'value' => array('id' => 'chkAll'),
+                        'attr' => array('class' => 'text-center', 'width' => '50px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Company Name',
+                            'col' => 'name',
+                        ),
+                        'attr' => array('width' => '250px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Phone',
+                            'col' => 'phone',
+                        ),
+                        'attr' => array('width' => '180px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Website',
+                            'col' => 'website',
+                        ),
+                        'attr' => array('width' => '250px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Type',
+                            'col' => 'type',
+                        ),
+                        'attr' => array('width' => '100px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Status',
+                            'col' => 'status',
+                        ),
+                        'attr' => array('width' => '80px'),
+                    ),
+                );
+
+                echo $this->gridHeader($columns);
+                ?>
                 <tbody>
                 <?php foreach($paginator as $company):?>
                     <tr>
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox" style="...">
                                 <label class="checkbox-custom" data-initialize="checkbox">
                                     <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($company->companyId);?>"/>

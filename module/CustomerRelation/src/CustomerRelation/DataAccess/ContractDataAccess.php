@@ -60,11 +60,12 @@ class ContractDataAccess extends SundewTableGateway
      */
     public function fetchAll($paginated = false, $filter ='', $orderBy= 'contractBy', $order='ASC')
     {
+        $view = 'vw_cr_contract';
         if($paginated){
-            $this->paginate($filter, $orderBy, $order);
+           return $this->paginate($filter, $orderBy, $order, $view);
         }
-        $contractView=new TableGateway($this->table, $this->adapter);
-        return $contractView->select(array('contract'=>$this->staffId));
+        $contractView=new TableGateway($view, $this->adapter);
+        return $contractView->select(array('contractBy'=>$this->staffId));
     }
 
     /**
@@ -86,6 +87,7 @@ class ContractDataAccess extends SundewTableGateway
     {
         $id = $contract->getContractId();
         $data = $contract->getArrayCopy();
+        $data['projectId']=1;
         $data['contractBy']=$this->staffId;
         if(is_array($contract->getContractFile())){
             $data['contractFile'] = $contract->getContractFile()['tmp_name'];

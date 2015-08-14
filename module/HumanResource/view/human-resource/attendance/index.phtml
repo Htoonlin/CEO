@@ -44,28 +44,56 @@ $flashMessages = $this->flashMessenger()->getMessages();
     <div class="panel-body">
         <div class="grid">
             <table class="table table-bordered table-striped table-hover">
-                <thead>
-                <tr>
-                    <th width="160px">
-                        <?php echo $this->gridHeaderCell('Date','attendanceDate');?>
-                    </th>
-                    <th width="160px">
-                        <?php echo $this->gridHeaderCell('Code','staffCode');?>
-                    </th>
-                    <th>
-                        <?php echo $this->gridHeaderCell('Name','staffName');?>
-                    </th>
-                    <th width="120px">
-                        <?php echo $this->gridHeaderCell('In','inTime');?>
-                    </th>
-                    <th width="120px">
-                        <?php echo $this->gridHeaderCell('Out','outTime');?>
-                    </th>
-                    <th width="80px" class="text-center">
-                        Action
-                    </th>
-                </tr>
-                </thead>
+                <?php
+                $columns = array(
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Date',
+                            'col' => 'attendanceDate',
+                        ),
+                        'attr' => array('width' => '160px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Code',
+                            'col' => 'staffCode',
+                        ),
+                        'attr' => array('width' => '160px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Name',
+                            'col' => 'staffName',
+                        ),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'In',
+                            'col' => 'inTime',
+                        ),
+                        'attr' => array('width' => '120px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Out',
+                            'col' => 'outTime',
+                        ),
+                        'attr' => array('width' => '120px'),
+                    ),
+                    array(
+                        'type' => 'custom',
+                        'value' => 'Action',
+                        'attr' => array('class' => 'text-center', 'width' => '80px'),
+                    ),
+                );
+
+                echo $this->gridHeader($columns);
+                ?>
                 <tbody>
                 <?php foreach($paginator as $attendance):?>
                     <tr>

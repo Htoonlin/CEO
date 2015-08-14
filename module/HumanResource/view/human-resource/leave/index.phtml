@@ -36,28 +36,59 @@ $this->headTitle($title);
     <div class="panel-body">
         <div class="grid">
             <table class="table table-bordered table-striped table-hover">
-                <thead>
-                <tr>
-                    <th width="120px">
-                        <?php echo $this->gridHeaderCell('Date','date');?>
-                    </th>
-                    <th width="120px">
-                        <?php echo $this->gridHeaderCell('Code','staffCode');?>
-                    </th>
-                    <th width="160px">
-                        <?php echo $this->gridHeaderCell('Name','staffName');?>
-                    </th>
-                    <th width="120px">
-                        <?php echo $this->gridHeaderCell('Leave','leaveType');?>
-                    </th>
-                    <th>
-                        <?php echo $this->gridHeaderCell('Description','description');?>
-                    </th>
-                    <th width="120px">
-                        <?php echo $this->gridHeaderCell('status','status');?>
-                    </th>
-                </tr>
-                </thead>
+                <?php
+                $columns = array(
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Date',
+                            'col' => 'date',
+                        ),
+                        'attr' => array('width' => '120px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Code',
+                            'col' => 'staffCode',
+                        ),
+                        'attr' => array('width' => '120px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Name',
+                            'col' => 'staffName',
+                        ),
+                        'attr' => array('width' => '160px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Leave',
+                            'col' => 'leaveType',
+                        ),
+                        'attr' => array('width' => '120px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Description',
+                            'col' => 'description',
+                        ),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Status',
+                            'col' => 'status',
+                        ),
+                        'attr' => array('width' => '120px'),
+                    ),
+                );
+
+                echo $this->gridHeader($columns);
+                ?>
                 <tbody>
                 <?php foreach($paginator as $leave): ?>
                     <?php if($leave->status == 'Requested'): ?>

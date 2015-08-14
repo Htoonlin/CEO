@@ -43,28 +43,61 @@ $main_url = $this->url('account_report', array('action' => 'detail', 'year' => $
     <div class="panel-body">
         <div class="grid">
             <table class="table table-bordered table-striped table-hover">
-                <thead>
-                <tr>
-                    <th width="150px">
-                        <?php echo $this->gridHeaderCell('Voucher No','voucherNo', $main_url);?>
-                    </th>
-                    <th width="100px">
-                        <?php echo $this->gridHeaderCell('Date','approvedDate', $main_url);?>
-                    </th>
-                    <th width="200px">
-                        <?php echo $this->gridHeaderCell('Requester','requester', $main_url);?>
-                    </th>
-                    <th>
-                        <?php echo $this->gridHeaderCell('Description','description', $main_url);?>
-                    </th>
-                    <th width="180px">
-                        <?php echo $this->gridHeaderCell('Amount','amount', $main_url);?>
-                    </th>
-                    <th width="80px">
-                        Status
-                    </th>
-                </tr>
-                </thead>
+                <?php
+                $columns = array(
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Voucher No',
+                            'col' => 'voucherNo',
+                            'url' => $main_url,
+                        ),
+                        'attr' => array('width' => '150px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Date',
+                            'col' => 'approvedDate',
+                            'url' => $main_url,
+                        ),
+                        'attr' => array('width' => '100px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Requester',
+                            'col' => 'requester',
+                            'url' => $main_url,
+                        ),
+                        'attr' => array('width' => '200px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Description',
+                            'col' => 'description',
+                            'url' => $main_url,
+                        ),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Amount',
+                            'col' => 'amount',
+                            'url' => $main_url,
+                        ),
+                        'attr' => array('width' => '180px'),
+                    ),
+                    array(
+                        'type' => 'custom',
+                        'value' => 'Status',
+                        'attr' => array('width' => '80'),
+                    )
+                );
+
+                echo $this->gridHeader($columns);
+                ?>
                 <tbody>
                 <?php foreach($paginator as $voucher):?>
                     <?php

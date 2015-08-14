@@ -78,39 +78,65 @@ $this->headTitle($title);
     <div class="panel-body">
         <div class="grid">
             <table class="table table-bordered table-striped table-hover">
-                <thead>
-                <tr>
-                    <th width="50px">
-                        <div class="checkbox" style="margin:0">
-                            <label class="checkbox-custom" data-initialize="checkbox">
-                                <input type="checkbox" id="chkAll" />
-                            </label>
-                        </div>
-                    </th>
-                    <th width="160px">
-                        <?php echo $this->gridHeaderCell('User Name', 'userName'); ?>
-                    </th>
-                    <th width="50px" class="text-center">
-                        Avatar
-                    </th>
-                    <th>
-                        <?php echo $this->gridHeaderCell('Description', 'description'); ?>
-                    </th>
-                    <th width="200px">
-                        <?php echo $this->gridHeaderCell('Role', 'roleName'); ?>
-                    </th>
-                    <th width="80px" class="text-center">
-                        <?php echo $this->gridHeaderCell('Status', 'status'); ?>
-                    </th>
-                    <th width="160px" class="text-center">
-                        <?php echo $this->gridHeaderCell('Last Login', 'lastLogin'); ?>
-                    </th>
-                </tr>
-                </thead>
+                <?php
+                $columns = array(
+                    array(
+                        'type' => 'checkbox',
+                        'value' => array('id' => 'chkAll'),
+                        'attr' => array('class' => 'text-center', 'width' => '50px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'User Name',
+                            'col' => 'userName',
+                        ),
+                        'attr' => array('width' => '160px'),
+                    ),
+                    array(
+                        'type' => 'custom',
+                        'value' => 'Avatar',
+                        'attr' => array('class' => 'text-center', 'width' => '50px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Description',
+                            'col' => 'description',
+                        ),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Role',
+                            'col' => 'roleName',
+                        ),
+                        'attr' => array('width' => '200px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Status',
+                            'col' => 'status',
+                        ),
+                        'attr' => array('class' => 'text-center', 'width' => '80px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Last Login',
+                            'col' => 'lastLogin',
+                        ),
+                        'attr' => array('class' => 'text-center', 'width' => '160px'),
+                    ),
+                );
+
+                echo $this->gridHeader($columns);
+                ?>
                 <tbody>
                 <?php foreach($paginator as $user) : ?>
                     <tr>
-                        <td>
+                        <td class="text-center">
                             <div class="checkbox" style="margin:0">
                                 <label class="checkbox-custom" data-initialize="checkbox">
                                     <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($user->userId); ?>" />

@@ -107,30 +107,44 @@ $this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.
     <div class="panel-body">
         <div class="grid">
             <table class="table table-bordered table-striped table-hover">
-                <thead>
-                <tr>
-                    <th width="50px">
-                        <div class="checkbox" style="margin:0">
-                            <label class="checkbox-custom" data-initialize="checkbox">
-                                <input type="checkbox" id="chkAll" />
-                            </label>
-                        </div>
-                    </th>
-                    <th width="230px">
-                        <?php echo $this->gridHeaderCell('Constant Name','name');?>
-                    </th>
-                    <th width="230px">
-                        <?php echo $this->gridHeaderCell('Group Code','group_code');?>
-                    </th>
-                    <th>
-                        <?php echo $this->gridHeaderCell('Value','value');?>
-                    </th>
-                </tr>
-                </thead>
+                <?php
+                    $columns = array(
+                        array(
+                            'type' => 'checkbox',
+                            'value' => array('id' => 'chkAll'),
+                            'attr' => array('class' => 'text-center', 'width' => '50px'),
+                        ),
+                        array(
+                            'type' => 'db',
+                            'value' => array(
+                                'title' => 'Constant Name',
+                                'col' => 'name',
+                            ),
+                            'attr' => array('width' => '230px'),
+                        ),
+                        array(
+                            'type' => 'db',
+                            'value' => array(
+                                'title' => 'Group Code',
+                                'col' => 'group_code',
+                            ),
+                            'attr' => array('width' => '230px'),
+                        ),
+                        array(
+                            'type' => 'db',
+                            'value' => array(
+                                'title' => 'Value',
+                                'col' => 'value',
+                            )
+                        ),
+                    );
+
+                    echo $this->gridHeader($columns);
+                ?>
                 <tbody>
                 <?php foreach($paginator as $constant) : ?>
                     <tr>
-                        <td>
+                        <td class=""text-center">
                             <div class="checkbox" style="margin:0">
                                 <label class="checkbox-custom" data-initialize="checkbox">
                                     <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($constant->constantId); ?>" />

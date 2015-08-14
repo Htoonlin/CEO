@@ -27,40 +27,86 @@ $this->headScript()
     <div class="panel-body">
         <div class="grid">
             <table class="table table-bordered table-striped table-hover">
-                <thead>
-                <tr>
-                    <th width="70px" class="text-center">
-                        <?php echo $this->gridHeaderCell('From','fromDate');?>
-                    </th>
-                    <th width="70px" class="text-center">
-                        <?php echo $this->gridHeaderCell('To','toDate');?>
-                    </th>
-                    <th width="120px">
-                        <?php echo $this->gridHeaderCell('Staff','staffName');?>
-                    </th>
-                    <th width="100px">
-                        <?php echo $this->gridHeaderCell('Salary','salary');?>
-                    </th>
-                    <th width="60px" class="text-center">
-                        <?php echo $this->gridHeaderCell('M_WD','m_wd');?>
-                    </th>
-                    <th width="60px" class="text-center">
-                        <?php echo $this->gridHeaderCell('S_WD','s_wd');?>
-                    </th>
-                    <th width="60px" class="text-center">
-                        <?php echo $this->gridHeaderCell('L','leave');?>
-                    </th>
-                    <th width="100px">
-                        <?php echo $this->gridHeaderCell('Late','Late');?>
-                    </th>
-                    <th width="120px">
-                        Net
-                    </th>
-                    <th width="50px" class="text-center">
-                        Print
-                    </th>
-                </tr>
-                </thead>
+                <?php
+                $columns = array(
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Form',
+                            'col' => 'fromDate',
+                        ),
+                        'attr' => array('class' => 'text-center', 'width' => '70px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'To',
+                            'col' => 'toDate',
+                        ),
+                        'attr' => array('class' => 'text-center', 'width' => '70px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Staff',
+                            'col' => 'staffName',
+                        ),
+                        'attr' => array('width' => '120px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Salary',
+                            'col' => 'salary',
+                        ),
+                        'attr' => array('width' => '100px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'M_WD',
+                            'col' => 'm_wd',
+                        ),
+                        'attr' => array('class' => 'text-center', 'width' => '60px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'S_WD',
+                            'col' => 's_wd',
+                        ),
+                        'attr' => array('class' => 'text-center', 'width' => '60px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'L',
+                            'col' => 'leave',
+                        ),
+                        'attr' => array('class' => 'text-center', 'width' => '60px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Late',
+                            'col' => 'Late',
+                        ),
+                        'attr' => array('width' => '100px'),
+                    ),
+                    array(
+                        'type' => 'custom',
+                        'value' => 'Net',
+                        'attr' => array('width' => '120px')
+                    ),
+                    array(
+                        'type' => 'custom',
+                        'value' => 'Print',
+                        'attr' => array('class' => 'text-center', 'width' => '50px')
+                    )
+                );
+
+                echo $this->gridHeader($columns);
+                ?>
                 <tbody>
                 <?php foreach($paginator as $payroll):?>
                     <tr>

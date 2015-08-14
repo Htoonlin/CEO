@@ -79,36 +79,61 @@ $this->headTitle($title);
      <div class="panel-body">
          <div class="grid">
              <table class="table table-bordered table-striped table-hover">
-                 <thead>
-                    <tr>
-                        <th width="50px">
-                            <div class="checkbox" style="...">
-                                <label class="checkbox-custom" data-initialize="checkbox">
-                                    <input type="checkbox" id="chkAll"/>
-                                </label>
-                            </div>
-                        </th>
-                        <th width="160px">
-                            <?php echo $this->gridHeaderCell('Currency Code', 'code');?>
-                        </th>
-                        <th width="160px">
-                            <?php echo $this->gridHeaderCell('Currency Name','name');?>
-                        </th>
-                        <th width="160px">
-                            <?php echo $this->gridHeaderCell('Rate','rate');?>
-                        </th>
-                        <th width="100px">
-                            <?php echo $this->gridHeaderCell('Status', 'status');?>
-                        </th>
-                        <th width="160px">
-                            <?php echo $this->gridHeaderCell('Entry Date', 'entryDate');?>
-                        </th>
-                    </tr>
-                 </thead>
+                 <?php
+                 $columns = array(
+                     array(
+                         'type' => 'checkbox',
+                         'value' => array('id' => 'chkAll'),
+                         'attr' => array('class' => 'text-center', 'width' => '50px'),
+                     ),
+                     array(
+                         'type' => 'db',
+                         'value' => array(
+                             'title' => 'Currency Code',
+                             'col' => 'code',
+                         ),
+                         'attr' => array('width' => '160px'),
+                     ),
+                     array(
+                         'type' => 'db',
+                         'value' => array(
+                             'title' => 'Currency Name',
+                             'col' => 'name',
+                         ),
+                         'attr' => array('width' => '160px'),
+                     ),
+                     array(
+                         'type' => 'db',
+                         'value' => array(
+                             'title' => 'Rate',
+                             'col' => 'rate',
+                         ),
+                         'attr' => array('width' => '160px'),
+                     ),
+                     array(
+                         'type' => 'db',
+                         'value' => array(
+                             'title' => 'Status',
+                             'col' => 'status',
+                         ),
+                         'attr' => array('width' => '100px'),
+                     ),
+                     array(
+                         'type' => 'db',
+                         'value' => array(
+                             'title' => 'Entry Date',
+                             'col' => 'entryDate',
+                         ),
+                         'attr' => array('width' => '160px'),
+                     ),
+                 );
+
+                 echo $this->gridHeader($columns);
+                 ?>
                  <tbody>
                     <?php foreach($paginator as $currency):?>
                  <tr>
-                     <td>
+                     <td class="text-center">
                          <div class="checkbox" style="...">
                              <label class="checkbox-custom" data-initialize="checkbox">
                                  <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($currency->currencyId);?>"/>
