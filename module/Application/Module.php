@@ -14,6 +14,7 @@ use Application\DataAccess\RouteDataAccess;
 use Application\DataAccess\UserRoleDataAccess;
 use Application\Helper\View\ConstantConverter;
 use Application\Helper\View\GridFilter;
+use Application\Helper\View\GridHeader;
 use Application\Helper\View\GridHeaderCell;
 use Application\Service\SundewAuthStorage;
 use Application\Service\SundewLogger;
@@ -202,6 +203,10 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                     'gridHeaderCell' => function($sm){
                         $app = $sm->getServiceLocator()->get('Application');
                         return new GridHeaderCell($app->getRequest());
+                    },
+                    'gridHeader' => function($sm){
+                        $app = $sm->getServiceLocator()->get('Application');
+                        return new GridHeader($app->getRequest());
                     },
                     'gridFilter' => function($sm){
                         $app = $sm->getServiceLocator()->get('Application');
