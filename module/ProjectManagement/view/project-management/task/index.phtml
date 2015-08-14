@@ -75,7 +75,7 @@ $current_url = $this->url('pm_task') . '/index/' . $projectId;
 			<div class="col-md-4 col-md-offset-2">
 				<div class="text-right">
 					<div class="btn-group">
-						<a href="<?php echo $this->url('pm_task', array('action' => 'detail', 'id' => 0)); ?>"
+						<a href="<?php echo $this->url('pm_task', array('action' => 'detail', 'id' => 0)); ?>?projectId=<?= $projectId; ?>"
 							class="btn btn-primary" id="btnNew">
 							<span class="glyphicon glyphicon-plus"></span>
 							New Task
@@ -195,7 +195,7 @@ $current_url = $this->url('pm_task') . '/index/' . $projectId;
 							</div>
 						</td>
 						<td>
-						    <a href="<?php echo $this->url('pm_task', array('action' => 'detail', 'id' => $task->taskId)); ?>" title="Edit">
+						    <a href="<?php echo $this->url('pm_task', array('action' => 'detail', 'id' => $task->taskId)); ?>?projectId=<?= $projectId ?>" title="Edit">
                             <?php echo $this->escapeHtml($task->name); ?>
                             </a>
                         </td>

@@ -136,35 +136,6 @@ $this->headTitle($title);
 
                 echo $this->gridHeader($columns);
                 ?>
-                <thead>
-                <tr>
-                    <th width="50px">
-                        <div class="checkbox" style="margin: 0">
-                            <label class="checkbox-custom" data-initialize="checkbox">
-                                <input type="checkbox" id="chkAll" />
-                            </label>
-                        </div>
-                    </th>
-                    <th width="160px">
-                        <?php echo $this->gridHeaderCell('Code','code');?>
-                    </th>
-                    <th width="160px">
-                        <?php echo $this->gridHeaderCell('Name','name');?>
-                    </th>
-                    <th>
-                        <?php echo $this->gridHeaderCell('Description','description');?>
-                    </th>
-                    <th width="160px">
-                        <?php echo $this->gridHeaderCell('Start','startDate');?>
-                    </th>
-                    <th width="160px">
-                        <?php echo $this->gridHeaderCell('End','endDate');?>
-                    </th>
-                    <th width="160px">
-                        <?php echo $this->gridHeaderCell('Status','status');?>
-                    </th>
-                </tr>
-                </thead>
                 <tbody>
                 <?php foreach($paginator as $project):?>
                     <tr>

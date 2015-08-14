@@ -124,6 +124,7 @@ class TaskController extends SundewController
     {
         $id = (int)$this->params()->fromRoute("id", 0);
         $action = $this->params()->fromQuery("action", "");
+        $projectId = $this->params()->fromQuery("projectId", 0);
         $helper = new TaskHelper();
         $form = $helper->getForm($this->getProjectList(), $this->getStaffList(), $this->getCurrencyList(), $this->getStatusList());
         $task = $this->taskTable()->getTask($id);
@@ -132,6 +133,7 @@ class TaskController extends SundewController
         if(!$task){
         	$isEdit = false;
         	$task = new Task();
+            $task->setProjectId($projectId);
         }
 
         if($action == 'clone'){
@@ -153,7 +155,12 @@ class TaskController extends SundewController
         		return $this->redirect()->toRoute('pm_task');
         	}
         }
-        return new ViewModel(array('form' => $form, 'id' => $id, 'isEdit' => $isEdit));
+        return new ViewModel(array(
+            'form' => $form,
+            'id' => $id,
+            'isEdit' => $isEdit,
+            'projectId' => $projectId,
+        ));
     }
 
     /**
