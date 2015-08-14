@@ -70,11 +70,14 @@ class TaskController extends SundewController
      */
     private function projectCombo($selected)
     {
+        $projectList = $this->getProjectList();
+        $projectList[0] = '- No Project -';
+        $projectList[-1] = '- All -';
+        ksort($projectList);
         $combo = new Element\Select();
         $combo->setAttribute('class', 'form-control');
         $combo->setName('projectList');
-        $combo->setEmptyOption('-- No Project --');
-        $combo->setValueOptions($this->getProjectList());
+        $combo->setValueOptions($projectList);
         $combo->setValue($selected);
         return $combo;
     }

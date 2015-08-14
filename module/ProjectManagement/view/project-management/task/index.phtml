@@ -23,7 +23,7 @@ $current_url = $this->url('pm_task', array('action' => 'index', 'id' => $project
                  success:function(data){
                      console.log(data);
                      if(data.message=="success"){
-                         window.location.href="<?php echo $this->url('pm_task');?>"
+                         window.location.href="<?php echo $this->url('pm_task', array('action' => 'index', 'id' => $projectId));?>"
                      }else{
                          alert(data.message);
                      }
@@ -35,10 +35,10 @@ $current_url = $this->url('pm_task', array('action' => 'index', 'id' => $project
     	 window.location.href = '<?php echo $this->url('pm_task', array('action' => 'export')); ?>' + $('select[name="projectList"]').val();
      });
      $('select[name="projectList"]').change(function(){
-         if($(this).val() > 0){
-        	 window.location.href = '<?php echo $this->url('pm_task'); ?>/index/' + $(this).val();
-         }else{
+         if($(this).val() == 0){
              window.location.href = '<?php echo $this->url('pm_task'); ?>';
+         }else{
+             window.location.href = '<?php echo $this->url('pm_task'); ?>/index/' + $(this).val();
          }
      });
      $("input#chkAll").change(function(){

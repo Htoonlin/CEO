@@ -22,11 +22,13 @@ class TaskHelper
 
     protected $inputFilter = null;
 
-    /**
-     *
-     * @param array $projects
-     * @return \Zend\Form\Form
-     */
+	/**
+	 * @param array $projectList
+	 * @param array $staffList
+	 * @param array $currencyList
+	 * @param array $statusList
+	 * @return null|Form
+	 */
     public function getForm(array $projectList, array $staffList,
         array $currencyList, array $statusList)
     {
@@ -43,9 +45,9 @@ class TaskHelper
 
         	$projectId = new Element\Select('projectId');
         	$projectId->setAttribute('class', 'form-control');
-        	$projectId->setLabel('Project *:');
+        	$projectId->setLabel('Project (*):');
         	$projectId->setValueOptions($projectList);
-        	$projectId->setEmptyOption('- No project --');
+        	$projectId->setEmptyOption('- No project -');
         	$form->add($projectId);
 
         	$name = new Element\Text('name');
@@ -89,12 +91,12 @@ class TaskHelper
         		'max' => '99999999999',
         		'step' => '1',
         	));
-        	$maxBudget->setLabel('Max Budget:');
+        	$maxBudget->setLabel('Max Budget (*):');
         	$form->add($maxBudget);
 
         	$currencyId = new Element\Select('currencyId');
         	$currencyId->setAttribute('class', 'form-control');
-        	$currencyId->setLabel('Currency:');
+        	$currencyId->setLabel('Currency (*):');
         	$currencyId->setEmptyOption('-Currency-');
         	$currencyId->setValueOptions($currencyList);
         	$form->add($currencyId);
@@ -104,7 +106,7 @@ class TaskHelper
 
         	$predecessorId = new Element\Select('predecessorId');
         	$predecessorId->setAttribute('class', 'form-control');
-        	$predecessorId->setLabel('Predecessor Id');
+        	$predecessorId->setLabel('Predecessor (*)');
         	$form->add($predecessorId);
 
         	$priority = new Element\Number('priority');

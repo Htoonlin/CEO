@@ -35,13 +35,13 @@ class TaskDataAccess extends SundewTableGateway
     }
 
     /**
-     *
-     * @param unknown $projectId
-     * @param string $paginated
+     * @param $managerId
+     * @param null $projectId
+     * @param bool|false $paginated
      * @param string $filter
      * @param string $orderBy
      * @param string $order
-     * @return \Zend\Paginator\Paginator|\Zend\Db\ResultSet\ResultSet
+     * @return \Zend\Db\ResultSet\ResultSet|\Zend\Paginator\Paginator
      */
     public function fetchAll($managerId,$projectId = null, $paginated = false, $filter = '', $orderBy = '', $order = '')
     {
@@ -51,7 +51,7 @@ class TaskDataAccess extends SundewTableGateway
         $where->equalTo('managerId', $managerId);
         if($projectId > 0){
             $where->equalTo('projectId', $projectId);
-        }else{
+        }else if($projectId == 0){
             $where->isNull('projectId')
             ->OR->equalTo('projectId', 0);
         }
@@ -75,11 +75,11 @@ class TaskDataAccess extends SundewTableGateway
         });
         return $result;
     }
+
     /**
-     *
-     * @param unknown $id
-     * @param unknown $staffId
-     * @return NULL
+     * @param $id
+     * @param $staffId
+     * @return array|\ArrayObject|null
      */
     public function getTaskByStaff($id, $staffId)
     {
@@ -92,10 +92,9 @@ class TaskDataAccess extends SundewTableGateway
     }
 
     /**
-     *
-     * @param unknown $id
+     * @param $id
+     * @return array|\ArrayObject|null
      * @throws \Exception
-     * @return Ambigous <multitype:, ArrayObject, NULL>
      */
     public function getTask($id)
     {
