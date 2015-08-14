@@ -23,6 +23,9 @@ use Zend\Json\Json;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use HumanResource\Entity\Staff;
+use ProjectManagement\Helper\TaskHelper;
+use ProjectManagement\Entity\Task;
+use ProjectManagement\DataAccess\TaskDataAccess;
 
 class DashboardController extends SundewController
 {
@@ -35,6 +38,10 @@ class DashboardController extends SundewController
     private function attendanceTable()
     {
         return new AttendanceDataAccess($this->getDbAdapter());
+    }
+    private function taskTable()
+    {
+        return new TaskDataAccess($this->getDbAdapter());
     }
     private $staffTable;
     private $calendarTable;
@@ -146,7 +153,7 @@ class DashboardController extends SundewController
                 }
             }
 
-
+            $todoList = $this->taskTable()->getToDoList($this->getCurrentStaff()->getStaffId());
 
             return new ViewModel(array(
                 'attendance' => $attendance,
@@ -156,10 +163,40 @@ class DashboardController extends SundewController
                 'workingHours' => $this->workingHours,
                 'leaveValues' => $this->leaveValues,
                 'staff' => ($this->staff) ? $this->staff : new Staff(),
+                'taskList' => $todoList,
             ));
         }catch(\Exception $ex){
             throw $ex;
         }
+    }
+
+    public function taskDetailAction()
+    {
+        $id = (int)$this->params()->fromRoute("id", 0);
+
+        $task = new Task();
+        $task = $this->taskTable()->getTaskByStaff($id, $this->getCurrentStaff()->getStaffId());
+        if(!$task){
+            $this->flashmessenger()->addErrorMessage('Invalid Task.');
+            return $this->redirect()->toRoute('dashboard');
+        }
+
+        $request = $this->getRequest();
+        if($request->isPost()){
+            $post_data = $request->getPost();
+            $current = $request->getPost('current', 0);
+            $status = $request->getPost('status', 'A');
+
+            $task = $this->taskTable()->getTask($id);
+            $task->setCurrent($current);
+            $task->setStatus($status);
+
+            $this->taskTable()->saveTask($task);
+            $this->flashMessenger()->addSuccessMessage('Save successful');
+            return $this->redirect()->toRoute('dashboard');
+        }
+
+        return new ViewModel(array('task' => $task));
     }
 
     /**

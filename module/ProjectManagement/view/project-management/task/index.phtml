@@ -10,11 +10,54 @@
  */
 $title = 'Task Manager';
 $this->headtitle($title);
+$current_url = $this->url('pm_task') . '/index/' . $projectId;
 ?>
 <script type="text/javascript">
-	$().ready(function(){
-		$('#taskList').treegrid();
-	});
+ $(document).ready(function(){
+     $("button#btnDelete").click(function(){
+         if(confirm('Are you sure to delete selected records?')){
+             $.ajax({
+                 url:'<?php echo $this->url('pm_task',array('action'=>'jsonDelete'))?>',
+                 data:$('input[name="chkId[]"]:checked'),
+                 type:'POST',
+                 success:function(data){
+                     console.log(data);
+                     if(data.message=="success"){
+                         window.location.href="<?php echo $this->url('pm_task');?>"
+                     }else{
+                         alert(data.message);
+                     }
+                 }
+             });
+         }
+     });
+     $('button#btnExport').click(function(){
+    	 window.location.href = '<?php echo $this->url('pm_task', array('action' => 'export')); ?>' + $('select[name="projectList"]').val();
+     });
+     $('select[name="projectList"]').change(function(){
+         if($(this).val() > 0){
+        	 window.location.href = '<?php echo $this->url('pm_task'); ?>/index/' + $(this).val();
+         }else{
+             window.location.href = '<?php echo $this->url('pm_task'); ?>';
+         }
+     });
+     $("input#chkAll").change(function(){
+         if($(this).checkbox('isChecked')){
+             $('input[name="chkId[]"]').checkbox('check');
+         }else{
+             $('input[name="chkId[]"]').checkbox('uncheck');
+         }
+     });
+     $('input[name="chkId[]"]').change(function(){
+         var total=$('input[name="chkId[]"]').length;
+         var checks=$('input[name="chkId[]"]:checked').length;
+         if(total==checks){
+             $("input#chkAll").checkbox('check');
+         }else{
+             $("input#chkAll").checkbox('uncheck');
+         }
+     });
+ });
 </script>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <hr />
@@ -29,18 +72,21 @@ $this->headtitle($title);
                 <?php echo $this->formselect($cboProject); ?>
                 </div>
 			</div>
-			<div class="col-md-3 col-md-offset-3">
+			<div class="col-md-4 col-md-offset-2">
 				<div class="text-right">
 					<div class="btn-group">
-						<button class="btn btn-primary" type="button" id="btnNew"
-							data-toggle="modal" data-target="#taskDetail">
-							<span class="glyphicon glyphicon-plus"></span> New Task
-						</button>
-						<a
-							href="<?php echo $this->url('pm_task',array('action'=>'export'));?>"
-							class="btn btn-default"> <span
-							class="glyphicon glyphicon-download"></span> Export
+						<a href="<?php echo $this->url('pm_task', array('action' => 'detail', 'id' => 0)); ?>"
+							class="btn btn-primary" id="btnNew">
+							<span class="glyphicon glyphicon-plus"></span>
+							New Task
 						</a>
+						<button type="button" id="btnExport" class="btn btn-default">
+						  <span class="glyphicon glyphicon-download"></span>
+						  Export
+						</button>
+						<button type="button" id="btnDelete" class="btn btn-danger">
+							<span class="glyphicon glyphicon-trash"></span> Delete
+						</button>
 					</div>
 				</div>
 			</div>
@@ -48,8 +94,104 @@ $this->headtitle($title);
 	</div>
 	<div class="panel-body">
 		<div class="grid">
+			<table class="table table-bordered table-striped table-hover">
+				<thead>
+					<tr>
+						<th width="30px" class="text-center">
+							<div class="checkbox" style="margin: 0">
+								<label class="checkbox-custom" data-initialize="checkbox">
+								    <input type="checkbox" id="chkAll" />
+								</label>
+							</div>
+						</th>
+						<th width="250px">
+                        <?php echo $this->gridHeaderCell('Name','name', $current_url);?>
+                        </th>
+                        <th width="100px">
+                        <?php echo $this->gridHeaderCell('Manager', 'managerName', $current_url); ?>
+                        </th>
+                        <th width="100px">
+                        <?php echo $this->gridHeaderCell('Staff', 'staffName', $current_url); ?>
+                        </th>
+						<th width="80px" class="text-center">
+                        <?php echo $this->gridHeaderCell('Start','fromTime', $current_url);?>
+                        </th>
+						<th width="80px" class="text-center">
+                        <?php echo $this->gridHeaderCell('End','toTime', $current_url);?>
+                        </th>
+						<th width="50px" class="text-center">
+                        <?php echo $this->gridHeaderCell('(%)','current', $current_url);?>
+                        </th>
+						<th width="50px" class="text-center">
+                        <?php echo $this->gridHeaderCell('Status','status', $current_url);?>
+                        </th>
+					</tr>
+				</thead>
+				<tbody>
+                    <?php
+                    foreach($paginator as $task):
+                    $coloring = '';
+                    switch($task->status){
+                        case 'P':
+                            $coloring = 'info';
+                            break;
+                        case 'F':
+                            $coloring = 'warning';
+                            break;
+                        case 'C':
+                            $coloring = 'success';
+                            break;
+                    }
+                    ?>
+                    <tr class="<?php echo $coloring; ?>">
+						<td class="text-center">
+							<div class="checkbox" style="margin: 0">
+								<label class="checkbox-custom" data-initialize="checkbox"> <input
+									type="checkbox" name="chkId[]"
+									value="<?php echo $this->escapeHtml($task->taskId);?>" />
+								</label>
+							</div>
+						</td>
+						<td>
+						    <a href="<?php echo $this->url('pm_task', array('action' => 'detail', 'id' => $task->taskId)); ?>" title="Edit">
+                            <?php echo $this->escapeHtml($task->name); ?>
+                            </a>
+                        </td>
+						<td>
+                            <?php echo $this->escapeHtml($task->managerName . "({$task->managerCode})"); ?>
+                        </td>
+						<td>
+                            <?php echo $this->escapeHtml($task->staffName . "({$task->staffCode})"); ?>
+                        </td>
+						<td class="text-center">
+                            <?php echo date('Y-m-d', strtotime($task->fromTime)); ?>
+                        </td>
+						<td class="text-center">
+                            <?php echo date('Y-m-d', strtotime($task->toTime)); ?>
+                        </td>
+						<td class="text-center">
+                            <?php echo $task->current . '%'; ?>
+                        </td>
+						<td class="text-center">
+                            <?php echo $this->constantConverter($task->status, 'task_status'); ?>
+                        </td>
+					</tr>
+                <?php endforeach; ?>
+                </tbody>
+			</table>
 		</div>
 	</div>
-	<div class="panel-footer"></div>
+	<div class="panel-footer">
+		<div class="text-center">
+            <?php
+            echo $this->paginationControl($paginator, 'Sliding', 'shared/paginator.phtml', array(
+                'url' => $current_url,
+                'filter' => $filter,
+                'sort' => $sort,
+                'sortBy' => $sortBy
+            ));
+            ?>
+        </div>
+	</div>
 </div>
 

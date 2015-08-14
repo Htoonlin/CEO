@@ -2,7 +2,6 @@
 /**
  * @var $this \Zend\View\Renderer\PhpRenderer
  */
-
 $title = 'Dashboard';
 $this->headTitle($title);
 $this->headScript()
@@ -60,73 +59,121 @@ $this->headScript()
             var to = $('input[name=toDate]').val();
             window.location.href = '<?= $this->url('dashboard', array('action' => 'paySlip')); ?>?from=' + from + '&to=' + to;
         });
+
+		$('input[name$="Date"]').removeAttr('style');
     });
 </script>
 <div class="row">
-    <div class="col-sm-8">
-        <?php echo $this->partial('shared/calendar', array('height' => 550, 'name' => 'dashboardCalendar')); ?>
+	<div class="col-sm-7">
+        <?php echo $this->partial('shared/calendar', array('height' => 500, 'name' => 'dashboardCalendar')); ?>
     </div>
-    <div class="col-sm-4">
-        <div class="panel-group" id="noticeBoard">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <a href="#attendance" data-toggle="collapse" data-parent="#noticeBoard">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                        Attendance
-                    </a>
-                </div>
-                <div id="attendance" class="panel-collapse collapse in">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <p class="text-center">
-                                    <span class="glyphicon glyphicon-dashboard"></span>
-                                    Arrival
-                                </p>
-                            </div>
-                            <div class="col-sm-6">
-                                <p class="text-center">
-                                    <span class="glyphicon glyphicon-dashboard"></span>
-                                    Departure
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <button id="btnIn" type="button" onclick="attendance('I')" class="btn btn-info btn-block">
+	<div class="col-sm-5">
+		<div class="panel-group" id="noticeBoard">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<a href="#todoList" data-toggle="collapse"
+						data-parent="#noticeBoard"> <span class="fa fa-check-square"></span>
+						Task List
+					</a>
+				</div>
+				<div id="todoList" class="panel-collapse collapse in">
+					<div class="panel-body" style="max-height: 350px; overflow: auto;">
+						<div id="todo-box">
+							<ul class="list-group">
+							    <?php
+                                    foreach($taskList as $task):
+                                    $today = new DateTime(date('Y-m-d',time()));
+                                    $endDate = new DateTime($task->getToTime());
+                                    $dueDate = $today->diff($endDate);
+                                    if($dueDate->format('%R') === "-"){
+                                        $dueDateString = 'Overdue';
+                                        $coloring = 'danger';
+                                    }else if($dueDate->y > 0){
+                                        $dueDateString = $dueDate->y . ' year' . (($dueDate->y > 1) ? 's' : '');
+                                        $coloring = 'default';
+                                    }else if($dueDate->m > 0){
+                                        $dueDateString = $dueDate->m . ' month' . (($dueDate->m > 1) ? 's' : '');
+                                        $coloring = 'success';
+                                    }else if($dueDate->d > 0){
+                                        $dueDateString = $dueDate->d . ' day' . (($dueDate->d > 1) ? 's' : '');
+                                        $coloring = 'info';
+                                    }else{
+                                        $dueDateString = 'Today';
+                                        $coloring = 'warning';
+                                    }
+							    ?>
+							    <li class="list-group-item">
+							    <?php echo $task->getName(); ?>
+							    <a href="<?php echo $this->url('dashboard', array('action' => 'taskDetail', 'id' => $task->getTaskId()));?>"
+							     class="btn btn-xs btn-<?php echo $coloring;?> pull-right">
+							     <?php echo $dueDateString; ?>
+						         </a>
+								</li>
+							    <?php endforeach;?>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<a href="#attendance" data-toggle="collapse"
+						data-parent="#noticeBoard"> <span
+						class="glyphicon glyphicon-pencil"></span> Attendance
+					</a>
+				</div>
+				<div id="attendance" class="panel-collapse collapse">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-6">
+								<p class="text-center">
+									<span class="glyphicon glyphicon-dashboard"></span> Arrival
+								</p>
+							</div>
+							<div class="col-sm-6">
+								<p class="text-center">
+									<span class="glyphicon glyphicon-dashboard"></span> Departure
+								</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<button id="btnIn" type="button" onclick="attendance('I')"
+									class="btn btn-info btn-block">
                                     <?php
-                                    if($attendance->getInTime()){
+                                    if ($attendance->getInTime()) {
                                         echo $attendance->getInTime();
-                                    }else {
+                                    } else {
                                         echo '<span class="glyphicon glyphicon-pencil"></span>';
                                     }
                                     ?>
                                 </button>
-                            </div>
-                            <div class="col-sm-6">
-                                <button id="btnOut" type="button" onclick="attendance('O')" class="btn btn-warning btn-block">
+							</div>
+							<div class="col-sm-6">
+								<button id="btnOut" type="button" onclick="attendance('O')"
+									class="btn btn-warning btn-block">
                                     <?php
-                                    if($attendance->getOutTime()){
+                                    if ($attendance->getOutTime()) {
                                         echo $attendance->getOutTime();
-                                    }else {
+                                    } else {
                                         echo '<span class="glyphicon glyphicon-pencil"></span>';
                                     }
                                     ?>
                                 </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <a href="#leaveForm" data-toggle="collapse" data-parent="#noticeBoard">
-                        <span class="fa fa-user-md"></span>
-                        Leave Form
-                    </a>
-                </div>
-                <div id="leaveForm" class="panel-collapse collapse">
-                    <div class="panel-body">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<a href="#leaveForm" data-toggle="collapse"
+						data-parent="#noticeBoard"> <span class="fa fa-user-md"></span>
+						Leave Form
+					</a>
+				</div>
+				<div id="leaveForm" class="panel-collapse collapse">
+					<div class="panel-body">
                         <?php
                         $leaveForm->setAttribute('action', $this->url('dashboard'));
                         $leaveForm->prepare();
@@ -136,88 +183,104 @@ $this->headScript()
                         echo $this->formRow($leaveForm->get('description'));
                         ?>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-block btn-primary">
-                                <span class="glyphicon glyphicon-send"></span>
-                                Request now
-                            </button>
-                        </div>
+							<button type="submit" class="btn btn-block btn-primary">
+								<span class="glyphicon glyphicon-send"></span> Request now
+							</button>
+						</div>
                         <?= $this->form()->closeTag(); ?>
                     </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <a href="#salaryCalculator" data-toggle="collapse" data-parent="#noticeBoard">
-                        <span class="fa fa-money"></span>
-                        Payroll Calculator
-                    </a>
-                </div>
-                <div id="salaryCalculator" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <p>
-                        <?php
-                        echo $this->form()->openTag($salaryForm);
-                        echo $this->formRow($salaryForm->get('fromDate'));
-                        echo $this->formRow($salaryForm->get('toDate'));
-                        echo $this->form()->closeTag();
-                        ?>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<a href="#salaryCalculator" data-toggle="collapse"
+						data-parent="#noticeBoard"> <span class="fa fa-money"></span>
+						Payroll Calculator
+					</a>
+				</div>
+				<div id="salaryCalculator" class="panel-collapse collapse">
+					<div class="panel-body">
+						<p>
+                        <?php echo $this->form()->openTag($salaryForm); ?>
+
+
+
+
+
+
+						<div class="row">
+							<div class="col-sm-6">
+                            <?php echo $this->formRow($salaryForm->get('fromDate')); ?>
+                            </div>
+							<div class="col-sm-6">
+                            <?php echo $this->formRow($salaryForm->get('toDate')); ?>
+                            </div>
+						</div>
+                        <?php echo $this->form()->closeTag(); ?>
                         </p>
-                        <div class="btn-group btn-group-justified">
-                            <div class="btn-group">
-                                <button type="button" id="btnPaySlip" class="btn btn-info">
-                                    <span class="fa fa-file"></span>
-                                    Pay Slip
-                                </button>
-                            </div>
-                            <div class="btn-group">
-                                <button type="button" id="btnCalculate" class="btn btn-primary">
-                                    <span class="fa fa-calculator"></span>
-                                    Calculate
-                                </button>
-                            </div>
-                        </div>
-                        <p>
-                            <table data-id="<?= $staff->getStaffId() ?>" class="table table-bordered table-striped"
-                                   id="payrollTable-<?= $staff->getStaffId() ?>" data-salary="<?= $staff->getSalary() ?>">
-                                <tr>
-                                    <td width="150px" class="text-right">Per Day :</td>
-                                    <td class="text-center" id="Per_Day">0</td>
-                                </tr>
-                                <tr>
-                                    <td width="150px" class="text-right">Monthly WD :</td>
-                                    <td class="text-center" id="M_WD">0</td>
-                                </tr>
-                                <tr>
-                                    <td width="150px" class="text-right">Your WD :</td>
-                                    <td class="text-center" id="S_WD">0</td>
-                                </tr>
-                                <tr>
-                                    <td width="150px" class="text-right">Leave :</td>
-                                    <td class="text-center" id="Leave">0</td>
-                                </tr>
-                                <tr>
-                                    <td width="150px" class="text-right">Absent :</td>
-                                    <td class="text-center" id="Absent">0</td>
-                                </tr>
+						<div class="btn-group btn-group-justified">
+							<div class="btn-group">
+								<button type="button" id="btnPaySlip" class="btn btn-info">
+									<span class="fa fa-file"></span> Pay Slip
+								</button>
+							</div>
+							<div class="btn-group">
+								<button type="button" id="btnCalculate" class="btn btn-primary">
+									<span class="fa fa-calculator"></span> Calculate
+								</button>
+							</div>
+						</div>
+						<p>
+
+
+						<table data-id="<?= $staff->getStaffId() ?>"
+							class="table table-bordered table-striped"
+							id="payrollTable-<?= $staff->getStaffId() ?>"
+							data-salary="<?= $staff->getSalary() ?>">
+							<tr>
+								<td width="150px" class="text-right">Per Day :</td>
+								<td class="text-center" id="Per_Day">0</td>
+							</tr>
+							<tr>
+								<td width="150px" class="text-right">Monthly WD :</td>
+								<td class="text-center" id="M_WD">0</td>
+							</tr>
+							<tr>
+								<td width="150px" class="text-right">Your WD :</td>
+								<td class="text-center" id="S_WD">0</td>
+							</tr>
+							<tr>
+								<td width="150px" class="text-right">Leave :</td>
+								<td class="text-center" id="Leave">0</td>
+							</tr>
+							<tr>
+								<td width="150px" class="text-right">Absent :</td>
+								<td class="text-center" id="Absent">0</td>
+							</tr>
                             <?php foreach($lateList as $late): ?>
                                 <tr>
-                                    <td class="text-right">
+								<td class="text-right">
                                         <?= $late->title ?> :
                                     </td>
-                                    <td class="text-center" id="<?= $late->code . '-' . $staff->getStaffId() ?>">0</td>
-                                </tr>
+								<td class="text-center"
+									id="<?= $late->code . '-' . $staff->getStaffId() ?>">0</td>
+							</tr>
                             <?php endforeach; ?>
                             </table>
-                        </p>
-                        <p>
-                            <div class="progress" id="payrollProcess" style="margin-top:10px; margin-bottom: 0;">
-                                <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-                                </div>
-                            </div>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+						</p>
+						<p>
+
+
+						<div class="progress" id="payrollProcess"
+							style="margin-top: 10px; margin-bottom: 0;">
+							<div class="progress-bar progress-bar-primary" role="progressbar"
+								aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+								style="width: 0%"></div>
+						</div>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

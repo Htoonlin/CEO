@@ -528,7 +528,7 @@ CREATE TABLE `tbl_pm_task` (
   `finished` datetime DEFAULT NULL,
   `status` char(1) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`taskId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -953,6 +953,42 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
+-- Temporary view structure for view `vw_pm_task`
+--
+
+DROP TABLE IF EXISTS `vw_pm_task`;
+/*!50001 DROP VIEW IF EXISTS `vw_pm_task`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `vw_pm_task` AS SELECT 
+ 1 AS `taskId`,
+ 1 AS `name`,
+ 1 AS `current`,
+ 1 AS `staffId`,
+ 1 AS `fromTime`,
+ 1 AS `toTime`,
+ 1 AS `projectId`,
+ 1 AS `predecessorId`,
+ 1 AS `level`,
+ 1 AS `maxBudget`,
+ 1 AS `currencyId`,
+ 1 AS `priority`,
+ 1 AS `remark`,
+ 1 AS `tag`,
+ 1 AS `managerId`,
+ 1 AS `finished`,
+ 1 AS `status`,
+ 1 AS `staffCode`,
+ 1 AS `staffName`,
+ 1 AS `managerCode`,
+ 1 AS `managerName`,
+ 1 AS `projectCode`,
+ 1 AS `projectName`,
+ 1 AS `currencyCode`,
+ 1 AS `currency`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Temporary view structure for view `vw_user`
 --
 
@@ -1224,6 +1260,24 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
+-- Final view structure for view `vw_pm_task`
+--
+
+/*!50001 DROP VIEW IF EXISTS `vw_pm_task`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `vw_pm_task` AS select `t`.`taskId` AS `taskId`,`t`.`name` AS `name`,`t`.`current` AS `current`,`t`.`staffId` AS `staffId`,`t`.`fromTime` AS `fromTime`,`t`.`toTime` AS `toTime`,`t`.`projectId` AS `projectId`,`t`.`predecessorId` AS `predecessorId`,`t`.`level` AS `level`,`t`.`maxBudget` AS `maxBudget`,`t`.`currencyId` AS `currencyId`,`t`.`priority` AS `priority`,`t`.`remark` AS `remark`,`t`.`tag` AS `tag`,`t`.`managerId` AS `managerId`,`t`.`finished` AS `finished`,`t`.`status` AS `status`,`s`.`staffCode` AS `staffCode`,`s`.`staffName` AS `staffName`,`m`.`staffCode` AS `managerCode`,`m`.`staffName` AS `managerName`,`p`.`code` AS `projectCode`,`p`.`name` AS `projectName`,`c`.`code` AS `currencyCode`,`c`.`name` AS `currency` from ((((`tbl_pm_task` `t` join `tbl_hr_staff` `s` on((`t`.`staffId` = `s`.`staffId`))) join `tbl_hr_staff` `m` on((`t`.`managerId` = `m`.`staffId`))) left join `tbl_pm_project` `p` on((`t`.`projectId` = `p`.`projectId`))) left join `tbl_account_currency` `c` on((`t`.`currencyId` = `c`.`currencyId`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `vw_user`
 --
 
@@ -1250,4 +1304,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-11 18:30:12
+-- Dump completed on 2015-08-12 18:30:01

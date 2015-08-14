@@ -1,0 +1,135 @@
+<?php
+/**
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer
+ * @var $form \Zend\Form\Form
+ */
+$title = 'Task Detail';
+$this->headtitle($title);
+?>
+<script type="text/javascript">
+	$('document').ready(function(){
+		$('div#current').spinbox({"min":"0","max":"100","step":"0.25"})
+	});
+</script>
+<h1><?php echo $title;?></h1>
+<hr />
+<form method="POST" role="form" id="form">
+	<input name="taskId"
+		value="<?php echo $this->escapeHtml($task->taskId); ?>" type="hidden">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="row">
+				<div class="col-sm-9">
+					<div class="form-group">
+						<label>Name:</label>
+						<input class="form-control" disabled="disabled" value="<?php echo $this->escapeHtml($task->name); ?>" type="text">
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="form-group">
+						<label>Current(%):</label>
+						<div class="form-control">
+							<div class="spinbox" id="current">
+								<input name="current" class="form-control input-mini spinbox-input" value="<?php echo $task->current; ?>"
+									type="text">
+								<div class="spinbox-buttons btn-group btn-group-vertical">
+									<button type="button" class="btn btn-default spinbox-up btn-xs">
+										<span class="glyphicon glyphicon-chevron-up"></span><span
+											class="sr-only">Increase</span>
+									</button>
+									<button type="button"
+										class="btn btn-default spinbox-down btn-xs">
+										<span class="glyphicon glyphicon-chevron-down"></span><span
+											class="sr-only">Decrease</span>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-sm-4">
+					<div class="form-group">
+						<label>Manager:</label>
+						<input class="form-control" disabled="disabled" value="<?php echo $this->escapeHtml("{$task->managerName} ({$task->managerCode})"); ?>" type="text">
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class="form-group">
+						<label>From Time:</label>
+						<input class="form-control text-center" disabled="disabled" value="<?php echo date('Y-M-d', strtotime($task->fromTime)); ?>" type="text">
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class="form-group">
+						<label>To Time:</label>
+                        <input class="form-control text-center" disabled="disabled" value="<?php echo date('Y-M-d', strtotime($task->toTime)); ?>" type="text">
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class="form-group">
+						<label>Level:</label>
+						<input class="form-control" disabled="disabled" value="<?php echo $this->escapeHtml($task->level); ?>" type="text">
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class="form-group">
+						<label>Priority:</label>
+                        <input class="form-control" disabled="disabled" value="<?php echo $this->escapeHtml($task->priority); ?>" type="text">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<div class="form-group">
+						<label>Project *:</label>
+						<input class="form-control" disabled="disabled" type="text"
+						value="<?php echo empty($task->projectId) ? 'No Project' : $this->escapeHtml("{$task->projectName} ({$task->projectCode})"); ?>">
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="form-group">
+						<label>Max Budget:</label>
+                        <input class="form-control" disabled="disabled" value="<?php echo $this->escapeHtml("{$task->maxBudget} {$task->currency}"); ?>" type="text">
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="form-group">
+						<label>Tagt:</label>
+                        <input class="form-control" disabled="disabled" value="<?php echo $this->escapeHtml($task->tag); ?>" type="text">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label>Remark:</label>
+						<textarea class="form-control" disabled="disabled"><?php echo $this->escapeHtml($task->description);?></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="panel-footer">
+		    <div class="row">
+                <div class="col-sm-3">
+                    <select name="status" class="form-control">
+						<option value="P">Processing</option>
+						<option value="F">Finished</option>
+					</select>
+				</div>
+				<div class="col-sm-4 col-sm-offset-5 text-right">
+    				<button type="submit" value="Save" class="btn btn-primary">
+    					<span class="glyphicon glyphicon-floppy-save"></span> Save
+    				</button>
+    				<a href="<?php echo $this->url('dashboard'); ?>" class="btn btn-default">
+    				<span class="glyphicon glyphicon-th-list"></span> Back to List
+    				</a>
+				</div>
+		    </div>
+		</div>
+	</div>
+</form>

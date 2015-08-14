@@ -43,30 +43,6 @@ class AccountTypeDataAccess extends SundewTableGateway
     }
 
     /**
-     * @param $key
-     * @param $value
-     * @param $type
-     * @return array
-     */
-    public function getComboData($key, $value, $type)
-    {
-        $results = $this->select(function(Select $select) use ($type){
-            $where = new Where();
-            $where->in('baseType', array('B', $type))
-                ->and->equalTo('status', 'A');
-            $select->where($where)
-                ->order('name asc');
-        });
-        $selectData = array();
-        foreach($results as $accountType){
-            $data = $accountType->getArrayCopy();
-            $selectData[$data[$key]] = $data[$value];
-        }
-
-        return $selectData;
-    }
-
-    /**
      * @param $id
      * @return array|\ArrayObject|null
      * @throws \Exception

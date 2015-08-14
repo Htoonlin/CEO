@@ -35,6 +35,19 @@ class StaffDataAccess extends SundewTableGateway {
         $this->initialize();
     }
 
+    public function getComboData($key, $value){
+        $results = $this->select(array('status' => 'A'));
+        $data = array();
+        foreach($results as $staff){
+            $staff = $staff->getArrayCopy();
+            if($value == 'staffCode'){
+                $data[$staff[$key]] = $staff['staffName'] . ' (' . $staff['staffCode'] . ')';
+            }else{
+                $data[$staff[$key]] = $staff[$value];
+            }
+        }
+        return $data;
+    }
     /**
      * @param bool $paginated
      * @param string $filter

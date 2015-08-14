@@ -68,13 +68,14 @@ class TaskController extends SundewController
      *
      * @return \Zend\Form\Element\Select
      */
-    private function projectCombo()
+    private function projectCombo($selected)
     {
         $combo = new Element\Select();
         $combo->setAttribute('class', 'form-control');
         $combo->setName('projectList');
         $combo->setEmptyOption('-- No Project --');
         $combo->setValueOptions($this->getProjectList());
+        $combo->setValue($selected);
         return $combo;
     }
 
@@ -92,22 +93,26 @@ class TaskController extends SundewController
      */
     public function indexAction()
     {
+        $projectId = (int)$this->params()->fromRoute('id', 0);
+
         $page = (int)$this->params()->fromQuery("page", 1);
-        $sort = $this->params()->fromQuery("page", "name");
+        $sort = $this->params()->fromQuery("sort", "name");
         $sortBy = $this->params()->fromQuery("by", "asc");
         $filter = $this->params()->fromQuery("filter", "");
         $pageSize = (int)$this->params()->fromQuery("size", 10);
 
-        $paginator = $this->taskTable()->fetchAll(true, $filter, $sort, $sortBy);
+        $paginator = $this->taskTable()->fetchAll($this->getCurrentStaff()->getStaffId(),
+            $projectId, true, $filter, $sort, $sortBy);
         $paginator->setCurrentPageNumber($page);
         $paginator->setItemCountPerPage($pageSize);
 
         return new ViewModel(array(
-            'cboProject' => $this->projectCombo(),
+            'cboProject' => $this->projectCombo($projectId),
         	"paginator" => $paginator,
         	"sort" => $sort,
         	"sortBy" => $sortBy,
         	"filter" => $filter,
+            "projectId" => $projectId,
         ));
     }
 
@@ -120,7 +125,7 @@ class TaskController extends SundewController
         $id = (int)$this->params()->fromRoute("id", 0);
         $action = $this->params()->fromQuery("action", "");
         $helper = new TaskHelper();
-        $form = $helper->getform();
+        $form = $helper->getForm($this->getProjectList(), $this->getStaffList(), $this->getCurrencyList(), $this->getStatusList());
         $task = $this->taskTable()->getTask($id);
 
         $isEdit = true;
@@ -141,9 +146,9 @@ class TaskController extends SundewController
         	$post_data = $request->getPost()->toArray();
         	$form->setData($post_data);
         	$form->setInputFilter($helper->getInputFilter($id));
-
         	if($form->isValid()){
-        		$this->taskTable()->saveTask(task);
+        	    $task->setManagerId($this->getCurrentStaff()->getStaffId());
+        		$this->taskTable()->saveTask($task);
         		$this->flashMessenger()->addSuccessMessage('Save successful');
         		return $this->redirect()->toRoute('pm_task');
         	}
@@ -183,7 +188,7 @@ class TaskController extends SundewController
         		$this->taskTable()->deleteTask($id);
         	}
         	$conn->commit();
-        	$messge = 'success';
+        	$message = 'success';
         	$this->flashMessenger()->addInfoMessage('Delete successful');
         } catch(\Exception $ex) {
         	$conn->rollback();
@@ -198,7 +203,10 @@ class TaskController extends SundewController
      */
     public function exportAction()
     {
-        $export = new SundewExporting($this->taskTable()->fetchAll(false));
+        $projectId = (int)$this->params()->fromRoute('id', 0);
+
+        $export = new SundewExporting($this->taskTable()->fetchAll(
+            $this->getCurrentStaff()->getStaffId(), $projectId, false));
         $response = $this->getResponse();
         $filename = 'attachment; filename="Task-' . date('Ymdhis') . '.xlsx"';
         $headers = $response->getHeaders();

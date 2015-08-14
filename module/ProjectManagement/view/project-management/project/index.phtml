@@ -1,15 +1,52 @@
-<?php 
+<?php
 /**
  * Created by PhpStorm.
  * User: NyanTun
  * Date: 7/24/2015
  * Time: 11:30 AM
  * Zend Code Completion
- * @var $this \Zend\View\Renderer\PhpRenderer 
+ * @var $this \Zend\View\Renderer\PhpRenderer
  */
 $title = 'Project Management';
 $this->headTitle($title);
 ?>
+<script type="text/javascript">
+ $(document).ready(function(){
+     $("button#btnDelete").click(function(){
+         if(confirm('Are you sure to delete selected records?')){
+             $.ajax({
+                 url:'<?php echo $this->url('pm_project',array('action'=>'jsonDelete'))?>',
+                 data:$('input[name="chkId[]"]:checked'),
+                 type:'POST',
+                 success:function(data){
+                     console.log(data);
+                     if(data.message=="success"){
+                         window.location.href="<?php echo $this->url('pm_project');?>"
+                     }else{
+                         alert(data.message);
+                     }
+                 }
+             });
+         }
+     });
+     $("input#chkAll").change(function(){
+         if($(this).checkbox('isChecked')){
+             $('input[name="chkId[]"]').checkbox('check');
+         }else{
+             $('input[name="chkId[]"]').checkbox('uncheck');
+         }
+     });
+     $('input[name="chkId[]"]').change(function(){
+         var total=$('input[name="chkId[]"]').length;
+         var checks=$('input[name="chkId[]"]:checked').length;
+         if(total==checks){
+             $("input#chkAll").checkbox('check');
+         }else{
+             $("input#chkAll").checkbox('uncheck');
+         }
+     });
+ });
+</script>
 <h1><?php echo $title; ?></h1>
 <div class="panel panel-default">
     <div class="panel-heading">

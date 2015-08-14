@@ -6,6 +6,10 @@ use ProjectManagement\Entity\Task;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Select;
+use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Predicate\Predicate;
 
 /**
  * System Generated Code
@@ -17,6 +21,11 @@ use Zend\Stdlib\Hydrator\ClassMethods;
  */
 class TaskDataAccess extends SundewTableGateway
 {
+    protected $view = 'vw_pm_task';
+    /**
+     *
+     * @param Adapter $dbAdapter
+     */
     public function __construct(Adapter $dbAdapter)
     {
         $this->table = "tbl_pm_task";
@@ -25,14 +34,69 @@ class TaskDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
-    public function fetchAll($paginated = false, $filter = '', $orderBy = '', $order = '')
+    /**
+     *
+     * @param unknown $projectId
+     * @param string $paginated
+     * @param string $filter
+     * @param string $orderBy
+     * @param string $order
+     * @return \Zend\Paginator\Paginator|\Zend\Db\ResultSet\ResultSet
+     */
+    public function fetchAll($managerId,$projectId = null, $paginated = false, $filter = '', $orderBy = '', $order = '')
     {
-        if($paginated){
-        	return $this->paginate($filter, $orderBy, $order);
+        $select = new Select($this->view);
+        $select->order($orderBy . ' ' . $order);
+        $where = new Where();
+        $where->equalTo('managerId', $managerId);
+        if($projectId > 0){
+            $where->equalTo('projectId', $projectId);
+        }else{
+            $where->isNull('projectId')
+            ->OR->equalTo('projectId', 0);
         }
-        return $this->select();
+        $where->literal("CONCAT_WS(' ', tag, name, fromTime, toTime) LIKE ?", '%' . $filter . '%');
+        $select->where($where);
+        if($paginated){
+        	return $this->paginateWith($select);
+        }
+
+        $gateway = new TableGateway($this->view, $this->adapter);
+        return $gateway->select(array('projectId' => $projectId));
     }
 
+    public function getToDoList($staffId)
+    {
+        $result = $this->select(function(Select $select) use ($staffId){
+            $where = new Where();
+            $where->equalTo('staffId', $staffId)
+            ->AND->in('status', array('A', 'P'));
+            $select->where($where)->order('toTime ASC, priority ASC');
+        });
+        return $result;
+    }
+    /**
+     *
+     * @param unknown $id
+     * @param unknown $staffId
+     * @return NULL
+     */
+    public function getTaskByStaff($id, $staffId)
+    {
+        $gateway = new TableGateway($this->view, $this->adapter);
+        $results = $gateway->select(array('taskId' => $id, 'staffId' => $staffId));
+        if(!$results){
+            return null;
+        }
+        return $results->current();
+    }
+
+    /**
+     *
+     * @param unknown $id
+     * @throws \Exception
+     * @return Ambigous <multitype:, ArrayObject, NULL>
+     */
     public function getTask($id)
     {
         $id = (int)$id;
@@ -43,6 +107,11 @@ class TaskDataAccess extends SundewTableGateway
         return $rowSet->current();
     }
 
+    /**
+     *
+     * @param Task $task
+     * @return \ProjectManagement\Entity\Task
+     */
     public function saveTask(Task $task)
     {
         $id = $task->getTaskId();
@@ -57,10 +126,12 @@ class TaskDataAccess extends SundewTableGateway
         return $task;
     }
 
+    /**
+     *
+     * @param unknown $id
+     */
     public function deleteTask($id)
     {
         $this->delete(array("taskId" => (int)$id));
     }
-
-
 }

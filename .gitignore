@@ -30,6 +30,8 @@ extras/documentation
 *.iml
 
 ## Directory-based project format:
+.settings/
+.externalToolBuilders/
 .idea/
 # if you remove the above rule, at least ignore the following:
 
@@ -37,6 +39,9 @@ extras/documentation
 # .idea/workspace.xml
 # .idea/tasks.xml
 # .idea/dictionaries
+.idea/CEO.iml
+.idea/commandlinetools/Composer_6_16_15_9_50_AM_c.xml
+.idea/php.xml
 
 # Sensitive or high-churn files:
 # .idea/dataSources.ids
