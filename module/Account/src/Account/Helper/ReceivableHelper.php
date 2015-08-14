@@ -69,7 +69,7 @@ class ReceivableHelper
 
             $txtGroupCode=new Element\Text();
             $txtGroupCode->setName('group_code')
-                ->setLabel('Group Code (optional)')
+                ->setLabel('Group Code (*)')
                 ->setAttribute('class', 'form-control');
 
             $form=new Form();

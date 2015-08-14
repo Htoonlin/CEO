@@ -22,8 +22,8 @@ class GridHeader extends AbstractHelper
     }
 
     /**
-     *
      * @param array $fieldList
+     * @return string
      */
     public function __invoke(array $fieldList){
         $html = '<thead>';
@@ -37,7 +37,7 @@ class GridHeader extends AbstractHelper
             }else if($type == 'checkbox'){
                 $html .= $this->checkCell($field['value']);
             }else{
-                $html .= value;
+                $html .= $field['value'];
             }
             $html .= '</th>';
         }
@@ -45,6 +45,10 @@ class GridHeader extends AbstractHelper
         return $html;
     }
 
+    /**
+     * @param array $data
+     * @return string
+     */
     public function dbCell(array $data){
         $title = isset($data['title']) ? $data['title'] : '';
         $field = isset($data['col']) ? $data['col'] : '';
@@ -54,8 +58,7 @@ class GridHeader extends AbstractHelper
     }
 
     /**
-     *
-     * @param unknown $id
+     * @param array $data
      * @return string
      */
     public function checkCell(array $data){

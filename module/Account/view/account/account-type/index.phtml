@@ -75,13 +75,13 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
                     Save
                 </button>
                 <?php if($this->isEdit): ?>
-                    <a href="<?php echo $this->url("account_type"); ?>/index/<?= $id ?>?action=clone"
+                    <a href="<?php echo $this->url("account_type", array('action' => 'index', 'id' => $id)); ?>?action=clone"
                         class="btn btn-warning">
                         <span class="glyphicon glyphicon-copy"></span>
                         Clone
                     </a>
-                    <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url("account_type"); ?>/index/<?= $id ?>?action=delete"
-                       class="btn btn-danger">
+                    <a onclick="return confirm('Are you sure to delete?')" class="btn btn-danger"
+                       href="<?php echo $this->url("account_type", array('action' => 'index', 'id' => $id));?>?action=delete">
                         <span class="glyphicon glyphicon-trash"></span>
                         Remove
                     </a>

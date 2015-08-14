@@ -102,12 +102,12 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
                 <?php echo $this->partial('shared/role_chooser.phtml', array('roles' => $roles, 'name' => 'grant_roles',
                     'permissions' => $permissions, 'text' => 'Access Roles')); ?>
                 <?php if($this->isEdit): ?>
-                    <a href="<?= $this->url('menu'); ?>/index/<?= $id ?>?action=clone"
+                    <a href="<?= $this->url('menu', array('action' => 'index', 'id' => $id)); ?>?action=clone"
                        class="btn btn-warning">
                         <span class="glyphicon glyphicon-copy"></span>
                         Clone
                     </a>
-                    <a onclick="return confirm('Are you sure to delete?')" href="<?= $this->url('menu'); ?>/index/<?= $id ?>?action=delete"
+                    <a onclick="return confirm('Are you sure to delete?')" href="<?= $this->url('menu', array('action' => 'index', 'id' => $id));?>?action=delete"
                        class="btn btn-danger">
                         <span class="glyphicon glyphicon-trash"></span>
                         Remove

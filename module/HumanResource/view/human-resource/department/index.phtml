@@ -76,11 +76,11 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
                     Save
                 </button>
                 <?php if($this->isEdit): ?>
-                <a href="<?php echo $this->url("hr_department"); ?>/index/<?= $id ?>?action=clone" class="btn btn-warning">
+                <a href="<?php echo $this->url("hr_department", array('action' => 'index', 'id' => $id)); ?>?action=clone" class="btn btn-warning">
                     <span class="glyphicon glyphicon-copy"></span>
                     Clone
                 </a>
-                <a href="<?php echo $this->url("hr_department"); ?>/index/<?= $id ?>?action=delete"
+                <a href="<?php echo $this->url("hr_department", array('action' => 'index', 'id' => $id)); ?>?action=delete"
                    class="btn btn-danger" onclick="return confirm('Are you sure to delete?')">
                     <span class="glyphicon glyphicon-trash"></span>
                     Remove

@@ -73,9 +73,9 @@ class HelperGenerator extends SundewGenerator
             $type = $col->getDataType();
             $maxLength = $col->getCharacterMaximumLength();
             $primary = $this->dbMeta->isPrimary($this->tbl_name, $name);
-            $isNull = $col->getIsNullable();
-            $getFormCode .= $this->createControl($name, $type, $maxLength, $primary) . PHP_EOL;
-            $getFilterCode .= $this->createFilter($name, $type, $isNull, $maxLength) . PHP_EOL;
+            $allowNull = $col->getIsNullable();
+            $getFormCode .= $this->createControl($name, $type, $allowNull, $maxLength, $primary) . PHP_EOL;
+            $getFilterCode .= $this->createFilter($name, $type, $allowNull, $maxLength) . PHP_EOL;
         }
 
         $getFormCode .= "\t" . '$this->form = $form;';
@@ -103,7 +103,7 @@ class HelperGenerator extends SundewGenerator
      * @param $type
      * @return string
      */
-    private function createControl($name, $type, $length = 0, $isPrimary = false)
+    private function createControl($name, $type, $allowNull, $length = 0, $isPrimary = false)
     {
         $isForeign = (!$isPrimary && strpos($name, 'Id') && $type == 'int');
 
@@ -111,6 +111,9 @@ class HelperGenerator extends SundewGenerator
         $var = lcfirst($toCamelCase->filter($name));
         $toSeperator = new CamelCaseToSeparator(array(" "));
         $label = $toSeperator->filter($toCamelCase->filter($name));
+        if($allowNull){
+            $label .= '(*)';
+        }
 
         $code = '';
         if($isPrimary){
@@ -156,15 +159,15 @@ class HelperGenerator extends SundewGenerator
         return $code;
     }
 
-    private function createFilter($name, $type, $isNull, $length = 0)
+    private function createFilter($name, $type, $allowNull, $length = 0)
     {
-        $null = $isNull ? 'false' : 'true';
+        $null = $allowNull ? 'false' : 'true';
 
         $code = "\t\$filter->add(array(\n";
         $code .= "\t\t'name' => '{$name}',\n";
         $code .= "\t\t'required' => {$null},\n";
 
-        if(!$isNull){
+        if(!$allowNull){
             if(in_array($type, $this->typeNum)){
                 $code .= "\t\t'validators' => array(array('name' => 'Zend\\I18n\\Validator\\IsInt')),\n";
             }else if(in_array($type, $this->typeFloat)){
