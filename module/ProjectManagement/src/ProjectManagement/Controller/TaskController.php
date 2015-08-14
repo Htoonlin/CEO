@@ -152,7 +152,7 @@ class TaskController extends SundewController
         	    $task->setManagerId($this->getCurrentStaff()->getStaffId());
         		$this->taskTable()->saveTask($task);
         		$this->flashMessenger()->addSuccessMessage('Save successful');
-        		return $this->redirect()->toRoute('pm_task');
+        		return $this->redirect()->toRoute('pm_task', array('action' => 'index', 'id' => $projectId));
         	}
         }
         return new ViewModel(array(

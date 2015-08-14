@@ -11,6 +11,8 @@ namespace Application\Service;
 use Zend\Db\Adapter\AdapterInterface;
 use HumanResource\DataAccess\StaffDataAccess;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Helper\ViewModel;
+use Zend\View\View;
 
 /**
  * Class SundewController
@@ -59,5 +61,10 @@ class SundewController extends AbstractActionController
         }
 
         return $this->staff;
+    }
+
+    public function notFoundAction(){
+
+        return $this->indexAction();
     }
 }

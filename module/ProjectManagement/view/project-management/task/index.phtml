@@ -10,7 +10,7 @@
  */
 $title = 'Task Manager';
 $this->headtitle($title);
-$current_url = $this->url('pm_task') . '/index/' . $projectId;
+$current_url = $this->url('pm_task', array('action' => 'index', 'id' => $projectId));
 ?>
 <script type="text/javascript">
  $(document).ready(function(){
