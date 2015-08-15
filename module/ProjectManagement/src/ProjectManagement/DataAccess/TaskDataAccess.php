@@ -55,7 +55,7 @@ class TaskDataAccess extends SundewTableGateway
             $where->isNull('projectId')
             ->OR->equalTo('projectId', 0);
         }
-        $where->literal("CONCAT_WS(' ', tag, name, fromTime, toTime) LIKE ?", '%' . $filter . '%');
+        $where->literal("CONCAT_WS(' ', tag, name, projectName, projectCode, staffCode, staffName, fromTime, toTime) LIKE ?", '%' . $filter . '%');
         $select->where($where);
         if($paginated){
         	return $this->paginateWith($select);

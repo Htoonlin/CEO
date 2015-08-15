@@ -52,6 +52,7 @@ class ProjectDataAccess extends SundewTableGateway{
     /**
      * @param $id
      * @return array|\ArrayObject|null
+     * @throws \Exception
      */
     public function getProject($id){
         $id=(int)$id;
