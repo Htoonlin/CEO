@@ -96,7 +96,7 @@ class TaskController extends SundewController
      */
     public function indexAction()
     {
-        $projectId = (int)$this->params()->fromRoute('id', 0);
+        $projectId = (int)$this->params()->fromRoute('id', -1);
 
         $page = (int)$this->params()->fromQuery("page", 1);
         $sort = $this->params()->fromQuery("sort", "name");

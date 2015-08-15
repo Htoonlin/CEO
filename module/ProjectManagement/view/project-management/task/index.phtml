@@ -35,7 +35,7 @@ $current_url = $this->url('pm_task', array('action' => 'index', 'id' => $project
     	 window.location.href = '<?php echo $this->url('pm_task', array('action' => 'export')); ?>' + $('select[name="projectList"]').val();
      });
      $('select[name="projectList"]').change(function(){
-         if($(this).val() == 0){
+         if($(this).val() < 0){
              window.location.href = '<?php echo $this->url('pm_task'); ?>';
          }else{
              window.location.href = '<?php echo $this->url('pm_task'); ?>/index/' + $(this).val();
@@ -114,11 +114,11 @@ $current_url = $this->url('pm_task', array('action' => 'index', 'id' => $project
                     array(
                         'type' => 'db',
                         'value' => array(
-                            'title' => 'Manager',
-                            'col' => 'managerName',
+                            'title' => 'Project',
+                            'col' => 'projectName',
                             'url' => $current_url,
                         ),
-                        'attr' => array('width' => '100px'),
+                        'attr' => array('width' => '180px'),
                     ),
                     array(
                         'type' => 'db',
@@ -200,7 +200,13 @@ $current_url = $this->url('pm_task', array('action' => 'index', 'id' => $project
                             </a>
                         </td>
 						<td>
-                            <?php echo $this->escapeHtml($task->managerName . "({$task->managerCode})"); ?>
+                            <?php
+                                if($task->projectId > 0){
+                                    echo $this->escapeHtml($task->projectName . "({$task->projectCode})");
+                                }else{
+                                    echo '- No Project -';
+                                }
+                            ?>
                         </td>
 						<td>
                             <?php echo $this->escapeHtml($task->staffName . "({$task->staffCode})"); ?>

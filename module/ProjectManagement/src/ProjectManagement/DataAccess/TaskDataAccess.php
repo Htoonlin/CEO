@@ -126,8 +126,7 @@ class TaskDataAccess extends SundewTableGateway
     }
 
     /**
-     *
-     * @param unknown $id
+     * @param $id
      */
     public function deleteTask($id)
     {
