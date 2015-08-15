@@ -53,10 +53,7 @@ echo $this->form()->openTag($form);
                     Remove
                 </a>
                 <?php endif; ?>
-                <a href="<?php echo $this->url('pm_project'); ?>" class="btn btn-default">
-                    <span class="glyphicon glyphicon-th-list"></span>
-                    Back to List
-                </a>
+                <?php echo $this->backButton(); ?>
             </div>
         </div>
     </div>

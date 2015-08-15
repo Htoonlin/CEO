@@ -64,10 +64,7 @@ echo $this->form()->openTag($form);
                 <?php endif; ?>
                 <?php echo $this->partial('shared/role_chooser.phtml', array('roles' => $roles, 'name' => 'grant_roles',
                                                                             'permissions' => $permissions, 'text' => 'Access Roles')); ?>
-                <a href="<?php echo $this->url('route'); ?>" class="btn btn-default">
-                    <span class="glyphicon glyphicon-th-list"></span>
-                    Back to list
-                </a>
+                <?php echo $this->backButton(); ?>
             </div>
         </div>
     </div>

@@ -99,10 +99,7 @@ $this->headTitle($title);
                     <span class="glyphicon glyphicon-ok"></span>
                     Process
                 </button>
-                <a href="<?php echo $this->url('account_balance');?>" class="btn btn-default">
-                    <span class="glyphicon glyphicon-th-list"></span>
-                    Back To List
-                </a>
+                <?php echo $this->backButton('Cancel', 'fa fa-remove'); ?>
             </div>
         </div>
     </div>

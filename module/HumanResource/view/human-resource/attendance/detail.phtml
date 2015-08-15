@@ -43,10 +43,7 @@ echo $this->form()->openTag($form);
                 <span class="glyphicon glyphicon-floppy-save"></span>
                 Save
             </button>
-            <a href="<?php echo $this->url('hr_attendance'); ?>" class="btn btn-default">
-                <span class="glyphicon glyphicon-th-list"></span>
-                Back to list
-            </a>
+            <?php echo $this->backButton(); ?>
         </div>
     </div>
 </div>

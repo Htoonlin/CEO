@@ -83,10 +83,7 @@ echo $this->form()->openTag($form);
                     Remove
                 </a>
                 <?php endif; ?>
-                <a href="<?php echo $this->url('user'); ?>" class="btn btn-default">
-                    <span class="glyphicon glyphicon-th-list"></span>
-                    Back to list
-                </a>
+                <?php echo $this->backButton(); ?>
             </div>
         </div>
     </div>

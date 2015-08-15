@@ -103,10 +103,7 @@ echo $this->formHidden($form->get('payVoucherId'));
                         <span class="glyphicon glyphicon-send"></span>
                         Request Now
                     </button>
-                    <a href="<?php echo $this->url('account_payable');?>" class="btn btn-default">
-                        <span class="glyphicon glyphicon-th-list"></span>
-                        Back to List
-                    </a>
+                    <?php echo $this->backButton(); ?>
                 </p>
             </div>
         </div>

@@ -29,7 +29,10 @@ class GridHeader extends AbstractHelper
         $html = '<thead>';
         foreach($fieldList as $field){
             $type = isset($field['type']) ? $field['type'] : 'custom';
-            $attrs = isset($field['attr']) ? $this->extractAttrs($field['attr']) : '';
+            $attrs = '';
+            if(isset($field['attr'])){
+                $attrs = ' ' . $this->createAttributesString($field['attr']);
+            }
 
             $html .= '<th' . $attrs . '>';
             if($type == 'db'){
@@ -68,19 +71,6 @@ class GridHeader extends AbstractHelper
         $html .= '<input type="checkbox"' . $id . ' />';
         $html .= '</label>';
         $html .= '</div>';
-        return $html;
-    }
-
-    /**
-     *
-     * @param array $attrs
-     * @return string
-     */
-    public function extractAttrs(array $attrs){
-        $html = '';
-        foreach($attrs as $att=>$value){
-            $html .= ' ' . $att . '="' . $value . '"';
-        }
         return $html;
     }
 }

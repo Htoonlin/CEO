@@ -94,10 +94,7 @@ $this->headTitle($title);
             </div>
             <div class="col-sm-offset-4 col-sm-4">
                 <p class="text-right">
-                    <a href="<?php echo $this->url('account_receivable'); ?>" class="btn btn-default">
-                        <span class="glyphicon glyphicon-th-list"></span>
-                        Back to list
-                    </a>
+                    <?php echo $this->backButton(); ?>
                 </p>
             </div>
         </div>

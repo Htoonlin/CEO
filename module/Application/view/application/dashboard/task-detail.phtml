@@ -125,9 +125,7 @@ $this->headtitle($title);
     				<button type="submit" value="Save" class="btn btn-primary">
     					<span class="glyphicon glyphicon-floppy-save"></span> Save
     				</button>
-    				<a href="<?php echo $this->url('dashboard'); ?>" class="btn btn-default">
-    				<span class="glyphicon glyphicon-th-list"></span> Back to List
-    				</a>
+					<?php echo $this->backButton(); ?>
 				</div>
 		    </div>
 		</div>

@@ -34,10 +34,7 @@ echo $this->form()->openTag($form);
                     Save
                 </button>
                 <?php endif; ?>
-                <a href="<?= $backLink ?>" class="btn btn-default">
-                    <span class="glyphicon glyphicon-th-list"></span>
-                    Back to List
-                </a>
+                <?php echo $this->backButton(); ?>
             </div>
         </div>
     </div>

@@ -90,10 +90,7 @@ echo $this->formHidden($form->get('taskId'));
                 Remove
             </a>
             <?php endif; ?>
-            <a href="<?php echo $this->url('pm_task', array('action' => 'index', 'id' => $projectId)); ?>" class="btn btn-default">
-                <span class="glyphicon glyphicon-th-list"></span>
-                Back to List
-            </a>
+            <?php echo $this->backButton(); ?>
         </div>
 	</div>
 </div>

@@ -54,10 +54,7 @@ echo $this->formHidden($form->get('contractId'));
                         Remove
                     </a>
                 <?php endif; ?>
-                <a href="<?php echo $this->url('cr_contract');?>" class="btn btn-default">
-                    <span class="glyphicon glyphicon-th-list"></span>
-                    Back To List
-                </a>
+                <?php echo $this->backButton(); ?>
             </div>
         </div>
     </div>

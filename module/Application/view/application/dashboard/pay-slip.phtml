@@ -145,10 +145,7 @@ $lateList = json_decode($payroll->Late);
     </div>
     <div class="panel-footer">
         <div class="text-right">
-            <a href="<?php echo $this->url('dashboard'); ?>" class="btn btn-default">
-                <span class="glyphicon glyphicon-th-list"></span>
-                Back to List
-            </a>
+            <?php echo $this->backButton(); ?>
         </div>
     </div>
 </div>
