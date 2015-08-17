@@ -19,6 +19,7 @@ class GridHeader extends AbstractHelper
     function __construct(RequestInterface $request)
     {
         $this->request = $request;
+        $this->validGlobalAttributes['width'] = true;
     }
 
     /**

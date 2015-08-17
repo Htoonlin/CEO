@@ -11,7 +11,6 @@ return array(
         'invokables' => array(
             'ProjectManagement\Controller\Project' => 'ProjectManagement\Controller\ProjectController',
             'ProjectManagement\Controller\Task' => 'ProjectManagement\Controller\TaskController',
-            'ProjectManagement\Controller\Report' => 'ProjectManagement\Controller\ReportController',
         ),
     ),
     'view_manager' => array(

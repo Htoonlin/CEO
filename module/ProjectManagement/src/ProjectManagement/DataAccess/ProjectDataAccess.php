@@ -72,6 +72,9 @@ class ProjectDataAccess extends SundewTableGateway{
         $data=$project->getArrayCopy();
 
         if($id>0){
+            if($data['status'] == 'F'){
+                $data['finished'] == date('Y-m-d H:i:s', time());
+            }
             $this->update($data,array('projectId'=>$id));
         }
         else{

@@ -32,7 +32,20 @@ $current_url = $this->url('pm_task', array('action' => 'index', 'id' => $project
          }
      });
      $('button#btnExport').click(function(){
-    	 window.location.href = '<?php echo $this->url('pm_task', array('action' => 'export')); ?>' + $('select[name="projectList"]').val();
+    	 window.location.href = '<?php echo $this->url('pm_task', array('action' => 'export')); ?>/' + $('select[name="projectList"]').val();
+     });
+     $('button#btnReport').click(function(){
+         var projectId = $('select[name="projectList"]').val();
+         window.location.href = '<?php echo $this->url('pm_project', array('action' => 'report')); ?>/' + projectId;
+
+     });
+     $('button#btnDetail').click(function(){
+         var projectId = $('select[name="projectList"]').val();
+         if(projectId > 0){
+             window.location.href = '<?php echo $this->url('pm_project', array('action' => 'detail')); ?>/' + projectId;
+         }else{
+             window.location.href = '<?php echo $this->url('pm_project'); ?>';
+         }
      });
      $('select[name="projectList"]').change(function(){
          if($(this).val() < 0){
@@ -64,15 +77,15 @@ $current_url = $this->url('pm_task', array('action' => 'index', 'id' => $project
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="row">
-			<div class="col-md-3">
+			<div class="col-sm-3">
             <?php echo $this->gridFilter('projectFilter'); ?>
             </div>
-			<div class="col-md-3">
+			<div class="col-sm-3">
 				<div class="text-right">
                 <?php echo $this->formselect($cboProject); ?>
                 </div>
 			</div>
-			<div class="col-md-4 col-md-offset-2">
+			<div class="col-sm-6">
 				<div class="text-right">
 					<div class="btn-group">
 						<a href="<?php echo $this->url('pm_task', array('action' => 'detail', 'id' => 0)); ?>?projectId=<?= $projectId; ?>"
@@ -87,6 +100,16 @@ $current_url = $this->url('pm_task', array('action' => 'index', 'id' => $project
 						<button type="button" id="btnDelete" class="btn btn-danger">
 							<span class="glyphicon glyphicon-trash"></span> Delete
 						</button>
+                        <?php /*
+                        <button type="button" class="btn btn-warning" id="btnReport">
+                            <span class="fa fa-bar-chart"></span>
+                            Report
+                        </button>
+                        <button type="button" class="btn btn-info" id="btnDetail">
+                            <span class="fa fa-edit"></span>
+                            Project
+                        </button>
+                        */ ?>
 					</div>
 				</div>
 			</div>

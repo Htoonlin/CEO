@@ -80,7 +80,7 @@ echo $this->formHidden($form->get('taskId'));
             </button>
             <?php if($isEdit):?>
             <a class="btn btn-warning"
-                href="<?php echo $this->url('pm_task', array('action'=>'detail', 'id'=>$id)) . '?projectId=' . $projectId; ?>=action=clone">
+                href="<?php echo $this->url('pm_task', array('action'=>'detail', 'id'=>$id)) . '?projectId=' . $projectId; ?>&action=clone">
                 <span class="glyphicon glyphicon-trash"></span>
                 Clone
             </a>

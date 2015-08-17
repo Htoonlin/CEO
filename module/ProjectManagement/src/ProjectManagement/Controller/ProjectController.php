@@ -58,6 +58,15 @@ class ProjectController extends SundewController{
         ));
     }
 
+    public function reportAction()
+    {
+        $id=(int)$this->params()->fromRoute('id',0);
+
+        return new ViewModel(array(
+            'projectId' => $id,
+        ));
+    }
+
     /*detail action INSERT/UPDATE */
     /**
      * @return \Zend\Http\Response|ViewModel
