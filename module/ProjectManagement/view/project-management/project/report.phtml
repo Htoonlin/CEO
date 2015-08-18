@@ -1,11 +1,11 @@
-<?php 
+<?php
 /**
  * Created by PhpStorm.
  * User: Htoonlin
  * Date: 8/15/2015
  * Time: 5:49 PM
  * Zend Code Completion
- * @var $this \Zend\View\Renderer\PhpRenderer 
+ * @var $this \Zend\View\Renderer\PhpRenderer
  */
 $title = 'Project Report';
 $this->headTitle($title);
@@ -13,115 +13,92 @@ $this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
 ?>
 <script type="text/javascript">
     $().ready(function(){
-        var data = [
-            {
-                value: 300,
-                color:"#F7464A",
-                highlight: "#FF5A5E",
-                label: "Red"
-            },
-            {
-                value: 50,
-                color: "#46BFBD",
-                highlight: "#5AD3D1",
-                label: "Green"
-            },
-            {
-                value: 100,
-                color: "#FDB45C",
-                highlight: "#FFC870",
-                label: "Yellow"
-            }
-        ]
 
-        var options = {
-            segmentShowStroke : true,
-            segmentStrokeColor : "#fff",
-            segmentStrokeWidth : 2,
-            percentageInnerCutout : 50,
-            animationSteps : 100,
-            animationEasing : "easeOutBounce",
-            animateRotate : true,
-            animateScale : false
-        }
+        var createReport = function (id, url){
+            var ctx = $(id).find('#chartBox').get(0).getContext("2d");
+            $.get(url, function(res){
+                var chart;
+                /* Generate Report */
+                if(res.type == 'Pie'){
+                    chart = new Chart(ctx).Pie(res.data, res.options);
+                }else if(res.type == 'Bar'){
+                    chart = new Chart(ctx).Bar(res.data, res.options);
+                }
 
-        var ctx = $('#currentChart').get(0).getContext("2d");
-        var currentChart = new Chart(ctx).Pie(data, options);
+                /* Report Title */
+                var title = '<i class="' + res.icon + '"></i> ' + res.title;
+                $(id).find('#reportTitle').html(title);
+
+                /* Report Labeling */
+                var legend = chart.generateLegend();
+                $(id).find('#legend').append(legend);
+            });
+        };
+
+        /* Progress Report */
+        createReport('#progressReport', '<?php echo $this->url('pm_report', array('action' => 'progress', 'id' => $projectId)); ?>');
+
+        /* Workload Report */
+        createReport('#workloadReport', '<?php echo $this->url('pm_report', array('action' => 'workload', 'id' => $projectId)); ?>');
+
     });
 </script>
-<style type="text/css">
-    div#thumbnail{
-        height: 120px;
-    }
-</style>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<div class="row" style="margin-top: 15px;">
+    <div class="col-md-7">
+        <h1 style="margin:0"><?php echo $this->escapeHtml($title); ?></h1>
+    </div>
+    <div class="col-md-5 text-right">
+        <?php echo $this->backButton(); ?>
+        <a href="<?php echo $this->url('pm_task', array('action' => 'index', 'id' => $projectId)); ?>" class="btn btn-primary">
+            <span class="fa fa-check-square"></span>
+            Task Detail
+        </a>
+    </div>
+</div>
 <hr />
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-default">
+        <div class="panel panel-default" id="workloadReport">
             <div class="panel-heading">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <h4 class="panel-title">
-                            <i class="fa fa-2x fa-pie-chart"></i> Progress report for all project
-                        </h4>
-                    </div>
-                    <div class="col-sm-6 text-right">
-                        <div class="btn-group">
-                            <?php echo $this->backButton(); ?>
-                            <a href="<?php echo $this->url('pm_task', array('action' => 'index', 'id' => $projectId)); ?>" class="btn btn-info">
-                                <span class="fa fa-check-square"></span>
-                                Task List
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <h4 class="panel-title" id="reportTitle"></h4>
+            </div>
+            <div class="panel-body">
+                <canvas id="chartBox" class="col-sm-12" height="100px"></canvas>
+                <div id="legend" style="right:50px;position:absolute;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default" id="progressReport">
+            <div class="panel-heading">
+                <h4 class="panel-title" id="reportTitle"></h4>
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <canvas id="currentChart" class="col-sm-6" height="200px"></canvas>
-                    <div class="col-sm-6">
-
+                    <div class="col-sm-7 col-sm-offset-1">
+                        <canvas id="chartBox" width="250px" height="250px"></canvas>
                     </div>
-                </div>
-            </div>
-            <div class="panel-footer">
-                <div class="row">
-                    <div class="col-sm-3">
-                        <button type="button" class="btn btn-block btn-primary" disabled="disabled">
-                            <div id="thumbnail">
-
-                            </div>
-                            <i class="fa fa-calendar"></i> Progress
-                        </button>
-                    </div>
-                    <div class="col-sm-3">
-                        <button type="button" class="btn btn-default btn-block">
-                            <div id="thumbnail">
-
-                            </div>
-                            <i class="fa fa-calendar"></i> Overdue
-                        </button>
-                    </div>
-                    <div class="col-sm-3">
-                        <button type="button" class="btn btn-default btn-block">
-                            <div id="thumbnail">
-
-                            </div>
-                            <i class="fa fa-calendar"></i> By Staff
-                        </button>
-                    </div>
-                    <div class="col-sm-3">
-                        <button type="button" class="btn btn-default btn-block">
-                            <div id="thumbnail">
-
-                            </div>
-                            <i class="fa fa-calendar"></i> By Date
-                        </button>
+                    <div class="col-sm-4">
+                        <div id="legend"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <i class="fa fa-tag"></i> Report By Tag
+                </h4>
+            </div>
+            <div class="panel-body">
+
+            </div>
+        </div>
+    </div>
 </div>
+
 

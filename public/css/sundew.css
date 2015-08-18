@@ -1,5 +1,23 @@
 @media all
 {
+    /*Chart Legend*/
+    ul[class$="legend"]{
+        list-style:none;
+        margin:0;
+        padding:0;
+    }
+    ul[class$="legend"] > li{
+        margin: 0.5em 0;
+        font-size: 12px;
+    }
+    ul[class$="legend"]> li > span{
+        float:left;
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        margin-right: 9px;
+    }
+
     /*General*/
     body {
         padding-top: 60px;

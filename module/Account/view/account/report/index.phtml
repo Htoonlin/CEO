@@ -49,6 +49,8 @@ $this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
 
         var ctx = $('#cashFlow').get(0).getContext("2d");
         var cashFlow = new Chart(ctx).Bar(data, options);
+        var legend = cashFlow.generateLegend();
+        $('#legend').append(legend);
         $("#cashFlow").click(function(evt){
             var activeBars = cashFlow.getBarsAtEvent(evt);
             if(activeBars.length > 0){
@@ -69,7 +71,10 @@ $this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
     </div>
     <div class="panel-body">
         <div class="row">
-            <canvas id="cashFlow" class="col-md-12"  height="120px"></canvas>
+            <div class="col-sm-12">
+                <canvas id="cashFlow" class="col-md-12"  height="120px"></canvas>
+                <div id="legend" style="top: 10px; right:50px;position:absolute;"></div>
+            </div>
         </div>
     </div>
     <div class="panel-footer">
