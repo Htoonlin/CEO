@@ -9,6 +9,7 @@
 namespace Application\Service;
 
 use Zend\Db\Metadata\Metadata;
+use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\AbstractTableGateway;
@@ -19,8 +20,9 @@ use Zend\Cache\StorageFactory;
 class SundewTableGateway extends AbstractTableGateway
 {
     /**
-     * @param unknown $key
-     * @param unknown $value
+     * @param $key
+     * @param $value
+     * @return array
      */
     public function getComboData($key, $value){
         $result = $this->select();
@@ -101,4 +103,15 @@ class SundewTableGateway extends AbstractTableGateway
         $paginatorAdapter = new DbSelect($select, $this->adapter);
         return new Paginator($paginatorAdapter);
     }
+
+    /**
+     * Open this method if u want to block delete.
+     * @param Delete $delete
+     * @return int
+     */
+    /*
+    public function executeDelete(Delete $delete){
+        return 0;
+    }
+    */
 }
