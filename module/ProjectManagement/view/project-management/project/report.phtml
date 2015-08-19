@@ -41,6 +41,9 @@ $this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
         /* Workload Report */
         createReport('#workloadReport', '<?php echo $this->url('pm_report', array('action' => 'workload', 'id' => $projectId)); ?>');
 
+        /* Overdue Report */
+        createReport('#overdueReport', '<?php echo $this->url('pm_report', array('action' => 'overdue', 'id' => $projectId)); ?>');
+
     });
 </script>
 <div class="row" style="margin-top: 15px;">
@@ -88,14 +91,19 @@ $this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
         </div>
     </div>
     <div class="col-md-6">
-        <div class="panel panel-default">
+        <div class="panel panel-default" id="overdueReport">
             <div class="panel-heading">
-                <h4 class="panel-title">
-                    <i class="fa fa-tag"></i> Report By Tag
-                </h4>
+                <h4 class="panel-title" id="reportTitle"></h4>
             </div>
             <div class="panel-body">
-
+                <div class="row">
+                    <div class="col-sm-7 col-sm-offset-1">
+                        <canvas id="chartBox" width="250px" height="250px"></canvas>
+                    </div>
+                    <div class="col-sm-4">
+                        <div id="legend"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

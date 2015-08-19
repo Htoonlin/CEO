@@ -35,12 +35,13 @@ class ReportDataAccess extends SundewTableGateway
         return $where;
     }
 
-    public function getTagCount($projectId)
+    public function getTime($projectId = -1)
     {
         $results = $this->select(function(Select $select) use ($projectId){
-            $select->columns(array('tag', 'tagCount' => new Expression('count(taskId)')))
-                ->group(array('tag'))
-                ->where($this->getWhereByProjectId($projectId));
+            $where = $this->getWhereByProjectId($projectId);
+            $where->and->in('status', array('A', 'P'));
+            $select->where($where)
+                ->order('toTime asc');
         });
 
         return $results;

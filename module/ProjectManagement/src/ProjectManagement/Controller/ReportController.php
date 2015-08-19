@@ -108,7 +108,7 @@ class ReportController extends SundewController
             'label' => $label,
             'fillColor' => $colors['color'],
             'highlightFill' => $colors['highlight'],
-            'data' => $data
+            'data' => $data,
         );
     }
 
@@ -116,8 +116,11 @@ class ReportController extends SundewController
     {
         $result = $this->dataTemplate[$status];
         $result['value'] = $value;
-        $result['label'] =  $this->statusConverter($status);
-
+        if($status == 'T'){
+            $result['label'] = 'Total';
+        }else{
+            $result['label'] =  $this->statusConverter($status);
+        }
         return $result;
     }
 
@@ -178,8 +181,63 @@ class ReportController extends SundewController
             'options' => $this->pieChartOption()
         ));
     }
-    public function tagCountAction(){
+    public function overdueAction(){
+        $id = (int)$this->params()->fromRoute('id', -1);
+        $times = $this->reportTable()->getTime($id);
 
+        $overdue = 0;
+        $now = 0;
+        $week = 0;
+        $upcoming = 0;
+
+        foreach($times as $time)
+        {
+            $dateDiff = strtotime($time->toTime) - strtotime(date('Y-m-d', time()));
+            $days = floor($dateDiff / (60*60*24));
+            if($days < 0){
+                $overdue++;
+            }else if($days <= 7 && $days > 1){
+                $week++;
+            }else if($days > 7){
+                $upcoming++;
+            }else{
+                $now++;
+            }
+        }
+
+        $data = array();
+        if($overdue > 0){
+            $json = $this->getProgressData('C', $overdue);
+            $json['label'] = 'Overdue';
+            $data[] = $json;
+        }
+
+        if($now > 0){
+            $json = $this->getProgressData('F', $now);
+            $json['label'] = 'Today';
+            $data[] = $json;
+        }
+
+        if($week > 0){
+            $json = $this->getProgressData('T', $week);
+            $json['label'] = 'This week';
+            $data[] = $json;
+        }
+
+        if($upcoming > 0){
+            $json = $this->getProgressData('P', $upcoming);
+            $json['label'] = 'Upcoming';
+            $data[] = $json;
+        }
+
+        return new JsonModel(array(
+            'id' => $id,
+            'title' => $this->reportTitle('Overdue'),
+            'icon' => 'fa fa-calendar',
+            'type' => 'Pie',
+            'data' => $data,
+            'options' => $this->pieChartOption()
+        ));
     }
     public function workloadAction()
     {
