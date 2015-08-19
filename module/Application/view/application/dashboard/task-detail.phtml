@@ -9,7 +9,18 @@ $this->headtitle($title);
 ?>
 <script type="text/javascript">
 	$('document').ready(function(){
-		$('div#current').spinbox({"min":"0","max":"100","step":"0.25"})
+		$('div#current').spinbox({"min":"0","max":"100","step":"0.25"});
+		$('div#current').on('changed.fu.spinbox', function () {
+			if($('input[name="current"]').val() == 100){
+				$('select[name="status"]').val('F');
+			}
+		});
+
+		$('select[name="status"]').change(function(){
+			if($(this).val() == 'F'){
+				$('div#current').spinbox('value', 100);
+			}
+		});
 	});
 </script>
 <h1><?php echo $title;?></h1>

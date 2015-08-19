@@ -7,7 +7,6 @@
  * Zend Code Completion
  * @var $this \Zend\View\Renderer\PhpRenderer
  */
-$title = 'Project Report';
 $this->headTitle($title);
 $this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
 ?>
@@ -47,10 +46,10 @@ $this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
     });
 </script>
 <div class="row" style="margin-top: 15px;">
-    <div class="col-md-7">
-        <h1 style="margin:0"><?php echo $this->escapeHtml($title); ?></h1>
+    <div class="col-md-9">
+        <h1 style="margin:0;font-size:22px;"><?php echo $this->escapeHtml($title); ?></h1>
     </div>
-    <div class="col-md-5 text-right">
+    <div class="col-md-3 text-right">
         <?php echo $this->backButton(); ?>
         <a href="<?php echo $this->url('pm_task', array('action' => 'index', 'id' => $projectId)); ?>" class="btn btn-primary">
             <span class="fa fa-check-square"></span>

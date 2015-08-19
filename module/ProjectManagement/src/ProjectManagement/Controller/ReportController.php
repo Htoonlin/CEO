@@ -124,36 +124,9 @@ class ReportController extends SundewController
         return $result;
     }
 
-    private function projectTable()
-    {
-        return new ProjectDataAccess($this->getDbAdapter());
-    }
     private function reportTable()
     {
         return new ReportDataAccess($this->getDbAdapter());
-    }
-    private function reportTitle($prefix)
-    {
-        $id = (int)$this->params()->fromRoute('id', -1);
-
-        try{
-            if($id > 0){
-                $project = $this->projectTable()->getProject($id);
-                if(!$project){
-                    return 'Invalid project';
-                }
-                $title = 'report for ';
-                $title .= $project->getName() . "({$project->getCode()})";
-            }else if($id == 0){
-                $title = 'report for (No Project)';
-            }else{
-                $title = 'report for (all project)';
-            }
-        }catch(Exception $ex){
-            return 'Error => ' . $ex->getMessage();
-        }
-
-        return $prefix . ' ' . $title;
     }
 
     public function indexAction()
@@ -174,7 +147,7 @@ class ReportController extends SundewController
 
         return new JsonModel(array(
             'id' => $id,
-            'title' => $this->reportTitle('Progress'),
+            'title' => 'Progress report',
             'icon' => 'fa fa-pie-chart',
             'type' => 'Pie',
             'data' => $data,
@@ -232,7 +205,7 @@ class ReportController extends SundewController
 
         return new JsonModel(array(
             'id' => $id,
-            'title' => $this->reportTitle('Overdue'),
+            'title' => 'Overdue report',
             'icon' => 'fa fa-calendar',
             'type' => 'Pie',
             'data' => $data,
@@ -295,7 +268,7 @@ class ReportController extends SundewController
 
         return new JsonModel(array(
             'id' => $id,
-            'title' => $this->reportTitle('Workload'),
+            'title' => 'Workload report',
             'icon' => 'fa fa-balance-scale',
             'type' => 'Bar',
             'data' => $data,

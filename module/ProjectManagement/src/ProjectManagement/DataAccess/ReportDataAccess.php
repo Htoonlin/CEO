@@ -40,8 +40,7 @@ class ReportDataAccess extends SundewTableGateway
         $results = $this->select(function(Select $select) use ($projectId){
             $where = $this->getWhereByProjectId($projectId);
             $where->and->in('status', array('A', 'P'));
-            $select->where($where)
-                ->order('toTime asc');
+            $select->where($where)->order('toTime asc');
         });
 
         return $results;

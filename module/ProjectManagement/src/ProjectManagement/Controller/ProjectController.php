@@ -62,8 +62,25 @@ class ProjectController extends SundewController{
     {
         $id=(int)$this->params()->fromRoute('id',0);
 
+        try{
+            if($id > 0){
+                $project = $this->projectTable()->getProject($id);
+                if(!$project){
+                    return 'Invalid project';
+                }
+                $title = ' ' . $project->getName() . "({$project->getCode()})";
+            }else if($id == 0){
+                $title = ' (No Project)';
+            }else{
+                $title = ' (all project)';
+            }
+        }catch(\Exception $ex){
+            return 'Error => ' . $ex->getMessage();
+        }
+
         return new ViewModel(array(
             'projectId' => $id,
+            'title' => 'Reports for ' . $title,
         ));
     }
 
