@@ -19,10 +19,8 @@ use Application\Helper\View\GridHeader;
 use Application\Helper\View\GridHeaderCell;
 use Application\Service\SundewAuthStorage;
 use Application\Service\SundewLogger;
-use Application\Service\SundewTableGateway;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
 use Zend\Authentication\AuthenticationService;
-use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
@@ -34,7 +32,7 @@ use Zend\Mvc\Router\RouteMatch;
 
 class Module implements ConfigProviderInterface, AutoloaderProviderInterface, ServiceProviderInterface, ViewHelperProviderInterface
 {
-    protected $publicRoutes = array('auth');
+    protected $publicRoutes = array('auth', 'system_install');
     public function onBootstrap(MvcEvent $e)
     {
         $eventManager        = $e->getApplication()->getEventManager();

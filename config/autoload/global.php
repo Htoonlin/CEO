@@ -12,11 +12,10 @@
  */
 
 return array(
-    'db' => array(
-        'driver' => 'Pdo',
-        'driver_options' => array(
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'",
-        ),
+    'version' => array(
+        'major' => 1,
+        'minor' => 0,
+        'build' => 2
     ),
     'service_manager' => array(
         'abstract_factories' => array(
@@ -26,6 +25,7 @@ return array(
         'factories' => array(
             'Sundew\Db\Adapter' => 'Application\Service\SundewAdapterFactory',
             'navigation' => 'Application\Service\SundewNavigationFactory',
+            'ConfigManager' => 'Application\Service\SundewConfigManager',
         ),
         'aliases' => array(
             'translator' => 'MvcTranslator',

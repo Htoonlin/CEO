@@ -10,6 +10,19 @@
 return array(
     'router' => array(
         'routes' => array(
+            'system_install' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/install[/:action]',
+                    'constraints' => array(
+                        'action' => 'install|saveDb',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Preferences',
+                        'action'     => 'install',
+                    ),
+                ),
+            ),
             'auth' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -62,6 +75,7 @@ return array(
             'Application\Controller\MenuPermission' => 'Application\Controller\MenuPermissionController',
             'Application\Controller\RoutePermission' => 'Application\Controller\RoutePermissionController',
             'Application\Controller\Dashboard' => 'Application\Controller\DashboardController',
+            'Application\Controller\Preferences' => 'Application\Controller\PreferencesController',
         ),
     ),
     'view_manager' => array(
@@ -75,13 +89,6 @@ return array(
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
-        ),
-    ),
-    // Placeholder for console routes
-    'console' => array(
-        'router' => array(
-            'routes' => array(
-            ),
         ),
     ),
 );
