@@ -55,5 +55,6 @@ return array(
         'remember_me_seconds' => 24129200,
         'use_cookies' => true,
         'cookie_httponly' => true,
+        'auth_storage' => 'ceo_dev'
     ),
 );

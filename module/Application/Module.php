@@ -137,7 +137,9 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
             $this->serviceConfig = array(
                 'factories' => array(
                     'Sundew\AuthStorage' => function($sm){
-                        return new SundewAuthStorage('ceo_dev_auth');
+                        $config = $sm->get('ConfigManager');
+                        $namespace = $config->get('session')['auth_storage'];
+                        return new SundewAuthStorage($namespace);
                     },
                     'AuthService' => function($sm)
                     {
