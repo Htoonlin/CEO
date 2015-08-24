@@ -20,7 +20,7 @@ class RouteHelper {
         $this->dbAdapter = $dbAdapter;
     }
     protected $form;
-    public function getForm()
+    public function getForm(array $controllerList)
     {
         if(!$this->form) {
             $hidId=new Element\Hidden();
@@ -41,10 +41,12 @@ class RouteHelper {
                 ->setName('module')
                 ->setAttribute('class','form-control');
 
-            $txtController=new Element\Text();
-            $txtController->setLabel("Controller")
+            $cboController=new Element\Select();
+            $cboController->setLabel("Controller")
                 ->setName('controller')
                 ->setAttribute('class', 'form-control');
+            $cboController->setEmptyOption('-- Choose Controller --')
+                ->setValueOptions($controllerList);
 
             $txtConstraints=new Element\Textarea();
             $txtConstraints->setLabel("Constraints")
@@ -57,7 +59,7 @@ class RouteHelper {
             $form->add($txtName);
             $form->add($txtRoute);
             $form->add($txtModule);
-            $form->add($txtController);
+            $form->add($cboController);
             $form->add($txtConstraints);
 
             $this->form=$form;

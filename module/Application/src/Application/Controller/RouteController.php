@@ -29,6 +29,12 @@ class RouteController extends SundewController
         return new RouteDataAccess($this->getDbAdapter());
     }
 
+    private function getControllerList()
+    {
+        $configManager = $this->getServiceLocator()->get('ConfigManager');
+        return $configManager->get('controllers')['invokables'];
+    }
+
     /**
      * @return RoutePermissionDataAccess
      */
@@ -87,7 +93,7 @@ class RouteController extends SundewController
         $action = $this->params()->fromQuery('action', '');
 
         $helper = new RouteHelper($this->getDbAdapter());
-        $form = $helper->getForm();
+        $form = $helper->getForm($this->getControllerList());
         $route = $this->routeTable()->getRoute($id);
         $isEdit = true;
         if(!$route){
