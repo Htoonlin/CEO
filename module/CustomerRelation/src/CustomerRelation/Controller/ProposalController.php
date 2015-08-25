@@ -154,7 +154,7 @@ class ProposalController extends SundewController
      */
     public function jsonDeleteAction()
     {
-        $data=$this->params()->fromRoute('chkId',array());
+        $data=$this->params()->fromPost('chkId',array());
         $message="success";
 
         $db=$this->proposalTable()->getAdapter();
@@ -187,6 +187,31 @@ class ProposalController extends SundewController
         $headers->addHeaderLine('Content-Type', 'application/ms-excel; charset=UTF-8');
         $headers->addHeaderLine('Content-Disposition', $filename);
         $response->setContent($export->getExcel());
+
+        return $response;
+    }
+
+    public function downloadAction()
+    {
+        $id = (int)$this->params()->fromRoute('id', array());
+        $proposal = $this->proposalTable()->getProposal($id);
+        if(!$proposal){
+            $this->flashMessenger()->addWarningMessage('Invalid id.');
+            return $this->redirect()->toRoute('cr_proposal');
+        }
+        $file = $proposal->getProposalFile();
+
+        if(!file_exists($file)){
+            $this->flashMessenger()->addWarningMessage('Invalid file.');
+            return $this->redirect()->toRoute('cr_proposal');
+        }
+
+        $response = $this->getResponse();
+        $headers = $response->getHeaders();
+        $headers->addHeaderLine('Content-Type', 'application/octet-stream');
+        $headers->addHeaderLine('Content-Length', filesize($file));
+        $headers->addHeaderLine('Content-Disposition', 'attachment; filename="' . basename($file) . '"');
+        $response->setContent(file_get_contents($file));
 
         return $response;
     }
