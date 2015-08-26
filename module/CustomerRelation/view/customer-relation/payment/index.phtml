@@ -1,0 +1,120 @@
+<?php
+$title="Payment";
+$this->headTitle($title);
+?>
+<h1><?php echo $title;?></h1>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-3">
+                <?php echo $this->gridFilter('paymentFilter'); ?>
+            </div>
+            <div class="col-md-offset-5 col-md-4">
+                <div class="text-right">
+                    <div class="btn-group">
+                        <a href="<?php echo $this->url("cr_payment", array('action'=>'detail','id'=>0));?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-file"></span>
+                            New
+                        </a>
+                        <a href="<?php echo $this->url('cr_payment',array('action'=>'export'));?>" class="btn btn-default">
+                            <span class="glyphicon glyphicon-download"></span>
+                            Export
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="grid">
+            <table class="table table-bordered table-striped table-hover">
+                <?php
+                $columns = array(
+                    array(
+                        'type' => 'checkbox',
+                        'value' => array('id'=>'chkAll'),
+                        'attr' => array('class' =>'text-center','width' => '50px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Type',
+                            'col' => 'type',
+                        ),
+                        'attr' => array('width' =>'180px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Date',
+                            'col'=> 'paymentDate',
+                        ),
+                        'attr' => array('width' => '150px'),
+                    ),
+                    array(
+                        'type' =>'db',
+                        'value' => array(
+                            'title' => 'Amount',
+                            'col' => 'amount',
+                        ),
+                        'attr' => array('width' => '150px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Status',
+                            'col' => 'status',
+                        ),
+                        'attr' => array('width' => '120px'),
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Remark',
+                            'col' => 'remark',
+                        ),
+                        'attr' => array('width' => '120px'),
+                    ),
+                );
+                echo $this->gridHeader($columns);
+                ?>
+                <tbody>
+                <?php foreach($paginator as $payment) : ?>
+                    <tr>
+                        <td class="text-center">
+                            <div class="checkbox" style="margin: 0">
+                                <label class="checkbox-custom" data-initialize="checkbox">
+                                    <input type="checkbox" name="chkId[]" value="<?php echo $this->escapeHtml($payment->paymentId); ?>" />
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="<?php echo $this->url('cr_payment',array('action'=>'detail', 'id'=>$payment->paymentId));?>" title="edit">
+                                <?php echo $this->ecsapeHtml($payment->type);?>
+                            </a>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($payment->paymentDate);?>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($payment->amount). '' . $payment->currencyCode;?>
+                        </td>
+                        <td>
+                            <?php echo $this->constantConverter($payment->status, 'default_status');?>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($payment->remark);?>
+                        </td>
+                    </tr>
+                <?php endforeach;?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="text-center">
+            <?php echo $this->paginationControl($paginator, 'Sliding','shared/paginator.phtml',array('route'=>'cr_payment','sort'=>$sort,'sortBy'=>$sortBy));
+            ?>
+        </div>
+    </div>
+</div>

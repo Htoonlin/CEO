@@ -14,6 +14,7 @@ return array(
             'CustomerRelation\Controller\Contract'=>'CustomerRelation\Controller\ContractController',
             'CustomerRelation\Controller\Company'=>'CustomerRelation\Controller\CompanyController',
             'CustomerRelation\Controller\Contact'=>'CustomerRelation\Controller\ContactController',
+            'CustomerRelation\Controller\Payment'=>'CustomerRelation\Controller\PaymentController',
         ),
     ),
     'view_manager' => array(

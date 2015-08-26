@@ -94,6 +94,7 @@ class ContractController extends SundewController
     {
        $this->init_combos();
         $id = (int)$this->params()->fromRoute('id',0);
+        $action = $this->params()->fromQuery('action','');
         $helper = new ContractHelper($this->getDbAdapter());
         $form = $helper->getForm($this->currencyList, $this->companyList,
             $this->contactList, $this->statusList);
@@ -103,6 +104,11 @@ class ContractController extends SundewController
         if(!$contract){
             $isEdit=false;
             $contract = new Contract();
+        }
+        if($action == 'clone'){
+            $isEdit = false;
+            $id =0;
+            $contract->setContractId(0);
         }
 
         $form->bind($contract);

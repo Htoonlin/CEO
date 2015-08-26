@@ -70,6 +70,7 @@ class ContactController extends SundewController{
     public function detailAction()
     {
         $id=(int)$this->params()->fromRoute('id',0);
+        $action = $this->params()->fromQuery('action','');
         $helper=new ContactHelper($this->companyCombos(), $this->getDbAdapter());
         $form=$helper->getForm();
         $contact=$this->contactTable()->getContact($id);
@@ -78,6 +79,11 @@ class ContactController extends SundewController{
         if(!$contact){
             $isEdit=false;
             $contact=new Contact();
+        }
+        if($action == 'clone'){
+            $isEdit = false;
+            $id = 0;
+            $contact->setContactId(0);
         }
         $form->bind($contact);
         $request=$this->getRequest();

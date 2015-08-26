@@ -89,6 +89,7 @@ class CompanyController extends SundewController
     {
         $this->init_combos();
         $id=(int)$this->params()->fromRoute('id',0);
+        $action = $this->params()->fromQuery('action','');
         $helper=new CompanyHelper($this->getDbAdapter());
         $form=$helper->getForm($this->companyTypes, $this->statusList);
         $company=$this->companyTable()->getCompany($id);
@@ -97,6 +98,11 @@ class CompanyController extends SundewController
         if(!$company){
             $isEdit=false;
             $company=new Company();
+        }
+        if($action == 'clone'){
+            $isEdit = false;
+            $id = 0;
+            $company->setCompanyId(0);
         }
         $form->bind($company);
         $request=$this->getRequest();
