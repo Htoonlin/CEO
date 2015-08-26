@@ -99,7 +99,7 @@ class ProposalController extends SundewController
     {
         $this->init_combos();
         $id = (int)$this->params()->fromRoute('id', 0);
-
+        $action =$this->params()->fromQuery('action','');
         $helper = new ProposalHelper($this->proposalTable()->getAdapter());
         $form = $helper->getForm($this->currencyList, $this->companyList,
             $this->contactList, $this->statusList);
@@ -109,7 +109,11 @@ class ProposalController extends SundewController
             $isEdit= false;
             $proposal = new Proposal();
         }
-
+        if($action == 'clone'){
+            $isEdit = false;
+            $id = 0;
+            $proposal->setProposalId(0);
+        }
         $form->bind($proposal);
         $request = $this->getRequest();
         if($request->isPost()){

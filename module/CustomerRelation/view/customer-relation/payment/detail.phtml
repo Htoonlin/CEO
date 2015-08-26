@@ -1,0 +1,98 @@
+<?php
+$title="Payment";
+$this->headTitle($title);
+?>
+<h1><?php echo $title;?></h1>
+<hr />
+<?php
+$form->setAttribute('action', $this->url('cr_payment', array('action' => 'detail', 'id' => $id)));
+$form->prepare();
+echo $this->form()->openTag($form);
+echo $this->formHidden($form->get('paymentId'));
+?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('select[name="contractId"]').change(function(){
+            if($(this).val() < 0){
+                window.location.href = '<?php echo $this->url('cr_payment'); ?>';
+            }else{
+                window.location.href = '<?php echo $this->url('cr_payment'); ?>' + $(this).val();
+            }
+        });
+    });
+</script>
+<div class="panel panel-default">
+    <div class="form-horizontal panel-heading">
+        <div class="row">
+            <div class="col-sm-offset-5 col-sm-7">
+                <div class="text-right">
+                    <?php echo $this->formHorizontal($form->get('paymentDate'));?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body" role="form">
+        <div class="row">
+            <div class="col-sm-4">
+                <?php echo $this->formRow($form->get('contactId')); ?>
+            </div>
+            <div class="col-sm-5">
+                <?php echo $this->formRow($form->get('amount')); ?>
+            </div>
+            <div class="col-sm-3">
+                <?php echo $this->formRow($form->get('currencyId')); ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <div class="col-sm-4 col-sm-4">
+                   <?php
+                        echo $this->formRow($form->get('contractId'));
+
+                    ?>
+
+                </div>
+
+            </div>
+
+            <div></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <?php echo $this->formRow($form->get('remark')); ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <?php echo $this->formRow($form->get('status')); ?>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer form-horizontal">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Staff by</label>
+                    <div class="col-sm-8">
+                        <?php echo $this->formHidden($form->get('staffId'));?>
+                        <input type="text" disabled="disabled" class="form-control text-center" value="<?php echo $staffName;?>" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-offset-4 col-sm-4">
+                <p class="text-right">
+                    <button type="submit" value="Save" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-send"></span>
+                        Request Now
+                    </button>
+
+                    <?php echo $this->backButton(); ?>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+echo $this->form()->closeTag();
+?>
+</div>
