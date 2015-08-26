@@ -88,6 +88,7 @@ class Proposal implements ArraySerializableInterface
             'companyId'=>$this->companyId,
             'contactId'=>$this->contactId,
             'code'=>$this->code,
+            'name'=>$this->name,
             'amount'=>$this->amount,
             'currencyId'=>$this->currencyId,
             'proposalDate'=>$this->proposalDate,

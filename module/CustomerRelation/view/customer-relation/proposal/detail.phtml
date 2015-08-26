@@ -19,7 +19,7 @@ echo $this->form()->openTag($form);
 echo $this->formHidden($form->get('proposalId'));
 ?>
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-6">
         <?php
         echo $this->formHorizontal($form->get('proposalDate'));
         echo $this->formHorizontal($form->get('code'));
@@ -29,13 +29,15 @@ echo $this->formHidden($form->get('proposalId'));
         ?>
         <div class="form-group">
             <label class="control-label col-sm-3">Amount</label>
-            <div class="col-sm-7">
+            <div class="col-sm-5">
                 <?php echo $this->formNumber($form->get('amount')); ?>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-4">
                 <?= $this->formSelect($form->get('currencyId')) ?>
             </div>
         </div>
+    </div>
+    <div class="col-md-6">
         <?php
         echo $this->formHorizontal($form->get('proposalFile'));
         echo $this->formHorizontal($form->get('notes'));
@@ -50,7 +52,7 @@ echo $this->formHidden($form->get('proposalId'));
                 </button>
                 <?php if($isEdit):?>
                     <a href="<?php echo $this->url('cr_proposal', array('action'=>'detail', 'id'=>$id));?>?action=clone"
-                        class="btn btn-warning">
+                       class="btn btn-warning">
                         <span class="glyphicon glyphicon-copy"></span>
                         Clone
                     </a>
