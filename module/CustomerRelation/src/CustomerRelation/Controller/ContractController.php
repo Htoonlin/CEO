@@ -190,4 +190,26 @@ class ContractController extends SundewController
         }
         return new JsonModel(array("message"=>$message));
     }
+    public function downloadAction()
+    {
+        $id = (int)$this->params()->fromRoute('id', array());
+        $contract = $this->contractTable()->getContract($id);
+        if(!$contract){
+            $this->flashMessenger()->addWarningMessage('Invalid id.');
+            return $this->redirect()->toRoute('cr_contract');
+        }
+        $file = $contract->getContractFile();
+
+        if(!file_exists($file)){
+            $this->flashMessenger()->addWarningMessage('Invalid file.');
+            return $this->redirect()->toRoute('cr_contract');
+        }
+        $reponse = $this->getResponse();
+        $headers = $reponse->getHeaders();
+        $headers->addHeaderLine('Content-Type', 'application/octet-stream');
+        $headers->addHeaderLine('Content-Length', filesize($file));
+        $headers->addHeaderLine('Content-Disposition', 'attachment; filename="' . basename($file) . '"');
+        $reponse->setContent(file_get_contents($file));
+        return $reponse;
+    }
 }

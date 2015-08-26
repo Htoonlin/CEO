@@ -151,7 +151,7 @@ $flashMesssages=$this->flashMessenger()->getMessages();
                             <?php echo $this->constantConverter($contract->status, 'default_status'); ?>
                         </td>
                         <td class="text-center">
-                            <a href="#" class="btn btn-info btn-sm" title="Download">
+                            <a href="<?php echo $this->url('cr_contract', array('action'=>'download', 'id'=>$contract->contractId));?>" class="btn btn-info btn-sm" title="Download">
                                 <span class="glyphicon glyphicon-download"></span>
                             </a>
                         </td>
