@@ -8,6 +8,7 @@
 
 namespace Application\Service;
 
+use HumanResource\Entity\Staff;
 use Zend\Db\Adapter\AdapterInterface;
 use HumanResource\DataAccess\StaffDataAccess;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -57,7 +58,12 @@ class SundewController extends AbstractActionController
         if(!$this->staff){
             $userId = $this->getAuthUser()->userId;
             $staffDataAccess = new StaffDataAccess($this->getDbAdapter());
-            $this->staff = $staffDataAccess->getStaffByUser($userId);
+            $staff = $staffDataAccess->getStaffByUser($userId);
+            if(!$staff){
+                $staff = new Staff();
+            }
+
+            $this->staff = $staff;
         }
 
         return $this->staff;
