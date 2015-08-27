@@ -32,6 +32,11 @@ class GridHeaderCell extends AbstractHelper
 
     public function __invoke($title, $col = '', $url = '')
     {
+        return $this->render($title, $col, $url);
+    }
+
+    public function render($title, $col = '', $url = '')
+    {
         $this->title = $title;
         $this->col = $col;
         $this->url = empty($url) ? $this->getView()->url() : $url;
@@ -42,11 +47,6 @@ class GridHeaderCell extends AbstractHelper
         $this->filter = $this->request->getQuery('filter', '');
         $this->pageSize = $this->request->getQuery('size', 10);
 
-        return $this->render();
-    }
-
-    public function render()
-    {
         $html = '';
         if(empty($this->col)){
             $query = '#';

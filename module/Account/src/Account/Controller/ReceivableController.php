@@ -131,6 +131,8 @@ class ReceivableController extends SundewController
             $post_data = $request->getPost()->toArray();
             $form->setData($post_data);
             if ($form->isValid()) {
+                $generateNo = $this->receivableTable()->getVoucherNo(date('Y-m-d', time()));
+                $receivable->setVoucherNo($generateNo);
                 $this->receivableTable()->saveReceivable($receivable);
                 $this->flashMessenger()->addInfoMessage('Requested voucher by ' . $generateNo . '.');
                 return $this->redirect()->toRoute('account_receivable');

@@ -41,7 +41,8 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
 
         $this->generateRoute($e);
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'checkAuth'), -100);
-        $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'dispatch_error'));
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'error_handling'));
+        $eventManager->attach(MvcEvent::EVENT_RENDER_ERROR, array($this, 'error_handling'));
     }
 
     private $cacheRouteData;
@@ -105,7 +106,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
         return $response;
     }
 
-    public function dispatch_error(MvcEvent $e){
+    public function error_handling(MvcEvent $e){
         $exception = $e->getResult()->exception;
         if($exception){
             $sm = $e->getApplication()->getServiceManager();

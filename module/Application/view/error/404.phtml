@@ -106,13 +106,9 @@ if (isset($this->controller_class)
 
 <?php endif ?>
 
-<div class="row">
-    <div class="col-sm-3">
-        <p>
-            <a class="btn btn-block btn-default" href="<?= $this->url('auth', array('action' => 'logout')); ?>" title="Back to login">
-                <span class="glyphicon glyphicon-log-in"></span>
-                Go back to login
-            </a>
-        </p>
-    </div>
-</div>
+<p>
+    <a class="btn btn-block btn-default" href="<?= $this->url('auth', array('action' => 'logout')); ?>" title="Back to login">
+        <span class="glyphicon glyphicon-log-in"></span>
+        Go back to login
+    </a>
+</p>

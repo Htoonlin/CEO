@@ -31,6 +31,11 @@ $this->headTitle($title);
             }
         });
 
+        $("div.grid > table > tbody tr").dblclick(function(){
+            var id = $(this).attr('data-id');
+            window.location.href = "<?php echo $this->url('user', array('action' => 'detail')); ?>/" + id;
+        });
+
         $("input#chkAll").change(function(){
             if($(this).checkbox('isChecked')){
                 $('input[name="chkId[]"]').checkbox('check');
@@ -135,7 +140,7 @@ $this->headTitle($title);
                 ?>
                 <tbody>
                 <?php foreach($paginator as $user) : ?>
-                    <tr>
+                    <tr data-id="<?= $user->userId ?>">
                         <td class="text-center">
                             <div class="checkbox" style="margin:0">
                                 <label class="checkbox-custom" data-initialize="checkbox">

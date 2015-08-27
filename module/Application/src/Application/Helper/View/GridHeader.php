@@ -27,6 +27,10 @@ class GridHeader extends AbstractHelper
      * @return string
      */
     public function __invoke(array $fieldList){
+        return $this->render($fieldList);
+    }
+
+    public function render(array $fieldList){
         $html = '<thead>';
         foreach($fieldList as $field){
             $type = isset($field['type']) ? $field['type'] : 'custom';
@@ -58,7 +62,7 @@ class GridHeader extends AbstractHelper
         $field = isset($data['col']) ? $data['col'] : '';
         $url = isset($data['url']) ? $data['url'] : $this->getView()->url();
         $gridHeaderCell = new GridHeaderCell($this->request);
-        return $gridHeaderCell->__invoke($title, $field, $url);
+        return $gridHeaderCell->render($title, $field, $url);
     }
 
     /**
