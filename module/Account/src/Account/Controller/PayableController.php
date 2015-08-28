@@ -125,7 +125,7 @@ class PayableController extends SundewController
             $post_data=$request->getPost()->toArray();
             $form->setData($post_data);
             if($form->isValid()){
-                $generateNo = $this->payableTable()->getVoucherNo(date('Y-m-d',time()));
+                $generateNo = $this->payableTable()->getVoucherNo($payable->getVoucherDate());
                 $payable->setVoucherNo($generateNo);
                 $this->payableTable()->savePayable($payable);
                 $this->flashMessenger()->addInfoMessage('Requested voucher by' . $generateNo .'.');
