@@ -6,7 +6,7 @@
  * Time: 2:29 PM
  */
 
-namespace Application\Helper\View;
+namespace Core\Helper\View;
 
 
 use Zend\Stdlib\RequestInterface;

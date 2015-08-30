@@ -6,7 +6,7 @@
  * Time: 4:44 PM
  */
 
-namespace Application\Helper\View;
+namespace Core\Helper\View;
 
 
 use Application\DataAccess\ConstantDataAccess;

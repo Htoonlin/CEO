@@ -9,8 +9,8 @@
 namespace CustomerRelation\Controller;
 
 use Application\DataAccess\ConstantDataAccess;
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewController;
+use Core\SundewExporting;
 use CustomerRelation\Entity\Company;
 use CustomerRelation\Helper\CompanyHelper;
 use CustomerRelation\DataAccess\CompanyDataAccess;

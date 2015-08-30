@@ -8,7 +8,7 @@
 
 namespace HumanResource\Controller;
 
-use Application\Service\SundewController;
+use Core\SundewController;
 use HumanResource\Helper\DepartmentHelper;
 use HumanResource\Entity\Department;
 use HumanResource\DataAccess\DepartmentDataAccess;

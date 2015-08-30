@@ -6,7 +6,7 @@
  * Time: 5:22 PM
  */
 
-namespace Application\Service;
+namespace Core;
 
 use HumanResource\Entity\Staff;
 use Zend\Db\Adapter\AdapterInterface;
@@ -17,7 +17,7 @@ use Zend\View\View;
 
 /**
  * Class SundewController
- * @package Application\Service
+ * @package Core
  */
 class SundewController extends AbstractActionController
 {

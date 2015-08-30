@@ -10,8 +10,8 @@ namespace Account\Controller;
 
 use Account\DataAccess\VoucherDataAccess;
 use Application\DataAccess\ConstantDataAccess;
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewController;
+use Core\SundewExporting;
 use Zend\View\Model\ViewModel;
 use Zend\Form\Element;
 

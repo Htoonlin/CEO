@@ -9,7 +9,7 @@
 
 namespace Application\Controller;
 
-use Application\Service\SundewController;
+use Core\SundewController;
 
 class IndexController extends SundewController
 {

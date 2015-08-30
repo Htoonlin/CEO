@@ -10,8 +10,8 @@ namespace Account\Controller;
 
 use Account\DataAccess\AccountTypeDataAccess;
 use Account\DataAccess\CurrencyDataAccess;
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewController;
+use Core\SundewExporting;
 use HumanResource\DataAccess\StaffDataAccess;
 use Account\DataAccess\ReceivableDataAccess;
 use Account\Entity\Receivable;

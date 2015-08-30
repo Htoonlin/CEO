@@ -8,7 +8,7 @@
 
 namespace Application\DataAccess;
 
-use Application\Service\SundewTableGateway;
+use Core\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 
 /**

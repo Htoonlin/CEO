@@ -6,7 +6,7 @@
  * Time: 3:36 PM
  */
 
-namespace Application\Helper\View;
+namespace Core\Helper\View;
 
 
 use Zend\View\Helper\AbstractHelper;

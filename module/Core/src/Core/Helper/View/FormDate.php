@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Helper\View;
+namespace Core\Helper\View;
 
 use Zend\Form\ElementInterface;
 use Zend\Form\Exception;

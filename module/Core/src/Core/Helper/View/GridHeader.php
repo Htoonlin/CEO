@@ -1,5 +1,5 @@
 <?php
-namespace Application\Helper\View;
+namespace Core\Helper\View;
 
 use Zend\Form\View\Helper\AbstractHelper;
 use Zend\Stdlib\RequestInterface;

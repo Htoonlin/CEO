@@ -12,7 +12,7 @@ use Application\DataAccess\CalendarDataAccess;
 use Application\DataAccess\CalendarType;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Entity\Calendar;
-use Application\Service\SundewController;
+use Core\SundewController;
 use HumanResource\Helper\HolidayHelper;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;

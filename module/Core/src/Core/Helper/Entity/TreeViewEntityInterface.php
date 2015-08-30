@@ -6,7 +6,7 @@
  * Time: 1:02 PM
  */
 
-namespace Application\Helper\Entity;
+namespace Core\Helper\Entity;
 
 interface TreeViewEntityInterface
 {

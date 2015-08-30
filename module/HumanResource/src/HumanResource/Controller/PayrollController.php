@@ -10,7 +10,7 @@ namespace HumanResource\Controller;
 
 use Application\DataAccess\CalendarDataAccess;
 use Application\DataAccess\ConstantDataAccess;
-use Application\Service\SundewController;
+use Core\SundewController;
 use HumanResource\DataAccess\PayrollDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Helper\PayrollHelper;

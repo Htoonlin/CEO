@@ -11,7 +11,7 @@ namespace Application\Controller;
 use Application\DataAccess\CalendarDataAccess;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Helper\DashboardHelper;
-use Application\Service\SundewController;
+use Core\SundewController;
 use HumanResource\DataAccess\AttendanceDataAccess;
 use HumanResource\DataAccess\LeaveDataAccess;
 use HumanResource\DataAccess\PayrollDataAccess;

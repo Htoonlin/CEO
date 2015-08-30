@@ -6,7 +6,7 @@
  * Time: 2:46 PM
  */
 
-namespace Application\Service;
+namespace Core;
 
 
 class SundewExporting {

@@ -1,8 +1,8 @@
 <?php
 namespace ProjectManagement\Controller;
 
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewController;
+use Core\SundewExporting;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 use ProjectManagement\Entity\Task;

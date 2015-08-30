@@ -10,7 +10,7 @@ namespace Account\DataAccess;
 
 use Account\Entity\AccountType;
 use Account\Entity\Currency;
-use Application\Service\SundewTableGateway;
+use Core\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;

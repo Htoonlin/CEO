@@ -6,7 +6,7 @@
  * Time: 2:49 PM
  */
 
-namespace Application\Helper\View;
+namespace Core\Helper\View;
 
 use Zend\Form\ElementInterface;
 use Zend\Form\Element\Checkbox as CheckboxElement;

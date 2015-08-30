@@ -9,7 +9,7 @@
 namespace ProjectManagement\DataAccess;
 
 
-use Application\Service\SundewTableGateway;
+use Core\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Select;

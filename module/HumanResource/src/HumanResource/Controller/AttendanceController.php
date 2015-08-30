@@ -8,8 +8,8 @@
 
 namespace HumanResource\Controller;
 
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewController;
+use Core\SundewExporting;
 use HumanResource\DataAccess\AttendanceDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Attendance;

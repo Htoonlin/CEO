@@ -6,14 +6,14 @@
  * Time: 01:24 PM
  */
 
-namespace Application\Service;
+namespace Core\Factory;
 
 
 use Zend\Config\Writer\PhpArray;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class SundewConfigManager implements FactoryInterface
+class SundewConfigFactory implements FactoryInterface
 {
     protected $public = array();
     protected $config;

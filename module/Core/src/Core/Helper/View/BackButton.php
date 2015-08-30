@@ -6,8 +6,7 @@
  * Time: 12:59 PM
  */
 
-namespace Application\Helper\View;
-
+namespace Core\Helper\View;
 
 use Zend\Form\View\Helper\AbstractHelper;
 use Zend\Mvc\Router\RouteMatch;

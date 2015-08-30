@@ -8,7 +8,7 @@
 
 namespace Account\Entity;
 
-use Application\Helper\Entity\TreeViewEntityInterface;
+use Core\Helper\Entity\TreeViewEntityInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 
 class AccountType implements TreeViewEntityInterface, ArraySerializableInterface

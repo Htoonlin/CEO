@@ -8,7 +8,7 @@
 
 namespace CustomerRelation\DataAccess;
 
-use Application\Service\SundewTableGateway;
+use Core\SundewTableGateway;
 use CustomerRelation\Entity\Company;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;

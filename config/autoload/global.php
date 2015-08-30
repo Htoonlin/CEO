@@ -18,14 +18,14 @@ return array(
         'build' => 2
     ),
     'service_manager' => array(
+        'factories' => array(
+            'Sundew\Db\Adapter' => 'Core\Factory\SundewAdapterFactory',
+            'navigation' => 'Core\Factory\SundewNavigationFactory',
+            'ConfigManager' => 'Core\Factory\SundewConfigFactory',
+        ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',
-        ),
-        'factories' => array(
-            'Sundew\Db\Adapter' => 'Application\Service\SundewAdapterFactory',
-            'navigation' => 'Application\Service\SundewNavigationFactory',
-            'ConfigManager' => 'Application\Service\SundewConfigManager',
         ),
         'aliases' => array(
             'translator' => 'MvcTranslator',

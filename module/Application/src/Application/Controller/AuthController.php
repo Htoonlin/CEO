@@ -6,7 +6,7 @@ use Application\DataAccess\UserDataAccess;
 use Application\DataAccess\UserRoleDataAccess;
 use Application\Entity\User;
 use Application\Helper\AuthHelper;
-use Application\Service\SundewController;
+use Core\SundewController;
 use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
 

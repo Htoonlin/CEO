@@ -10,7 +10,7 @@ namespace Development\Controller;
 
 
 use Application\DataAccess\ConstantDataAccess;
-use Application\Service\SundewController;
+use Core\SundewController;
 use Development\DataAccess\GenerateDataAccess;
 use Development\Helper\GenerateHelper;
 use Zend\View\Model\JsonModel;

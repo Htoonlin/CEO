@@ -8,8 +8,8 @@
 
 namespace ProjectManagement\Controller;
 
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewController;
+use Core\SundewExporting;
 use HumanResource\DataAccess\StaffDataAccess;
 use ProjectManagement\DataAccess\ProjectDataAccess;
 use ProjectManagement\Entity\Project;

@@ -11,7 +11,7 @@ namespace Account\DataAccess;
 use Account\Entity\Closing;
 use Account\Entity\Voucher;
 use Application\DataAccess\ConstantDataAccess;
-use Application\Service\SundewTableGateway;
+use Core\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;

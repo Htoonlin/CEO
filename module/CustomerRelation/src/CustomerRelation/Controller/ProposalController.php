@@ -10,8 +10,8 @@ namespace CustomerRelation\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewController;
+use Core\SundewExporting;
 use CustomerRelation\DataAccess\ProposalDataAccess;
 use CustomerRelation\Entity\Proposal;
 use CustomerRelation\Helper\ProposalHelper;

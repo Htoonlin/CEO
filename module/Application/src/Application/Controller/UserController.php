@@ -9,8 +9,10 @@ use Application\DataAccess\UserRoleDataAccess;
 use Application\Entity\User;
 use Application\Helper\PasswordHelper;
 use Application\Helper\UserHelper;
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewApi;
+use Core\SundewController;
+use Core\SundewExporting;
+use PhpOffice\PhpWord\Exception\Exception;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -58,6 +60,11 @@ class UserController extends SundewController
     {
         $dataAccess = new RoleDataAccess($this->getDbAdapter());
         return $dataAccess->getChildren();
+    }
+
+    public function apiAction()
+    {
+
     }
 
     /**

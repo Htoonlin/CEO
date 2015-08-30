@@ -14,7 +14,7 @@ use Application\DataAccess\RoleDataAccess;
 use Application\Helper\MenuHelper;
 use Application\Entity\Menu;
 use Application\DataAccess\MenuDataAccess;
-use Application\Service\SundewController;
+use Core\SundewController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 

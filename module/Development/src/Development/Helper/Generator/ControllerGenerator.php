@@ -40,8 +40,8 @@ class ControllerGenerator extends SundewGenerator
         $className = $this->generateClass($this->module, $this->tbl_name, 'Controller');
         $nameSpace = $this->module . '\\Controller';
         $class = $this->initClass($className, $nameSpace);
-        $class->addUse('Application\Service\SundewController');
-        $class->addUse('Application\Service\SundewExporting');
+        $class->addUse('Core\SundewController');
+        $class->addUse('Core\SundewExporting');
         $class->addUse('Zend\View\Model\ViewModel');
         $class->addUse('Zend\View\Model\JsonModel');
         $class->addUse($this->module . '\\Entity\\' . $entity);

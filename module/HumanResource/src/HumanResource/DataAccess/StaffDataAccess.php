@@ -8,7 +8,7 @@
 
 namespace HumanResource\DataAccess;
 
-use Application\Service\SundewTableGateway;
+use Core\SundewTableGateway;
 use HumanResource\Entity\Staff;
 use PhpOffice\PhpWord\Exception\Exception;
 use Zend\Db\Adapter\Adapter;

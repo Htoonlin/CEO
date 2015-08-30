@@ -8,7 +8,7 @@
 
 namespace HumanResource\Entity;
 
-use Application\Helper\Entity\TreeViewEntityInterface;
+use Core\Helper\Entity\TreeViewEntityInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 class Department implements TreeViewEntityInterface, ArraySerializableInterface
 {

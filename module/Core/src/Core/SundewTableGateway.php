@@ -6,7 +6,7 @@
  * Time: 3:39 PM
  */
 
-namespace Application\Service;
+namespace Core;
 
 use Zend\Db\Metadata\Metadata;
 use Zend\Db\Sql\Delete;

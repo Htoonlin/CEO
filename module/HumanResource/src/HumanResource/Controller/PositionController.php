@@ -3,8 +3,8 @@ namespace HumanResource\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewController;
+use Core\SundewExporting;
 use HumanResource\DataAccess\PositionDataAccess;
 use HumanResource\Entity\Position;
 use HumanResource\Helper\PositionHelper;

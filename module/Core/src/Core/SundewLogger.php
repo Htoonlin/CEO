@@ -6,7 +6,7 @@
  * Time: 6:08 PM
  */
 
-namespace Application\Service;
+namespace Core;
 
 use Zend\Db\Adapter\Profiler\ProfilerInterface;
 use Zend\Log\Logger;
@@ -15,7 +15,7 @@ use Zend\Log\Formatter\Simple as LogFormatter;
 
 /**
  * Class SundewLogger
- * @package Application\Service
+ * @package Core
  */
 class SundewLogger implements ProfilerInterface{
     protected $logger;

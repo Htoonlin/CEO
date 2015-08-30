@@ -43,7 +43,7 @@ class GatewayGenerator extends SundewGenerator
         $className = $this->generateClass($this->module, $this->tbl_name, 'DataAccess');
         $nameSpace = $this->module . '\\DataAccess';
         $class = $this->initClass($className, $nameSpace);
-        $class->addUse('Application\Service\SundewTableGateway');
+        $class->addUse('Core\SundewTableGateway');
         $class->addUse($this->module . '\\Entity\\' . $entity);
         $class->addUse('Zend\Db\Adapter\Adapter');
         $class->addUse('Zend\Db\ResultSet\HydratingResultSet');

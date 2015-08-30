@@ -6,7 +6,7 @@
  * Time: 3:12 PM
  */
 
-namespace Application\Service;
+namespace Core;
 
 use Zend\Authentication\Storage\Session;
 use Zend\Cache\StorageFactory;

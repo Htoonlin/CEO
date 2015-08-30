@@ -6,8 +6,8 @@ namespace Application\Controller;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Entity\Constant;
 use Application\Helper\ConstantHelper;
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewController;
+use Core\SundewExporting;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 

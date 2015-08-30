@@ -9,8 +9,8 @@
 namespace HumanResource\Controller;
 
 use Application\DataAccess\ConstantDataAccess;
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewController;
+use Core\SundewExporting;
 use HumanResource\DataAccess\LeaveDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Leave;

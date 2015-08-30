@@ -2,12 +2,11 @@
 /**
  * Created by PhpStorm.
  * User: NyanTun
- * Date: 4/9/2015
- * Time: 5:39 PM
+ * Date: 1/22/2015
+ * Time: 2:33 PM
  */
 
-namespace Application\Helper\View;
-
+namespace Core\Helper\View;
 
 use Zend\Form\Element\Button;
 use Zend\Form\Element\Captcha;
@@ -18,8 +17,10 @@ use Zend\Form\ElementInterface;
 use Zend\Form\LabelAwareInterface;
 use Zend\Form\View\Helper\AbstractHelper;
 use Zend\Form\View\Helper\FormLabel;
+use Zend\Form\View\Helper\FormRow;
 
-class FormRow extends \Zend\Form\View\Helper\FormRow{
+class FormHorizontal extends FormRow
+{
     /**
      * The class that is added to element that have errors
      *
@@ -34,7 +35,7 @@ class FormRow extends \Zend\Form\View\Helper\FormRow{
      * @throws \Zend\Form\Exception\DomainException
      * @return string
      */
-    public function render(ElementInterface $element, $labelPosition = null)
+    public function render(ElementInterface $element, $labelPosition  = null)
     {
         $escapeHtmlHelper    = $this->getEscapeHtmlHelper();
         $elementHelper       = $this->getElementHelper();
@@ -88,47 +89,25 @@ class FormRow extends \Zend\Form\View\Helper\FormRow{
         // hidden elements do not need a <label> -https://github.com/zendframework/zf2/issues/5607
         $type = $element->getAttribute('type');
         if (isset($label) && '' !== $label && $type !== 'hidden') {
-            $labelAttributes = array();
-
-            if ($element instanceof LabelAwareInterface) {
-                $labelAttributes = $element->getLabelAttributes();
-            }
 
             if (! $element instanceof LabelAwareInterface || ! $element->getLabelOption('disable_html_escape')) {
                 $label = $escapeHtmlHelper($label);
             }
 
-            if (empty($labelAttributes)) {
-                $labelAttributes = $this->labelAttributes;
-            }
-
-            // Multicheckbox elements have to be handled differently as the HTML standard does not allow nested
-            // labels. The semantic way is to group them inside a fieldset
-            if ($type === 'multi_checkbox'
-                || $type === 'radio'
-                || $element instanceof MonthSelect
-                || $element instanceof Captcha
+            if ($label !== '' && (!$element->hasAttribute('id'))
+                || ($element instanceof LabelAwareInterface && $element->getLabelOption('always_wrap'))
             ) {
-                $markup = sprintf(
-                    '<fieldset><legend>%s</legend>%s</fieldset>',
-                    $label,
-                    $elementString
-                );
-            } else {
-
-                if ($label !== '' && (!$element->hasAttribute('id'))
-                    || ($element instanceof LabelAwareInterface && $element->getLabelOption('always_wrap'))
-                ) {
-                    $label = '<label>' . $label . '</label>';
-                }
-
-                // Button element is a special case, because label is always rendered inside it
-                if ($element instanceof Button || $element instanceof Checkbox || $element instanceof Radio) {
-                    $label = '';
-                }
-
-                $markup = $label . $elementString;
+                $label = '<label class="col-sm-3 control-label">' . $label . '</label>';
             }
+
+            $elementString = '<div class="col-sm-9">' . $elementString . '</div>';
+
+            // Button element is a special case, because label is always rendered inside it
+            if ($element instanceof Button || $element instanceof Checkbox || $element instanceof Radio) {
+                $label = '<div class="col-sm-3"></div>';
+            }
+
+            $markup = $label . $elementString;
 
         } else {
             $markup = $elementString;
@@ -136,4 +115,5 @@ class FormRow extends \Zend\Form\View\Helper\FormRow{
 
         return $rowOpen . $markup . $rowClose;
     }
+
 }

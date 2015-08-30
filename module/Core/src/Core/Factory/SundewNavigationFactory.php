@@ -6,7 +6,7 @@
  * Time: 11:36 AM
  */
 
-namespace Application\Service;
+namespace Core\Factory;
 
 
 use Zend\ServiceManager\FactoryInterface;
@@ -14,7 +14,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Class SundewNavigationFactory
- * @package Application\Service
+ * @package Core
  */
 class SundewNavigationFactory implements FactoryInterface
 {

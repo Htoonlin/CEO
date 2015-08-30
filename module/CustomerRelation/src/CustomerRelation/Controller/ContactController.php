@@ -8,8 +8,8 @@
 
 namespace CustomerRelation\Controller;
 
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewController;
+use Core\SundewExporting;
 use CustomerRelation\DataAccess\ContactDataAccess;
 use CustomerRelation\DataAccess\CompanyDataAccess;
 use CustomerRelation\Entity\Contact;

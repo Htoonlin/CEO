@@ -8,7 +8,7 @@
 
 namespace Application\Entity;
 
-use Application\Helper\Entity\TreeViewEntityInterface;
+use Core\Helper\Entity\TreeViewEntityInterface;
 use Zend\Stdlib\ArraySerializableInterface;
 
 class Role implements TreeViewEntityInterface, ArraySerializableInterface

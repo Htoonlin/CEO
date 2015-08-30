@@ -8,7 +8,7 @@
 
 namespace HumanResource\DataAccess;
 
-use Application\Service\SundewTableGateway;
+use Core\SundewTableGateway;
 use HumanResource\Entity\Leave;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;

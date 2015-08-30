@@ -8,7 +8,7 @@
 
 namespace ProjectManagement\DataAccess;
 
-use Application\Service\SundewTableGateway;
+use Core\SundewTableGateway;
 use ProjectManagement\Entity\Project;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;

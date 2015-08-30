@@ -14,8 +14,8 @@ use Application\DataAccess\RouteDataAccess;
 use Application\DataAccess\RoutePermissionDataAccess;
 use Application\Entity\Route;
 use Application\Helper\RouteHelper;
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewController;
+use Core\SundewExporting;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 

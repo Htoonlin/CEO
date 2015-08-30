@@ -12,7 +12,7 @@ use Account\Helper\AccountTypeHelper;
 use Account\Entity\AccountType;
 use Account\DataAccess\AccountTypeDataAccess;
 use Application\DataAccess\ConstantDataAccess;
-use Application\Service\SundewController;
+use Core\SundewController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 

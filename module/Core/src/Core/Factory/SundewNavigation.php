@@ -6,7 +6,7 @@
  * Time: 11:12 AM
  */
 
-namespace Application\Service;
+namespace Core\Factory;
 
 
 use Application\DataAccess\MenuDataAccess;

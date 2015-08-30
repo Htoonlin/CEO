@@ -12,8 +12,8 @@ use Account\Helper\CurrencyHelper;
 use Account\Entity\Currency;
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
-use Application\Service\SundewController;
-use Application\Service\SundewExporting;
+use Core\SundewController;
+use Core\SundewExporting;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 

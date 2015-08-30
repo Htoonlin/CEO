@@ -9,7 +9,7 @@
 namespace Application\DataAccess;
 
 use Application\Entity\Constant;
-use Application\Service\SundewTableGateway;
+use Core\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;

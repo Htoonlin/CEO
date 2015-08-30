@@ -6,12 +6,12 @@
  * Time: 8:30 PM
  */
 
-namespace Application\Service;
+namespace Core\Factory;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Cache\StorageFactory;
+use Core\SundewLogger;
 
 class SundewAdapterFactory implements FactoryInterface
 {

@@ -8,6 +8,7 @@
 return array(
     'modules' => array(
         'Application',
+        'Core',
         'Development',
         'Account',
         'HumanResource',

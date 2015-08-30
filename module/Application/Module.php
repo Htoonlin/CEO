@@ -9,28 +9,27 @@
 
 namespace Application;
 
-use Application\DataAccess\ConstantDataAccess;
+
 use Application\DataAccess\RouteDataAccess;
 use Application\DataAccess\UserRoleDataAccess;
-use Application\Helper\View\BackButton;
-use Application\Helper\View\ConstantConverter;
-use Application\Helper\View\GridFilter;
-use Application\Helper\View\GridHeader;
-use Application\Helper\View\GridHeaderCell;
-use Application\Service\SundewAuthStorage;
-use Application\Service\SundewLogger;
+use Core\SundewAuthStorage;
+use Core\SundewLogger;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
 use Zend\Authentication\AuthenticationService;
+use Core\Helper\View\BackButton;
+use Core\Helper\View\ConstantConverter;
+use Core\Helper\View\GridFilter;
+use Core\Helper\View\GridHeader;
+use Core\Helper\View\GridHeaderCell;
+use Application\DataAccess\ConstantDataAccess;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\Http\Segment;
 use Zend\Mvc\Router\RouteMatch;
 
-class Module implements ConfigProviderInterface, AutoloaderProviderInterface, ServiceProviderInterface, ViewHelperProviderInterface
+class Module implements ConfigProviderInterface, AutoloaderProviderInterface
 {
     protected $publicRoutes = array('auth', 'system_install');
     public function onBootstrap(MvcEvent $e)
@@ -131,6 +130,47 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
         );
     }
 
+
+    /**
+     * Expected to return \Zend\ServiceManager\Config object or array to
+     * seed such an object.
+     *
+     * @return array|\Zend\ServiceManager\Config
+     */
+    private $viewHelperConfig;
+    public function getViewHelperConfig()
+    {
+        if($this->viewHelperConfig == null){
+            $this->viewHelperConfig = array(
+                'factories' => array(
+                    'gridHeaderCell' => function($sm){
+                        $app = $sm->getServiceLocator()->get('Application');
+                        return new GridHeaderCell($app->getRequest());
+                    },
+                    'gridHeader' => function($sm){
+                        $app = $sm->getServiceLocator()->get('Application');
+                        return new GridHeader($app->getRequest());
+                    },
+                    'gridFilter' => function($sm){
+                        $app = $sm->getServiceLocator()->get('Application');
+                        return new GridFilter($app->getRequest());
+                    },
+                    'backButton' => function($sm){
+                        $app = $sm->getServiceLocator()->get('Application');
+                        return new BackButton($app->getRequest(), $app->getMvcEvent()->getRouteMatch());
+                    },
+                    'constantConverter' => function($sm){
+                        $dbAdapter = $sm->getServiceLocator()->get('Sundew\Db\Adapter');
+                        $constantDA = new ConstantDataAccess($dbAdapter);
+                        return new ConstantConverter($constantDA);
+                    }
+                ),
+            );
+        }
+        return $this->viewHelperConfig;
+    }
+
+
     private $serviceConfig;
     public function getServiceConfig()
     {
@@ -147,7 +187,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
                         $dbAdapter = $sm->get('Sundew\Db\Adapter');
                         $authService = new AuthenticationService();
                         $authService->setAdapter(new CredentialTreatmentAdapter($dbAdapter, 'tbl_user', 'username',
-                                                                        'password', 'MD5(?) AND status="A"'));
+                            'password', 'MD5(?) AND status="A"'));
                         $authService->setStorage($sm->get('Sundew\AuthStorage'));
                         return $authService;
                     },
@@ -188,53 +228,5 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
             );
         }
         return $this->serviceConfig;
-    }
-
-    /**
-     * Expected to return \Zend\ServiceManager\Config object or array to
-     * seed such an object.
-     *
-     * @return array|\Zend\ServiceManager\Config
-     */
-    private $viewHelperConfig;
-    public function getViewHelperConfig()
-    {
-        if($this->viewHelperConfig == null){
-            $this->viewHelperConfig = array(
-                'factories' => array(
-                    'gridHeaderCell' => function($sm){
-                        $app = $sm->getServiceLocator()->get('Application');
-                        return new GridHeaderCell($app->getRequest());
-                    },
-                    'gridHeader' => function($sm){
-                        $app = $sm->getServiceLocator()->get('Application');
-                        return new GridHeader($app->getRequest());
-                    },
-                    'gridFilter' => function($sm){
-                        $app = $sm->getServiceLocator()->get('Application');
-                        return new GridFilter($app->getRequest());
-                    },
-                    'backButton' => function($sm){
-                        $app = $sm->getServiceLocator()->get('Application');
-                        return new BackButton($app->getRequest(), $app->getMvcEvent()->getRouteMatch());
-                    },
-                    'constantConverter' => function($sm){
-                        $dbAdapter = $sm->getServiceLocator()->get('Sundew\Db\Adapter');
-                        $constantDA = new ConstantDataAccess($dbAdapter);
-                        return new ConstantConverter($constantDA);
-                    }
-                ),
-                'invokables' => array(
-                    'formTreeView' => 'Application\Helper\View\FormTreeView',
-                    'formRow' => 'Application\Helper\View\FormRow',
-                    'formHorizontal' => 'Application\Helper\View\FormHorizontal',
-                    'formcheckbox' => 'Application\Helper\View\FormCheckBox',
-                    'formnumber' => 'Application\Helper\View\FormNumber',
-                    'formdate' => 'Application\Helper\View\FormDate',
-                    'formLoader' => 'Application\Helper\View\FormLoader',
-                ),
-            );
-        }
-        return $this->viewHelperConfig;
     }
 }
