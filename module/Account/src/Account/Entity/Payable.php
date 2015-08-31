@@ -36,6 +36,14 @@ class Payable implements ArraySerializableInterface
     public function getAmount(){return $this->amount;}
     public function setAmount($value){$this->amount=$value;}
 
+    protected $paymentType;
+    public function getPaymentType(){return $this->paymentType;}
+    public function setPaymentType($value){$this->paymentType = $value;}
+
+    protected $attachmentFile;
+    public function getAttachmentFile(){return $this->attachmentFile;}
+    public function setAttachmentFile($value){$this->attachmentFile = $value;}
+
     protected $currencyId;
     public function getCurrencyId(){return $this->currencyId;}
     public function setCurrencyId($value){$this->currencyId = $value;}
@@ -76,6 +84,8 @@ class Payable implements ArraySerializableInterface
         $this->accountType = (!empty($data['accountType'])) ? $data['accountType'] : null;
         $this->description = (!empty($data['description'])) ? $data['description'] : null;
         $this->amount = (!empty($data['amount'])) ? $data['amount'] : null;
+        $this->paymentType=(!empty($data['paymentType']))?$data['paymentType']:null;
+        $this->attachmentFile=(!empty($data['attachmentFile']))?$data['attachmentFile']:null;
         $this->currencyId=(!empty($data['currencyId']))?$data['currencyId']:null;
         $this->withdrawBy = (!empty($data['withdrawBy'])) ? $data['withdrawBy'] : null;
         $this->approveBy = (!empty($data['approveBy'])) ? $data['approveBy'] : null;
@@ -94,6 +104,8 @@ class Payable implements ArraySerializableInterface
             "accountType" => $this->accountType,
             "description" => $this->description,
             "amount" => $this->amount,
+            "paymentType"=>$this->paymentType,
+            "attachmentFile"=>$this->attachmentFile,
             "currencyId"=>$this->currencyId,
             "withdrawBy" => $this->withdrawBy,
             "approveBy" => $this->approveBy,

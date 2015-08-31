@@ -10,12 +10,21 @@ namespace Account\Helper;
 
 use Zend\Form\Element;
 use Zend\Form\Form;
+use Zend\InputFilter\FileInput;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
-class PayableHelper
+use Zend\InputFilter\InputFilterInterface;
+use Zend\Validator\File\Extension;
+
+class PayableHelper extends Form
 {
+    protected $dbAdapter;
+    public function __construct($dbAdapter)
+    {
+        $this->dbAdapter = $dbAdapter;
+    }
     protected $form;
-    public function getForm(array $currencies)
+    public function getForm(array $currencies, array $paymentTypes)
     {
         if(!$this->form){
             $hidId=new Element\Hidden();
@@ -54,6 +63,16 @@ class PayableHelper
                     'step'=>'1'
                 ));
 
+            $cboPaymentType=new Element\Select();
+            $cboPaymentType->setName('paymentType')
+                ->setLabel('Payment Type')
+                ->setAttribute('class', 'form-control')
+                ->setEmptyOption('--choose Payment Type--')
+                ->setValueOptions($paymentTypes);
+
+            $txtAttachmentFile=new Element\File('attachmentFile');
+            $txtAttachmentFile->setLabel('Attachment File Upload');
+
             $cboCurrency=new Element\Select();
             $cboCurrency->setName('currencyId')
                 ->setLabel('Currency Type')
@@ -74,13 +93,16 @@ class PayableHelper
                 ->setAttribute('class','form-control');
 
             $form=new Form();
-            $form->setAttribute('role','form');
+            $form->setAttribute('class','form-horizontal');
+            $form->setAttribute('enctype', 'multipart/form-data');
             $form->add($hidId);
             $form->add($txtVoucherNo);
             $form->add($txtVoucherDate);
             $form->add($txtAccountType);
             $form->add($txtDescription);
             $form->add($txtAmount);
+            $form->add($cboPaymentType);
+            $form->add($txtAttachmentFile);
             $form->add($cboCurrency);
             $form->add($txtWithdrawBy);
             $form->add($txtReason);
@@ -95,7 +117,7 @@ class PayableHelper
         $this->form=$form;
     }
     protected $inputFilter;
-    public function getInputFilter()
+    public function getInputFilter($voucherNo = "")
     {
         if(!$this->inputFilter){
             $filter=new InputFilter();
@@ -118,6 +140,20 @@ class PayableHelper
                     ),
                 ),
             ));
+
+            $fileInput = new FileInput('attachmentFile');
+            $fileInput->setRequired(false);
+            $fileInput->getValidatorChain()
+                ->attach(new Extension(array('doc', 'docx', 'pdf')))
+                ->attachByName('filesize',array('max'=> '50MB'));
+            $fileInput->getFilterChain()->attachByName(
+                'filerenameupload',
+                array(
+                    'target' => sprintf('./data/uploads/payable/%s', $voucherNo),
+                    'use_upload_extension' => true,
+                    'overwrite' => true,
+                )
+            );
             $filter->add(array(
                 'name'=>'description',
                 'required'=>true,
@@ -130,12 +166,13 @@ class PayableHelper
                     ),
                 ),
             ));
-            $filter->add(array('name' => 'accountType', 'required' => true));
+            $filter->add($fileInput);
+            $filter->add( array('name' => 'accountType', 'required' => true));
             $this->inputFilter=$filter;
         }
         return $this->inputFilter;
     }
-    public function setInputFilter($filter)
+    public function setInputFilter(InputFilterInterface $filter)
     {
         $this->inputFilter=$filter;
     }

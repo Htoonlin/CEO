@@ -121,7 +121,9 @@ class PayableDataAccess extends SundewTableGateway
     {
         $id=$payable->getPayVoucherId();
         $data=$payable->getArrayCopy();
-
+        if(is_array($payable->getAttachmentFile())){
+            $data['attachmentFile'] = $payable->getAttachmentFile()['tmp_name'];
+        }
         if(empty($data['status'])){
             $data['status']='R';
             if(empty($data['requestedDate'])) {

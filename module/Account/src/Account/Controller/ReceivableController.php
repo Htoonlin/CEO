@@ -10,6 +10,7 @@ namespace Account\Controller;
 
 use Account\DataAccess\AccountTypeDataAccess;
 use Account\DataAccess\CurrencyDataAccess;
+use Application\DataAccess\ConstantDataAccess;
 use Core\SundewController;
 use Core\SundewExporting;
 use HumanResource\DataAccess\StaffDataAccess;
@@ -59,6 +60,15 @@ class ReceivableController extends SundewController
     {
         $dataAccess = new CurrencyDataAccess($this->getDbAdapter());
         return $dataAccess->getComboData('currencyId', 'code');
+    }
+
+    /**
+     * @return array
+     */
+    private function constantCombo()
+    {
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        return $dataAccess->getComboData('constantId', 'default_status');
     }
 
     /**
@@ -118,7 +128,7 @@ class ReceivableController extends SundewController
     public function requestAction()
     {
         $helper = new ReceivableHelper($this->receivableTable());
-        $form = $helper->getForm($this->currencyCombo());
+        $form = $helper->getForm($this->currencyCombo(),$this->constantCombo());
         $receivable = new Receivable();
         $generateNo = $this->receivableTable()->getVoucherNo(date('Y-m-d', time()));
         $receivable->setVoucherNo($generateNo);

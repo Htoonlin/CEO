@@ -10,6 +10,7 @@ namespace Account\Controller;
 
 use Account\DataAccess\AccountTypeDataAccess;
 use Account\DataAccess\CurrencyDataAccess;
+use Application\DataAccess\ConstantDataAccess;
 use Core\SundewController;
 use Core\SundewExporting;
 use HumanResource\DataAccess\StaffDataAccess;
@@ -45,14 +46,19 @@ class PayableController extends SundewController
         $dataAccess=new AccountTypeDataAccess($this->getDbAdapter());
         return $dataAccess->getChildren("E");
     }
+    private $currencyList;
+    private $paymentList;
 
-    /**
-     * @return array
-     */
-    public function currencyCombo()
+    private function init_combos()
     {
-        $dataAccess=new CurrencyDataAccess($this->getDbAdapter());
-        return $dataAccess->getComboData('currencyId','code');
+        if(!$this->currencyList){
+            $currencyDataAccess = new CurrencyDataAccess($this->getDbAdapter());
+            $this->currencyList = $currencyDataAccess->getComboData('currencyId', 'code');
+        }
+        if(!$this->paymentList){
+            $paymentDataAccess = new ConstantDataAccess($this->getDbAdapter());
+            $this->paymentList = $paymentDataAccess->getComboByName('payment_type');
+        }
     }
 
     /**
@@ -111,9 +117,12 @@ class PayableController extends SundewController
      */
     public function requestAction()
     {
-        $helper=new PayableHelper($this->payableTable());
-        $form=$helper->getForm($this->currencyCombo());
+        $this->init_combos();
+        $id = (int)$this->params()->fromRoute('id',0);
+        $helper=new PayableHelper($this->payableTable()->getAdapter());
+        $form=$helper->getForm($this->currencyList, $this->paymentList);
         $payable=new Payable();
+
         $generateNo=$this->payableTable()->getVoucherNo(date('Y-m-d',time()));
         $payable->setVoucherNo($generateNo);
         $payable->setWithdrawBy($this->staffId);
@@ -121,9 +130,11 @@ class PayableController extends SundewController
 
         $request=$this->getRequest();
         if($request->isPost()){
-            $form->setInputFilter($helper->getInputFilter());
-            $post_data=$request->getPost()->toArray();
+            $post_data=array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray());
             $form->setData($post_data);
+            $form->setInputFilter($helper->getInputFilter($post_data['voucherNo']));
             if($form->isValid()){
                 $generateNo = $this->payableTable()->getVoucherNo($payable->getVoucherDate());
                 $payable->setVoucherNo($generateNo);
@@ -134,6 +145,7 @@ class PayableController extends SundewController
         }
         return new ViewModel(array(
             'form'=>$form,
+            'id'=>$id,
             'staffName'=>$this->staffName,
             'accountTypes' => $this->accountTypes(),
         ));
@@ -155,5 +167,26 @@ class PayableController extends SundewController
 
         return $response;
     }
+    public function downloadAction()
+    {
+        $id = (int)$this->params()->fromRoute('id', array());
+        $payable = $this->payableTable()->getPayable($id);
+        if(!$payable){
+            $this->flashMessenger()->addWarningMessage('Invalid id.');
+            return $this->redirect()->toRoute('account_payable');
+        }
+        $file = $payable->getAttachmentFile();
 
+        if(!file_exists($file)){
+            $this->flashMessenger()->addWarningMessage('Invalid file.');
+            return $this->redirect()->toRoute('account_payable');
+        }
+        $reponse = $this->getResponse();
+        $headers = $reponse->getHeaders();
+        $headers->addHeaderLine('Content-Type', 'application/octet-stream');
+        $headers->addHeaderLine('Content-Length', filesize($file));
+        $headers->addHeaderLine('Content-Disposition', 'attachment; filename="' . basename($file) . '"');
+        $reponse->setContent(file_get_contents($file));
+        return $reponse;
+    }
 }

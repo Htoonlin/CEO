@@ -16,7 +16,7 @@ use Zend\InputFilter\InputFilter;
 class ReceivableHelper
 {
     protected $form;
-    public function getForm(array $currencies)
+    public function getForm(array $currencies, array $constants)
     {
         if(!$this->form) {
             $hidId=new Element\Hidden();
