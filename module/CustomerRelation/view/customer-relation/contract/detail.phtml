@@ -24,7 +24,6 @@ echo $this->formHidden($form->get('contractId'));
         echo $this->formHorizontal($form->get('contractDate'));
         echo $this->formHorizontal($form->get('code'));
         echo $this->formHorizontal($form->get('companyId'));
-        echo $this->formHorizontal($form->get('contactId'));
         ?>
         <div class="form-group">
             <label class="control-label col-sm-3">Project Name</label>
@@ -32,7 +31,10 @@ echo $this->formHidden($form->get('contractId'));
                 <?php echo $this->formSelect($form->get('projectId'));?>
             </div>
         </div>
-        <?php echo $this->formHorizontal($form->get('contractFile'));?>
+        <?php
+            echo $this->formHorizontal($form->get('contactId'));
+            echo $this->formHorizontal($form->get('contractFile'));
+        ?>
     </div>
     <div class="col-md-6">
         <div class="form-group">

@@ -15,15 +15,19 @@
     echo $this->form()->openTag($form);
  ?>
 
- <div class="col-md-8">
+ <div class="col-md-6">
      <?php
      echo $this->formHidden($form->get('contactId'));
      echo $this->formHorizontal($form->get('name'));
      echo $this->formHorizontal($form->get('phone'));
-     echo $this->formHorizontal($form->get('tag'));
-     echo $this->formHorizontal($form->get('email'));
-     echo $this->formHorizontal($form->get('website'));
      echo $this->formHorizontal($form->get('companyId'));
+     echo $this->formHorizontal($form->get('tag'));
+     echo $this->formHorizontal($form->get('website'));
+     echo $this->formHorizontal($form->get('email'));
+     ?>
+ </div>
+ <div class="col-md-6">
+     <?php
      echo $this->formHorizontal($form->get('address'));
      echo $this->formHorizontal($form->get('notes'));
      echo $this->formHorizontal($form->get('status'));
@@ -36,7 +40,7 @@
              </button>
              <?php if($isEdit):?>
                  <a href="<?php echo $this->url('cr_contact', array('action'=>'detail', 'id'=>$id));?>?action=clone"
-                     class="btn btn-warning">
+                    class="btn btn-warning">
                      <span class="glyphicon glyphicon-copy"></span>
                      Clone
                  </a>
@@ -49,6 +53,7 @@
          </div>
      </div>
  </div>
+
 
  <?php
     echo $this->form()->closeTag();
