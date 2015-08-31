@@ -87,7 +87,6 @@ class ContractDataAccess extends SundewTableGateway
     {
         $id = $contract->getContractId();
         $data = $contract->getArrayCopy();
-        $data['projectId']=1;
         $data['contractBy']=$this->staffId;
         if(is_array($contract->getContractFile())){
             $data['contractFile'] = $contract->getContractFile()['tmp_name'];

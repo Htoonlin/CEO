@@ -11,13 +11,24 @@ echo $this->form()->openTag($form);
 echo $this->formHidden($form->get('paymentId'));
 ?>
 <script type="text/javascript">
-    $(document).ready(function(){
-        $('select[name="contractId"]').change(function(){
-            if($(this).val() < 0){
-                window.location.href = '<?php echo $this->url('cr_payment'); ?>';
-            }else{
-                window.location.href = '<?php echo $this->url('cr_payment'); ?>' + $(this).val();
-            }
+    jQuery(function($) {
+        $("#parent").change(function(event){
+            event.preventDefault();
+            var parentID = $('#parent').val();
+            var id = $('#id').val();
+            $.post("/payment/jsonPaymentAction", {pID: parentID, thisID: id },
+                function(data){
+                    if(data.response === true){
+                        var $el = $("#Position");
+                        $el.replaceWith(function() {
+
+                            return data.newSelect;
+                        });
+                    } else {
+                        // print error message
+                        alert("someting wrong in Post");
+                    }
+                }, 'json');
         });
     });
 </script>

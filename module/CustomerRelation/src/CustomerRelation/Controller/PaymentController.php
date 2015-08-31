@@ -68,9 +68,16 @@ class PaymentController extends SundewController
         }
     }
 
-    public function jsonPaymentAction($selected)
+    public function jsonPaymentAction()
     {
+        $id= (int)$this->params()->fromRoute('id', 0);
 
+
+        return new JsonModel(array(
+            'total'=>1000,
+            'paid'=>500,
+            'id' => $id,
+        ));
     }
     /**
      * @return ViewModel

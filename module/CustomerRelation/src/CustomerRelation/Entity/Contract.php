@@ -46,7 +46,8 @@ class Contract implements ArraySerializableInterface
 
     protected $contractBy;
     public function getContractBy(){return $this->contractBy;}
-    public function setContractBy($value){$this->contractId=$value;}
+    public function setContractBy($value){$this->contractBy=$value;}
+
 
     protected $contractDate;
     public function getContractDate(){return $this->contractDate;}

@@ -19,25 +19,32 @@ echo $this->form()->openTag($form);
 echo $this->formHidden($form->get('contractId'));
 ?>
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-6">
         <?php
         echo $this->formHorizontal($form->get('contractDate'));
         echo $this->formHorizontal($form->get('code'));
         echo $this->formHorizontal($form->get('companyId'));
         echo $this->formHorizontal($form->get('contactId'));
         ?>
-
+        <div class="form-group">
+            <label class="control-label col-sm-3">Project Name</label>
+            <div class="col-sm-9">
+                <?php echo $this->formSelect($form->get('projectId'));?>
+            </div>
+        </div>
+        <?php echo $this->formHorizontal($form->get('contractFile'));?>
+    </div>
+    <div class="col-md-6">
         <div class="form-group">
             <label class="control-label col-sm-3">Amount</label>
             <div class="col-sm-5">
                 <?php echo $this->formNumber($form->get('amount')); ?>
             </div>
             <div class="col-sm-4">
-                <?= $this->formSelect($form->get('currencyId')) ?>
+                <?= $this->formSelect($form->get('currencyId')); ?>
             </div>
         </div>
         <?php
-        echo $this->formHorizontal($form->get('contractFile'));
         echo $this->formHorizontal($form->get('notes'));
         echo $this->formHorizontal($form->get('status'));
         ?>
@@ -49,7 +56,7 @@ echo $this->formHidden($form->get('contractId'));
                 </button>
                 <?php if($isEdit):?>
                     <a href="<?php echo $this->url('cr_contract', array('action'=>'detail', 'id'=>$id));?>?action=clone"
-                        class="btn btn-warning">
+                       class="btn btn-warning">
                         <span class="glyphicon glyphicon-copy"></span>
                         Clone
                     </a>

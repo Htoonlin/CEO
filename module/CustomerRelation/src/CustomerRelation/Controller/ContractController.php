@@ -44,6 +44,7 @@ class ContractController extends SundewController
     private $companyList;
     private $contactList;
     private $statusList;
+    private $projectList;
 
     private function init_combos()
     {
@@ -62,6 +63,10 @@ class ContractController extends SundewController
         if(!$this->statusList){
             $constantDataAccess = new ConstantDataAccess($this->getDbAdapter());
             $this->statusList = $constantDataAccess->getComboByName('default_status');
+        }
+        if(!$this->projectList){
+            $projectDataAccess = new ProjectDataAccess($this->getDbAdapter());
+            $this->projectList = $projectDataAccess->getComboData('projectId', 'name');
         }
     }
 
@@ -95,9 +100,9 @@ class ContractController extends SundewController
        $this->init_combos();
         $id = (int)$this->params()->fromRoute('id',0);
         $action = $this->params()->fromQuery('action','');
-        $helper = new ContractHelper($this->getDbAdapter());
+        $helper = new ContractHelper($this->contractTable()->getAdapter());
         $form = $helper->getForm($this->currencyList, $this->companyList,
-            $this->contactList, $this->statusList);
+            $this->contactList, $this->statusList, $this->projectList);
 
         $contract = $this->contractTable()->getContract($id);
         $isEdit = true;
@@ -120,6 +125,7 @@ class ContractController extends SundewController
             $form->setData($post_data);
             $form->setInputFilter($helper->getInputFilter($id, $post_data['code']));
             $post_data['contractBy'] = $this->staffId;
+
             if($form->isValid()){
                 $this->contractTable()->saveContract($contract);
                 $this->flashMessenger()->addSuccessMessage('Save successful');

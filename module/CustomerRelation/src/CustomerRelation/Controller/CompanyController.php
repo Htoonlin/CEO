@@ -66,7 +66,7 @@ class CompanyController extends SundewController
     {
         $page = (int)$this->params()->fromQuery('page',1);
         $sort = $this->params()->fromQuery('sort','name');
-        $sortBy = $this->params()->fromQuery('by'.'asc');
+        $sortBy = $this->params()->fromQuery('by','asc');
         $filter = $this->params()->fromQuery('filter', '');
         $pageSize = (int)$this->params()->fromQuery('size', 10);
 

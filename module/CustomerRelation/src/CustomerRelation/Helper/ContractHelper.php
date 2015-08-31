@@ -26,7 +26,7 @@ class ContractHelper extends Form
 
     protected $form;
     public function getForm(array $currencies, array $companies,
-                            array $contacts,array $statusList)
+                            array $contacts,array $statusList, array $projects)
     {
         if(!$this->form){
             $hidId=new Element\Hidden();
@@ -46,10 +46,12 @@ class ContractHelper extends Form
                 ->setEmptyOption("--Choose Contact--")
                 ->setValueOptions($contacts);
 
-            $txtProjectId=new Element\Text();
-            $txtProjectId->setLabel('Project Id')
+            $txtProjectId=new Element\Select();
+            $txtProjectId->setLabel('Project Name')
                 ->setName('projectId')
-                ->setAttribute('class','form-control');
+                ->setAttribute('class','form-control')
+                ->setEmptyOption("--Choose Project--")
+                ->setValueOptions($projects);
 
             $txtCode=new Element\Text();
             $txtCode->setLabel('Code')
@@ -70,7 +72,7 @@ class ContractHelper extends Form
             $selectCurrency->setName('currencyId')
                 ->setLabel('Currency')
                 ->setAttribute('class','form-control')
-                ->setEmptyOption("---Choose Currency---")
+                ->setEmptyOption("-Choose Currency-")
                 ->setValueOptions($currencies);
 
             $txtContractFile=new Element\File('contractFile');
