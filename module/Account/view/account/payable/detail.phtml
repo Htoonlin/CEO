@@ -94,12 +94,10 @@ $this->headTitle($title);
             </div>
             <div class="col-sm-offset-4 col-sm-4 text-right">
                 <div class="col-sm-offset-4 col-sm-4">
-                    <td>
-                        <a href="<?php echo $this->url('account_payable', array('action'=>'download', 'id'=>$payable->payVoucherId));?>" class="btn btn-default" title="Download">
+                        <a href="<?php echo $this->url('account_payable', array('action'=>'download', 'id'=>$voucher['payVoucherId']));?>" class="btn btn-default" title="Download">
                             <span class="glyphicon glyphicon-download"></span>
                             Download
                         </a>
-                    </td>
                 </div>
                 <div class="col-sm-4">
                     <p>
