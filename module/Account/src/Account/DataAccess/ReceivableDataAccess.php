@@ -124,6 +124,9 @@ class ReceivableDataAccess extends SundewTableGateway
     {
         $id = $receivable->getReceiveVoucherId();
         $data = $receivable->getArrayCopy();
+        if(is_array($receivable->getAttachmentFile())){
+            $data['attachmentFile'] = $receivable->getAttachmentFile()['tmp_name'];
+        }
 
         if(empty($data['status'])){
             $data['status']='R';

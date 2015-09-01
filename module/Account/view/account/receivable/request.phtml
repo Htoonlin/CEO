@@ -68,11 +68,14 @@ echo $this->formHidden($form->get('receiveVoucherId'));
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <?php echo $this->formRow($form->get('amount')); ?>
             </div>
             <div class="col-sm-2">
                 <?php echo $this->formRow($form->get('currencyId')); ?>
+            </div>
+            <div class="col-sm-2">
+                <?php echo $this->formRow($form->get('paymentType'));?>
             </div>
         </div>
         <div class="row">
@@ -81,8 +84,11 @@ echo $this->formHidden($form->get('receiveVoucherId'));
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-10">
                 <?php echo $this->formRow($form->get('group_code')); ?>
+            </div>
+            <div class="col-sm-2">
+                <?php echo $this->formRow($form->get('attachmentFile'));?>
             </div>
         </div>
     </div>

@@ -118,7 +118,6 @@ class PayableController extends SundewController
     public function requestAction()
     {
         $this->init_combos();
-        $id = (int)$this->params()->fromRoute('id',0);
         $helper=new PayableHelper($this->payableTable()->getAdapter());
         $form=$helper->getForm($this->currencyList, $this->paymentList);
         $payable=new Payable();
@@ -145,7 +144,6 @@ class PayableController extends SundewController
         }
         return new ViewModel(array(
             'form'=>$form,
-            'id'=>$id,
             'staffName'=>$this->staffName,
             'accountTypes' => $this->accountTypes(),
         ));
@@ -181,12 +179,12 @@ class PayableController extends SundewController
             $this->flashMessenger()->addWarningMessage('Invalid file.');
             return $this->redirect()->toRoute('account_payable');
         }
-        $reponse = $this->getResponse();
-        $headers = $reponse->getHeaders();
+        $response = $this->getResponse();
+        $headers = $response->getHeaders();
         $headers->addHeaderLine('Content-Type', 'application/octet-stream');
         $headers->addHeaderLine('Content-Length', filesize($file));
         $headers->addHeaderLine('Content-Disposition', 'attachment; filename="' . basename($file) . '"');
-        $reponse->setContent(file_get_contents($file));
-        return $reponse;
+        $response->setContent(file_get_contents($file));
+        return $response;
     }
 }

@@ -52,24 +52,21 @@ class ReceivableController extends SundewController
         $dataAccess=new AccountTypeDataAccess($this->getDbAdapter());
         return $dataAccess->getChildren("I");
     }
-
-    /**
-     * @return array
-     */
-    private function currencyCombo()
+    private $currencyList;
+    private $constantList;
+    private $paymentTypeList;
+    private function init_combos()
     {
-        $dataAccess = new CurrencyDataAccess($this->getDbAdapter());
-        return $dataAccess->getComboData('currencyId', 'code');
+        if(!$this->currencyList){
+            $currencyDataAccess = new CurrencyDataAccess($this->getDbAdapter());
+            $this->currencyList = $currencyDataAccess->getComboData('currencyId', 'code');
+        }
+        if(!$this->paymentTypeList){
+            $paymentTypeDataAccess = new ConstantDataAccess($this->getDbAdapter());
+            $this->paymentTypeList = $paymentTypeDataAccess->getComboByName('payment_type');
+        }
     }
 
-    /**
-     * @return array
-     */
-    private function constantCombo()
-    {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
-        return $dataAccess->getComboData('constantId', 'default_status');
-    }
 
     /**
      * @return ViewModel
@@ -127,8 +124,9 @@ class ReceivableController extends SundewController
      */
     public function requestAction()
     {
+        $this->init_combos();
         $helper = new ReceivableHelper($this->receivableTable());
-        $form = $helper->getForm($this->currencyCombo(),$this->constantCombo());
+        $form = $helper->getForm($this->currencyList, $this->paymentTypeList);
         $receivable = new Receivable();
         $generateNo = $this->receivableTable()->getVoucherNo(date('Y-m-d', time()));
         $receivable->setVoucherNo($generateNo);
@@ -137,8 +135,10 @@ class ReceivableController extends SundewController
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($helper->getInputFilter());
-            $post_data = $request->getPost()->toArray();
+            $post_data = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray());
+            $form->setInputFilter($helper->getInputFilter($post_data['voucherNo']));
             $form->setData($post_data);
             if ($form->isValid()) {
                 $generateNo = $this->receivableTable()->getVoucherNo($receivable->getVoucherDate());
@@ -169,6 +169,28 @@ class ReceivableController extends SundewController
         $headers->addHeaderLine('Content-Disposition', $filename);
         $response->setContent($export->getExcel());
 
+        return $response;
+    }
+    public function downloadAction()
+    {
+        $id = (int)$this->params()->fromRoute('id', array());
+        $receivable = $this->receivableTable()->getReceivable($id);
+        if(!$receivable){
+            $this->flashMessenger()->addWarningMessage('Invalid id. ');
+            return $this->redirect()->toRoute('account_receivable');
+        }
+        $file = $receivable->getAttachmentFile();
+
+        if(!file_exists($file)){
+            $this->flashMessenger()->addWarningMessage('Invalid file. ');
+            return $this->redirect()->toRoute('account_receivable');
+        }
+        $response = $this->getResponse();
+        $headers = $response->getHeaders();
+        $headers->addHeaderLine('Content-Type','application/octet-stream');
+        $headers->addHeaderLine('Content-Length', filesize($file));
+        $headers->addHeaderLine('Content-Disposition', 'attachment; filename="' . basename($file) . '"');
+        $response->setContent(file_get_contents($file));
         return $response;
     }
 }

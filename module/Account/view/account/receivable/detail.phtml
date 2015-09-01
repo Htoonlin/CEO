@@ -92,10 +92,18 @@ $this->headTitle($title);
                     </div>
                 </div>
             </div>
-            <div class="col-sm-offset-4 col-sm-4">
-                <p class="text-right">
-                    <?php echo $this->backButton(); ?>
-                </p>
+            <div class="col-sm-offset-4 col-sm-4 text-right">
+                <div class="col-sm-offset-4 col-sm-4">
+                    <a href="<?php echo $this->url('account_receivable', array('action'=>'download', 'id'=>$voucher['receiveVoucherId']));?>" class="btn btn-default" title="Download">
+                        <span class="glyphicon glyphicon-download"></span>
+                        Download
+                    </a>
+                </div>
+                <div class="col-sm-4">
+                    <p>
+                        <?php echo $this->backButton(); ?>
+                    </p>
+                </div>
             </div>
         </div>
     </div>

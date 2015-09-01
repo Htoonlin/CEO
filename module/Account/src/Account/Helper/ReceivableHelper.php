@@ -10,13 +10,15 @@ namespace Account\Helper;
 
 use Zend\Form\Element;
 use Zend\Form\Form;
+use Zend\InputFilter\FileInput;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
+use Zend\Validator\File\Extension;
 
 class ReceivableHelper
 {
     protected $form;
-    public function getForm(array $currencies, array $constants)
+    public function getForm(array $currencies, array $paymentTypes)
     {
         if(!$this->form) {
             $hidId=new Element\Hidden();
@@ -54,6 +56,16 @@ class ReceivableHelper
                     'step' => '1'
                 ));
 
+            $cboPaymentType = new Element\Select();
+            $cboPaymentType->setName('paymentType')
+                ->setLabel('Payment Type')
+                ->setAttribute('class', 'form-control')
+                ->setEmptyOption('--Choose--')
+                ->setValueOptions($paymentTypes);
+
+            $txtAttachmentFile = new Element\File('attachmentFile');
+            $txtAttachmentFile->setLabel('Attachment File Upload');
+
             $cboCurrency = new Element\Select();
             $cboCurrency->setName('currencyId')
                 ->setLabel('Currency Type')
@@ -80,6 +92,8 @@ class ReceivableHelper
             $form->add($txtAccountType);
             $form->add($txtDescription);
             $form->add($txtAmount);
+            $form->add($cboPaymentType);
+            $form->add($txtAttachmentFile);
             $form->add($cboCurrency);
             $form->add($txtDepositBy);
             $form->add($txtReason);
@@ -95,7 +109,7 @@ class ReceivableHelper
 
     }
     protected $inputFilter;
-    public function getInputFilter()
+    public function getInputFilter($voucherNo = "")
     {
         if(!$this->inputFilter) {
             $filter=new InputFilter();
@@ -136,6 +150,20 @@ class ReceivableHelper
                     ),
                 ),
             ));
+            $fileInput = new FileInput('attachmentFile');
+            $fileInput->setRequired(false);
+            $fileInput->getValidatorChain()
+                ->attach(new Extension(array('doc', 'docx', 'pdf')))
+                ->attachByName('filesize', array('max'=> '50MB'));
+            $fileInput->getFilterChain()->attachByName(
+                'filerenameupload',
+                array(
+                    'target' => sprintf('./data/uploads/receivable/%s', $voucherNo),
+                    'use_upload_extension' => true,
+                    'overwrite' => true,
+                )
+            );
+            $filter->add($fileInput);
             $filter->add(array('name' => 'accountType', 'required' => true));
             $this->inputFilter=$filter;
         }
