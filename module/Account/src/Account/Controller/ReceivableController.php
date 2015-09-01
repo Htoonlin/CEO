@@ -11,14 +11,12 @@ namespace Account\Controller;
 use Account\DataAccess\AccountTypeDataAccess;
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
-use HumanResource\DataAccess\StaffDataAccess;
 use Account\DataAccess\ReceivableDataAccess;
 use Account\Entity\Receivable;
 use Account\Helper\ReceivableHelper;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -91,12 +89,12 @@ class ReceivableController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonGenerateAction()
+    public function apiGenerateAction()
     {
         $date = $this->params()->fromPost('date',date('Y-m-d', time()));
-        return new JsonModel(array('receive'=> $date,
+        return new ApiModel(array('receive'=> $date,
             'generatedNo' => $this->receivableTable()->getVoucherNo($date)));
     }
 

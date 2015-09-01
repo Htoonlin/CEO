@@ -18,8 +18,11 @@ use Zend\View\Model\JsonModel;
  */
 class ApiModel extends JsonModel
 {
-    function __construct($data, $values = null){
-        $this->setResponseData($data);
+    function __construct($data = null, $values = null){
+        if($data != null){
+            $this->setResponseData($data);
+        }
+
         parent::__construct(null, $values);
     }
 

@@ -47,7 +47,7 @@ class AccountTypeController extends SundewController
     /**
      * @return JsonModel
      */
-    public function jsonAllAction()
+    public function apiAllAction()
     {
         $accountTypes = $this->accountTypeTable()->fetchAll();
         $data = array();

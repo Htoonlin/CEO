@@ -67,11 +67,11 @@ class PayableHelper extends Form
             $cboPaymentType->setName('paymentType')
                 ->setLabel('Payment Type')
                 ->setAttribute('class', 'form-control')
-                ->setEmptyOption('--choose Payment Type--')
+                ->setEmptyOption('--choose--')
                 ->setValueOptions($paymentTypes);
 
             $txtAttachmentFile=new Element\File('attachmentFile');
-            $txtAttachmentFile->setLabel('Attachment File Upload');
+            $txtAttachmentFile->setLabel('Attachment File');
 
             $cboCurrency=new Element\Select();
             $cboCurrency->setName('currencyId')
@@ -93,7 +93,7 @@ class PayableHelper extends Form
                 ->setAttribute('class','form-control');
 
             $form=new Form();
-            $form->setAttribute('class','form-horizontal');
+            $form->setAttribute('role','form');
             $form->setAttribute('enctype', 'multipart/form-data');
             $form->add($hidId);
             $form->add($txtVoucherNo);

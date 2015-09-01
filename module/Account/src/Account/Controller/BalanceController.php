@@ -18,12 +18,12 @@ use Account\Entity\Closing;
 use Account\Entity\Payable;
 use Account\Entity\Receivable;
 use Application\DataAccess\ConstantDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
-use HumanResource\DataAccess\StaffDataAccess;
+use PhpOffice\PhpWord\Exception\Exception;
 use Zend\Form\Element;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Uri\Http;
+use Zend\Stdlib\ArrayObject;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -147,53 +147,64 @@ class BalanceController extends SundewController
         ));
     }
 
+    public function closeAction(){
+        return new ViewModel();
+    }
+
     /**
      * @return JsonModel|ViewModel
      * @throws \Exception
      */
-    public function closeAction()
+    public function apiCloseAction()
     {
+        $api = new ApiModel();
         if($this->getRequest()->isPost())
         {
-            $process = $this->params()->fromPost('req', '');
-            $data = $this->params()->fromPost('data', '');
-            $result = array();
-            $gridColumns = array();
+            try{
+                $process = $this->params()->fromPost('req', '');
+                $data = $this->params()->fromPost('data', '');
+                $result = array();
+                $columnList = array();
 
-            if($process === 'collecting') {
-                $value = '20%';
-                $nextProcess = 'calculating';
-                $message = 'Calculating amount by currency ...';
-                $result = $this->getToCloseAccountData();
-                $gridColumns = array('date', 'amount', 'currency');
-            }else if($process === 'calculating'){
-                $value = '50%';
-                $nextProcess = 'process';
-                $message = 'Waiting to commit process ...';
-                $result = $this->getToOpenAccountData($data);
-                $gridColumns = array('status', 'currency', 'receive', 'pay', 'amount');
-            }else if($process === 'process'){
-                $value = '55%';
-                $nextProcess = 'commit';
-                $message = 'Starting account closing process ...';
-                $result = $data;
-            }else{
-                $this->closingProcess($data);
-                $value = '100%';
-                $nextProcess = '';
-                $message = 'Finished process.';
+                if($process === 'collecting') {
+                    $value = '20%';
+                    $nextProcess = 'calculating';
+                    $message = 'Calculating amount by currency ...';
+                    $result = $this->getToCloseAccountData();
+                    $columnList = array('date', 'amount', 'currency');
+                }else if($process === 'calculating'){
+                    $value = '50%';
+                    $nextProcess = 'process';
+                    $message = 'Waiting to commit process ...';
+                    $result = $this->getToOpenAccountData($data);
+                    $columnList = array('status', 'currency', 'receive', 'pay', 'amount');
+                }else if($process === 'process'){
+                    $value = '55%';
+                    $nextProcess = 'commit';
+                    $message = 'Starting account closing process ...';
+                    $result = $data;
+                }else{
+                    $this->closingProcess($data);
+                    $value = '100%';
+                    $nextProcess = '';
+                    $message = 'Finished process.';
+                }
+
+                $api->setStatusMessage($message);
+                $api->setResponseData(array(
+                    'result' => $result,
+                    'value' => $value,
+                    'nextProcess' => $nextProcess,
+                    'columns' => $columnList,
+                ));
+            }catch (\Exception $ex){
+                $api->setStatusCode(500);
+                $api->setStatusMessage($ex->getMessage());
             }
-
-            return new JsonModel(array(
-                'value' => $value,
-                'nextProcess' => $nextProcess,
-                'message' => $message,
-                'result' => $result,
-                'columns' => $gridColumns,
-            ));
+            return $api;
         }
-
-        return new ViewModel();
+        $api->setStatusCode(405);
+        return $api;
     }
 
     /**
@@ -461,7 +472,6 @@ class BalanceController extends SundewController
             $this->flashMessenger()->addSuccessMessage('Account closing process successful.');
         }catch(\Exception $ex){
             $conn->rollback();
-            $this->flashMessenger()->addErrorMessage($ex->getMessage());
             throw $ex;
         }
     }

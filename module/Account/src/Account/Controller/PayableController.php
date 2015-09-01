@@ -11,18 +11,23 @@ namespace Account\Controller;
 use Account\DataAccess\AccountTypeDataAccess;
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
-use HumanResource\DataAccess\StaffDataAccess;
 use Account\DataAccess\PayableDataAccess;
 use Account\Entity\Payable;
 use Account\Helper\PayableHelper;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class PayableController extends SundewController
 {
+    /**
+     * @var
+     */
     private $staffId;
+    /**
+     * @var
+     */
     private $staffName;
 
     /**
@@ -46,9 +51,19 @@ class PayableController extends SundewController
         $dataAccess=new AccountTypeDataAccess($this->getDbAdapter());
         return $dataAccess->getChildren("E");
     }
+
+    /**
+     * @var
+     */
     private $currencyList;
+    /**
+     * @var
+     */
     private $paymentList;
 
+    /**
+     *
+     */
     private function init_combos()
     {
         if(!$this->currencyList){
@@ -84,12 +99,12 @@ class PayableController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonGenerateAction()
+    public function apiGenerateAction()
     {
         $date = $this->params()->fromPost('date',date('Y-m-d', time()));
-        return new JsonModel(array('payable'=>$date,
+        return new ApiModel(array('payable'=>$date,
             'generatedNo' => $this->payableTable()->getVoucherNo($date)));
     }
 
@@ -165,6 +180,10 @@ class PayableController extends SundewController
 
         return $response;
     }
+
+    /**
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function downloadAction()
     {
         $id = (int)$this->params()->fromRoute('id', array());

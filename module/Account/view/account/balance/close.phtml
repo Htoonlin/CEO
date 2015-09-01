@@ -23,15 +23,16 @@ $this->headTitle($title);
         }
 
         $.ajax({
-            url:'<?php echo $this->url('account_balance', array('action'=>'close'))?>',
+            url:'<?php echo $this->url('account_balance', array('action'=>'apiClose'))?>',
             data:{req:process, data: process_data},
             type:'POST',
-            success:function(data){
-                if(data.result.length > 0 && data.columns.length > 0){
+            success:function(response){
+                var data = response.data;
+                if(data.result.length > 0 && (typeof data.columns != 'undefined') && data.columns.length > 0){
                     createTable(data.result, data.columns);
                 }
                 $('#closingProgress .progress-bar').css('width', data.value).html(data.value);
-                $('#current-process').html(data.message);
+                $('#current-process').html(response.status.message);
 
                 if(data.nextProcess == 'process'){
                     $('#btnProcess').show();

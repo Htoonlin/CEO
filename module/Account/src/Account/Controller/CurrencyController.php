@@ -12,6 +12,7 @@ use Account\Helper\CurrencyHelper;
 use Account\Entity\Currency;
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
 use Zend\View\Model\JsonModel;
@@ -39,7 +40,7 @@ class CurrencyController extends SundewController
     /**
      * @return JsonModel
      */
-    public  function jsonAllAction()
+    public  function apiAllAction()
     {
         $currencies=$this->currencyTable()->fetchAll();
         $data=array();
@@ -161,13 +162,12 @@ class CurrencyController extends SundewController
     /**
      * @return JsonModel
      */
-    public function jsonDeleteAction()
+    public function apiDeleteAction()
     {
         $data=$this->params()->fromPost('chkId', array());
-        $message="success";
         $db=$this->currencyTable()->getAdapter();
         $conn=$db->getDriver()->getConnection();
-
+        $api = new ApiModel();
         try{
             $conn->beginTransaction();
             foreach($data as $id){
@@ -177,9 +177,10 @@ class CurrencyController extends SundewController
             $this->flashMessenger()->addInfoMessage('Delete Successful!');
         }catch (\Exception $ex){
             $conn->rollback();
-            $message=$ex->getMessage();
+            $api->setStatusCode(500);
+            $api->setStatusMessage($ex->getMessage());
         }
 
-        return new JsonModel(array("message"=>$message));
+        return $api;
     }
 }

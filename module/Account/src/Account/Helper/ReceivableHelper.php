@@ -64,7 +64,7 @@ class ReceivableHelper
                 ->setValueOptions($paymentTypes);
 
             $txtAttachmentFile = new Element\File('attachmentFile');
-            $txtAttachmentFile->setLabel('Attachment File Upload');
+            $txtAttachmentFile->setLabel('Attachment File');
 
             $cboCurrency = new Element\Select();
             $cboCurrency->setName('currencyId')
@@ -86,6 +86,7 @@ class ReceivableHelper
 
             $form=new Form();
             $form->setAttribute('role', 'form');
+            $form->setAttribute('enctype', 'multipart/form-data');
             $form->add($hidId);
             $form->add($txtVoucherNo);
             $form->add($txtVoucherDate);

@@ -23,8 +23,8 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
     <div class="col-md-8">
         <script type="text/javascript">
             $(function(){
-                $.get('<?php echo $this->url('account_type', array('action' => 'jsonAll')); ?>', function(data){
-                    $('#parentType #typeahead').typeahead({source: data, afterSelect:function(item){
+                $.get('<?php echo $this->url('account_type', array('action' => 'apiAll')); ?>', function(response){
+                    $('#parentType #typeahead').typeahead({source: response.data, afterSelect:function(item){
                         var currentId = parseInt($("input[name=accountTypeId]").val());
                         if(item.accountTypeId == currentId && currentId > 0){
                             alert("Parent can't same with current menu.");

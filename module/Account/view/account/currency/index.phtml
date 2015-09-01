@@ -12,18 +12,16 @@ $this->headTitle($title);
      $(document).ready(function(){
         $("button#btnDelete").click(function(){
             if(confirm('Are you sure to delete selected records?')){
-                console.log($('input[name="chkId[]"]:checked'));
                 $.ajax({
-                    url:'<?php echo $this->url('account_currency', array('action'=>'jsonDelete'))?>',
+                    url:'<?php echo $this->url('account_currency', array('action'=>'apiDelete'))?>',
                     data:$('input[name="chkId[]"]:checked'),
                     type:'POST',
                     success:function(data){
-                        console.log(data);
-                        if(data.message=="success"){
-                            window.location.href="<?php echo $this->url('account_currency');?>"
-                        }else{
-                            alert(data.message);
-                        }
+                        window.location.href="<?php echo $this->url('account_currency');?>"
+                    },
+                    error:function(response){
+                        var data = response.responseJSON;
+                        alert(data.status.message);
                     }
                 });
             }

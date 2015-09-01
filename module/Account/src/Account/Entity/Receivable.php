@@ -86,7 +86,7 @@ class Receivable implements ArraySerializableInterface
         $this->accountType = (!empty($data['accountType'])) ? $data['accountType'] : null;
         $this->description = (!empty($data['description'])) ? $data['description'] : null;
         $this->amount = (!empty($data['amount'])) ? $data['amount'] : null;
-        $this->paymentType = (!empty($data['paymentType'])) ? $data['paymentType'] : null;
+        $this->paymentType = (!empty($data['paymentType'])) ? $data['paymentType'] : '-';
         $this->attachmentFile = (!empty($data['attachmentFile'])) ? $data['attachmentFile'] : null;
         $this->currencyId = (!empty($data['currencyId'])) ? $data['currencyId'] : 0;
         $this->depositBy = (!empty($data['depositBy'])) ? $data['depositBy'] : null;

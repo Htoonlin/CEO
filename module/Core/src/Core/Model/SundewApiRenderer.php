@@ -13,6 +13,7 @@ use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\Paginator\Paginator;
+use Zend\Stdlib\ArrayObject;
 use Zend\Stdlib\ArraySerializableInterface;
 use Zend\View\Renderer\JsonRenderer;
 use Zend\View\ViewEvent;
@@ -84,11 +85,8 @@ class SundewApiRenderer extends JsonRenderer
 
         $responseData = $nameOrModel->getResponseData();
 
-        if($responseData instanceof Paginator){
+        if($nameOrModel->getResponseData() instanceof Paginator) {
             $this->renderPaginator($nameOrModel);
-        }else if(!empty($responseData) && is_array($responseData)
-            && array_pop($responseData) instanceof TreeViewEntityInterface) {
-            $this->renderTreeView($nameOrModel);
         }else{
 
             if($responseData instanceof ArraySerializableInterface){
@@ -102,11 +100,10 @@ class SundewApiRenderer extends JsonRenderer
                 }
                 $responseData = $resultArray;
             }
-
-            $nameOrModel = array(
+            $nameOrModel->setVariables(array(
                 'data' => $responseData,
                 'status' => $this->createStatus($nameOrModel)
-            );
+            ));
         }
 
         return parent::render($nameOrModel, $values);
