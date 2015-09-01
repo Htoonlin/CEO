@@ -51,7 +51,7 @@ echo $this->doctype();
             </a>
         </div>
         <div class="collapse navbar-collapse">
-            <?php  echo $this->navigation('navigation')->menu()
+            <?php  echo $this->navigation('NavigationManager')->menu()
                 ->setPartial('shared/menu.phtml')
                 ->render();  ?>
             <ul class="nav navbar-nav navbar-right">

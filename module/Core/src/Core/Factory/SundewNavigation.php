@@ -21,7 +21,7 @@ class SundewNavigation extends DefaultNavigationFactory
     {
         if(null === $this->pages){
 
-            $dbAdapter = $serviceLocatorInterface->get('Sundew\Db\Adapter');
+            $dbAdapter = $serviceLocatorInterface->get('SundewDbAdapter');
             $menuTable = new MenuDataAccess($dbAdapter);
             $userId = 0;
             $authService = $serviceLocatorInterface->get('AuthService');
@@ -40,11 +40,11 @@ class SundewNavigation extends DefaultNavigationFactory
                 $menuTable->getCache()->setItem($cache_ns, $menuList);
             }
 
-            $configuration['navigation'][$this->getName()] = $menuList;
-            if(!isset($configuration['navigation'])){
+            $configuration['NavigationManager'][$this->getName()] = $menuList;
+            if(!isset($configuration['NavigationManager'])){
                 throw new InvalidArgumentException('Could not find navigation configuration key');
             }
-            if (!isset($configuration['navigation'][$this->getName()])) {
+            if (!isset($configuration['NavigationManager'][$this->getName()])) {
 
                 throw new InvalidArgumentException(sprintf(
                     'Failed to find a navigation container by the name "%s"',
@@ -52,7 +52,7 @@ class SundewNavigation extends DefaultNavigationFactory
                 ));
             }
 
-            $pages = $this->getPagesFromConfig($configuration['navigation'][$this->getName()]);
+            $pages = $this->getPagesFromConfig($configuration['NavigationManager'][$this->getName()]);
             $this->pages = $this->preparePages($serviceLocatorInterface, $pages);
         }
 

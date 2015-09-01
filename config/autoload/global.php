@@ -18,15 +18,6 @@ return array(
         'build' => 2
     ),
     'service_manager' => array(
-        'factories' => array(
-            'Sundew\Db\Adapter' => 'Core\Factory\SundewAdapterFactory',
-            'navigation' => 'Core\Factory\SundewNavigationFactory',
-            'ConfigManager' => 'Core\Factory\SundewConfigFactory',
-        ),
-        'abstract_factories' => array(
-            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
-            'Zend\Log\LoggerAbstractServiceFactory',
-        ),
         'aliases' => array(
             'translator' => 'MvcTranslator',
         ),
@@ -48,7 +39,7 @@ return array(
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
         'strategies' => array(
-            'ViewJsonStrategy',
+            'SundewApiStrategy',
         ),
     ),
     'session' => array(

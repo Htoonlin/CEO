@@ -29,7 +29,7 @@ class SundewController extends AbstractActionController
     protected function getDbAdapter()
     {
         if(!$this->dbAdapter){
-            $this->dbAdapter = $this->getServiceLocator()->get('Sundew\Db\Adapter');
+            $this->dbAdapter = $this->getServiceLocator()->get('SundewDbAdapter');
         }
 
         return $this->dbAdapter;

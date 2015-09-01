@@ -160,7 +160,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface
                         return new BackButton($app->getRequest(), $app->getMvcEvent()->getRouteMatch());
                     },
                     'constantConverter' => function($sm){
-                        $dbAdapter = $sm->getServiceLocator()->get('Sundew\Db\Adapter');
+                        $dbAdapter = $sm->getServiceLocator()->get('SundewDbAdapter');
                         $constantDA = new ConstantDataAccess($dbAdapter);
                         return new ConstantConverter($constantDA);
                     }
@@ -177,23 +177,23 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface
         if($this->serviceConfig == null){
             $this->serviceConfig = array(
                 'factories' => array(
-                    'Sundew\AuthStorage' => function($sm){
+                    'SundewAuthStorage' => function($sm){
                         $config = $sm->get('ConfigManager');
                         $namespace = $config->get('session')['auth_storage'];
                         return new SundewAuthStorage($namespace);
                     },
                     'AuthService' => function($sm)
                     {
-                        $dbAdapter = $sm->get('Sundew\Db\Adapter');
+                        $dbAdapter = $sm->get('SundewDbAdapter');
                         $authService = new AuthenticationService();
                         $authService->setAdapter(new CredentialTreatmentAdapter($dbAdapter, 'tbl_user', 'username',
                             'password', 'MD5(?) AND status="A"'));
-                        $authService->setStorage($sm->get('Sundew\AuthStorage'));
+                        $authService->setStorage($sm->get('SundewAuthStorage'));
                         return $authService;
                     },
                     'RouteData' => function($sm)
                     {
-                        $dbAdapter = $sm->get('Sundew\Db\Adapter');
+                        $dbAdapter = $sm->get('SundewDbAdapter');
                         $routeDataAccess = new RouteDataAccess($dbAdapter);
                         $authService = $sm->get('AuthService');
                         if($authService->hasIdentity()){
@@ -215,7 +215,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface
                         return array();
                     },
                     'AppErrorHandling' =>  function($sm) {
-                        $authStorage = $sm->get('Sundew\AuthStorage');
+                        $authStorage = $sm->get('SundewAuthStorage');
                         $user = array();
                         if(!$authStorage->isEmpty()){
                             $user = $authStorage->read();

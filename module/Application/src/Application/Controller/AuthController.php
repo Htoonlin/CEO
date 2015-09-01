@@ -62,7 +62,7 @@ class AuthController extends SundewController
     private function getSessionStorage()
     {
         if(!$this->storage){
-            $this->storage = $this->getServiceLocator()->get('Sundew\AuthStorage');
+            $this->storage = $this->getServiceLocator()->get('SundewAuthStorage');
         }
         return $this->storage;
     }

@@ -6,6 +6,18 @@
  * Time: 05:28 PM
  */
 return array(
+    'service_manager' => array(
+        'factories' => array(
+            'SundewDbAdapter' => 'Core\Factory\SundewAdapterFactory',
+            'NavigationManager' => 'Core\Factory\SundewNavigationFactory',
+            'ConfigManager' => 'Core\Factory\SundewConfigFactory',
+            'SundewApiStrategy' => 'Core\Factory\SundewApiFactory',
+        ),
+        'abstract_factories' => array(
+            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
+            'Zend\Log\LoggerAbstractServiceFactory',
+        ),
+    ),
     'view_helpers' => array(
         'invokables' => array(
             'formTreeView' => 'Core\Helper\View\FormTreeView',

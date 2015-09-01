@@ -25,7 +25,7 @@ class SundewAdapterFactory implements FactoryInterface
     {
         $config = $serviceLocator->get('Config');
         $adapter = new Adapter($config['db']);
-        $authStorage = $serviceLocator->get('Sundew\AuthStorage');
+        $authStorage = $serviceLocator->get('SundewAuthStorage');
         $user = array();
         if(!$authStorage->isEmpty()){
             $user = $authStorage->read();
