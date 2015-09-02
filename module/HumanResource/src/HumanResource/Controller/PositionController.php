@@ -3,12 +3,12 @@ namespace HumanResource\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
 use HumanResource\DataAccess\PositionDataAccess;
 use HumanResource\Entity\Position;
 use HumanResource\Helper\PositionHelper;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -142,15 +142,15 @@ class PositionController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonDeleteAction()
+    public function apiDeleteAction()
     {
         $data = $this->params()->fromPost('chkId', array());
-        $message = 'success';
         $db = $this->positionTable()->getAdapter();
         $conn = $db->getDriver()->getConnection();
         $conn->beginTransaction();
+        $api = new ApiModel();
         try{
             foreach($data as $id){
                 $this->positionTable()->deletePosition($id);
@@ -159,9 +159,10 @@ class PositionController extends SundewController
             $this->flashMessenger()->addInfoMessage('Delete successful!');
         }catch(\Exception $ex){
             $conn->rollback();
-            $message = $ex->getMessage();
+            $api->setStatusCode(500);
+            $api->setStatusMessage($ex->getMessage());
         }
-        return new JsonModel(array("message" => $message));
+        return $api;
     }
 }
 

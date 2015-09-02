@@ -21,10 +21,7 @@ use Application\DataAccess\ConstantDataAccess;
 use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
-use PhpOffice\PhpWord\Exception\Exception;
 use Zend\Form\Element;
-use Zend\Stdlib\ArrayObject;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -152,7 +149,7 @@ class BalanceController extends SundewController
     }
 
     /**
-     * @return JsonModel|ViewModel
+     * @return ApiModel
      * @throws \Exception
      */
     public function apiCloseAction()

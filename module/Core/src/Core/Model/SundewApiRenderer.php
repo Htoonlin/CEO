@@ -88,7 +88,6 @@ class SundewApiRenderer extends JsonRenderer
         if($nameOrModel->getResponseData() instanceof Paginator) {
             $this->renderPaginator($nameOrModel);
         }else{
-
             if($responseData instanceof ArraySerializableInterface){
                 $responseData = $this->extractEntity($responseData);
             }

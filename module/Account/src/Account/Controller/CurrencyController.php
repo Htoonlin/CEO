@@ -15,7 +15,6 @@ use Application\DataAccess\ConstantDataAccess;
 use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class CurrencyController extends SundewController
@@ -38,7 +37,7 @@ class CurrencyController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
     public  function apiAllAction()
     {
@@ -49,7 +48,7 @@ class CurrencyController extends SundewController
         {
             $data[]=array('currencyId'=>$currency->getCurrencyId(), 'name'=>$currency->getName());
         }
-        return new JsonModel($data);
+        return new ApiModel($data);
     }
 
     /**
@@ -160,7 +159,7 @@ class CurrencyController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
     public function apiDeleteAction()
     {

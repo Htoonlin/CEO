@@ -14,17 +14,16 @@ $this->headScript()
     function attendance(a)
     {
         $.ajax({
-            url: '<?php echo $this->url('dashboard', array('action' => 'jsonAttendance')); ?>',
+            url: '<?php echo $this->url('dashboard', array('action' => 'apiAttendance')); ?>',
             data: {status: a},
             type: 'POST',
-            success: function(data)
-            {
-                if(data.message == "success"){
-                    window.location.href = "<?php echo $this->url('dashboard'); ?>"
-                }else{
-                    alert(data.message);
-                }
-            }
+            success: function(data){
+				window.location.href = "<?php echo $this->url('dashboard'); ?>"
+			},
+			error: function(response){
+				var data = response.responseJSON;
+				alert(data.status.message);
+			}
         });
     }
 
@@ -37,12 +36,12 @@ $this->headScript()
         });
 
         $.setPayrollUrl({
-            attendance  : '<?= $this->url('hr_attendance', array('action' => 'jsonAttendance')) ?>',
-            leave       : '<?= $this->url('hr_leave', array('action' => 'jsonLeave')) ?>',
-            holiday     : '<?= $this->url('hr_holiday', array('action' => 'jsonCheckHoliday')) ?>'
+            attendance  : '<?= $this->url('hr_attendance', array('action' => 'apiAttendance')) ?>',
+            leave       : '<?= $this->url('hr_leave', array('action' => 'apiLeave')) ?>',
+            holiday     : '<?= $this->url('hr_holiday', array('action' => 'apiCheckHoliday')) ?>'
         });
 
-        $('button#btnCalculate').click(function(){
+        $('button#btnCollect').click(function(){
             $('#payrollProcess>.progress-bar').css('width', '').html('');
             $('#payrollTable-<?= $staff->getStaffId() ?>').collectAttendance({
                 start: moment($('input[name=fromDate]').val(), 'YYYY-MM-DD'),
@@ -202,12 +201,6 @@ $this->headScript()
 					<div class="panel-body">
 						<p>
                         <?php echo $this->form()->openTag($salaryForm); ?>
-
-
-
-
-
-
 						<div class="row">
 							<div class="col-sm-6">
                             <?php echo $this->formRow($salaryForm->get('fromDate')); ?>
@@ -225,8 +218,8 @@ $this->headScript()
 								</button>
 							</div>
 							<div class="btn-group">
-								<button type="button" id="btnCalculate" class="btn btn-primary">
-									<span class="fa fa-calculator"></span> Calculate
+								<button type="button" id="btnCollect" class="btn btn-primary">
+									<span class="fa fa-calculator"></span> Collect
 								</button>
 							</div>
 						</div>

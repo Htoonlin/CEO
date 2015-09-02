@@ -39,7 +39,7 @@ class RoleDataAccess extends SundewTableGateway
     public function fetchAll()
     {
         $results = $this->select();
-        return $results->toArray();
+        return $results;
     }
 
     /**

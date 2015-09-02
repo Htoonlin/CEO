@@ -14,8 +14,8 @@ use Application\DataAccess\RoleDataAccess;
 use Application\Helper\MenuHelper;
 use Application\Entity\Menu;
 use Application\DataAccess\MenuDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class MenuController extends SundewController
@@ -55,16 +55,16 @@ class MenuController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonAllAction()
+    public function apiAllAction()
     {
         $menus = $this->menuTable()->fetchAll();
         $data = array();
         foreach($menus as $menu){
             $data[] = array('menuId' => $menu->getMenuId(), 'name' => ($menu->getTitle() .' (' . $menu->getDescription() . ')'));
         }
-        return new JsonModel($data);
+        return new ApiModel($data);
     }
 
     private function deleteMenu($id)

@@ -13,16 +13,15 @@ $this->headTitle($title);
             if(confirm('Are you sure to delete selected records?')){
                 console.log($('input[name="chkId[]"]:checked'));
                 $.ajax({
-                    url:'<?php echo $this->url('cr_company', array('action'=>'jsonDelete'))?>',
+                    url:'<?php echo $this->url('cr_company', array('action'=>'apiDelete'))?>',
                     data:$('input[name="chkId[]"]:checked'),
                     type:'POST',
-                    success:function(data){
-                        console.log(data);
-                        if(data.message=="success"){
-                            window.location.href="<?php echo $this->url('cr_company')?>"
-                        }else{
-                            alert(data.message);
-                        }
+                    success:function(response){
+                        window.location.href="<?php echo $this->url('cr_company')?>"
+                    },
+                    error: function(response){
+                        var data = response.responseJSON;
+                        alert(data.status.message);
                     }
                 });
             }

@@ -10,6 +10,7 @@ namespace CustomerRelation\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
 use CustomerRelation\DataAccess\ContractDataAccess;
@@ -18,8 +19,7 @@ use CustomerRelation\Helper\ContractHelper;
 use CustomerRelation\DataAccess\CompanyDataAccess;
 use CustomerRelation\DataAccess\ContactDataAccess;
 use ProjectManagement\DataAccess\ProjectDataAccess;
-use HumanResource\DataAccess\StaffDataAccess;
-use Zend\View\Model\JsonModel;
+use Symfony\Component\Yaml\Tests\A;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -28,9 +28,18 @@ use Zend\View\Model\ViewModel;
  */
 class ContractController extends SundewController
 {
+    /**
+     * @var
+     */
     private $staffId;
+    /**
+     * @var
+     */
     private $staffName;
 
+    /**
+     * @return ContractDataAccess
+     */
     private function contractTable()
     {
         if(!$this->staffId){
@@ -40,12 +49,31 @@ class ContractController extends SundewController
         }
         return new ContractDataAccess($this->getDbAdapter(),$this->staffId);
     }
+
+    /**
+     * @var
+     */
     private $currencyList;
+    /**
+     * @var
+     */
     private $companyList;
+    /**
+     * @var
+     */
     private $contactList;
+    /**
+     * @var
+     */
     private $statusList;
+    /**
+     * @var
+     */
     private $projectList;
 
+    /**
+     *
+     */
     private function init_combos()
     {
         if(!$this->currencyList){
@@ -174,15 +202,15 @@ class ContractController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonDeleteAction()
+    public function apiDeleteAction()
     {
         $data=$this->params()->fromPost('chkId',array());
-        $message="success";
-
         $db=$this->contractTable()->getAdapter();
         $conn=$db->getDriver()->getConnection();
+
+        $api = new ApiModel();
         try{
             $conn->beginTransaction();
             foreach($data as $id){
@@ -192,10 +220,15 @@ class ContractController extends SundewController
             $this->flashMessenger()->addMessage('Delete successful!');
         }catch (\Exception $ex){
             $conn->rollback();
-            $message=$ex->getMessage();
+            $api->setStatusCode(500);
+            $api->setStatusMessage($ex->getMessage());
         }
-        return new JsonModel(array("message"=>$message));
+        return $api;
     }
+
+    /**
+     * @return \Zend\Http\Response|\Zend\Stdlib\ResponseInterface
+     */
     public function downloadAction()
     {
         $id = (int)$this->params()->fromRoute('id', array());

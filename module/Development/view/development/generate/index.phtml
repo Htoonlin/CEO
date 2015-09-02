@@ -51,13 +51,14 @@ $this->headScript()->appendFile($this->basePath() . '/codemirror/lib/codemirror.
                 url : '<?php echo $this->url('development_generate', array('action' => 'generate'));?>',
                 data : $('#frmGenerate').serialize(),
                 type : 'POST',
-                success : function(data){
-                    if(data.status){
-                        myEditor.setValue(data.code);
-                    }else{
-                        alert(data.message);
-                    }
+                success : function(response){
+                    var data = response.data;
+                    myEditor.setValue(data);
                     $('#generateLoader').loader().hide();
+                },
+                error : function(response){
+                    var data = response.responseJSON;
+                    alert(data.status.messsage);
                 }
             });
         });

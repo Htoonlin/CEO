@@ -11,12 +11,19 @@ namespace ProjectManagement\Controller;
 
 use Application\DataAccess\ConstantDataAccess;
 use Core\Helper\View\ConstantConverter;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use ProjectManagement\DataAccess\ReportDataAccess;
-use Zend\View\Model\JsonModel;
 
+/**
+ * Class ReportController
+ * @package ProjectManagement\Controller
+ */
 class ReportController extends SundewController
 {
+    /**
+     * @var array
+     */
     protected $dataTemplate = array(
         'T' => array(
             'color' => '#4076A0',
@@ -40,6 +47,9 @@ class ReportController extends SundewController
         ),
     );
 
+    /**
+     * @return array
+     */
     private function pieChartOption()
     {
         return array(
@@ -55,6 +65,9 @@ class ReportController extends SundewController
         );
     }
 
+    /**
+     * @return array
+     */
     private function lineChartOption()
     {
         return array(
@@ -76,6 +89,9 @@ class ReportController extends SundewController
         );
     }
 
+    /**
+     * @return array
+     */
     private function barChartOption()
     {
         return array(
@@ -93,12 +109,21 @@ class ReportController extends SundewController
         );
     }
 
+    /**
+     * @param $status
+     * @return mixed
+     */
     private function statusConverter($status){
         $constantDA = new ConstantDataAccess($this->getDbAdapter());
         $converter = new ConstantConverter($constantDA);
         return $converter($status, 'task_status');
     }
 
+    /**
+     * @param $status
+     * @param $data
+     * @return array
+     */
     private function getWorkloadData($status, $data){
         $colors = $this->dataTemplate[$status];
         $label = ($status == 'T') ? 'Total' : $this->statusConverter($status);
@@ -110,6 +135,11 @@ class ReportController extends SundewController
         );
     }
 
+    /**
+     * @param $status
+     * @param $value
+     * @return mixed
+     */
     private function getProgressData($status, $value)
     {
         $result = $this->dataTemplate[$status];
@@ -122,16 +152,25 @@ class ReportController extends SundewController
         return $result;
     }
 
+    /**
+     * @return ReportDataAccess
+     */
     private function reportTable()
     {
         return new ReportDataAccess($this->getDbAdapter());
     }
 
+    /**
+     *
+     */
     public function indexAction()
     {
         $this->redirect()->toRoute('pm_project', array('action' => 'report', 'id' => -1));
     }
 
+    /**
+     * @return ApiModel
+     */
     public function progressAction()
     {
         $id = (int)$this->params()->fromRoute('id', -1);
@@ -143,7 +182,7 @@ class ReportController extends SundewController
             $data[] = $this->getProgressData($record->status, $record->count);
         }
 
-        return new JsonModel(array(
+        return new ApiModel(array(
             'id' => $id,
             'title' => 'Progress report',
             'icon' => 'fa fa-pie-chart',
@@ -152,6 +191,10 @@ class ReportController extends SundewController
             'options' => $this->pieChartOption()
         ));
     }
+
+    /**
+     * @return ApiModel
+     */
     public function overdueAction(){
         $id = (int)$this->params()->fromRoute('id', -1);
         $times = $this->reportTable()->getTime($id);
@@ -201,7 +244,7 @@ class ReportController extends SundewController
             $data[] = $json;
         }
 
-        return new JsonModel(array(
+        return new ApiModel(array(
             'id' => $id,
             'title' => 'Overdue report',
             'icon' => 'fa fa-calendar',
@@ -210,6 +253,10 @@ class ReportController extends SundewController
             'options' => $this->pieChartOption()
         ));
     }
+
+    /**
+     * @return ApiModel
+     */
     public function workloadAction()
     {
         $id = (int)$this->params()->fromRoute('id', -1);
@@ -264,7 +311,7 @@ class ReportController extends SundewController
             ),
         );
 
-        return new JsonModel(array(
+        return new ApiModel(array(
             'id' => $id,
             'title' => 'Workload report',
             'icon' => 'fa fa-balance-scale',

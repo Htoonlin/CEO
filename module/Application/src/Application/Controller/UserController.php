@@ -9,12 +9,9 @@ use Application\DataAccess\UserRoleDataAccess;
 use Application\Entity\User;
 use Application\Helper\PasswordHelper;
 use Application\Helper\UserHelper;
-use Core\SundewApi;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
-use PhpOffice\PhpWord\Exception\Exception;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class UserController extends SundewController
@@ -235,16 +232,14 @@ class UserController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonDeleteAction()
+    public function apiDeleteAction()
     {
         $data = $this->params()->fromPost('chkId', array());
-        $message = "success";
-
         $db = $this->userTable()->getAdapter();
         $conn = $db->getDriver()->getConnection();
-
+        $api = new ApiModel();
         try{
             $conn->beginTransaction();
             foreach($data as $id){
@@ -254,9 +249,11 @@ class UserController extends SundewController
             $this->flashMessenger()->addInfoMessage('Delete successful!');
         }catch(\Exception $ex){
             $conn->rollback();
-            $message = $ex->getMessage();
+            $api->setStatusCode(500);
+            $api->setStatusMessage($ex->getMessage());
         }
-        return new JsonModel(array("message" => $message));
+
+        return $api;
     }
 
     /**

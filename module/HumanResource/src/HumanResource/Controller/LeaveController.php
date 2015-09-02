@@ -9,13 +9,13 @@
 namespace HumanResource\Controller;
 
 use Application\DataAccess\ConstantDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
 use HumanResource\DataAccess\LeaveDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Leave;
 use HumanResource\Helper\LeaveHelper;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -182,20 +182,18 @@ class LeaveController extends SundewController
     /**
      * @return JsonModel
      */
-    public function jsonLeaveAction()
+    public function apiLeaveAction()
     {
         $staffId = $this->params()->fromQuery('staffId', 0);
         $date = $this->params()->fromQuery('date', date('Y-m-d', time()));
         $leave = $this->leaveTable()->getLeaveByStaff($staffId, $date);
+        $api = new ApiModel();
         if($leave && $leave->getStatus() == 'A'){
-            return new JsonModel(array(
-                'status' => true,
-                'result' => $leave->getArrayCopy()
-            ));
+            $api->setResponseData($leave);
+        }else{
+            $api->setStatusCode(406);
         }
-        return new JsonModel(array(
-            'status' => false,
-            'result' => array('staffId' => $staffId, 'date' => $date)
-        ));
+
+        return $api;
     }
 }

@@ -9,7 +9,9 @@
 namespace HumanResource\Entity;
 
 
-class Leave {
+use Zend\Stdlib\ArraySerializableInterface;
+
+class Leave implements ArraySerializableInterface{
     protected $leaveId;
     public function getLeaveId(){return $this->leaveId;}
     public function setLeaveId($value){$this->leaveId = $value;}

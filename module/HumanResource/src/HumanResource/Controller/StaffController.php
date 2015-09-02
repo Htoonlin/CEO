@@ -10,6 +10,7 @@ namespace HumanResource\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
 use HumanResource\DataAccess\DepartmentDataAccess;
@@ -18,7 +19,6 @@ use Application\DataAccess\UserDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Staff;
 use HumanResource\Helper\StaffHelper;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -182,32 +182,31 @@ class StaffController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonDeleteAction()
+    public function apiDeleteAction()
     {
         $data=$this->params()->fromPost('chkId', array());
         $db=$this->staffTable()->getAdapter();
         $conn=$db->getDriver()->getConnection();
-
+        $api = new ApiModel();
         try{
             $conn->beginTransaction();
             foreach($data as $id){
                 $this->staffTable()->deleteStaff($id);
             }
             $conn->commit();
-            $message='success';
             $this->flashMessenger()->addInfoMessage('Delete Successful!');
-
         }
         catch (\Exception $ex){
             $conn->rollback();
-            $message=$ex->getMessage();
+            $api->setStatusCode(500);
+            $api->setStatusMessage($ex->getMessage());
         }
-        return new JsonModel(array("message"=>$message));
+        return $api;
     }
 
-    public function jsonBirthdayAction()
+    public function apiBirthdayAction()
     {
         $year = $this->params()->fromPost('year', date('Y', time()));
         $staffs = $this->staffTable()->getActiveStaffs();
@@ -226,6 +225,6 @@ class StaffController extends SundewController
             );
         }
 
-        return new JsonModel($result);
+        return new ApiModel($result);
     }
 }

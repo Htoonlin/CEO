@@ -10,10 +10,10 @@ namespace Development\Controller;
 
 
 use Application\DataAccess\ConstantDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Development\DataAccess\GenerateDataAccess;
 use Development\Helper\GenerateHelper;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Development\Helper\Generator\EntityGenerator;
 use Development\Helper\Generator\HelperGenerator;
@@ -99,33 +99,32 @@ class GenerateController extends SundewController
     }
 
     /**
-     * @return bool|JsonModel
+     * @return bool|ApiModel
      */
     private function checkValidate()
     {
         $tblName = $this->params()->fromPost('tbl_name', '');
         $columns = $this->getDbMeta()->getColumnNames($tblName);
+        $status = true;
+        $api = new ApiModel();
         if(empty($tblName) || empty($columns)){
-            return new JsonModel(array(
-                'status' => false,
-                'request' => $this->params()->fromPost(),
-                'message' => 'Invalid Table',
-            ));
+            $api->setStatusCode(400);
+            $api->setStatusMessage('Invalid Table');
+            $status = false;
         }
 
         if(!$this->getRequest()->isPost()){
-            return new JsonModel(array(
-                'status' => false,
-                'request' => $this->params()->fromPost(),
-                'message' => 'Invalid Request',
-            ));
+            $api->setStatusCode(405);
+            $status = false;
         }
 
+        if(!$status){return $api;}
         return true;
     }
 
     /**
      * @return \Zend\Stdlib\ResponseInterface|ViewModel
+     * @throws \Exception
      */
     public function indexAction()
     {
@@ -162,20 +161,13 @@ class GenerateController extends SundewController
         if($isOK != true){
             return $isOK;
         }
-
         $generator = $this->getGenerator();
-
+        $api = new ApiModel();
         if($generator == null){
-            return new JsonModel(array(
-                'status' => false,
-                'request' => $this->params()->fromPost(),
-                'message' => 'Invalid Request',
-            ));
+            $api->setStatusCode(400);
+        }else{
+            $api->setResponseData($generator->generate());
         }
-
-        return new JsonModel(array(
-            'status' => true,
-            'code' => $generator->generate(),
-        ));
+        return $api;
     }
 }

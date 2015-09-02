@@ -8,6 +8,7 @@
 
 namespace ProjectManagement\Controller;
 
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
 use HumanResource\DataAccess\StaffDataAccess;
@@ -15,7 +16,6 @@ use ProjectManagement\DataAccess\ProjectDataAccess;
 use ProjectManagement\Entity\Project;
 use ProjectManagement\Helper\ProjectHelper;
 use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
 
 class ProjectController extends SundewController{
 
@@ -148,10 +148,11 @@ class ProjectController extends SundewController{
     /*delete action DELETE*/
 
     /*json delete action DELETEs*/
-    public function jsonDeleteAction(){
+    public function apiDeleteAction(){
         $data=$this->params()->fromPost('chkId',array());
         $db=$this->projectTable()->getAdapter();
         $conn=$db->getDriver()->getConnection();
+        $api = new ApiModel();
         try{
             $conn->beginTransaction();
 
@@ -160,15 +161,14 @@ class ProjectController extends SundewController{
             }
 
             $conn->commit();
-            $message='success';
             $this->flashMessenger()->addInfoMessage('Delete Successful!');
         }
         catch(\Exception $ex){
-            $conn->rollback();
-            $message=$ex->getMessage();
+            $api->setStatusCode(500);
+            $api->setStatusMessage($ex->getMessage());
         }
 
-        return new JsonModel(array('message'=>$message));
+        return $api;
     }
     /*json delete action DELETEs*/
 

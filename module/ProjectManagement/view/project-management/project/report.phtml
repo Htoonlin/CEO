@@ -17,15 +17,16 @@ $this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
             var ctx = $(id).find('#chartBox').get(0).getContext("2d");
             $.get(url, function(res){
                 var chart;
+                var data = res.data;
                 /* Generate Report */
-                if(res.type == 'Pie'){
-                    chart = new Chart(ctx).Pie(res.data, res.options);
-                }else if(res.type == 'Bar'){
-                    chart = new Chart(ctx).Bar(res.data, res.options);
+                if(data.type == 'Pie'){
+                    chart = new Chart(ctx).Pie(data.data, data.options);
+                }else if(data.type == 'Bar'){
+                    chart = new Chart(ctx).Bar(data.data, data.options);
                 }
 
                 /* Report Title */
-                var title = '<i class="' + res.icon + '"></i> ' + res.title;
+                var title = '<i class="' + data.icon + '"></i> ' + data.title;
                 $(id).find('#reportTitle').html(title);
 
                 /* Report Labeling */

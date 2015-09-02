@@ -10,12 +10,12 @@ namespace HumanResource\Controller;
 
 use Application\DataAccess\CalendarDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use HumanResource\DataAccess\PayrollDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Helper\PayrollHelper;
 use Zend\Json\Json;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -142,10 +142,11 @@ class PayrollController extends SundewController{
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonSaveAction()
+    public function apiSaveAction()
     {
+        $api = new ApiModel();
         try{
             $this->init_data();
 
@@ -170,15 +171,12 @@ class PayrollController extends SundewController{
 
             $result = $this->payrollTable->savePayroll($payroll);
             $this->flashMessenger()->addSuccessMessage('Save process successful.');
-            return new JsonModel(array(
-                'status' => 'success',
-                'result' => $result
-            ));
+            $api->setResponseData($result);
         }catch(\Exception $ex){
-            return new JsonModel(array(
-                'status' => 'error',
-                'message' => $ex->getMessage()
-            ));
+            $api->setStatusCode(500);
+            $api->setStatusMessage($ex->getMessage());
         }
+
+        return $api;
     }
 }

@@ -9,7 +9,9 @@
 namespace HumanResource\Entity;
 
 
-class Attendance {
+use Zend\Stdlib\ArraySerializableInterface;
+
+class Attendance implements ArraySerializableInterface{
 
     protected $attendanceId;
     public function getAttendanceId(){return $this->attendanceId;}

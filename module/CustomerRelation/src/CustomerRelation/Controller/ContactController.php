@@ -8,13 +8,13 @@
 
 namespace CustomerRelation\Controller;
 
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
 use CustomerRelation\DataAccess\ContactDataAccess;
 use CustomerRelation\DataAccess\CompanyDataAccess;
 use CustomerRelation\Entity\Contact;
 use CustomerRelation\Helper\ContactHelper;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -136,16 +136,14 @@ class ContactController extends SundewController{
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonDeleteAction()
+    public function apiDeleteAction()
     {
         $data=$this->params()->fromPost('chkId', array());
-        $message="success";
-
         $db=$this->contactTable()->getAdapter();
         $conn=$db->getDriver()->getConnection();
-
+        $api = new ApiModel();
         try{
             $conn->beginTransaction();
             foreach($data as $id){
@@ -155,8 +153,10 @@ class ContactController extends SundewController{
             $this->flashMessenger()->addInfoMessage('Delete successful!');
         }catch (\Exception $ex){
             $conn->rollback();
-            $message=$ex->getMessage();
+            $api->setStatusCode(500);
+            $api->setStatusMessage($ex->getMessage());
         }
-        return new JsonModel(array("message"=>$message));
+
+        return $api;
     }
 }

@@ -14,9 +14,9 @@ use Application\DataAccess\RouteDataAccess;
 use Application\DataAccess\RoutePermissionDataAccess;
 use Application\Entity\Route;
 use Application\Helper\RouteHelper;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class RouteController extends SundewController
@@ -29,6 +29,9 @@ class RouteController extends SundewController
         return new RouteDataAccess($this->getDbAdapter());
     }
 
+    /**
+     * @return mixed
+     */
     private function getControllerList()
     {
         $configManager = $this->getServiceLocator()->get('ConfigManager');
@@ -53,12 +56,12 @@ class RouteController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonAllAction()
+    public function apiAllAction()
     {
         $data = $this->routeTable()->fetchAll();
-        return new JsonModel($data);
+        return new ApiModel($data);
     }
 
     /**
@@ -182,14 +185,14 @@ class RouteController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonDeleteAction()
+    public function apiDeleteAction()
     {
         $data = $this->params()->fromPost('chkId',array());
-        $message = "success";
         $db = $this->routeTable()->getAdapter();
         $conn = $db->getDriver()->getConnection();
+        $api = new ApiModel();
         try{
             $conn->beginTransaction();
             foreach($data as $id){
@@ -200,10 +203,11 @@ class RouteController extends SundewController
             $this->flashMessenger()->addInfoMessage("Delete successful");
         }catch (\Exception $ex){
             $conn->rollback();
-            $message = $ex->getMessage();
+            $api->setStatusCode(500);
+            $api->setStatusMessage($ex->getMessage());
         }
 
-        return new JsonModel(array("message"=>$message));
+        return $api;
     }
 
 }

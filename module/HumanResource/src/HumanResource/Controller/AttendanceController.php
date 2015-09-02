@@ -8,6 +8,7 @@
 
 namespace HumanResource\Controller;
 
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
 use HumanResource\DataAccess\AttendanceDataAccess;
@@ -15,7 +16,6 @@ use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Attendance;
 use HumanResource\Helper\AttendanceBoardHelper;
 use Zend\Stdlib\ArrayObject;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -144,20 +144,17 @@ class AttendanceController extends SundewController
     /**
      * @return JsonModel
      */
-    public function jsonAttendanceAction()
+    public function apiAttendanceAction()
     {
         $staffId = $this->params()->fromQuery('staffId', 0);
         $date = $this->params()->fromQuery('date', date('Y-m-d', time()));
         $attendance = $this->attendanceTable()->checkAttendance($staffId, $date);
+        $api = new ApiModel();
         if($attendance){
-            return new JsonModel(array(
-                'status' => true,
-                'result' => $attendance->getArrayCopy()
-            ));
+            $api->setResponseData($attendance);
+        }else{
+            $api->setStatusCode(406);
         }
-        return new JsonModel(array(
-            'status' => false,
-            'result' => array('staffId' => $staffId, 'date' => $date)
-        ));
+        return $api;
     }
 }

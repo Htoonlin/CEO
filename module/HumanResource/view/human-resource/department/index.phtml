@@ -23,8 +23,8 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
     <div class="col-md-8">
         <script type="text/javascript">
             $(function(){
-                $.get('<?php echo $this->url('hr_department', array('action' => 'jsonAll')); ?>', function(data){
-                    $('#parentDepartment #typeahead').typeahead({source: data, afterSelect:function(item){
+                $.get('<?php echo $this->url('hr_department', array('action' => 'apiAll')); ?>', function(response){
+                    $('#parentDepartment #typeahead').typeahead({source: response.data, afterSelect:function(item){
                         var currentId = parseInt($("input[name=departmentId]").val());
                         if(item.departmentId == currentId && currentId > 0){
                             alert("Parent can't same with current department.");

@@ -9,12 +9,12 @@
 namespace CustomerRelation\Controller;
 
 use Application\DataAccess\ConstantDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
 use CustomerRelation\Entity\Company;
 use CustomerRelation\Helper\CompanyHelper;
 use CustomerRelation\DataAccess\CompanyDataAccess;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class CompanyController extends SundewController
@@ -45,18 +45,18 @@ class CompanyController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonAllAction()
+    public function apiAllAction()
     {
         $companies=$this->companyTable()->fetchAll();
         $data=array();
-
         foreach($companies as $company)
         {
             $data[]=array('companyId'=>$company->getCompanyId(), 'name'=>$company->getName());
         }
-        return new JsonModel($data);
+
+        return new ApiModel($data);
     }
 
     /**
@@ -154,16 +154,15 @@ class CompanyController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonDeleteAction()
+    public function apiDeleteAction()
     {
         $data=$this->params()->fromPost('chkId', array());
-        $message="success";
-
         $db=$this->companyTable()->getAdapter();
         $conn=$db->getDriver()->getConnection();
 
+        $api = new ApiModel();
         try{
             $conn->beginTransaction();
             foreach($data as $id){
@@ -173,9 +172,10 @@ class CompanyController extends SundewController
             $this->flashMessenger()->addInfoMessage('Delete Successful!');
         }catch (\Exception $ex){
             $conn->rollback();
-            $message=$ex->getMessage();
+            $api->setStatusCode(500);
+            $api->setStatusMessage($ex->getMessage());
         }
-        return new JsonModel(array("message"=>$message));
+        return $api;
     }
 
 

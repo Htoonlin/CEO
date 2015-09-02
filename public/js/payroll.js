@@ -39,8 +39,8 @@
             'data': {date: date.format('YYYY-MM-DD')},
             'type': 'get',
             'async': false,
-            'success': function (data) {
-                isHoliday = data.status;
+            'success': function (response) {
+                isHoliday = response.data.isHoliday;
             }
         });
         return isHoliday;
@@ -141,19 +141,17 @@
                 'data': {date: d.format('YYYY-MM-DD'), staffId: staffId},
                 'type': 'get',
                 'async': false,
-                'success': function (data) {
-                    if (data.status) {
-                        $.each(payroll_data.leaveValues, function (idx, leave) {
-                            if (leave.id == data.result.leaveType) {
+                'success': function (response) {
+                    $.each(response.data, function (idx, leave) {
+                        if (leave.id == data.result.leaveType) {
 
-                                //Update and increment leave count
-                                Leave += leave.value;
-                                current_row.find('td#Leave').html(Leave);
+                            //Update and increment leave count
+                            Leave += leave.value;
+                            current_row.find('td#Leave').html(Leave);
 
-                                hasLeave = (leave.value == 1);
-                            }
-                        });
-                    }
+                            hasLeave = (leave.value == 1);
+                        }
+                    });
                 }
             });
 
@@ -164,11 +162,9 @@
                     'data': {date: d.format('YYYY-MM-DD'), staffId: staffId},
                     'type': 'get',
                     'async': false,
-                    'success': function (data) {
-                        if (data.status) {
-                            //Validate late minutes and update Staff Working Day
-                            S_WD += getAttendance(data.result, d.weekday());
-                        }
+                    'success': function (response) {
+                        //Validate late minutes and update Staff Working Day
+                        S_WD += getAttendance(response.data, d.weekday());
                         current_row.find('td#S_WD').html(S_WD);
                     }
                 });

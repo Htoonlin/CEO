@@ -9,6 +9,7 @@
 namespace CustomerRelation\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
+use Core\Model\ApiModel;
 use CustomerRelation\DataAccess\ContactDataAccess;
 use CustomerRelation\DataAccess\ContractDataAccess;
 use CustomerRelation\DataAccess\PaymentDataAccess;
@@ -18,7 +19,6 @@ use CustomerRelation\Helper\PaymentHelper;
 use Core\SundewController;
 use Core\SundewExporting;
 use Zend\Form\Element;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -27,13 +27,27 @@ use Zend\View\Model\ViewModel;
  */
 class PaymentController extends SundewController
 {
+    /**
+     * @var
+     */
     private $staffId;
+    /**
+     * @var
+     */
     private $staffName;
+
+    /**
+     * @return ContractDataAccess
+     */
     private function contractTable()
     {
         return new ContractDataAccess($this->getDbAdapter(),$this->staffId);
 
     }
+
+    /**
+     * @return PaymentDataAccess
+     */
     private function paymentTable()
     {
         if(!$this->staffId){
@@ -43,11 +57,27 @@ class PaymentController extends SundewController
         }
         return new PaymentDataAccess($this->getDbAdapter(), $this->staffId);
     }
+
+    /**
+     * @var
+     */
     private $currencyList;
+    /**
+     * @var
+     */
     private $contactList;
+    /**
+     * @var
+     */
     private $contractList;
+    /**
+     * @var
+     */
     private $statusList;
 
+    /**
+     *
+     */
     private function init_combos()
     {
         if(!$this->currencyList){
@@ -68,17 +98,19 @@ class PaymentController extends SundewController
         }
     }
 
-    public function jsonPaymentAction()
+    /**
+     * @return ApiModel
+     */
+    public function apiPaymentAction()
     {
         $id= (int)$this->params()->fromRoute('id', 0);
-
-
-        return new JsonModel(array(
+        return new ApiModel(array(
             'total'=>1000,
             'paid'=>500,
             'id' => $id,
         ));
     }
+
     /**
      * @return ViewModel
      */

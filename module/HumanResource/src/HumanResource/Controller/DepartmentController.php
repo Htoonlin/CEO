@@ -8,11 +8,11 @@
 
 namespace HumanResource\Controller;
 
+use Core\Model\ApiModel;
 use Core\SundewController;
 use HumanResource\Helper\DepartmentHelper;
 use HumanResource\Entity\Department;
 use HumanResource\DataAccess\DepartmentDataAccess;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -31,16 +31,16 @@ class DepartmentController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonAllAction()
+    public function apiAllAction()
     {
         $departments = $this->departmentTable()->fetchAll();
         $data = array();
         foreach($departments as $department){
             $data[] = array('departmentId' => $department->getDepartmentId(), 'name' => $department->getName());
         }
-        return new JsonModel($data);
+        return new ApiModel($data);
     }
 
     /**

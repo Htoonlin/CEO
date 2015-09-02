@@ -8,8 +8,8 @@
 
 namespace Application\Controller;
 
+use Core\Model\ApiModel;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class PreferencesController extends AbstractActionController
@@ -110,12 +110,6 @@ class PreferencesController extends AbstractActionController
 
         return $this->redirect()->toRoute('auth', array('action' => 'logout'));
     }
-
-    public function jsonAction()
-    {
-        return new JsonModel($this->getServiceLocator()->get('Config'));
-    }
-
     public function phpAction()
     {
         $this->layout('layout/null');

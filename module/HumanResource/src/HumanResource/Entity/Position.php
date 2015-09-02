@@ -9,7 +9,9 @@
 namespace HumanResource\Entity;
 
 
-class Position {
+use Zend\Stdlib\ArraySerializableInterface;
+
+class Position implements ArraySerializableInterface{
 
     protected $positionId;
     public function getPositionId(){return $this->positionId;}

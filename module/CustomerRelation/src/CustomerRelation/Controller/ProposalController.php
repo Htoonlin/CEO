@@ -10,6 +10,7 @@ namespace CustomerRelation\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
 use CustomerRelation\DataAccess\ProposalDataAccess;
@@ -17,9 +18,6 @@ use CustomerRelation\Entity\Proposal;
 use CustomerRelation\Helper\ProposalHelper;
 use CustomerRelation\DataAccess\CompanyDataAccess;
 use CustomerRelation\DataAccess\ContactDataAccess;
-use HumanResource\DataAccess\StaffDataAccess;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -154,16 +152,15 @@ class ProposalController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonDeleteAction()
+    public function apiDeleteAction()
     {
         $data=$this->params()->fromPost('chkId',array());
-        $message="success";
-
         $db=$this->proposalTable()->getAdapter();
         $conn=$db->getDriver()->getConnection();
 
+        $api = new ApiModel();
         try{
             $conn->beginTransaction();
             foreach($data as $id){
@@ -173,9 +170,10 @@ class ProposalController extends SundewController
             $this->flashMessenger()->addMessage('Delete successful!');
         }catch (\Exception $ex){
             $conn->rollback();
-            $message=$ex->getMessage();
+            $api->setStatusCode(500);
+            $api->setStatusMessage($ex->getMessage());
         }
-        return new JsonModel(array("message"=>$message));
+        return $api;
     }
 
     /**

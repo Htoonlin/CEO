@@ -43,10 +43,10 @@ $this->headScript()
         });
 
         $.setPayrollUrl({
-            attendance  : '<?= $this->url('hr_attendance', array('action' => 'jsonAttendance')) ?>',
-            leave       : '<?= $this->url('hr_leave', array('action' => 'jsonLeave')) ?>',
-            holiday     : '<?= $this->url('hr_holiday', array('action' => 'jsonCheckHoliday')) ?>',
-            payroll     : '<?= $this->url('hr_payroll', array('action' => 'jsonSave')) ?>'
+            attendance  : '<?= $this->url('hr_attendance', array('action' => 'apiAttendance')) ?>',
+            leave       : '<?= $this->url('hr_leave', array('action' => 'apiLeave')) ?>',
+            holiday     : '<?= $this->url('hr_holiday', array('action' => 'apiCheckHoliday')) ?>',
+            payroll     : '<?= $this->url('hr_payroll', array('action' => 'apiSave')) ?>'
         });
 
         $('button#btnAttendance').click(function(){

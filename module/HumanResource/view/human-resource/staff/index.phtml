@@ -18,16 +18,15 @@
      $("button#btnDelete").click(function(){
          if(confirm('Are you sure to delete selected records?')){
              $.ajax({
-                 url:'<?php echo $this->url('hr_staff',array('action'=>'jsonDelete'))?>',
+                 url:'<?php echo $this->url('hr_staff',array('action'=>'apiDelete'))?>',
                  data:$('input[name="chkId[]"]:checked'),
                  type:'POST',
                  success:function(data){
-                     console.log(data);
-                     if(data.message=="success"){
-                         window.location.href="<?php echo $this->url('hr_staff');?>"
-                     }else{
-                         alert(data.message);
-                     }
+                     window.location.href="<?php echo $this->url('hr_staff');?>"
+                 },
+                 error: function(response){
+                     var data = response.reponseJSON;
+                     alert(data.status.message);
                  }
              });
          }

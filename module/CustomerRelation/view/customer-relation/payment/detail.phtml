@@ -16,7 +16,7 @@ echo $this->formHidden($form->get('paymentId'));
             event.preventDefault();
             var parentID = $('#parent').val();
             var id = $('#id').val();
-            $.post("/payment/jsonPaymentAction", {pID: parentID, thisID: id },
+            $.post("/payment/apiPaymentAction", {pID: parentID, thisID: id },
                 function(data){
                     if(data.response === true){
                         var $el = $("#Position");

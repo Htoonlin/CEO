@@ -12,9 +12,9 @@ use Application\DataAccess\CalendarDataAccess;
 use Application\DataAccess\CalendarType;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Entity\Calendar;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use HumanResource\Helper\HolidayHelper;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -43,31 +43,31 @@ class HolidayController extends SundewController
     /**
      * @return JsonModel
      */
-    public function jsonHolidayAction()
+    public function apiHolidayAction()
     {
         $year = (int)$this->params()->fromPost('year', date('Y'));
         $holiday = $this->calendarTable()->getHolidayByYear($year);
 
-        return new JsonModel($holiday);
+        return new ApiModel($holiday);
     }
 
     /**
      * @return JsonModel
      */
-    public function jsonWeeklyHolidayAction()
+    public function apiWeeklyHolidayAction()
     {
         $result = $this->calendarTable()->getCalendarByType(CalendarType::holiday_weekly);
-        return new JsonModel($result->toArray());
+        return new ApiModel($result);
     }
 
     /**
      * @return JsonModel
      */
-    public function jsonCheckHolidayAction()
+    public function apiCheckHolidayAction()
     {
         $date = $this->params()->fromQuery('date', date('Y-m-d', time()));
         $isHoliday = $this->calendarTable()->checkHoliday($date);
-        return new JsonModel(array("status" => $isHoliday));
+        return new ApiModel(array("isHoliday" => $isHoliday));
     }
 
     /**

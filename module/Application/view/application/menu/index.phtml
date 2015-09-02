@@ -33,9 +33,9 @@ $this->headScript()->prependFile($this->basePath() . '/js/treeview.js')
                 function bindURL(url_type)
                 {
                     if(url_type == 'R'){
-                        $.get('<?php echo $this->url('route', array('action' => 'jsonAll')); ?>', function(data){
+                        $.get('<?php echo $this->url('route', array('action' => 'apiAll')); ?>', function(response){
                             $('input[name="url"]').attr('data-provider', 'typeahead').attr('autocomplete', 'off')
-                                .typeahead({source:data});
+                                .typeahead({source:response.data});
                         });
                     }else{
                         $('input[name="url"]').removeAttr('data-provider').removeAttr('autocomplete');

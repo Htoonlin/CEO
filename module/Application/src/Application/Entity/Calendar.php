@@ -9,7 +9,9 @@
 namespace Application\Entity;
 
 
-class Calendar
+use Zend\Stdlib\ArraySerializableInterface;
+
+class Calendar implements ArraySerializableInterface
 {
     protected $calendarId;
     public function getCalendarId(){return $this->calendarId;}

@@ -11,6 +11,7 @@ namespace Application\Controller;
 use Application\DataAccess\CalendarDataAccess;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Helper\DashboardHelper;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use HumanResource\DataAccess\AttendanceDataAccess;
 use HumanResource\DataAccess\LeaveDataAccess;
@@ -20,10 +21,8 @@ use HumanResource\Entity\Attendance;
 use HumanResource\Entity\Leave;
 use HumanResource\Helper\PayrollHelper;
 use Zend\Json\Json;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use HumanResource\Entity\Staff;
-use ProjectManagement\Helper\TaskHelper;
 use ProjectManagement\Entity\Task;
 use ProjectManagement\DataAccess\TaskDataAccess;
 
@@ -219,9 +218,10 @@ class DashboardController extends SundewController
         ));
     }
 
-    public function jsonAttendanceAction()
+    public function apiAttendanceAction()
     {
         $request = $this->getRequest();
+        $api = new ApiModel();
 
         if($request->isPost())
         {
@@ -236,10 +236,8 @@ class DashboardController extends SundewController
                 ));
             }
 
-            $message = 'success';
             try{
                 $type = $this->params()->fromPost('status', '');
-
                 if($type == 'I' && !$attendance->getInTime()){
                     $attendance->setInTime(date('H:i:s', time()));
                     $this->attendanceTable()->saveAttendance($attendance);
@@ -247,16 +245,17 @@ class DashboardController extends SundewController
                     $attendance->setOutTime(date('H:i:s', time()));
                     $this->attendanceTable()->saveAttendance($attendance);
                 }else{
-                    $message = 'You already registered. Please contact to HR if you want to change time.';
+                    $api->setStatusCode(406);
+                    $api->setStatusMessage('You already registered. Please contact to HR if you want to change time.');
                 }
 
             }catch(\Exception $ex) {
-                $message = $ex->getMessage();
+                $api->setStatusCode(500);
+                $api->setStatusMessage($ex->getMessage());
             }
-
-            return new JsonModel(array('message' => $message));
+        }else{
+            $api->setStatusCode(405);
         }
-
-        return new JsonModel(array('message' => 'Invalid request.'));
+        return $api;
     }
 }

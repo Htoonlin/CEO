@@ -43,7 +43,7 @@ class ControllerGenerator extends SundewGenerator
         $class->addUse('Core\SundewController');
         $class->addUse('Core\SundewExporting');
         $class->addUse('Zend\View\Model\ViewModel');
-        $class->addUse('Zend\View\Model\JsonModel');
+        $class->addUse('Core\Model\ApiModel');
         $class->addUse($this->module . '\\Entity\\' . $entity);
         $class->addUse($this->module . '\\Helper\\' . $helper);
         $class->addUse($this->module . '\\DataAccess\\' . $dataAccess);
@@ -120,22 +120,23 @@ class ControllerGenerator extends SundewGenerator
             'body' => $deleteActionBody,
         ));
 
-        $jsonDeleteActionBody = '$data = $this->params()->fromPost("chkId", array());' . PHP_EOL;
-        $jsonDeleteActionBody .= '$db = $this->' . $varEntity . 'Table()->getAdapter();' . PHP_EOL;
-        $jsonDeleteActionBody .= '$conn = $db->getDriver()->getConnection();' . PHP_EOL;
-        $jsonDeleteActionBody .= "try{\n\t\$conn->beginTransaction();\n";
-        $jsonDeleteActionBody .= "\tforeach(\$data as \$id){\n";
-        $jsonDeleteActionBody .= "\t\t\$this->{$varEntity}Table()->delete{$entity}(\$id);\n\t}\n";
-        $jsonDeleteActionBody .= "\t\$conn->commit();\n";
-        $jsonDeleteActionBody .= "\t\$message = 'success';\n";
-        $jsonDeleteActionBody .= "\t\$this->flashMessenger()->addInfoMessage('Delete successful');\n";
-        $jsonDeleteActionBody .= "} catch(\\Exception \$ex) {\n";
-        $jsonDeleteActionBody .= "\t\$conn->rollback();\n";
-        $jsonDeleteActionBody .= "\t\$message = \$ex->getMessage();\n}\n";
-        $jsonDeleteActionBody .= "return new JsonModel(array('message' => \$message));";
-        $jsonDeleteAction = MethodGenerator::fromArray(array(
-            'name' => 'jsonDeleteAction',
-            'body' => $jsonDeleteActionBody,
+        $apiDeleteActionBody = '$data = $this->params()->fromPost("chkId", array());' . PHP_EOL;
+        $apiDeleteActionBody .= '$db = $this->' . $varEntity . 'Table()->getAdapter();' . PHP_EOL;
+        $apiDeleteActionBody .= '$conn = $db->getDriver()->getConnection();' . PHP_EOL;
+        $apiDeleteActionBody .= '$api = new ApiModel();' . PHP_EOL;
+        $apiDeleteActionBody .= "try{\n\t\$conn->beginTransaction();\n";
+        $apiDeleteActionBody .= "\tforeach(\$data as \$id){\n";
+        $apiDeleteActionBody .= "\t\t\$this->{$varEntity}Table()->delete{$entity}(\$id);\n\t}\n";
+        $apiDeleteActionBody .= "\t\$conn->commit();\n";
+        $apiDeleteActionBody .= "\t\$this->flashMessenger()->addInfoMessage('Delete successful');\n";
+        $apiDeleteActionBody .= "} catch(\\Exception \$ex) {\n";
+        $apiDeleteActionBody .= "\t\$conn->rollback();\n";
+        $apiDeleteActionBody .= "\t\$api->setStatusCode(500);\n";
+        $apiDeleteActionBody .= "\t\$api->setStatusMessage(\$ex->getMessage());\n}\n";
+        $apiDeleteActionBody .= "return \$api;";
+        $apiDeleteActionBody = MethodGenerator::fromArray(array(
+            'name' => 'apiDeleteAction',
+            'body' => $apiDeleteActionBody,
         ));
 
         $exportActionBody = '$export = new SundewExporting($this->' . $varEntity . 'Table()->fetchAll(false));' . PHP_EOL;
@@ -151,7 +152,7 @@ class ControllerGenerator extends SundewGenerator
             'body' => $exportActionBody,
         ));
         $class->addMethods(array($mainTable, $indexAction, $detailAction,
-            $deleteAction, $jsonDeleteAction, $exportAction));
+            $deleteAction, $apiDeleteActionBody, $exportAction));
         return '<?php' . PHP_EOL . $class->generate();
     }
 }

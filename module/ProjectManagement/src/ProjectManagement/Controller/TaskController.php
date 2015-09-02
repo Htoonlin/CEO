@@ -1,10 +1,10 @@
 <?php
 namespace ProjectManagement\Controller;
 
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
 use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
 use ProjectManagement\Entity\Task;
 use ProjectManagement\Helper\TaskHelper;
 use ProjectManagement\DataAccess\TaskDataAccess;
@@ -183,28 +183,29 @@ class TaskController extends SundewController
         return $this->redirect()->toRoute('pm_task');
     }
 
+
     /**
-     *
-     * @return \Zend\View\Model\JsonModel
+     * @return ApiModel
      */
-    public function jsonDeleteAction()
+    public function apiDeleteAction()
     {
         $data = $this->params()->fromPost("chkId", array());
         $db = $this->taskTable()->getAdapter();
         $conn = $db->getDriver()->getConnection();
+        $api = new ApiModel();
         try{
-        	$conn->beginTransaction();
-        	foreach($data as $id){
-        		$this->taskTable()->deleteTask($id);
-        	}
-        	$conn->commit();
-        	$message = 'success';
-        	$this->flashMessenger()->addInfoMessage('Delete successful');
+            $conn->beginTransaction();
+            foreach($data as $id){
+                $this->taskTable()->deleteTask($id);
+            }
+            $conn->commit();
+            $this->flashMessenger()->addInfoMessage('Delete successful');
         } catch(\Exception $ex) {
-        	$conn->rollback();
-        	$message = $ex->getMessage();
+            $conn->rollback();
+            $api->setStatusCode(500);
+            $api->setStatusMessage($ex->getMessage());
         }
-        return new JsonModel(array('message' => $message));
+        return $api;
     }
 
     /**

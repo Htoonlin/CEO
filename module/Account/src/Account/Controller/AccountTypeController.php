@@ -12,8 +12,8 @@ use Account\Helper\AccountTypeHelper;
 use Account\Entity\AccountType;
 use Account\DataAccess\AccountTypeDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class AccountTypeController extends SundewController
@@ -45,7 +45,7 @@ class AccountTypeController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
     public function apiAllAction()
     {
@@ -56,7 +56,7 @@ class AccountTypeController extends SundewController
 
             $data[] = array('accountTypeId' => $accountType->getAccountTypeId(), 'name' => $accountType->getName());
         }
-        return new JsonModel($data);
+        return new ApiModel($data);
     }
 
     /**

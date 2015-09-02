@@ -17,15 +17,15 @@ $flashMesssages=$this->flashMessenger()->getMessages();
         $("button#btnDelete").click(function(){
             if(confirm('Are you sure to delete selected records?')){
                 $.ajax({
-                    url : '<?php echo $this->url('cr_contract', array('action' => 'jsonDelete')) ?>',
+                    url : '<?php echo $this->url('cr_contract', array('action' => 'apiDelete')) ?>',
                     data : $('input[name="chkId[]"]:checked'),
                     type : 'POST',
                     success : function(data){
-                        if(data.message == "success"){
-                            window.location.href = "<?php echo $this->url('cr_contract'); ?>"
-                        }else{
-                            alert(data.message);
-                        }
+                        window.location.href = "<?php echo $this->url('cr_contract'); ?>"
+                    },
+                    error : function(response){
+                        var data = response.responseJSON;
+                        alert(data.status.message);
                     }
                 });
             }

@@ -26,12 +26,12 @@ $this->headScript()->appendFile($this->basePath() . '/fullcalendar/fullcalendar.
     var birthdays = new Array();
     function fillHolidays() {
         $.ajax({
-            url     : '<?php echo $this->url('hr_holiday', array('action' => 'jsonHoliday')) ?>',
+            url     : '<?php echo $this->url('hr_holiday', array('action' => 'apiHoliday')) ?>',
             data    : {year:currentYear},
             type    : 'POST',
             async   : false,
-            success : function(data){
-                holidays = data;
+            success : function(response){
+                holidays = response.data;
             }
         });
 
@@ -40,12 +40,12 @@ $this->headScript()->appendFile($this->basePath() . '/fullcalendar/fullcalendar.
 
     function fillBirthdays(){
         $.ajax({
-            url     : '<?php echo $this->url('hr_staff', array('action' => 'jsonBirthday')) ?>',
+            url     : '<?php echo $this->url('hr_staff', array('action' => 'apiBirthday')) ?>',
             data    : {year:currentYear},
             type    : 'POST',
             async   : false,
-            success : function(data){
-                birthdays = data;
+            success : function(response){
+                birthdays = response.data;
             }
         });
     }
@@ -90,11 +90,11 @@ $this->headScript()->appendFile($this->basePath() . '/fullcalendar/fullcalendar.
 
         //Load weekly holidays
         $.ajax({
-            url     : '<?php echo $this->url('hr_holiday', array('action' => 'jsonWeeklyHoliday')) ?>',
+            url     : '<?php echo $this->url('hr_holiday', array('action' => 'apiWeeklyHoliday')) ?>',
             type    : 'GET',
             async   : false,
-            success : function(data){
-                weeklyHoliday = data;
+            success : function(response){
+                weeklyHoliday = response.data;
             }
         });
 

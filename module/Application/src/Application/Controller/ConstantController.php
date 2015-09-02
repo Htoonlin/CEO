@@ -6,9 +6,9 @@ namespace Application\Controller;
 use Application\DataAccess\ConstantDataAccess;
 use Application\Entity\Constant;
 use Application\Helper\ConstantHelper;
+use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class ConstantController extends SundewController
@@ -118,15 +118,12 @@ class ConstantController extends SundewController
         return $response;
     }
 
-    /**
-     * @return JsonModel
-     */
-    public function jsonDeleteAction()
+    public function apiDeleteAction()
     {
         $data = $this->params()->fromPost('chkId', array());
         $db = $this->constantTable()->getAdapter();
         $conn = $db->getDriver()->getConnection();
-        $message = 'success';
+        $api = new ApiModel();
         try{
             $conn->beginTransaction();
             foreach($data as $id){
@@ -136,9 +133,10 @@ class ConstantController extends SundewController
             $this->flashMessenger()->addInfoMessage('Delete successful!');
         }catch(\Exception $ex){
             $conn->rollback();
-            $message = $ex->getMessage();
+            $api->setStatusCode(500);
+            $api->setStatusMessage($ex->getMessage());
         }
-        return new JsonModel(array("message" => $message));
+        return $api;
     }
 }
 

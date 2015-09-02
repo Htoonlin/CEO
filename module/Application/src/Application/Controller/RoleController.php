@@ -6,9 +6,8 @@ namespace Application\Controller;
 use Application\Helper\RoleHelper;
 use Application\Entity\Role;
 use Application\DataAccess\RoleDataAccess;
+use Core\Model\ApiModel;
 use Core\SundewController;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -26,11 +25,11 @@ class RoleController extends SundewController
     }
 
     /**
-     * @return JsonModel
+     * @return ApiModel
      */
-    public function jsonAllAction()
+    public function apiAllAction()
     {
-        return new JsonModel($this->roleTable()->fetchAll());
+        return new ApiModel($this->roleTable()->fetchAll());
     }
 
     public function indexAction()
