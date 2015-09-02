@@ -1,5 +1,5 @@
 <?php
-namespace Development\Helper\Generator;
+namespace Core\Helper\Generator;
 
 use Zend\Db\Metadata\Metadata;
 use HumanResource\Entity\Staff;
@@ -33,7 +33,7 @@ class EntityGenerator extends SundewGenerator
 
     /**
      * (non-PHPdoc)
-     * @see \Development\Helper\Generator\SundewGenerator::getClassName()
+     * @see \Core\Helper\Generator\SundewGenerator::getClassName()
      */
     public function getClassName(){
         return parent::generateClass($this->module, $this->tbl_name);
@@ -41,7 +41,7 @@ class EntityGenerator extends SundewGenerator
 
     /**
      * (non-PHPdoc)
-     * @see \Development\Helper\Generator\SundewGenerator::generate()
+     * @see \Core\Helper\Generator\SundewGenerator::generate()
      */
     public function generate()
     {

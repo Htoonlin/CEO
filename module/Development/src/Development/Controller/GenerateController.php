@@ -15,11 +15,11 @@ use Core\SundewController;
 use Development\DataAccess\GenerateDataAccess;
 use Development\Helper\GenerateHelper;
 use Zend\View\Model\ViewModel;
-use Development\Helper\Generator\EntityGenerator;
-use Development\Helper\Generator\HelperGenerator;
-use Development\Helper\Generator\GatewayGenerator;
-use Development\Helper\Generator\ControllerGenerator;
-use Development\Helper\Generator\SundewGenerator;
+use Core\Helper\Generator\EntityGenerator;
+use Core\Helper\Generator\HelperGenerator;
+use Core\Helper\Generator\GatewayGenerator;
+use Core\Helper\Generator\ControllerGenerator;
+use Core\Helper\Generator\SundewGenerator;
 
 class GenerateController extends SundewController
 {
