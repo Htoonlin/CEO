@@ -70,7 +70,8 @@ class TaskDataAccess extends SundewTableGateway
         $result = $this->select(function(Select $select) use ($staffId){
             $where = new Where();
             $where->equalTo('staffId', $staffId)
-            ->AND->in('status', array('A', 'P'));
+                ->AND->lessThanOrEqualTo('fromTime', date('Y-m-d H:m:s'))
+                ->AND->in('status', array('A', 'P'));
             $select->where($where)->order('toTime ASC, priority ASC');
         });
         return $result;

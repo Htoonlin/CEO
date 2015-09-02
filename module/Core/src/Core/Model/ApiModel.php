@@ -18,6 +18,10 @@ use Zend\View\Model\JsonModel;
  */
 class ApiModel extends JsonModel
 {
+    /**
+     * @param null $data
+     * @param null $values
+     */
     function __construct($data = null, $values = null){
         if($data != null){
             $this->setResponseData($data);
@@ -26,8 +30,14 @@ class ApiModel extends JsonModel
         parent::__construct(null, $values);
     }
 
+    /**
+     * @var
+     */
     protected $responseData;
 
+    /**
+     * @var bool
+     */
     protected $ajaxOnly = false;
     /**
      * @var int
@@ -42,18 +52,60 @@ class ApiModel extends JsonModel
      */
     protected $allowMethods = ['GET' , 'POST'];
 
+    /**
+     * @var bool
+     */
+    protected $allowFlashRequest = false;
+
+    protected $allowMediaTypes = ['application/json'];#,'application/x-www-form-urlencoded'];
+    public function getAllowMediaTypes(){
+        return $this->allowMediaTypes;
+    }
+
+    public function setAllowMediaTypes(array $types){
+        if(!empty($types)){
+            $this->allowMediaTypes = $types;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAllowFlashRequest(){
+        return $this->allowFlashRequest;
+    }
+
+    /**
+     * @param $allow
+     */
+    public function setAllowFlashRequest($allow){
+        $this->allowFlashRequest = $allow;
+    }
+
+    /**
+     * @param $is
+     */
     public function setAjaxOnly($is){
         $this->ajaxOnly = $is;
     }
 
+    /**
+     * @return bool
+     */
     public function isAjaxOnly(){
         return $this->ajaxOnly;
     }
 
+    /**
+     * @param $data
+     */
     public function setResponseData($data){
         $this->responseData = $data;
     }
 
+    /**
+     * @return mixed
+     */
     public function getResponseData(){
         return $this->responseData;
     }
@@ -74,10 +126,21 @@ class ApiModel extends JsonModel
         return $this->statusCode;
     }
 
+    /**
+     * @var
+     */
     protected $statusMessage;
+
+    /**
+     * @param $message
+     */
     public function setStatusMessage($message){
         $this->statusMessage = $message;
     }
+
+    /**
+     * @return mixed
+     */
     public function getStatusMessage(){
         return $this->statusMessage;
     }
@@ -100,7 +163,9 @@ class ApiModel extends JsonModel
      * @param array $allowMethods
      */
     public function setAllowMethods(array $allowMethods){
-        $this->allowMethods = $allowMethods;
+        if(!empty($allowMethods)){
+            $this->allowMethods = $allowMethods;
+        }
     }
 
     /**
