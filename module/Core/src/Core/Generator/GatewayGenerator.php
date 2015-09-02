@@ -1,5 +1,5 @@
 <?php
-namespace Core\Helper\Generator;
+namespace Core\Generator;
 
 use Zend\Db\Metadata\Metadata;
 use HumanResource\Entity\Staff;
@@ -31,7 +31,7 @@ class GatewayGenerator extends SundewGenerator
 
     /**
      * (non-PHPdoc)
-     * @see \Core\Helper\Generator\SundewGenerator::getClassName()
+     * @see \Core\Generator\SundewGenerator::getClassName()
      */
     public function getClassName(){
         return parent::generateClass($this->module, $this->tbl_name, 'DataAccess');

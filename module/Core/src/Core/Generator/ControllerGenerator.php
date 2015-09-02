@@ -1,5 +1,5 @@
 <?php
-namespace Core\Helper\Generator;
+namespace Core\Generator;
 
 use Zend\Db\Metadata\Metadata;
 use HumanResource\Entity\Staff;
