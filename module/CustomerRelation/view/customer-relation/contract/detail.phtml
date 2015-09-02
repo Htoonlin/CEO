@@ -23,20 +23,8 @@ echo $this->formHidden($form->get('contractId'));
         <?php
         echo $this->formHorizontal($form->get('contractDate'));
         echo $this->formHorizontal($form->get('code'));
-        echo $this->formHorizontal($form->get('companyId'));
+        echo $this->formHorizontal($form->get('name'));
         ?>
-        <div class="form-group">
-            <label class="control-label col-sm-3">Project Name</label>
-            <div class="col-sm-9">
-                <?php echo $this->formSelect($form->get('projectId'));?>
-            </div>
-        </div>
-        <?php
-            echo $this->formHorizontal($form->get('contactId'));
-            echo $this->formHorizontal($form->get('contractFile'));
-        ?>
-    </div>
-    <div class="col-md-6">
         <div class="form-group">
             <label class="control-label col-sm-3">Amount</label>
             <div class="col-sm-5">
@@ -47,8 +35,16 @@ echo $this->formHidden($form->get('contractId'));
             </div>
         </div>
         <?php
-        echo $this->formHorizontal($form->get('notes'));
+        echo $this->formHorizontal($form->get('contractFile'));
         echo $this->formHorizontal($form->get('status'));
+        ?>
+    </div>
+    <div class="col-md-6">
+        <?php
+        echo $this->formHorizontal($form->get('companyId'));
+        echo $this->formHorizontal($form->get('projectId'));
+        echo $this->formHorizontal($form->get('contactId'));
+        echo $this->formHorizontal($form->get('notes'));
         ?>
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
@@ -66,6 +62,10 @@ echo $this->formHidden($form->get('contractId'));
                        href="<?php echo $this->url('cr_contract', array('action'=>'delete', 'id'=>$id));?>" class="btn btn-danger">
                         <span class="glyphicon glyphicon-trash"></span>
                         Remove
+                    </a>
+                    <a href="<?php echo $this->url('cr_contract', array('action' => 'download', 'id' => $id)); ?>"
+                       class="btn btn-info" title="Download">
+                        <span class="glyphicon glyphicon-download"></span>
                     </a>
                 <?php endif; ?>
                 <?php echo $this->backButton(); ?>

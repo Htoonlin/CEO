@@ -82,12 +82,11 @@ class SundewTableGateway extends AbstractTableGateway
             $select->order($orderBy . ' ' . $order);
 
             if(!empty($filter)){
-                $query = "CONCAT_WS(' '," . implode(',', $columns) . ') LIKE ?';
+                $query = "CONCAT_WS(' ',`" . implode('`,`', $columns) . '`) LIKE ?';
                 $where = new Where();
                 $where->literal($query, '%' . $filter . '%');
                 $select->where($where);
             }
-
             return $this->paginateWith($select);
 
         }catch(\Exception $ex){

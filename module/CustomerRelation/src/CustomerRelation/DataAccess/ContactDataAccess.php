@@ -71,7 +71,6 @@ class ContactDataAccess extends SundewTableGateway
     {
         $id=$contact->getContactId();
         $data=$contact->getArrayCopy();
-        $data['contractBy']=$this->staffId;
         if($id>0){
             $this->update($data, array('contactId'=>$id));
         }else{

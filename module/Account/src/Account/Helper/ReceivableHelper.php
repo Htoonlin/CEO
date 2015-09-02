@@ -115,25 +115,67 @@ class ReceivableHelper
         if(!$this->inputFilter) {
             $filter=new InputFilter();
             $filter->add(array(
-                'name'=>'receiveVoucherId',
-                'required'=>true,
-                'filters'=>array(
-                    array('name'=>'Int'),
-                )
-            ));
-            $filter->add(array(
-                'name'=>'voucherNo',
-                'required'=>true,
-                'validators'=>array(
+                'name' => 'voucherNo',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'Zend\Filter\StripTags'),
+                    array('name' => 'Zend\Filter\StringTrim'),
+                ),
+                'validators' => array(
                     array(
-                        'name'=>'StringLength',
-                        'options'=>array(
-                            'max'=>255
-                        ),
+                        'name' => 'StringLength',
+                        'max' => 50,
+                        'min' => 1,
+                        'encoding' => 'UTF-8',
                     ),
                 ),
             ));
-
+            $filter->add(array(
+                'name' => 'voucherDate',
+                'required' => true,
+            ));
+            $filter->add(array(
+                'name' => 'accountType',
+                'required' => true,
+                'validators' => array(array('name' => 'Zend\I18n\Validator\IsInt')),
+            ));
+            $filter->add(array(
+                'name' => 'description',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'Zend\Filter\StripTags'),
+                    array('name' => 'Zend\Filter\StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'max' => 500,
+                        'min' => 1,
+                        'encoding' => 'UTF-8',
+                    ),
+                ),
+            ));
+            $filter->add(array(
+                'name' => 'amount',
+                'required' => true,
+                'validators' => array(array('name' => 'Zend\I18n\Validator\IsInt')),
+            ));
+            $filter->add(array(
+                'name' => 'paymentType',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'Zend\Filter\StripTags'),
+                    array('name' => 'Zend\Filter\StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'max' => 1,
+                        'min' => 1,
+                        'encoding' => 'UTF-8',
+                    ),
+                ),
+            ));
             $filter->add(array(
                 'name' => 'currencyId',
                 'requried' => true,
@@ -154,7 +196,6 @@ class ReceivableHelper
             $fileInput = new FileInput('attachmentFile');
             $fileInput->setRequired(false);
             $fileInput->getValidatorChain()
-                ->attach(new Extension(array('doc', 'docx', 'pdf')))
                 ->attachByName('filesize', array('max'=> '50MB'));
             $fileInput->getFilterChain()->attachByName(
                 'filerenameupload',
@@ -165,7 +206,6 @@ class ReceivableHelper
                 )
             );
             $filter->add($fileInput);
-            $filter->add(array('name' => 'accountType', 'required' => true));
             $this->inputFilter=$filter;
         }
         return $this->inputFilter;

@@ -58,6 +58,10 @@ class ContractHelper extends Form
                 ->setName('code')
                 ->setAttribute('class','form-control');
 
+            $name = new Element\Text('name');
+            $name->setAttribute('class', 'form-control');
+            $name->setLabel('Name');
+
             $txtAmount=new Element\Number();
             $txtAmount->setName("amount")
                 ->setLabel('Amount')
@@ -72,7 +76,7 @@ class ContractHelper extends Form
             $selectCurrency->setName('currencyId')
                 ->setLabel('Currency')
                 ->setAttribute('class','form-control')
-                ->setEmptyOption("-Choose Currency-")
+                ->setEmptyOption("--Currency--")
                 ->setValueOptions($currencies);
 
             $txtContractFile=new Element\File('contractFile');
@@ -112,6 +116,7 @@ class ContractHelper extends Form
             $form->add($txtContactId);
             $form->add($txtProjectId);
             $form->add($txtCode);
+            $form->add($name);
             $form->add($txtAmount);
             $form->add($selectCurrency);
             $form->add($txtContractFile);
@@ -168,6 +173,22 @@ class ContractHelper extends Form
                             ),
                             'message' => 'This contract code is already exists.',
                         ),
+                    ),
+                ),
+            ));
+            $filter->add(array(
+                'name' => 'name',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'Zend\Filter\StripTags'),
+                    array('name' => 'Zend\Filter\StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'max' => 255,
+                        'min' => 1,
+                        'encoding' => 'UTF-8',
                     ),
                 ),
             ));

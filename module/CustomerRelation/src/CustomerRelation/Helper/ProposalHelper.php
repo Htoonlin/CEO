@@ -67,9 +67,8 @@ class ProposalHelper extends Form
 
             $selectCurrency=new Element\Select();
             $selectCurrency->setName('currencyId')
-                ->setLabel('Currency')
                 ->setAttribute('class','form-control')
-                ->setEmptyOption('Choose Currency')
+                ->setEmptyOption('--Currency--')
                 ->setValueOptions($currencies);
 
             $txtProposalDate=new Element\Date('proposalDate');

@@ -133,10 +133,13 @@ class ContractController extends SundewController
             $this->contactList, $this->statusList, $this->projectList);
 
         $contract = $this->contractTable()->getContract($id);
+        $previousFile = '';
         $isEdit = true;
         if(!$contract){
             $isEdit=false;
             $contract = new Contract();
+        }else{
+            $previousFile = $contract->getContractFile();
         }
         if($action == 'clone'){
             $isEdit = false;
@@ -152,9 +155,11 @@ class ContractController extends SundewController
                 $request->getFiles()->toArray());
             $form->setData($post_data);
             $form->setInputFilter($helper->getInputFilter($id, $post_data['code']));
-            $post_data['contractBy'] = $this->staffId;
-
             if($form->isValid()){
+                if(empty($contract->getProposalFile()['name']) && $isEdit){
+                    $contract->setProposalFile($previousFile);
+                }
+                $contract->setContractBy($this->staffId);
                 $this->contractTable()->saveContract($contract);
                 $this->flashMessenger()->addSuccessMessage('Save successful');
                 return $this->redirect()->toRoute('cr_contract');

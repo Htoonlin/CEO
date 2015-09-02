@@ -58,7 +58,7 @@ class Proposal implements ArraySerializableInterface
 
     protected $group_code;
     public function getGroupCode(){return $this->group_code;}
-    public function setCroupCode($value){$this->group_code=$value;}
+    public function setGroupCode($value){$this->group_code=$value;}
 
     protected $status;
     public function getStatus(){return $this->status;}

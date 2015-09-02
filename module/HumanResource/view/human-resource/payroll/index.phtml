@@ -15,12 +15,19 @@ $this->headScript()
 <h1><?php echo $title; ?></h1>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <div class="text-right">
-            <div class="btn-group">
-                <a href="<?php echo $this->url("hr_payroll", array('action'=>'process'));?>" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-tasks"></span>
-                    Process
-                </a>
+        <div class="row">
+            <div class="col-md-3">
+                <?php echo $this->gridFilter('payrollFilter'); ?>
+            </div>
+            <div class="col-md-9">
+                <div class="text-right">
+                    <div class="btn-group">
+                        <a href="<?php echo $this->url("hr_payroll", array('action'=>'process'));?>" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-tasks"></span>
+                            Process
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -108,7 +115,10 @@ $this->headScript()
                 echo $this->gridHeader($columns);
                 ?>
                 <tbody>
-                <?php foreach($paginator as $payroll):?>
+                <?php
+                    foreach($paginator as $payroll):
+                    if($payroll->s_wd <= 0) $payroll->s_wd = 1;
+                ?>
                     <tr>
                         <td class="text-center"><?= $payroll->fromDate ?></td>
                         <td class="text-center"><?= $payroll->toDate ?></td>
@@ -130,6 +140,7 @@ $this->headScript()
                                 };
 
                                 $.each(<?= $payroll->Late ?>, function(key, value){
+                                    console.log(value);
                                     data[key] = parseInt(value);
                                 });
 

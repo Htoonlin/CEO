@@ -96,6 +96,13 @@ $flashMesssages=$this->flashMessenger()->getMessages();
                     array(
                         'type' => 'db',
                         'value' => array(
+                            'title' => 'Name',
+                            'col' => 'name',
+                        )
+                    ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
                             'title' => 'Date',
                             'col' => 'contractDate',
                         ),
@@ -127,7 +134,7 @@ $flashMesssages=$this->flashMessenger()->getMessages();
                 echo $this->gridHeader($columns);
                 ?>
                 <tbody>
-                <?php foreach($paginator as $contract) : ?>
+                <?php foreach($paginator as $contract) :?>
                     <tr>
                         <td class="text-center">
                             <div class="checkbox" style="margin: 0">
@@ -140,6 +147,9 @@ $flashMesssages=$this->flashMessenger()->getMessages();
                             <a href="<?php echo $this->url('cr_contract',array('action'=>'detail', 'id'=>$contract->contractId));?>" title="edit">
                                 <?php echo $this->escapeHtml($contract->code); ?>
                             </a>
+                        </td>
+                        <td>
+                            <?php echo $this->escapeHtml($contract->name);?>
                         </td>
                         <td>
                             <?php echo $this->escapeHtml($contract->contractDate);?>

@@ -101,27 +101,34 @@ class ProposalController extends SundewController
         $helper = new ProposalHelper($this->proposalTable()->getAdapter());
         $form = $helper->getForm($this->currencyList, $this->companyList,
             $this->contactList, $this->statusList);
+        $previousFile = '';
         $proposal = $this->proposalTable()->getProposal($id);
         $isEdit = true;
         if(!$proposal){
             $isEdit= false;
             $proposal = new Proposal();
+        }else{
+            $previousFile = $proposal->getProposalFile();
         }
         if($action == 'clone'){
             $isEdit = false;
             $id = 0;
             $proposal->setProposalId(0);
         }
+
         $form->bind($proposal);
         $request = $this->getRequest();
         if($request->isPost()){
             $post_data = array_merge_recursive(
                 $request->getPost()->toArray(),
-            $request->getFiles()->toArray());
+                $request->getFiles()->toArray());
             $form->setData($post_data);
             $form->setInputFilter($helper->getInputFilter($id, $post_data['code']));
-            $post_data['proposalBy'] = $this->staffId;
             if($form->isValid()){
+                if(empty($proposal->getProposalFile()['name']) && $isEdit){
+                    $proposal->setProposalFile($previousFile);
+                }
+                $proposal->setProposalBy($this->staffId);
                 $this->proposalTable()->saveProposal($proposal);
                 $this->flashMessenger()->addSuccessMessage('Save successful.');
                 return $this->redirect()->toRoute('cr_proposal');
