@@ -18,11 +18,6 @@ use Zend\Validator\File\Extension;
 
 class PayableHelper extends Form
 {
-    protected $dbAdapter;
-    public function __construct($dbAdapter)
-    {
-        $this->dbAdapter = $dbAdapter;
-    }
     protected $form;
     public function getForm(array $currencies, array $paymentTypes)
     {

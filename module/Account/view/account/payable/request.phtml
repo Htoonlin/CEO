@@ -10,114 +10,111 @@
 $title="Payable Voucher";
 $this->headTitle($title);
 ?>
-<h1><?php echo $title; ?></h1>
+    <h1><?php echo $title; ?></h1>
 <?php
 $form->setAttribute('action',$this->url('account_payable',array('action'=>'request')));
 $form->prepare();
 echo $this->form()->openTag($form);
 echo $this->formHidden($form->get('payVoucherId'));
 ?>
-<script type="text/javascript">
-    $('document').ready(function() {
-        $('#voucherDate').on('dateClicked.fu.datepicker',function(evt, date){
-            $.ajax({
-                url:'<?php echo $this->url('account_payable',array('action'=>'apiGenerate'));?>',
-                method:'POST',
-                data:{date:$(this).datepicker('getFormattedDate')},
-                success:function(response){
-                    $('input[name="voucherNo"]').val(response.data.generatedNo);
-                }
-            })
-        });
-    });
-</script>
-<div class="panel panel-default">
-    <div class="form-horizontal panel-heading">
-        <div class="row">
-            <div class="col-sm-4">
-                <?php echo $this->formHorizontal($form->get('voucherNo'));?>
-            </div>
-            <div class="col-sm-offset-4 col-sm-4">
-                <?php echo $this->formHorizontal($form->get('voucherDate'));?>
-            </div>
-        </div>
-    </div>
-    <div class="panel-body" role="form">
-        <div class="row">
-            <div class="col-sm-4 <?= empty($form->getMessages('accountType')) ? '' : ' has-error' ?>">
-                <label class="control-label">Account Type</label>
-                <div class="form-control">
-                    <script type="text/javascript">
-                        acocuntType_chose = function(value){
-                            if(value > 0){
-                                $('input[name=accountType]').val(value);
-                            }else{
-                                $('input[name=accountType]').val('');
-                            }
-                        }
-                    </script>
-                    <?= $this->formHidden($form->get('accountType')); ?>
-                    <?= $this->partial('shared/tree_chooser.phtml', array('data' => $accountTypes,
-                        'name' => 'accountTypePicker', 'callback' => 'acocuntType_chose',
-                        'active' => $form->get('accountType')->getValue())) ?>
-                    <?php if(!empty($form->getMessages('accountType'))) : ?>
-                        <?php foreach($form->getMessages('accountType') as $val) : ?>
-                            <p class="text-danger"><?= $val ?></p>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+    <script type="text/javascript">
+        $('document').ready(function()
+        {
+            $('#voucherDate').on('dateClicked.fu.datepicker',function(evt, date){
+                $.ajax({
+                    url:'<?php echo $this->url('account_payable',array('action'=>'jsonGenerate'));?>',
+                    method:'POST',
+                    data:{date:$(this).datepicker('getFormattedDate')},
+                    success:function(data){
+                        $('input[name="voucherNo"]').val(data.generatedNo);
+                    }
+                })
+            });
+        })
+    </script>
+    <div class="panel panel-default">
+        <div class="form-horizontal panel-heading">
+            <div class="row">
+                <div class="col-sm-4">
+                    <?php echo $this->formHorizontal($form->get('voucherNo'));?>
+                </div>
+                <div class="col-sm-offset-4 col-sm-4">
+                    <?php echo $this->formHorizontal($form->get('voucherDate'));?>
                 </div>
             </div>
-            <div class="col-sm-4">
-                <?php echo $this->formRow($form->get('amount'));?>
-            </div>
-            <div class="col-sm-2">
-                <?php echo $this->formRow($form->get('currencyId')); ?>
-            </div>
-            <div class="col-sm-2">
-                <?php echo $this->formRow($form->get('paymentType'));?>
-            </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <?php echo $this->formRow($form->get('description'));?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-9">
-                <?php echo $this->formRow($form->get('group_code'));?>
-            </div>
-            <div class="col-sm-3">
-                <?php echo $this->formRow($form->get('attachmentFile'));?>
-            </div>
-        </div>
-    </div>
-    <div class="panel-footer form-horizontal">
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label class="col-sm-4 control-label">Withdraw by</label>
-                    <div class="col-sm-8">
-                        <?php echo $this->formHidden($form->get('withdrawBy'));?>
-                        <input type="text"disabled="disabled" class="form-control text-center" value="<?php echo $staffName;?>" />
+        <div class="panel-body" role="form">
+            <div class="row">
+                <div class="col-sm-4 <?= empty($form->getMessages('accountType')) ? '' : ' has-error' ?>">
+                    <label class="control-label">Account Type</label>
+                    <div class="form-control">
+                        <script type="text/javascript">
+                            acocuntType_chose = function(value){
+                                if(value > 0){
+                                    $('input[name=accountType]').val(value);
+                                }else{
+                                    $('input[name=accountType]').val('');
+                                }
+                            }
+                        </script>
+                        <?= $this->formHidden($form->get('accountType')); ?>
+                        <?= $this->partial('shared/tree_chooser.phtml', array('data' => $accountTypes,
+                            'name' => 'accountTypePicker', 'callback' => 'acocuntType_chose',
+                            'active' => $form->get('accountType')->getValue())) ?>
+                        <?php if(!empty($form->getMessages('accountType'))) : ?>
+                            <?php foreach($form->getMessages('accountType') as $val) : ?>
+                                <p class="text-danger"><?= $val ?></p>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
+                <div class="col-sm-4">
+                    <?php echo $this->formRow($form->get('amount')); ?>
+                </div>
+                <div class="col-sm-2">
+                    <?php echo $this->formRow($form->get('currencyId')); ?>
+                </div>
+                <div class="col-sm-2">
+                    <?php echo $this->formRow($form->get('paymentType'));?>
+                </div>
             </div>
-            <div class="col-sm-offset-4 col-sm-4">
-                <p class="text-right">
-                    <button type="submit" value="Save" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-send"></span>
-                        Request Now
-                    </button>
-                    <?php echo $this->backButton(); ?>
-                </p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <?php echo $this->formRow($form->get('description'));?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-10">
+                    <?php echo $this->formRow($form->get('group_code'));?>
+                </div>
+                <div class="col-sm-2">
+                    <?php echo $this->formRow($form->get('attachmentFile'));?>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer form-horizontal">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Withdraw by</label>
+                        <div class="col-sm-8">
+                            <?php echo $this->formHidden($form->get('withdrawBy'));?>
+                            <input type="text"disabled="disabled" class="form-control text-center" value="<?php echo $staffName;?>" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-offset-4 col-sm-4">
+                    <p class="text-right">
+                        <button type="submit" value="Save" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-send"></span>
+                            Request Now
+                        </button>
+                        <?php echo $this->backButton(); ?>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-
 <?php
 echo $this->form()->closeTag();
 ?>
-
-

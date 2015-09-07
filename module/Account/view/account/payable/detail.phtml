@@ -50,13 +50,22 @@ $this->headTitle($title);
                            value="<?php echo $voucher['type']; ?>"/>
                 </div>
             </div>
-            <div class="col-sm-8">
+            <div class="col-sm-8 text-right">
                 <div class="form-group">
-                    <label>
-                        Amount
-                    </label>
-                    <input type="text" class="form-control" disabled="disabled"
-                           value="<?php echo $voucher['amount'] . ' ' . $voucher['currencyCode']; ?>"/>
+                    <div class="col-sm-6">
+                        <label>
+                            Amount
+                        </label>
+                        <input type="text" class="form-control" disabled="disabled"
+                               value="<?php echo $voucher['amount'] . ' ' . $voucher['currencyCode']; ?>"/>
+                    </div>
+                    <div class="col-sm-6">
+                        <label>
+                            Payment Type
+                        </label>
+                        <input type="text" class="form-control" disabled="disabled"
+                               value="<?php echo $this->constantConverter($voucher['paymentType'], 'payment_type'); ?>"/>
+                    </div>
                 </div>
             </div>
         </div>

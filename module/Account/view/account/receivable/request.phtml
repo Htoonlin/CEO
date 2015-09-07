@@ -18,18 +18,19 @@ echo $this->form()->openTag($form);
 echo $this->formHidden($form->get('receiveVoucherId'));
 ?>
 <script type="text/javascript">
-    $('document').ready(function() {
+    $('document').ready(function()
+    {
         $('#voucherDate').on('dateClicked.fu.datepicker', function (evt, date) {
             $.ajax({
-                url: '<?php echo $this->url('account_receivable', array('action' => 'apiGenerate')); ?>',
+                url: '<?php echo $this->url('account_receivable', array('action' => 'jsonGenerate')); ?>',
                 method: 'POST',
                 data: {date: $(this).datepicker('getFormattedDate')},
-                success: function(response){
-                    $('input[name="voucherNo"]').val(response.data.generatedNo);
+                success: function(data){
+                    $('input[name="voucherNo"]').val(data.generatedNo);
                 }
             })
         });
-    });
+    })
 </script>
 <div class="panel panel-default">
     <div class="form-horizontal panel-heading">
@@ -74,7 +75,7 @@ echo $this->formHidden($form->get('receiveVoucherId'));
                 <?php echo $this->formRow($form->get('currencyId')); ?>
             </div>
             <div class="col-sm-2">
-                <?php echo $this->formRow($form->get('paymentType'));?>
+
             </div>
         </div>
         <div class="row">
@@ -83,11 +84,8 @@ echo $this->formHidden($form->get('receiveVoucherId'));
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-9">
+            <div class="col-sm-12">
                 <?php echo $this->formRow($form->get('group_code')); ?>
-            </div>
-            <div class="col-sm-3">
-                <?php echo $this->formRow($form->get('attachmentFile'));?>
             </div>
         </div>
     </div>
