@@ -134,7 +134,7 @@ class PayableController extends SundewController
     public function requestAction()
     {
         $this->init_combos();
-        $helper=new PayableHelper($this->payableTable());
+        $helper=new PayableHelper($this->payableTable()->getAdapter());
         $form=$helper->getForm($this->currencyList, $this->paymentList);
         $payable=new Payable();
 

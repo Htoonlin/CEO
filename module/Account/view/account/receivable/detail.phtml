@@ -50,13 +50,18 @@ $this->headTitle($title);
                            value="<?php echo $voucher['type']; ?>"/>
                 </div>
             </div>
-            <div class="col-sm-8">
-                <div class="form-group">
+            <div class="form-group">
+                <div class="col-sm-4">
                     <label>
                         Amount
                     </label>
                     <input type="text" class="form-control" disabled="disabled"
                            value="<?php echo $voucher['amount'] . ' ' . $voucher['currencyCode']; ?>"/>
+                </div>
+                <div class="col-sm-4">
+                    <label>Payment Type</label>
+                    <input type="text" class="form-control" disabled="disabled"
+                           value="<?php echo $this->constantConverter($voucher['paymentType'], 'payment_type'); ?>"/>
                 </div>
             </div>
         </div>
@@ -71,13 +76,18 @@ $this->headTitle($title);
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group">
+            <div class="form-group">
+                <div class="col-sm-8">
                     <label>
                         Group code (*)
                     </label>
                     <input type="text" class="form-control" disabled="disabled"
                            value="<?php echo $voucher['group_code']; ?>"/>
+                </div>
+                <div class="col-sm-4">
+                    <label>Bank Account</label>
+                    <input type="text" class="form-control" disabled="disabled"
+                        value="<?php echo $voucher['bankCode']; ?>"/>
                 </div>
             </div>
         </div>
@@ -93,17 +103,13 @@ $this->headTitle($title);
                 </div>
             </div>
             <div class="col-sm-offset-4 col-sm-4 text-right">
-                <div class="col-sm-offset-4 col-sm-4">
-                    <a href="<?php echo $this->url('account_receivable', array('action'=>'download', 'id'=>$voucher['receiveVoucherId']));?>" class="btn btn-default" title="Download">
+                <?php if(!empty($voucher['attachmentFile'])): ?>
+                    <a href="<?php echo $this->url('account_receivable', array('action'=>'download', 'id'=>$voucher['receiveVoucherId']));?>" class="btn btn-info" title="Download">
                         <span class="glyphicon glyphicon-download"></span>
                         Download
                     </a>
-                </div>
-                <div class="col-sm-4">
-                    <p>
-                        <?php echo $this->backButton(); ?>
-                    </p>
-                </div>
+                <?php endif; ?>
+                <?php echo $this->backButton(); ?>
             </div>
         </div>
     </div>

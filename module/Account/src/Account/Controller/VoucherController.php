@@ -217,4 +217,26 @@ class VoucherController extends SundewController
 
         return $response;
     }
+    public function downloadAction()
+    {
+        $voucherNo = (int)$this->params()->fromRoute('voucherNo',array());
+        $voucher = $this->voucherTable()->getVoucher($voucherNo);
+        if(!$voucher){
+            $this->flashMessenger()->addWarningMessage('Invalid id. ');
+            return $this->redirect()->toRoute('account_voucher');
+        }
+        $file = $voucher->attachmentFile;
+
+        if(!file_exists($file)){
+            $this->flashMessenger()->addWarningMessage('Invalid File.');
+            return $this->redirect()->toRoute('account_voucher');
+        }
+        $response = $this->getResponse();
+        $headers = $response->getHeaders();
+        $headers->addHeaderLine('Content-Type', 'application/octet-stream');
+        $headers->addHeaderLine('Content-Length', filesize($file));
+        $headers->addHeaderLine('Content-Disposition', 'attachment; filename="' . basename($file) . '"');
+        $response->setContent(file_get_contents($file));
+        return $response;
+    }
 }

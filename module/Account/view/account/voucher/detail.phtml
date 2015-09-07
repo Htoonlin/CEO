@@ -50,7 +50,7 @@ $this->headTitle($title);
                            value="<?php echo $this->escapeHtml($voucher->accountType); ?>"/>
                 </div>
             </div>
-            <div class="col-sm-8">
+            <div class="col-sm-4">
                 <div class="form-group">
                     <label>
                         Amount
@@ -58,6 +58,15 @@ $this->headTitle($title);
                     <input type="text" class="form-control" disabled="disabled"
                            value="<?php echo $this->escapeHtml($voucher->amount) . ' '
                                . $this->escapeHtml($voucher->currency); ?>"/>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>
+                        Payment Type
+                    </label>
+                    <input type="text" class="form-control" disabled="disabled"
+                        value="<?php echo $this->constantConverter($voucher->paymentType,'payment_type'); ?>"/>
                 </div>
             </div>
         </div>
@@ -72,13 +81,18 @@ $this->headTitle($title);
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group">
+            <div class="form-group">
+                <div class="col-sm-8">
                     <label>
                         Group code (*)
                     </label>
                     <input type="text" class="form-control" disabled="disabled"
                            value="<?php echo $this->escapeHtml($voucher->group_code); ?>"/>
+                </div>
+                <div class="col-sm-4">
+                    <label>Bank Account</label>
+                    <input type="text" class="form-control" disabled="disabled"
+                        value="<?php echo $this->escapeHtml($voucher->bankCode); ?>"/>
                 </div>
             </div>
         </div>
@@ -93,19 +107,25 @@ $this->headTitle($title);
                     </div>
                 </div>
             </div>
-            <div class="col-sm-offset-3 col-sm-5">
+            <div class="col-sm-offset-2 col-sm-6">
                 <p class="text-right">
+                    <?php if(!empty($voucher->attachmentFile)):?>
+                        <a href="<?php echo $this->url('account_voucher', array('action'=>'download', 'voucherNo'=>$voucher->voucherNo));?>" class="btn btn-info" title="Download">
+                            <span class="glyphicon glyphicon-download"></span>
+                            Download
+                        </a>
+                    <?php endif;?>
                     <?php if($isApprove): ?>
-                    <a href="<?php echo $this->url('account_voucher', array('action' => 'approve', 'voucher' => $voucher->voucherNo)); ?>"
-                       class="btn btn-primary">
-                        <span class="glyphicon glyphicon-ok"></span>
-                        Approve
-                    </a>
-                    <a href="<?php echo $this->url('account_voucher', array('action' => 'cancel', 'voucher' => $voucher->voucherNo)); ?>"
-                       class="btn btn-warning">
-                        <span class="glyphicon glyphicon-remove"></span>
-                        Cancel
-                    </a>
+                        <a href="<?php echo $this->url('account_voucher', array('action' => 'approve', 'voucher' => $voucher->voucherNo)); ?>"
+                           class="btn btn-primary">
+                            <span class="glyphicon glyphicon-ok"></span>
+                            Approve
+                        </a>
+                        <a href="<?php echo $this->url('account_voucher', array('action' => 'cancel', 'voucher' => $voucher->voucherNo)); ?>"
+                           class="btn btn-warning">
+                            <span class="glyphicon glyphicon-remove"></span>
+                            Cancel
+                        </a>
                     <?php endif; ?>
                     <a href="<?php echo $redirect; ?>" class="btn btn-default">
                         <span class="glyphicon glyphicon-th-list"></span>
