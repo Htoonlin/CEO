@@ -12,6 +12,7 @@ use HumanResource\Entity\Staff;
 use Zend\Db\Adapter\AdapterInterface;
 use HumanResource\DataAccess\StaffDataAccess;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Session\Container;
 use Zend\View\Helper\ViewModel;
 use Zend\View\View;
 
@@ -23,6 +24,20 @@ class SundewController extends AbstractActionController
 {
     private $dbAdapter;
 
+    private $pageSize_NS = 'sundew_grid_size';
+    protected function getPageSize($default = 10){
+        $grid_size = new Container($this->pageSize_NS);
+
+        if(!isset($grid_size->pageSize)){
+            return $default;
+        }
+
+        return $grid_size->pageSize;
+    }
+    protected function setPageSize($size){
+        $grid_size = new Container($this->pageSize_NS);
+        $grid_size->pageSize = $size;
+    }
     /**
      * @return mixed
      */

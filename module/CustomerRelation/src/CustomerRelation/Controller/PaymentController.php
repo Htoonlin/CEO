@@ -120,7 +120,8 @@ class PaymentController extends SundewController
         $sort = $this->params()->fromQuery('sort','paymentDate');
         $sortBy = $this->params()->fromQuery('by','desc');
         $filter = $this->params()->fromQuery('filter','');
-        $pageSize = (int)$this->params()->fromQuery('size',10);
+        $pageSize = (int)$this->params()->fromQuery('size', $this->getPageSize());
+        $this->setPageSize($pageSize);
 
         $paginator = $this->paymentTable()->fetchAll(true,$filter,$sort,$sortBy);
         $paginator->setCurrentPageNumber($page);

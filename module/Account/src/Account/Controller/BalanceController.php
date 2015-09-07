@@ -129,7 +129,8 @@ class BalanceController extends SundewController
         $currency = $this->params()->fromQuery('filter', 0);
         $sort = $this->params()->fromQuery('sort','openingDate');
         $sortBy = $this->params()->fromQuery('by','desc');
-        $pageSize = (int)$this->params()->fromQuery('size', 10);
+        $pageSize = (int)$this->params()->fromQuery('size', $this->getPageSize());
+        $this->setPageSize($pageSize);
 
         $paginator=$this->closingTable()->fetchAll(true,$currency, $sort, $sortBy);
         $paginator->setCurrentPageNumber($page);
@@ -215,7 +216,8 @@ class BalanceController extends SundewController
         $filter=$this->params()->fromQuery('filter', '');
         $sort=$this->params()->fromQuery('sort','voucherNo');
         $sortBy=$this->params()->fromQuery('by','asc');
-        $pageSize = $this->params()->fromQuery('size', 10);
+        $pageSize = (int)$this->params()->fromQuery('size', $this->getPageSize());
+        $this->setPageSize($pageSize);
 
         $closing = $this->closingTable()->getClosing($id);
 

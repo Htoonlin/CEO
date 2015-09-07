@@ -68,7 +68,8 @@ class CompanyController extends SundewController
         $sort = $this->params()->fromQuery('sort','name');
         $sortBy = $this->params()->fromQuery('by','asc');
         $filter = $this->params()->fromQuery('filter', '');
-        $pageSize = (int)$this->params()->fromQuery('size', 10);
+        $pageSize = (int)$this->params()->fromQuery('size', $this->getPageSize());
+        $this->setPageSize($pageSize);
 
         $paginator=$this->companyTable()->fetchAll(true, $filter, $sort, $sortBy);
         $paginator->setCurrentPageNumber($page);

@@ -91,7 +91,8 @@ class ReportController extends SundewController
         $filter = $this->params()->fromQuery('filter', '');
         $sort = $this->params()->fromQuery('sort', 'voucherNo');
         $sortBy = $this->params()->fromQuery('by', 'asc');
-        $pageSize = $this->params()->fromQuery('size', 10);
+        $pageSize = (int)$this->params()->fromQuery('size', $this->getPageSize());
+        $this->setPageSize($pageSize);
 
         $fromDate = $year . '-' . $month . '-01';
         if($month == 12){

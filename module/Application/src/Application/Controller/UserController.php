@@ -73,7 +73,8 @@ class UserController extends SundewController
         $sort = $this->params()->fromQuery('sort', 'userName');
         $sortBy = $this->params()->fromQuery('by', 'asc');
         $filter = $this->params()->fromQuery('filter', '');
-        $pageSize = (int)$this->params()->fromQuery('size', 10);
+        $pageSize = (int)$this->params()->fromQuery('size', $this->getPageSize());
+        $this->setPageSize($pageSize);
 
         $paginator = $this->userTable()->fetchAll(true,$filter, $sort, $sortBy);
 
