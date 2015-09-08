@@ -12,6 +12,7 @@ use Core\SundewTableGateway;
 use HumanResource\Entity\Attendance;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
+use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\TableGateway;
@@ -91,6 +92,30 @@ class AttendanceDataAccess extends SundewTableGateway{
         });
         return $results->current();
     }
+
+
+    /**
+     * @param Where $where
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
+    public function getWorkHours(Where $where){
+        $results = $this->select(function(Select $select) use ($where){
+            $where->isNotNull('inTime')
+                ->and->isNotNull('outTime');
+            $select->columns(array('staffId',
+                'year' => new Expression('YEAR(attendanceDate)'),
+                'month' => new Expression('MONTH(attendanceDate)'),
+                'hours' => new Expression('SUM(TIMEDIFF(outTime,inTime) / 3600)')
+            ))->where($where)
+                ->group(array('staffId',
+                    'year' => new Expression('YEAR(attendanceDate)'),
+                    'month' => new Expression('MONTH(attendanceDate)')
+                ))->order('staffId, year, month');
+        });
+
+        return $results;
+    }
+
 
     /**
      * @param Attendance $attendance

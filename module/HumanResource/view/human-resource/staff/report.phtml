@@ -1,0 +1,123 @@
+<?php 
+/**
+ * Created by PhpStorm.
+ * User: Htoonlin
+ * Date: 2015-09-07
+ * Time: 05:31 PM
+ * Zend Code Completion
+ * @var $this \Zend\View\Renderer\PhpRenderer 
+ */
+
+$title = 'Staff Report';
+$this->headTitle($title);
+$this->headLink()->appendStylesheet($this->basePath() . '/fullcalendar/fullcalendar.css');
+$this->headScript()->appendFile($this->basePath() . '/fullcalendar/fullcalendar.min.js');
+?>
+<style type="text/css">
+    #weekly-calendar .fc-toolbar .fc-left{
+        margin-top: 5px;
+        font-size: 14px;
+        color: #333;
+    }
+    #weekly-calendar .fc-day-header{
+        font-size: 12px;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var createReport = function (id, url){
+            var ctx = $(id).find('#chartBox').get(0).getContext("2d");
+            $.get(url, function(res){
+                var chart;
+                var data = res.data;
+                /* Generate Report */
+                if(data.type == 'Pie'){
+                    chart = new Chart(ctx).Pie(data.data, data.options);
+                }else if(data.type == 'Bar'){
+                    chart = new Chart(ctx).Bar(data.data, data.options);
+                } else if(data.type == 'Line'){
+                    chart = new Chart(ctx).Line(data.data, data.options);
+                }
+
+                /* Report Labeling */
+                var legend = chart.generateLegend();
+                $(id).find('#legend').append(legend);
+            });
+        };
+
+        /* Create Staff work hours by year */
+        createReport('#yearly-work-hours', '<?php echo $this->url(); ?>?year=2015');
+
+        $('div#weekly-calendar').fullCalendar({
+            defaultView: 'basicWeek',
+            views:{
+                week:{
+                    titleFormat:'MMMM YYYY',
+                    columnFormat: 'ddd\nD'
+                }
+            },
+            height: 300,
+            editable:false,
+            eventClick:function(event, element){
+                console.log(event.taskId);
+            },
+            events: function(start, end, timezone, callback){
+                $.ajax({
+                    url: '<?php echo $this->url('pm_task', array('action' => 'apiTask')); ?>',
+                    data:{
+                        start: start.format('YYYY-MM-DD'),
+                        end: end.format('YYYY-MM-DD'),
+                        staffId:<?php echo $staffId; ?>
+                    },
+                    dataType:'json',
+                    type:'POST',
+                    success:function(res){
+                        var data = res.data;
+                        var events = [];
+                        $.each(data, function(){
+                            var task = $(this)[0];
+                            events.push({
+                                title: task.name,
+                                start: task.fromTime,
+                                end: task.toTime,
+                                taskId: task.taskId
+                            });
+                        });
+                        callback(events);
+                    }
+                });
+            }
+        });
+    });
+</script>
+<h1>Staff Report</h1>
+<hr/>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <i class="fa fa-battery-3"></i>
+                    Weekly workload
+                </h4>
+            </div>
+            <div class="panel-body">
+                <div id="weekly-calendar"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="panel panel-default" id="yearly-work-hours">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <i class="fa fa-clock-o"></i>
+                    Yearly work hours
+                </h4>
+            </div>
+            <div class="panel-body">
+                <canvas id="chartBox"></canvas>
+                <div id="legend" style="right:50px;position:absolute;"></div>
+            </div>
+        </div>
+    </div>
+</div>

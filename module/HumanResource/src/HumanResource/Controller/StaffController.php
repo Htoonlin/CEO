@@ -10,15 +10,20 @@ namespace HumanResource\Controller;
 
 use Account\DataAccess\CurrencyDataAccess;
 use Application\DataAccess\ConstantDataAccess;
+use Core\Helper\ChartHelper;
 use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
+use HumanResource\DataAccess\AttendanceDataAccess;
 use HumanResource\DataAccess\DepartmentDataAccess;
 use HumanResource\DataAccess\PositionDataAccess;
 use Application\DataAccess\UserDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Staff;
 use HumanResource\Helper\StaffHelper;
+use ProjectManagement\DataAccess\TaskDataAccess;
+use Zend\Db\Sql\Predicate\Expression;
+use Zend\Db\Sql\Where;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -33,6 +38,15 @@ class StaffController extends SundewController
     private function staffTable()
     {
         return new StaffDataAccess($this->getDbAdapter());
+    }
+
+
+    private function taskTable(){
+        return new TaskDataAccess($this->getDbAdapter());
+    }
+
+    private function attendanceTable(){
+        return new AttendanceDataAccess($this->getDbAdapter());
     }
 
     /**
@@ -180,6 +194,74 @@ class StaffController extends SundewController
         $response->setContent($export->getExcel());
 
         return $response;
+    }
+
+    public function reportAction()
+    {
+        $id=(int)$this->params()->fromRoute('id',0);
+
+        return new ViewModel([
+            'staffId' => $id,
+        ]);
+    }
+
+    public function apiWorkHoursAction()
+    {
+        $id=(int)$this->params()->fromRoute('id',0);
+        $year = (int)$this->params()->fromQuery('year', date('Y'));
+
+        $where = new Where();
+        $where->equalTo('staffId', $id)
+            ->and->literal('YEAR(attendanceDate) = ' . $year);
+        $workHours = $this->attendanceTable()->getWorkHours($where);
+        $labels = array();
+        $data = array();
+        foreach($workHours as $monthlyHours){
+            $labels[] = $monthlyHours->year . '-' . $monthlyHours->month;
+            $data[] = $monthlyHours->hours;
+        }
+
+        $colors = ChartHelper::getColor('blue');
+        $label = 'Hours/month';
+        $chartData = array(
+            'labels' => $labels,
+            'datasets' => array(
+                'label' => $label,
+                'fillColor' => 'rgba(220, 220, 220,0.2)',
+                'strokeColor' => $colors['color'],
+                'pointColor' => $colors['color'],
+                'pointStrokeColor' => "#999",
+                'pointHighlightFill' => $colors['highlight'],
+                'pointHighlightStroke' => "rgba(220,220,220,1)",
+                'data' => $data,
+            ),
+        );
+
+        return new ApiModel(array(
+            'type' => 'Line',
+            'data' => $chartData,
+            'options' => ChartHelper::lineChartOption(),
+        ));
+    }
+    public function apiTaskAction()
+    {
+        $start = $this->params()->fromPost('start', '');
+        $end = $this->params()->fromPost('end', '');
+        $staffId = (int)$this->params()->fromPost('staffId', 0);
+
+        $api = new ApiModel();
+        $request = $this->getRequest();
+        if($request->isPost()){
+            if(empty($start) || empty($end) || empty($staffId)){
+                $api->setStatusCode(400);
+            }else{
+                $result = $this->taskTable()->getTaskListByDate($staffId, $start, $end);
+                $api->setResponseData($result);
+            }
+        }else{
+            $api->setStatusCode(405);
+        }
+        return $api;
     }
 
     /**

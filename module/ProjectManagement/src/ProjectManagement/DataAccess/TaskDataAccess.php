@@ -65,6 +65,17 @@ class TaskDataAccess extends SundewTableGateway
         return $gateway->select(array('projectId' => $projectId));
     }
 
+    public function getTaskListByDate($staffId, $start, $end){
+        $result = $this->select(function(Select $select) use ($staffId, $start, $end){
+            $where = new Where();
+            $where->equalTo('staffId', $staffId)
+                ->AND->greaterThanOrEqualTo('fromTime', $start)
+                ->AND->lessThan('toTime', $end);
+            $select->where($where)->order('priority ASC');
+        });
+        return $result;
+    }
+
     public function getToDoList($staffId)
     {
         $result = $this->select(function(Select $select) use ($staffId){

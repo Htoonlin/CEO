@@ -124,8 +124,12 @@
                          ),
                          'attr' => array('width' => '100px'),
                      ),
+                     array(
+                         'type' => 'custom',
+                         'value' => 'Report',
+                         'attr' => array('width' => '80px'),
+                     )
                  );
-
                  echo $this->gridHeader($columns);
                  ?>
                  <tbody>
@@ -154,6 +158,12 @@
                      </td>
                      <td>
                          <?php echo $this->constantConverter($staff->Status, 'default_status'); ?>
+                     </td>
+                     <td class="center">
+                        <a href="<?php echo $this->url('hr_staff', array('action' => 'report', 'id' => $staff->staffId)); ?>"
+                           class="btn btn-info btn-xs" title="Staff Report">
+                            <span class="fa fa-bar-chart"></span>
+                        </a>
                      </td>
                  </tr>
                  <?php endforeach; ?>

@@ -10,7 +10,9 @@ namespace ProjectManagement\Controller;
 
 
 use Application\DataAccess\ConstantDataAccess;
+use Core\Helper\ChartHelper;
 use Core\Helper\View\ConstantConverter;
+use Core\Helper\ChartHelper as Chart;
 use Core\Model\ApiModel;
 use Core\SundewController;
 use ProjectManagement\DataAccess\ReportDataAccess;
@@ -24,89 +26,17 @@ class ReportController extends SundewController
     /**
      * @var array
      */
-    protected $dataTemplate = array(
-        'T' => array(
-            'color' => '#4076A0',
-            'highlight' => '#5D96C1',
-        ),
-        'A' => array(
-            'color' => '#4D5360',
-            'highlight' => '#616774',
-        ),
-        'P' => array(
-            'color' => '#46BFBD',
-            'highlight' => '#5AD3D1',
-        ),
-        'F' => array(
-            'color' => '#FDB45C',
-            'highlight' => '#FFC870',
-        ),
-        'C' => array(
-            'color' => '#F7464A',
-            'highlight' => '#FF5A5E',
-        ),
+    protected $colorTemplate = array(
+        'T' => 'black',
+        'A' => 'yellow',
+        'P' => 'blue',
+        'F' => 'orange',
+        'C' => 'cyan',
+        'L' => 'red'
     );
 
-    /**
-     * @return array
-     */
-    private function pieChartOption()
-    {
-        return array(
-            'segmentShowStroke' => true,
-            'segmentStrokeColor' => "#fff",
-            'segmentStrokeWidth' => 2,
-            'percentageInnerCutout' => 50,
-            'animationSteps' => 100,
-            'animationEasing' => "easeOutSine",
-            'animateRotate' => true,
-            'animateScale' => false,
-            'legendTemplate' => '<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>',
-        );
-    }
-
-    /**
-     * @return array
-     */
-    private function lineChartOption()
-    {
-        return array(
-            'scaleShowGridLines' => true,
-            'scaleGridLineColor' => "rgba(0,0,0,.05)",
-            'scaleGridLineWidth' => 1,
-            'scaleShowHorizontalLines' => true,
-            'scaleShowVerticalLines' => true,
-            'bezierCurve' => false,
-            'bezierCurveTension' => 0.4,
-            'pointDot' => true,
-            'pointDotRadius' => 4,
-            'pointDotStrokeWidth' => 1,
-            'pointHitDetectionRadius' => 20,
-            'datasetStroke' => true,
-            'datasetStrokeWidth' => 2,
-            'datasetFill' => true,
-            'legendTemplate' => '<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>'
-        );
-    }
-
-    /**
-     * @return array
-     */
-    private function barChartOption()
-    {
-        return array(
-            'scaleBeginAtZero' => true,
-            'scaleShowGridLines' => true,
-            'scaleGridLineColor' => "rgba(0,0,0,.05)",
-            'scaleGridLineWidth' => 1,
-            'scaleShowHorizontalLines' => true,
-            'scaleShowVerticalLines' => true,
-            'barShowStroke' => false,
-            'barStrokeWidth' => 0,
-            'barValueSpacing' => 10,
-            'barDatasetSpacing' => 2,
-            'legendTemplate' => '<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>'
-        );
+    private function getColor($status){
+        return ChartHelper::getColor($this->colorTemplate[$status]);
     }
 
     /**
@@ -125,7 +55,7 @@ class ReportController extends SundewController
      * @return array
      */
     private function getWorkloadData($status, $data){
-        $colors = $this->dataTemplate[$status];
+        $colors = $this->getColor($status);
         $label = ($status == 'T') ? 'Total' : $this->statusConverter($status);
         return array(
             'label' => $label,
@@ -142,7 +72,7 @@ class ReportController extends SundewController
      */
     private function getProgressData($status, $value)
     {
-        $result = $this->dataTemplate[$status];
+        $result = $this->getColor($status);
         $result['value'] = $value;
         if($status == 'T'){
             $result['label'] = 'Total';
@@ -188,7 +118,7 @@ class ReportController extends SundewController
             'icon' => 'fa fa-pie-chart',
             'type' => 'Pie',
             'data' => $data,
-            'options' => $this->pieChartOption()
+            'options' => Chart::pieChartOption(),
         ));
     }
 
@@ -250,7 +180,7 @@ class ReportController extends SundewController
             'icon' => 'fa fa-calendar',
             'type' => 'Pie',
             'data' => $data,
-            'options' => $this->pieChartOption()
+            'options' => Chart::pieChartOption()
         ));
     }
 
@@ -268,12 +198,14 @@ class ReportController extends SundewController
         $processingList = array();
         $finishedList = array();
         $completedList = array();
+        $failedList = array();
         foreach($staffList as $staff){
             $labels[] = $staff->staffName . "({$staff->staffCode})";
             $assign = 0;
             $process = 0;
             $finish = 0;
             $complete = 0;
+            $failed = 0;
             $workLoads = $this->reportTable()->getWorkload($staff->staffId, $id);
 
             foreach($workLoads as $record){
@@ -290,6 +222,9 @@ class ReportController extends SundewController
                     case 'C':
                         $complete += $record->workload;
                         break;
+                    case 'L':
+                        $failed += $record->workload;
+                        break;
                 }
             }
 
@@ -297,7 +232,8 @@ class ReportController extends SundewController
             $processingList[] = $process;
             $finishedList[] = $finish;
             $completedList[] = $complete;
-            $totalList[] = $assign + $process + $finish + $complete;
+            $failedList[] = $failed;
+            $totalList[] = $assign + $process + $finish + $complete + $failed;
         }
 
         $data = array(
@@ -308,6 +244,7 @@ class ReportController extends SundewController
                 $this->getWorkloadData('F', $finishedList),
                 $this->getWorkloadData('P', $processingList),
                 $this->getWorkloadData('C', $completedList),
+                $this->getWorkloadData('L', $failedList),
             ),
         );
 
@@ -317,7 +254,7 @@ class ReportController extends SundewController
             'icon' => 'fa fa-balance-scale',
             'type' => 'Bar',
             'data' => $data,
-            'options' => $this->barChartOption()
+            'options' => Chart::barChartOption()
         ));
     }
 }

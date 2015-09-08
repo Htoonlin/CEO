@@ -52,7 +52,7 @@ class ReportDataAccess extends SundewTableGateway
             $select->columns(array('status', 'count' => new Expression('count(taskId)')))
                 ->group(array('status'))
                 ->where($this->getWhereByProjectId($projectId))
-                ->order(new Expression("FIELD(`status`, 'A', 'P', 'F', 'C')"));
+                ->order(new Expression("FIELD(`status`, 'A', 'P', 'F', 'C', 'L')"));
         });
 
         return $results;
@@ -75,7 +75,7 @@ class ReportDataAccess extends SundewTableGateway
             $select->columns(array('status', 'workload' => new Expression('sum(level)')))
                 ->group(array('status'))
                 ->where($where)
-                ->order(new Expression("FIELD(`status`, 'A', 'P', 'F', 'C')"));
+                ->order(new Expression("FIELD(`status`, 'A', 'P', 'F', 'C', 'L')"));
         });
 
         return $results;
