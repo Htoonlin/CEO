@@ -219,7 +219,7 @@ class VoucherController extends SundewController
     }
     public function downloadAction()
     {
-        $voucherNo = (int)$this->params()->fromRoute('voucherNo',array());
+        $voucherNo = $this->params()->fromRoute('voucher','');
         $voucher = $this->voucherTable()->getVoucher($voucherNo);
         if(!$voucher){
             $this->flashMessenger()->addWarningMessage('Invalid id. ');
@@ -239,4 +239,5 @@ class VoucherController extends SundewController
         $response->setContent(file_get_contents($file));
         return $response;
     }
+
 }

@@ -110,7 +110,7 @@ $this->headTitle($title);
             <div class="col-sm-offset-2 col-sm-6">
                 <p class="text-right">
                     <?php if(!empty($voucher->attachmentFile)):?>
-                        <a href="<?php echo $this->url('account_voucher', array('action'=>'download', 'voucherNo'=>$voucher->voucherNo));?>" class="btn btn-info" title="Download">
+                        <a href="<?php echo $this->url('account_voucher', array('action'=>'download', 'voucher'=>$voucher->voucherNo));?>" class="btn btn-info" title="Download">
                             <span class="glyphicon glyphicon-download"></span>
                             Download
                         </a>
