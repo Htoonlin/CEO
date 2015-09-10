@@ -45,14 +45,33 @@ class DashboardController extends SundewController
     private $staffTable;
     private $calendarTable;
     private $lateList;
-    private $workingHours;
     private $leaveValues;
     private $formulaList;
     private $leaveTable;
 
-    /**
-     *
-     */
+    private function experienceCalculator($experience)
+    {
+        $level = 1;
+        $maxExperience = 0;
+        while(true){
+            $a = 0;
+            for($x = 1; $x < $level; $x++){
+                $a += floor($x + 300 * pow(2, ($x/7)));
+            }
+            $maxExperience = floor($a / 4);
+            if($experience < $maxExperience){
+                break;
+            }
+            $level++;
+        }
+
+        return array(
+            'level' => $level - 1,
+            'current' => $experience,
+            'max' => $maxExperience,
+        );
+    }
+
     private function init_data(){
         if(!$this->staffTable)
             $this->staffTable = new StaffDataAccess($this->getDbAdapter());
@@ -71,11 +90,6 @@ class DashboardController extends SundewController
 
         if(!$this->formulaList){
             $this->formulaList = $constantTable->getComboByName('payroll_formula', 'payroll');
-        }
-
-        if(!$this->workingHours){
-            $constant = $constantTable->getConstantByName('work_hour');
-            $this->workingHours = $constant->getValue();
         }
 
         if(!$this->leaveValues){
@@ -159,7 +173,6 @@ class DashboardController extends SundewController
                 'leaveForm' => $leaveForm,
                 'salaryForm' => $salaryForm,
                 'lateList' => $this->lateList,
-                'workingHours' => $this->workingHours,
                 'leaveValues' => $this->leaveValues,
                 'staff' => ($this->staff) ? $this->staff : new Staff(),
                 'taskList' => $todoList,
@@ -167,6 +180,12 @@ class DashboardController extends SundewController
         }catch(\Exception $ex){
             throw $ex;
         }
+    }
+
+    public function apiExpAction(){
+        $taskExp = $this->taskTable()->getTaskValue($this->getCurrentStaff()->getStaffId());
+        $experience = (int) $taskExp['exp'];
+        return new ApiModel($this->experienceCalculator($experience));
     }
 
     public function taskDetailAction()

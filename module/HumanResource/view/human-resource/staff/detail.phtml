@@ -11,6 +11,8 @@
  **/
 $title="Staff";
 $this->headTitle($title);
+$this->headScript()->appendFile($this->basePath() . '/js/moment.js');
+$dayOfWeeks = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 ?>
 <h1><?php echo $title; ?></h1>
 <hr/>
@@ -65,28 +67,140 @@ echo $this->form()->openTag($form);
         echo $this->formHorizontal($form->get('annual_leave'));
         ?>
         <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-                <button type="submit" value="Save" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-floppy-save"></span>
-                    Save
-                </button>
-                <?php if($isEdit):?>
-                    <a href="<?php echo $this->url('hr_staff', array('action'=>'detail', 'id'=>$id)); ?>?action=clone"
-                       class="btn btn-warning">
-                        <span class="glyphicon glyphicon-copy"></span>
-                        Clone
-                    </a>
-                    <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('hr_staff', array('action'=>'delete', 'id'=>$id)); ?>" class="btn btn-danger">
-                        <span class="glyphicon glyphicon-trash"></span>
-                        Remove
-                    </a>
-                <?php endif; ?>
-                <?php echo $this->backButton(); ?>
+            <label class="control-label col-sm-3">Work Hours</label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <?php echo $this->formText($form->get('workHours')); ?>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#weekPicker">
+                            <span class="fa fa-list-ul"></span>
+                        </button>
+                    </span>
+                </div>
             </div>
         </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 text-right">
+        <button type="submit" value="Save" class="btn btn-primary">
+            <span class="glyphicon glyphicon-floppy-save"></span>
+            Save
+        </button>
+        <?php if($isEdit):?>
+            <a href="<?php echo $this->url('hr_staff', array('action'=>'detail', 'id'=>$id)); ?>?action=clone"
+               class="btn btn-warning">
+                <span class="glyphicon glyphicon-copy"></span>
+                Clone
+            </a>
+            <a onclick="return confirm('Are you sure to delete?')" href="<?php echo $this->url('hr_staff', array('action'=>'delete', 'id'=>$id)); ?>" class="btn btn-danger">
+                <span class="glyphicon glyphicon-trash"></span>
+                Remove
+            </a>
+        <?php endif; ?>
+        <?php echo $this->backButton(); ?>
     </div>
 </div>
 
  <?php
  echo $this->form()->closeTag();
  ?>
+<script type="text/javascript">
+    $('document').ready(function(){
+        $('#weekPicker input[type="checkbox"]').change(function(){
+            var key = $(this).val();
+            var enable = $(this).checkbox("isChecked");
+
+            if(enable){
+                $('input#from' + key).removeAttr('disabled');
+                $('input#to' + key).removeAttr('disabled');
+            }else{
+                $('input#from' + key).attr('disabled', 'disabled').html('09:00');
+                $('input#to' + key).attr('disabled', 'disabled').html('18:00');
+            }
+        });
+        $('#weekPicker').on('show.bs.modal', function(e){
+            try{
+                var jsonObj = JSON.parse($('input[name="workHours"]').val());
+                $.each(jsonObj, function(key, value){
+                    var chkEnable = $('#weekPicker input#enable' + key);
+                    var txtFrom = $('#weekPicker input#from' + key);
+                    var txtTo = $('#weekPicker input#to' + key);
+                    chkEnable.checkbox('check');
+                    txtFrom.val(value.from).removeAttr('disabled');
+                    txtTo.val(value.to).removeAttr('disabled');
+                });
+            }catch(ex){
+                console.error(ex.message);
+            }
+        });
+        $('button#btnWorkingHoursDone').click(function(){
+            var jsonObj = {};
+            $('#weekPicker input[type="checkbox"]:checked').each(function(){
+                var key = parseInt($(this).val());
+                var from = moment($('input#from' + key).val(), "HH:mm");
+                var to = moment($('input#to' + key).val(), "HH:mm");
+                if(from.isValid() && to.isValid()){
+                    var item = {};
+                    item['from'] = from.format("HH:mm");
+                    item['to'] = to.format("HH:mm");
+                    jsonObj[key] = item;
+                }
+            });
+
+            $('input[name="workHours"]').val(JSON.stringify(jsonObj));
+
+            $('#weekPicker').modal('hide');
+        });
+    });
+</script>
+<!-- Week Picker -->
+<div class="modal fade" id="weekPicker" tabindex="-1" role="dialog" aria-labelledby="weekPickerLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="weekPickerLabel">Staff Working hours</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>Day of week</th>
+                        <th class="text-center">From</th>
+                        <th class="text-center">To</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach($dayOfWeeks as $key=>$value): ?>
+                    <tr>
+                        <td>
+                            <div class="checkbox" style="margin-top:5px;">
+                                <label class="checkbox-custom" data-initialize="checkbox">
+                                    <input id="enable<?=$key ?>" class="sr-only" value="<?=$key?>" type="checkbox">
+                                    <span class="checkbox-label"><?=$value?></span>
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <input id="from<?=$key;?>" class="form-control text-center"
+                                   type="time" disabled="disabled" placeholder="HH:MM" value="09:00"/>
+                        </td>
+                        <td>
+                            <input id="to<?=$key;?>"  class="form-control text-center"
+                                   type="time" disabled="disabled" placeholder="HH:MM" value="18:00"/>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnWorkingHoursDone" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

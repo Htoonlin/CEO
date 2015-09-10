@@ -27,10 +27,21 @@ $this->headScript()
         });
     }
 
+	function setExperience()
+	{
+		$.get('<?php echo $this->url('dashboard', array('action' => 'apiExp')); ?>',
+		function(res){
+			var data = res.data;
+			var exp = 'Exp (' + data.current + ' / ' + data.max + ')';
+			var percentage = (data.current / data.max) * 100;
+			$('#experience').children('h1').html(data.level);
+			$('#experienceBar>.progress-bar').css('width', percentage + '%').html(exp);
+		});
+	}
+
     $().ready(function()
     {
         $.setPayrollData({
-            workingHours    : <?= $workingHours ?>,
             lateList        : <?= json_encode($lateList); ?>,
             leaveValues     : <?= $leaveValues; ?>
         });
@@ -60,6 +71,7 @@ $this->headScript()
         });
 
 		$('input[name$="Date"]').removeAttr('style');
+		setExperience();
     });
 </script>
 <div class="row">
@@ -77,6 +89,15 @@ $this->headScript()
 				</div>
 				<div id="todoList" class="panel-collapse collapse in">
 					<div class="panel-body" style="max-height: 350px; overflow: auto;">
+						<div id="experience">
+							<h1 style="margin:0;margin-right: 10px;" class="pull-left">0</h1>
+							<h5 style="margin: 0">Level</h5>
+							<div class="progress" id="experienceBar">
+								<div class="progress-bar progress-bar-info" role="progressbar" style="width: 0">
+									0 / 0
+								</div>
+							</div>
+						</div>
 						<div id="todo-box">
 							<ul class="list-group">
 							    <?php
@@ -224,12 +245,11 @@ $this->headScript()
 							</div>
 						</div>
 						<p>
-
-
 						<table data-id="<?= $staff->getStaffId() ?>"
 							class="table table-bordered table-striped"
 							id="payrollTable-<?= $staff->getStaffId() ?>"
-							data-salary="<?= $staff->getSalary() ?>">
+							data-salary="<?= $staff->getSalary() ?>"
+							data-workHours='<?= $staff->getWorkHours(); ?>'>
 							<tr>
 								<td width="150px" class="text-right">Per Day :</td>
 								<td class="text-center" id="Per_Day">0</td>

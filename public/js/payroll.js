@@ -11,8 +11,9 @@
         return parseInt(c[0]) * 60 + parseInt(c[1]);
     }
 
+    var workHours;
+
     var payroll_data = {
-        workingHours    : {},
         lateList        : {},
         leaveValues     : {}
     };
@@ -47,7 +48,7 @@
     }
 
     function getAttendance(attendance, dayOfWeek){
-        var full_day = payroll_data.workingHours[dayOfWeek];
+        var full_day = workHours[dayOfWeek];
 
         if(!full_day) return 0;
 
@@ -91,8 +92,13 @@
             progress: function(per){console.log('collectAttendance => ' + per + '%');}
         }, options);
 
-        var staffId = $(this).attr('data-id');
-        var salary = $(this).attr('data-salary');
+        try{
+            var staffId = $(this).attr('data-id');
+            var salary = $(this).attr('data-salary');
+            workHours = JSON.parse($(this).attr('data-workHours'));
+        }catch(ex){
+            throw ex;
+        }
 
         if(staffId == 0) return;
 
@@ -122,13 +128,15 @@
         //Loop Start to End by day
         for(var d = settings.start; d < settings.end; d.add(1, 'day')) {
             currentProgress += increment;
+            var dayOff = !workHours[d.weekday()];
             //Check this date is holiday
-            if (checkHoliday(d)) {
+            if (checkHoliday(d) || dayOff) {
                 //Increment to holiday count
-                console.log(d.format('DD-MM') + '=> Holiday');
+                console.log(d.format('DD-MM') + '=> Dayoff');
                 Holiday++;
                 continue;
             }
+
 
             //Increment to monthly working day
             current_row.find('td#M_WD').html(++M_WD);
@@ -142,8 +150,9 @@
                 'type': 'get',
                 'async': false,
                 'success': function (response) {
-                    $.each(response.data, function (idx, leave) {
-                        if (leave.id == data.result.leaveType) {
+                    var data = response.data;
+                    $.each(data, function (idx, leave) {
+                        if (leave.id == data.leaveType) {
 
                             //Update and increment leave count
                             Leave += leave.value;

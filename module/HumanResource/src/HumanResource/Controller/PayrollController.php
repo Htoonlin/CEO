@@ -28,7 +28,6 @@ class PayrollController extends SundewController{
     private $calendarTable;
     private $payrollTable;
     private $lateList;
-    private $workingHours;
     private $leaveValues;
     private $formulaList;
     private $staffId;
@@ -52,11 +51,6 @@ class PayrollController extends SundewController{
 
         if(!$this->formulaList){
             $this->formulaList = $constantTable->getComboByName('payroll_formula', 'payroll');
-        }
-
-        if(!$this->workingHours){
-            $constant = $constantTable->getConstantByName('work_hour');
-            $this->workingHours = $constant->getValue();
         }
 
         if(!$this->leaveValues){
@@ -90,7 +84,6 @@ class PayrollController extends SundewController{
         return new ViewModel(array(
             'staffs' => $this->staffTable->getActiveStaffs(),
             'lateList' => $this->lateList,
-            'workingHours' => $this->workingHours,
             'leaveValues' => $this->leaveValues,
             'form' => $form,
         ));

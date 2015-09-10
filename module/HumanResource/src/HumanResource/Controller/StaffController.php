@@ -22,6 +22,7 @@ use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Staff;
 use HumanResource\Helper\StaffHelper;
 use ProjectManagement\DataAccess\TaskDataAccess;
+use ProjectManagement\Entity\Task;
 use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Where;
 use Zend\View\Model\ViewModel;
@@ -45,8 +46,10 @@ class StaffController extends SundewController
         return new TaskDataAccess($this->getDbAdapter());
     }
 
-    private function attendanceTable(){
-        return new AttendanceDataAccess($this->getDbAdapter());
+    private function getTaskStatus()
+    {
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        return $dataAccess->getConstantByName('task_status')->getValue();
     }
 
     /**
@@ -200,48 +203,16 @@ class StaffController extends SundewController
     {
         $id=(int)$this->params()->fromRoute('id',0);
 
-        return new ViewModel([
-            'staffId' => $id,
-        ]);
-    }
-
-    public function apiWorkHoursAction()
-    {
-        $id=(int)$this->params()->fromRoute('id',0);
-        $year = (int)$this->params()->fromQuery('year', date('Y'));
-
-        $where = new Where();
-        $where->equalTo('staffId', $id)
-            ->and->literal('YEAR(attendanceDate) = ' . $year);
-        $workHours = $this->attendanceTable()->getWorkHours($where);
-        $labels = array();
-        $data = array();
-        foreach($workHours as $monthlyHours){
-            $labels[] = $monthlyHours->year . '-' . $monthlyHours->month;
-            $data[] = $monthlyHours->hours;
+        $staff = $this->staffTable()->getStaff($id);
+        if(!$staff)
+        {
+            $staff=new Staff();
         }
 
-        $colors = ChartHelper::getColor('blue');
-        $label = 'Hours/month';
-        $chartData = array(
-            'labels' => $labels,
-            'datasets' => array(
-                'label' => $label,
-                'fillColor' => 'rgba(220, 220, 220,0.2)',
-                'strokeColor' => $colors['color'],
-                'pointColor' => $colors['color'],
-                'pointStrokeColor' => "#999",
-                'pointHighlightFill' => $colors['highlight'],
-                'pointHighlightStroke' => "rgba(220,220,220,1)",
-                'data' => $data,
-            ),
-        );
-
-        return new ApiModel(array(
-            'type' => 'Line',
-            'data' => $chartData,
-            'options' => ChartHelper::lineChartOption(),
-        ));
+        return new ViewModel([
+            'staff' => $staff,
+            'taskStatus' => $this->getTaskStatus(),
+        ]);
     }
     public function apiTaskAction()
     {

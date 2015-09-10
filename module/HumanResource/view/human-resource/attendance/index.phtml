@@ -10,7 +10,20 @@
 $title = 'Attandance Board';
 $this->headTitle($title);
 $flashMessages = $this->flashMessenger()->getMessages();
+$this->headScript()->appendFile($this->basePath() . '/js/Chart.min.js');
 ?>
+<script type="text/javascript">
+    $().ready(function(){
+        var ctx = $('#workHours').find('#chartBox').get(0).getContext("2d");
+        $.get('<?php echo $this->url('hr_attendance', array('action' => 'apiWorkHours')); ?>', function(res){
+            var data = res.data;
+            var chart = new Chart(ctx).Line(data.source, data.options);
+            /* Report Labeling */
+            var legend = chart.generateLegend();
+            $('#workHours').find('#legend').append(legend);
+        });
+    });
+</script>
 <h1><?php echo $title; ?></h1>
 <?php if(count($flashMessages) > 0) : ?>
     <div class="alert alert-info alert-dismissable">
@@ -19,116 +32,138 @@ $flashMessages = $this->flashMessenger()->getMessages();
         <?php echo $flashMessages[0]; ?>
     </div>
 <?php endif; ?>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <div class="row">
-            <div class="col-md-3">
-                <?php echo $this->gridFilter('attendanceFilter'); ?>
-            </div>
-            <div class="col-md-4 col-md-offset-5">
-                <div class="text-right">
-                    <div class="btn-group">
-                        <a href="<?php echo $this->url("hr_attendance",array('action' => 'detail', 'id' => 0));?>" class="btn btn-default">
-                            <span class="glyphicon glyphicon-file"></span>
-                            New
-                        </a>
-                        <a href="<?php echo $this->url('hr_attendance',array('action'=>'export'));?>" class="btn btn-default">
-                            <span class="glyphicon glyphicon-download"></span>
-                            Export
-                        </a>
+<div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-3">
+                    <?php echo $this->gridFilter('attendanceFilter'); ?>
+                </div>
+                <div class="col-md-4 col-md-offset-5">
+                    <div class="text-right">
+                        <div class="btn-group">
+                            <a href="<?php echo $this->url("hr_attendance",array('action' => 'detail', 'id' => 0));?>" class="btn btn-default">
+                                <span class="glyphicon glyphicon-file"></span>
+                                New
+                            </a>
+                            <a href="<?php echo $this->url('hr_attendance',array('action'=>'export'));?>" class="btn btn-default">
+                                <span class="glyphicon glyphicon-download"></span>
+                                Export
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="panel-body">
-        <div class="grid">
-            <table class="table table-bordered table-striped table-hover">
-                <?php
-                $columns = array(
-                    array(
-                        'type' => 'db',
-                        'value' => array(
-                            'title' => 'Date',
-                            'col' => 'attendanceDate',
+        <div class="panel-body">
+            <div class="grid">
+                <table class="table table-bordered table-striped table-hover">
+                    <?php
+                    $columns = array(
+                        array(
+                            'type' => 'db',
+                            'value' => array(
+                                'title' => 'Date',
+                                'col' => 'attendanceDate',
+                            ),
+                            'attr' => array('width' => '160px'),
                         ),
-                        'attr' => array('width' => '160px'),
-                    ),
-                    array(
-                        'type' => 'db',
-                        'value' => array(
-                            'title' => 'Code',
-                            'col' => 'staffCode',
+                        array(
+                            'type' => 'db',
+                            'value' => array(
+                                'title' => 'Code',
+                                'col' => 'staffCode',
+                            ),
+                            'attr' => array('width' => '160px'),
                         ),
-                        'attr' => array('width' => '160px'),
-                    ),
-                    array(
-                        'type' => 'db',
-                        'value' => array(
-                            'title' => 'Name',
-                            'col' => 'staffName',
+                        array(
+                            'type' => 'db',
+                            'value' => array(
+                                'title' => 'Name',
+                                'col' => 'staffName',
+                            ),
                         ),
-                    ),
-                    array(
-                        'type' => 'db',
-                        'value' => array(
-                            'title' => 'In',
-                            'col' => 'inTime',
+                        array(
+                            'type' => 'db',
+                            'value' => array(
+                                'title' => 'In',
+                                'col' => 'inTime',
+                            ),
+                            'attr' => array('width' => '120px'),
                         ),
-                        'attr' => array('width' => '120px'),
-                    ),
-                    array(
-                        'type' => 'db',
-                        'value' => array(
-                            'title' => 'Out',
-                            'col' => 'outTime',
+                        array(
+                            'type' => 'db',
+                            'value' => array(
+                                'title' => 'Out',
+                                'col' => 'outTime',
+                            ),
+                            'attr' => array('width' => '120px'),
                         ),
-                        'attr' => array('width' => '120px'),
-                    ),
-                    array(
-                        'type' => 'custom',
-                        'value' => 'Action',
-                        'attr' => array('class' => 'text-center', 'width' => '80px'),
-                    ),
-                );
+                        array(
+                            'type' => 'custom',
+                            'value' => 'Action',
+                            'attr' => array('class' => 'text-center', 'width' => '80px'),
+                        ),
+                    );
 
-                echo $this->gridHeader($columns);
-                ?>
-                <tbody>
-                <?php foreach($paginator as $attendance):?>
-                    <tr>
-                        <td>
-                            <?php echo $this->escapeHtml($attendance->attendanceDate); ?>
-                        </td>
-                        <td>
-                            <a href="<?php echo $this->url('hr_attendance', array('action' => 'detail', 'id' => $attendance->attendanceId)) ?>" title="Edit">
-                            <?php echo $this->escapeHtml($attendance->staffCode); ?>
-                            </a>
-                        </td>
-                        <td>
-                            <?php echo $this->escapeHtml($attendance->staffName); ?>
-                        </td>
-                        <td>
-                            <?php echo $this->escapeHtml($attendance->inTime); ?>
-                        </td>
-                        <td>
-                            <?php echo $this->escapeHtml($attendance->outTime); ?>
-                        </td>
-                        <td class="text-center">
-                            <a href="<?= $this->url('hr_leave', array('action' => 'detail', 'id' => 0)) ?>?staff=<?= $attendance->staffId ?>" title="Leave" class="btn btn-xs btn-warning">
-                                <span class="fa fa-user-md"></span> Leave
-                            </a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
+                    echo $this->gridHeader($columns);
+                    ?>
+                    <tbody>
+                    <?php foreach($paginator as $attendance):?>
+                        <tr>
+                            <td>
+                                <?php echo $this->escapeHtml($attendance->attendanceDate); ?>
+                            </td>
+                            <td>
+                                <a href="<?php echo $this->url('hr_attendance', array('action' => 'detail', 'id' => $attendance->attendanceId)) ?>" title="Edit">
+                                    <?php echo $this->escapeHtml($attendance->staffCode); ?>
+                                </a>
+                            </td>
+                            <td>
+                                <?php echo $this->escapeHtml($attendance->staffName); ?>
+                            </td>
+                            <td>
+                                <?php echo $this->escapeHtml($attendance->inTime); ?>
+                            </td>
+                            <td>
+                                <?php echo $this->escapeHtml($attendance->outTime); ?>
+                            </td>
+                            <td class="text-center">
+                                <a href="<?= $this->url('hr_leave', array('action' => 'detail', 'id' => 0)) ?>?staff=<?= $attendance->staffId ?>" title="Leave" class="btn btn-xs btn-warning">
+                                    <span class="fa fa-user-md"></span> Leave
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="text-center">
+                <?php echo $this->paginationControl($paginator, 'Sliding', 'shared/paginator.phtml', array('route' => 'hr_attendance',
+                    'filter' => $filter, 'sort' => $sort, 'sortBy' => $sortBy)); ?>
+            </div>
         </div>
     </div>
-    <div class="panel-footer">
-        <div class="text-center">
-            <?php echo $this->paginationControl($paginator, 'Sliding', 'shared/paginator.phtml', array('route' => 'hr_attendance',
-                'filter' => $filter, 'sort' => $sort, 'sortBy' => $sortBy)); ?>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span class="fa fa-line-chart"></span>
+            Monthly Work Hours
+        </div>
+        <div id="workHours">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <h5>Staff List</h5>
+                        <div id="legend" style="position:relative;"></div>
+                    </div>
+                    <div class="col-sm-10">
+                        <canvas id="chartBox" class="col-sm-12" height="120px"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

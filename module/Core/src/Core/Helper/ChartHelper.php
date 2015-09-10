@@ -9,6 +9,15 @@ namespace Core\Helper;
  */
 class ChartHelper
 {
+    public static function getRandomColor(){
+        $color = rand(1, 36) * 10;
+
+        return array(
+            'color' => 'hsla(' . $color . ', 74%, 44%, 1)',
+            'highlight' => 'hsla(' . $color . ', 80%, 65%, 1)',
+        );
+    }
+
     public static function getColor($color){
         $chartColor = array(
             'blue' => array(
@@ -105,8 +114,8 @@ class ChartHelper
             'scaleGridLineWidth' => 1,
             'scaleShowHorizontalLines' => true,
             'scaleShowVerticalLines' => true,
-            'barShowStroke' => false,
-            'barStrokeWidth' => 0,
+            'barShowStroke' => true,
+            'barStrokeWidth' => 1,
             'barValueSpacing' => 10,
             'barDatasetSpacing' => 2,
             'legendTemplate' => '<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>'

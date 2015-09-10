@@ -7,11 +7,12 @@
  * Zend Code Completion
  * @var $this \Zend\View\Renderer\PhpRenderer 
  */
-
-$title = 'Staff Report';
+$title = $staff->getStaffName() . '(' . $staff->getStaffCode() . ') Workload';
 $this->headTitle($title);
 $this->headLink()->appendStylesheet($this->basePath() . '/fullcalendar/fullcalendar.css');
-$this->headScript()->appendFile($this->basePath() . '/fullcalendar/fullcalendar.min.js');
+$this->headScript()
+    ->appendFile($this->basePath() . '/fullcalendar/fullcalendar.min.js')
+    ->appendFile($this->basePath() . '/js/Chart.min.js');
 ?>
 <style type="text/css">
     #weekly-calendar .fc-toolbar .fc-left{
@@ -22,52 +23,65 @@ $this->headScript()->appendFile($this->basePath() . '/fullcalendar/fullcalendar.
     #weekly-calendar .fc-day-header{
         font-size: 12px;
     }
+    #weekly-calendar .fc-event-container>a{
+        padding: 2px;
+    }
 </style>
 <script type="text/javascript">
     $(document).ready(function(){
-        var createReport = function (id, url){
-            var ctx = $(id).find('#chartBox').get(0).getContext("2d");
-            $.get(url, function(res){
-                var chart;
-                var data = res.data;
-                /* Generate Report */
-                if(data.type == 'Pie'){
-                    chart = new Chart(ctx).Pie(data.data, data.options);
-                }else if(data.type == 'Bar'){
-                    chart = new Chart(ctx).Bar(data.data, data.options);
-                } else if(data.type == 'Line'){
-                    chart = new Chart(ctx).Line(data.data, data.options);
-                }
+        var taskStatus = <?php echo $taskStatus; ?>;
 
-                /* Report Labeling */
-                var legend = chart.generateLegend();
-                $(id).find('#legend').append(legend);
-            });
+        var statusColor = {
+            "A": "#4076A0",
+            "P": "#FDB45C",
+            "F": "#ff5e3a",
+            "C": "#4cd964",
+            "L": "#F7464A"
         };
 
-        /* Create Staff work hours by year */
-        createReport('#yearly-work-hours', '<?php echo $this->url(); ?>?year=2015');
-
         $('div#weekly-calendar').fullCalendar({
-            defaultView: 'basicWeek',
+            header: {
+                left: 'prevYear,nextYear',
+                center: 'title',
+                right: 'today prev,next'
+            },
+            defaultView: 'month',
             views:{
                 week:{
                     titleFormat:'MMMM YYYY',
                     columnFormat: 'ddd\nD'
                 }
             },
-            height: 300,
             editable:false,
             eventClick:function(event, element){
-                console.log(event.taskId);
+                var task = event.taskData;
+                console.log(task);
+                $('#txtTaskName').val(task.name);
+                $('#txtCurrent').val(task.current + '%');
+                $('#txtManager').val(task.managerName + ' (' + task.managerCode + ')');
+                $('#txtProject').val(task.projectName + ' (' + task.projectCode + ')');
+                $('#txtStaff').val(task.staffName + ' (' + task.staffCode + ')');
+                $('#txtFromTime').val(task.fromTime);
+                $('#txtToTime').val(task.toTime);
+                $('#txtLevel').val(task.level);
+                $('#txtPriority').val(task.priority);
+                $('#txtDescription').val(task.description);
+                $('#txtBudget').val(task.maxBudget + task.currencyCode);
+                $('#txtTag').val(task.tag);
+                $('#txtStatus').val(taskStatus[task.status]);
+
+                $('#taskDetailModal').modal('show');
+            },
+            eventRender:function(event, element){
+                element.attr('href', '#');
             },
             events: function(start, end, timezone, callback){
                 $.ajax({
-                    url: '<?php echo $this->url('pm_task', array('action' => 'apiTask')); ?>',
+                    url: '<?php echo $this->url('hr_staff', array('action' => 'apiTask')); ?>',
                     data:{
                         start: start.format('YYYY-MM-DD'),
                         end: end.format('YYYY-MM-DD'),
-                        staffId:<?php echo $staffId; ?>
+                        staffId:<?php echo $staff->getStaffId(); ?>
                     },
                     dataType:'json',
                     type:'POST',
@@ -76,11 +90,15 @@ $this->headScript()->appendFile($this->basePath() . '/fullcalendar/fullcalendar.
                         var events = [];
                         $.each(data, function(){
                             var task = $(this)[0];
+                            var color = statusColor[task.status];
                             events.push({
                                 title: task.name,
                                 start: task.fromTime,
                                 end: task.toTime,
-                                taskId: task.taskId
+                                backgroundColor: color,
+                                borderColor: '#666',
+                                textColor: '#222',
+                                taskData: task
                             });
                         });
                         callback(events);
@@ -90,33 +108,124 @@ $this->headScript()->appendFile($this->basePath() . '/fullcalendar/fullcalendar.
         });
     });
 </script>
-<h1>Staff Report</h1>
-<hr/>
-<div class="row">
-    <div class="col-sm-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-8">
+                <h4 class="panel-title" style="margin-top:10px;">
                     <i class="fa fa-battery-3"></i>
-                    Weekly workload
+                    <?php echo $this->escapeHtml($title); ?>
                 </h4>
             </div>
-            <div class="panel-body">
-                <div id="weekly-calendar"></div>
+            <div class="col-md-4 text-right">
+                <?php echo $this->backButton(); ?>
             </div>
         </div>
     </div>
-    <div class="col-sm-6">
-        <div class="panel panel-default" id="yearly-work-hours">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <i class="fa fa-clock-o"></i>
-                    Yearly work hours
-                </h4>
+    <div class="panel-body">
+        <div id="weekly-calendar"></div>
+    </div>
+</div>
+<div id="taskDetailModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="taskDetailModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="form-group">
+                            <label>Name:</label>
+                            <input class="form-control" readonly="readonly" id="txtTaskName" type="text">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Current(%):</label>
+                            <div class="form-control">
+                                <input class="form-control" readonly="readonly" id="txtCurrent" type="text">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="panel-body">
-                <canvas id="chartBox"></canvas>
-                <div id="legend" style="right:50px;position:absolute;"></div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Manager:</label>
+                            <input class="form-control" readonly="readonly" id="txtManager" type="text">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Staff:</label>
+                            <input class="form-control" readonly="readonly" type="text" id="txtStaff">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Level:</label>
+                            <input class="form-control" readonly="readonly" id="txtLevel" type="text">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Priority:</label>
+                            <input class="form-control" readonly="readonly" id="txtPriority" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Project:</label>
+                            <input class="form-control" readonly="readonly" type="text" id="txtProject">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>From Time:</label>
+                            <input class="form-control text-center" readonly="readonly" id="txtFromTime" type="text">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>To Time:</label>
+                            <input class="form-control text-center" readonly="readonly" id="txtToTime" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Description:</label>
+                            <textarea class="form-control" readonly="readonly" id="txtDescription"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Max Budget:</label>
+                            <input class="form-control" readonly="readonly" id="txtBudget" type="text">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Tag:</label>
+                            <input class="form-control" readonly="readonly" id="txtTag" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <input class="form-control" readonly="readonly" id="txtStatus" type="text" />
+                    </div>
+                    <div class="col-sm-4 col-sm-offset-5 text-right">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

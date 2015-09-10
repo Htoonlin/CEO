@@ -8,6 +8,7 @@
 
 namespace HumanResource\Controller;
 
+use Core\Helper\ChartHelper;
 use Core\Model\ApiModel;
 use Core\SundewController;
 use Core\SundewExporting;
@@ -15,6 +16,7 @@ use HumanResource\DataAccess\AttendanceDataAccess;
 use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Attendance;
 use HumanResource\Helper\AttendanceBoardHelper;
+use Zend\Db\Sql\Where;
 use Zend\Stdlib\ArrayObject;
 use Zend\View\Model\ViewModel;
 
@@ -157,5 +159,59 @@ class AttendanceController extends SundewController
             $api->setStatusCode(406);
         }
         return $api;
+    }
+
+    private function getWorkHoursData($label, $data)
+    {
+        $colors = ChartHelper::getRandomColor();
+        return array(
+            'label' => $label,
+            'fillColor' => 'rgba(220,220,220,0.2)',
+            'strokeColor' => $colors['color'],
+            'pointColor' => $colors['color'],
+            'pointStrokeColor' => "rgba(220,220,220,1)",
+            'pointHighlightFill' => $colors['highlight'],
+            'pointHighlightStroke' => $colors['highlight'],
+            'data' => $data,
+        );
+    }
+    public function apiWorkHoursAction(){
+        $from = date('Y-m-01', strtotime("-1 year"));
+        $to = date('Y-m-01');
+        $results = $this->attendanceTable()->getWorkHours($from, $to);
+        $months = array();
+        $month = strtotime($from);
+        while($month < strtotime($to)){
+            $months[date('Y-m', $month)] = 0;
+            $month = strtotime('+1 month', $month);
+        }
+        $data = $months;
+        $dataSet = array();
+        $currentStaffId = 0;
+        $lastLabel = '';
+        foreach($results as $result){
+            if($currentStaffId != $result->staffId && $currentStaffId > 0){
+                $dataSet[] = $this->getWorkHoursData($lastLabel, array_values($data));
+                $data = $months;
+            }
+            $key = sprintf("%04d-%02d",$result->year, $result->month);
+            if($result->hours > 0){
+                $data[$key] = round($result->hours);
+            }
+            $currentStaffId = $result->staffId;
+            $lastLabel = $result->staffName . ' (' . $result->staffCode . ')';
+        }
+
+        if($currentStaffId > 0){
+            $dataSet[] = $this->getWorkHoursData($lastLabel, array_values($data));
+        }
+
+        return new ApiModel(array(
+            'options' => ChartHelper::lineChartOption(),
+            'source' => array(
+                'labels' => array_keys($months),
+                'datasets' => $dataSet,
+            )
+        ));
     }
 }

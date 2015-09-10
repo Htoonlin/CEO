@@ -37,7 +37,6 @@ $this->headScript()
         $('button#btnSave').hide();
 
         $.setPayrollData({
-            workingHours    : <?= $workingHours ?>,
             lateList        : <?= json_encode($lateList); ?>,
             leaveValues     : <?= $leaveValues; ?>
         });
@@ -256,7 +255,8 @@ $this->headScript()
                 </thead>
                 <tbody>
                 <?php foreach($staffs as $staff):?>
-                    <tr data-salary="<?= $staff->Salary ?>" data-id="<?= $staff->staffId ?>" id="row-<?= $staff->staffId ?>">
+                    <tr data-salary="<?= $staff->Salary ?>" data-id="<?= $staff->staffId ?>"
+                        id="row-<?= $staff->staffId ?>" data-workHours='<?= $staff->workHours; ?>'>
                         <td class="text-center" id="isMark">
                             <div class="checkbox" style="margin: 0">
                                 <label class="checkbox-custom" data-initialize="checkbox">

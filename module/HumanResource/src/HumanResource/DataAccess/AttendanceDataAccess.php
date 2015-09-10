@@ -95,24 +95,25 @@ class AttendanceDataAccess extends SundewTableGateway{
 
 
     /**
-     * @param Where $where
      * @return \Zend\Db\ResultSet\ResultSet
      */
-    public function getWorkHours(Where $where){
-        $results = $this->select(function(Select $select) use ($where){
-            $where->isNotNull('inTime')
+    public function getWorkHours($from, $to){
+        $gateWay = new TableGateway($this->boardView, $this->adapter);
+        $results = $gateWay->select(function(Select $select) use ($from, $to){
+            $where = new Where();
+            $where->between('attendanceDate',$from, $to)
+                ->and->isNotNull('inTime')
                 ->and->isNotNull('outTime');
-            $select->columns(array('staffId',
+            $select->columns(array('staffId', 'staffCode', 'staffName',
                 'year' => new Expression('YEAR(attendanceDate)'),
                 'month' => new Expression('MONTH(attendanceDate)'),
-                'hours' => new Expression('SUM(TIMEDIFF(outTime,inTime) / 3600)')
+                'hours' => new Expression("SUM(TIMEDIFF(IF(outTime > '18:00:00', '18:00:00', outTime),inTime) / 3600)")
             ))->where($where)
                 ->group(array('staffId',
-                    'year' => new Expression('YEAR(attendanceDate)'),
-                    'month' => new Expression('MONTH(attendanceDate)')
+                    new Expression('YEAR(attendanceDate)'),
+                    new Expression('MONTH(attendanceDate)')
                 ))->order('staffId, year, month');
         });
-
         return $results;
     }
 

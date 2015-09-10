@@ -105,6 +105,12 @@ class StaffHelper
             $bankCode->setLabel('Bank Account')
                 ->setAttributes(array('class'=>'form-control', 'placeholder'=>'Aya Bank Account No'));
 
+            $workHours = new Element\Text('workHours');
+            $workHours->setAttributes(array(
+                'class'=> 'form-control',
+                'readonly' => 'readonly'
+            ));
+
             $form = new Form();
             $form->setAttribute('class', 'form-horizontal');
             $form->add($hidId);
@@ -115,6 +121,7 @@ class StaffHelper
             $form->add($selectDepartment);
             $form->add($salary);
             $form->add($leave);
+            $form->add($workHours);
             $form->add($PermanentDate);
             $form->add($status);
             $form->add($birthDay);
@@ -190,6 +197,23 @@ class StaffHelper
                         'max'=>200,
                         'min'=>1,
                         'encoding'=>'UTF-8',
+                    ),
+                ),
+            ));
+
+            $filter->add(array(
+                'name' => 'workHours',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'Zend\Filter\StripTags'),
+                    array('name' => 'Zend\Filter\StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'max' => 250,
+                        'min' => 1,
+                        'encoding' => 'UTF-8',
                     ),
                 ),
             ));

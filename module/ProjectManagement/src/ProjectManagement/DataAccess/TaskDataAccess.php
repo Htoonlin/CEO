@@ -5,6 +5,7 @@ use Core\SundewTableGateway;
 use ProjectManagement\Entity\Task;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
+use Zend\Db\Sql\Expression;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Db\Sql\Where;
 use Zend\Db\Sql\Select;
@@ -66,7 +67,8 @@ class TaskDataAccess extends SundewTableGateway
     }
 
     public function getTaskListByDate($staffId, $start, $end){
-        $result = $this->select(function(Select $select) use ($staffId, $start, $end){
+        $gateway = new TableGateway($this->view, $this->adapter);
+        $result = $gateway->select(function(Select $select) use ($staffId, $start, $end){
             $where = new Where();
             $where->equalTo('staffId', $staffId)
                 ->AND->greaterThanOrEqualTo('fromTime', $start)
@@ -97,6 +99,22 @@ class TaskDataAccess extends SundewTableGateway
     {
         $gateway = new TableGateway($this->view, $this->adapter);
         $results = $gateway->select(array('taskId' => $id, 'staffId' => $staffId));
+        if(!$results){
+            return null;
+        }
+        return $results->current();
+    }
+
+    public function getTaskValue($staffId)
+    {
+        $query = "SELECT SUM((level + 1)) as exp from " . $this->table . " WHERE status = 'C' AND staffId = " . $staffId;
+        $statement = $this->adapter->query($query);
+        $result = $statement->execute();
+        return $result->current();
+    }
+    public function getTaskView($id){
+        $gateway = new TableGateway($this->view, $this->adapter);
+        $results = $gateway->select(array('taskId' => $id));
         if(!$results){
             return null;
         }
