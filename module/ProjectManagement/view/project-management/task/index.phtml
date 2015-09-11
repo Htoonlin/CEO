@@ -203,6 +203,9 @@ $current_url = $this->url('pm_task', array('action' => 'index', 'id' => $project
                         case 'C':
                             $coloring = 'success';
                             break;
+                        case 'L':
+                            $coloring = 'danger';
+                            break;
                     }
                     ?>
                     <tr class="<?php echo $coloring; ?>">
