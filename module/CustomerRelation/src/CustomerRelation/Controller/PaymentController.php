@@ -105,7 +105,7 @@ class PaymentController extends SundewController
     {
         $id= (int)$this->params()->fromRoute('id', 0);
         return new ApiModel(array(
-            'total'=>1000,
+            'amount'=>$this->contractTable()->getContract($id),
             'paid'=>500,
             'id' => $id,
         ));

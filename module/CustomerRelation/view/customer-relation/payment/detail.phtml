@@ -45,22 +45,19 @@ echo $this->formHidden($form->get('paymentId'));
     <div class="panel-body" role="form">
         <div class="row">
             <div class="col-sm-4">
-                <?php echo $this->formRow($form->get('contactId')); ?>
+                <?php echo $this->formselect($form->get('contactId')); ?>
             </div>
             <div class="col-sm-5">
                 <?php echo $this->formRow($form->get('amount')); ?>
             </div>
             <div class="col-sm-3">
-                <?php echo $this->formRow($form->get('currencyId')); ?>
+                <?php echo $this->formselect($form->get('currencyId')); ?>
             </div>
         </div>
         <div class="row">
             <div class="form-group">
                 <div class="col-sm-4 col-sm-4">
-                   <?php
-                        echo $this->formRow($form->get('contractId'));
-
-                    ?>
+                   <?php echo $this->formselect($form->get('contractId'));?>
 
                 </div>
 
