@@ -75,7 +75,7 @@ class ContractDataAccess extends SundewTableGateway
     public function getContract($id)
     {
         $id=(int)$id;
-        $rowset=$this->select(array('contractId'=>$id,'contractBy'=>$this->staffId));
+        $rowset=$this->select(array('contractId'=>$id));
         return $rowset->current();
     }
 

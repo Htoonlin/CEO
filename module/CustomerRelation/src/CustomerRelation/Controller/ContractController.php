@@ -158,7 +158,7 @@ class ContractController extends SundewController
             $form->setInputFilter($helper->getInputFilter($id, $post_data['code']));
             if($form->isValid()){
                 if(empty($contract->getContractFile()['name']) && $isEdit){
-                    $contract->setProposalFile($previousFile);
+                    $contract->setContractFile($previousFile);
                 }
                 $contract->setContractBy($this->staffId);
                 $this->contractTable()->saveContract($contract);
