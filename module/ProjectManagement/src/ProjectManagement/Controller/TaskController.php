@@ -99,7 +99,7 @@ class TaskController extends SundewController
         $projectId = (int)$this->params()->fromRoute('id', -1);
 
         $page = (int)$this->params()->fromQuery("page", 1);
-        $sort = $this->params()->fromQuery("sort", "name");
+        $sort = $this->params()->fromQuery("sort", "status");
         $sortBy = $this->params()->fromQuery("by", "asc");
         $filter = $this->params()->fromQuery("filter", "");
         $pageSize = (int)$this->params()->fromQuery("size", 10);

@@ -67,10 +67,11 @@ echo $this->form()->openTag($form);
         echo $this->formHorizontal($form->get('annual_leave'));
         ?>
         <div class="form-group">
+            <?php echo $this->formHidden($form->get('workHours')); ?>
             <label class="control-label col-sm-3">Work Hours</label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <?php echo $this->formText($form->get('workHours')); ?>
+                    <input type="text" id="totalHours" class="form-control" readonly="readonly"/>
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#weekPicker">
                             <span class="fa fa-list-ul"></span>
@@ -134,8 +135,10 @@ echo $this->form()->openTag($form);
                 console.error(ex.message);
             }
         });
+
         $('button#btnWorkingHoursDone').click(function(){
             var jsonObj = {};
+            var hoursPerWeek = 0;
             $('#weekPicker input[type="checkbox"]:checked').each(function(){
                 var key = parseInt($(this).val());
                 var from = moment($('input#from' + key).val(), "HH:mm");
@@ -145,13 +148,22 @@ echo $this->form()->openTag($form);
                     item['from'] = from.format("HH:mm");
                     item['to'] = to.format("HH:mm");
                     jsonObj[key] = item;
+                    hoursPerWeek += parseFloat(to.diff(from, 'hours', true));
                 }
             });
-
             $('input[name="workHours"]').val(JSON.stringify(jsonObj));
-
+            $('input#totalHours').val(hoursPerWeek + ' Hrs/week');
             $('#weekPicker').modal('hide');
         });
+        var jsonObj = JSON.parse($('input[name="workHours"]').val());
+        var hoursPerWeek = 0;
+        $.each(jsonObj, function(key, value){
+            var from = moment(value.from, "HH:mm");
+            var to = moment(value.to, "HH:mm");
+            hoursPerWeek += parseFloat(to.diff(from,'hours', true));
+        });
+        console.log(hoursPerWeek);
+        $('input#totalHours').val(hoursPerWeek + ' Hrs/week');
     });
 </script>
 <!-- Week Picker -->

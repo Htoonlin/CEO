@@ -105,11 +105,7 @@ class StaffHelper
             $bankCode->setLabel('Bank Account')
                 ->setAttributes(array('class'=>'form-control', 'placeholder'=>'Aya Bank Account No'));
 
-            $workHours = new Element\Text('workHours');
-            $workHours->setAttributes(array(
-                'class'=> 'form-control',
-                'readonly' => 'readonly'
-            ));
+            $workHours = new Element\Hidden('workHours');
 
             $form = new Form();
             $form->setAttribute('class', 'form-horizontal');
