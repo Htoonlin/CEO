@@ -13,6 +13,7 @@ $this->headScript()
     ->appendFile($this->basePath() . '/js/math.min.js');
 
 $currency_pattern = '#,##0.00 ' . $payroll->Currency;
+if($payroll->s_wd <= 0) $payroll->s_wd = 1;
 $perDay =  $payroll->salary / $payroll->s_wd;
 $absentDeduction = $payroll->absent * $perDay;
 $lateList = json_decode($payroll->Late);

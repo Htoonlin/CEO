@@ -54,8 +54,7 @@ class TaskDataAccess extends SundewTableGateway
         if($projectId > 0){
             $where->equalTo('projectId', $projectId);
         }else if($projectId == 0){
-            $where->isNull('projectId')
-            ->OR->equalTo('projectId', 0);
+            $where->isNull('projectId');
         }
         $where->literal("CONCAT_WS(' ', tag, name, projectName, projectCode, staffCode, staffName, fromTime, toTime) LIKE ?", '%' . $filter . '%');
         $select->where($where);
@@ -108,7 +107,8 @@ class TaskDataAccess extends SundewTableGateway
 
     public function getTaskValue($staffId)
     {
-        $query = "SELECT SUM((level + 1)) as exp from " . $this->table . " WHERE status = 'C' AND staffId = " . $staffId;
+        $query = "SELECT SUM((level + 1)) as exp from " . $this->table .
+            " WHERE status = 'C' AND deletedDate IS NULL AND deletedBy IS NULL  AND staffId = " . $staffId;
         $statement = $this->adapter->query($query);
         $result = $statement->execute();
         return $result->current();

@@ -255,7 +255,7 @@ $this->headScript()
                 </thead>
                 <tbody>
                 <?php foreach($staffs as $staff):?>
-                    <tr data-salary="<?= $staff->Salary ?>" data-id="<?= $staff->staffId ?>"
+                    <tr data-salary="<?= $staff->salary ?>" data-id="<?= $staff->staffId ?>"
                         id="row-<?= $staff->staffId ?>" data-workHours='<?= $staff->workHours; ?>'>
                         <td class="text-center" id="isMark">
                             <div class="checkbox" style="margin: 0">
@@ -265,7 +265,7 @@ $this->headScript()
                             </div>
                         </td>
                         <td id="staff"><?= $this->escapeHtml($staff->staffName . ' (' . $staff->staffCode . ')') ?></td>
-                        <td id="salary"><?= $this->escapeHtml($staff->Salary . ' ' . $staff->Currency) ?></td>
+                        <td id="salary"><?= $this->escapeHtml($staff->salary . ' ' . $staff->Currency) ?></td>
                         <td id="M_WD" class="text-center">0</td>
                         <td id="Per_Day" class="text-center">0</td>
                         <td id="S_WD" class="text-center">0</td>

@@ -157,8 +157,6 @@ class StaffController extends SundewController
                 $this->staffTable()->saveStaff($staff);
                 $this->flashMessenger()->addSuccessMessage('Save Successful');
                 return $this->redirect()->toRoute('hr_staff');
-            }else{
-                $this->flashMessenger()->addErrorMessage($form->getMessages());
             }
         }
         return new ViewModel(array('form'=>$form,
@@ -271,10 +269,10 @@ class StaffController extends SundewController
          */
         foreach($staffs as $staff)
         {
-            $age = $year - date('Y', strtotime($staff->Birthday));
+            $age = $year - date('Y', strtotime($staff->birthday));
             $result[] = array(
                 'staff' => $staff->staffName,
-                'birthday' => date('m-d', strtotime($staff->Birthday)),
+                'birthday' => date('m-d', strtotime($staff->birthday)),
                 'age' => $age,
             );
         }

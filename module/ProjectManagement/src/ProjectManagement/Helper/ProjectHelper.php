@@ -159,10 +159,7 @@ class ProjectHelper{
                             'table'=>'tbl_pm_project',
                             'field'=>'code',
                             'adapter'=>$this->dbAdapter,
-                            'exclude'=>array(
-                                'field'=>'projectId',
-                                'value'=>$projectId
-                            ),
+                            'exclude'=>"(projectId != $projectId AND deletedDate IS NULL AND deletedBy IS NULL)",
                             'message'=>'This project code is already exist.'
                         )
                     )

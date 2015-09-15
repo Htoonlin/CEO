@@ -40,7 +40,7 @@ class ReportDataAccess extends SundewTableGateway
         if($projectId > 0){
             $where->equalTo('projectId', $projectId);
         }else if($projectId == 0 || $projectId == null){
-            $where->equalTo('projectId', 0)->or->isNull();
+            $where->isNull('projectId');
         }
 
         return $where;

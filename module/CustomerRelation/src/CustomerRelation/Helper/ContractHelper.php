@@ -167,10 +167,7 @@ class ContractHelper extends Form
                             'table' => 'tbl_cr_contract',
                             'field' => 'code',
                             'adapter' => $this->dbAdapter,
-                            'exclude' =>array(
-                                'field' => 'contractId',
-                                'value' => $contractId
-                            ),
+                            'exclude' => "(contractId != $contractId AND deletedDate IS NULL AND deletedBy IS NULL)",
                             'message' => 'This contract code is already exists.',
                         ),
                     ),

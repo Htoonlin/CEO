@@ -170,10 +170,7 @@ class StaffHelper
                             'table'=>'tbl_hr_staff',
                             'field'=>'staffCode',
                             'adapter'=>$this->dbAdapter,
-                            'exclude'=>array(
-                                'field'=>'staffId',
-                                'value'=>$staffId
-                            ),
+                            'exclude'=>"(staffId != $staffId AND deletedDate IS NULL AND deletedBy IS NULL)",
                             'message'=>'This staff code is already exist.',
                         )
                     ),

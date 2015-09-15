@@ -151,13 +151,13 @@
                          <?php echo $this->escapeHtml($staff->staffName);?>
                      </td>
                      <td>
-                         <?php echo $this->escapeHtml($staff->Leave);?>
+                         <?php echo $this->escapeHtml($staff->annual_leave);?>
                      </td>
                      <td>
-                         <?php echo $this->escapeHtml($staff->PermanentDate);?>
+                         <?php echo $this->escapeHtml($staff->permanentDate);?>
                      </td>
                      <td>
-                         <?php echo $this->constantConverter($staff->Status, 'default_status'); ?>
+                         <?php echo $this->constantConverter($staff->status, 'default_status'); ?>
                      </td>
                      <td class="center">
                         <a href="<?php echo $this->url('hr_staff', array('action' => 'report', 'id' => $staff->staffId)); ?>"

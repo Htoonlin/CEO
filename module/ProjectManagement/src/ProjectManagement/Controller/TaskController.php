@@ -25,8 +25,7 @@ use Zend\Form\Element;
 class TaskController extends SundewController
 {
     /**
-     *
-     * @return multitype:Ambigous <>
+     * @return array
      */
     private function getProjectList()
     {
@@ -35,8 +34,7 @@ class TaskController extends SundewController
     }
 
     /**
-     *
-     * @return multitype:
+     * @return array
      */
     private function getCurrencyList()
     {
@@ -45,8 +43,7 @@ class TaskController extends SundewController
     }
 
     /**
-     *
-     * @return multitype:Ambigous <>
+     * @return array
      */
     private function getStaffList()
     {
@@ -55,8 +52,7 @@ class TaskController extends SundewController
     }
 
     /**
-     *
-     * @return multitype:
+     * @return array
      */
     private function getStatusList()
     {
@@ -87,7 +83,7 @@ class TaskController extends SundewController
      */
     public function taskTable()
     {
-        return new TaskDataAccess($this->getDbAdapter());
+        return new TaskDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**

@@ -103,7 +103,7 @@ $this->headScript()
 							    <?php
                                     foreach($taskList as $task):
                                     $today = new DateTime(date('Y-m-d',time()));
-                                    $endDate = new DateTime($task->getToTime());
+                                    $endDate = new DateTime($task->toTime);
                                     $dueDate = $today->diff($endDate);
                                     if($dueDate->format('%R') === "-"){
                                         $dueDateString = 'Overdue';
@@ -123,8 +123,8 @@ $this->headScript()
                                     }
 							    ?>
 							    <li class="list-group-item">
-							    <?php echo $task->getName(); ?>
-							    <a href="<?php echo $this->url('dashboard', array('action' => 'taskDetail', 'id' => $task->getTaskId()));?>"
+							    <?php echo $task->name; ?>
+							    <a href="<?php echo $this->url('dashboard', array('action' => 'taskDetail', 'id' => $task->taskId));?>"
 							     class="btn btn-xs btn-<?php echo $coloring;?> pull-right">
 							     <?php echo $dueDateString; ?>
 						         </a>
