@@ -12,7 +12,7 @@ use Core\SundewTableGateway;
 use CustomerRelation\Entity\Proposal;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
-use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Select;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
 /**
@@ -50,8 +50,8 @@ class ProposalDataAccess extends SundewTableGateway
         if($paginated){
            return $this->paginate($filter, $orderBy, $order, $view);
         }
-        $proposalView=new TableGateway($view, $this->adapter);
-        return $proposalView->select();
+        $select = new Select($view);
+        return $this->selectOther($view);
     }
 
     /**

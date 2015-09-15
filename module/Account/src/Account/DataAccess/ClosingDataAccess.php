@@ -15,9 +15,6 @@ use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
-use Zend\Db\TableGateway\AbstractTableGateway;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
@@ -63,8 +60,8 @@ class ClosingDataAccess extends SundewTableGateway
             }
             return $this->paginateWith($select);
         }
-        $tableGateway = new TableGateway($this->view, $this->adapter);
-        return $tableGateway->select();
+        $select = new Select($this->view);
+        return $this->selectOther($select);
     }
 
     /**
@@ -111,14 +108,11 @@ class ClosingDataAccess extends SundewTableGateway
      */
     public function getOpenedData()
     {
-        $tableGateway = new TableGateway($this->view, $this->adapter);
+        $select = new Select($this->view);
+        $select->where(array('payableId' => null, 'closingDate' => null, 'closingAmount' => null))
+            ->order(array('openingDate DESC'));
 
-        $results = $tableGateway->select(function (Select $select){
-            $select->where(array('payableId' => null, 'closingDate' => null, 'closingAmount' => null))
-                ->order(array('openingDate DESC'));
-        });
-
-        return $results;
+        return $this->selectOther($select);
     }
 
     /**
@@ -127,22 +121,19 @@ class ClosingDataAccess extends SundewTableGateway
      */
     public function getNewOpeningData(array $currency)
     {
-        $tableGateway = new TableGateway('vw_account_voucher', $this->adapter);
+        $select = new Select('vw_account_voucher');
+        $where = new Where();
+        if(empty($currency)){
+            $where->equalTo('status', 'A');
+        }else{
+            $where->notIn('currency', $currency)
+                ->AND->equalTo('status','A');
+        }
+        $select->columns(array('type', 'currency', 'amount' => new Expression('SUM(amount)')))
+            ->where($where)
+            ->group(array('type', 'currency'))
+            ->order('currency asc');
 
-        $results = $tableGateway->select(function (Select $select) use($currency){
-            $where = new Where();
-            if(empty($currency)){
-                $where->equalTo('status', 'A');
-            }else{
-                $where->notIn('currency', $currency)
-                    ->AND->equalTo('status','A');
-            }
-            $select->columns(array('type', 'currency', 'amount' => new Expression('SUM(amount)')))
-                ->where($where)
-                ->group(array('type', 'currency'))
-                ->order('currency asc');
-        });
-
-        return $results;
+        return $this->selectOther($select);
     }
 }

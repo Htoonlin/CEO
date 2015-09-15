@@ -15,9 +15,6 @@ use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
-use Zend\Db\TableGateway\AbstractTableGateway;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
@@ -77,17 +74,19 @@ class ReceivableDataAccess extends SundewTableGateway
     public function fetchAll($paginated=false,$filter='',$orderBy='voucherNo',$order='ASC')
     {
         $view = 'vw_account_receivable';
+        $select = new Select($view);
+        $select->order($orderBy . ' ' . $order);
+        $where = new Where();
+        $where->equalTo('depositBy', $this->staffId);
+
         if($paginated){
-            $select = new Select($view);
-            $select->order($orderBy . ' ' . $order);
-            $where = new Where();
-            $where->literal("concat_ws(' ',description, voucherNo, Type, amount, voucherDate, currencyCode) LIKE ?", '%' . $filter . '%')
-                ->and->equalTo('depositBy', $this->staffId);
+            $where->literal("concat_ws(' ',description, voucherNo, Type, amount, voucherDate, currencyCode) LIKE ?", '%' . $filter . '%');
             $select->where($where);
             return $this->paginateWith($select);
         }
-        $tableGateway = new TableGateway($view, $this->adapter);
-        return $tableGateway->select(array('depositBy' => $this->staffId));
+
+        $select->where($where);
+        return $this->selectOther($select);
     }
 
     /**

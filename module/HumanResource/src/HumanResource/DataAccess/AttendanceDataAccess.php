@@ -15,7 +15,6 @@ use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
-use Zend\Db\TableGateway\TableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
 /**
@@ -56,8 +55,8 @@ class AttendanceDataAccess extends SundewTableGateway{
             return $this->paginate($filter, $orderBy, $order, $this->boardView);
         }
 
-        $attendanceBoard = new TableGateway($this->boardView, $this->adapter);
-        return $attendanceBoard->select();
+        $select = new Select($this->boardView);
+        return $this->selectOther($select);
     }
 
     /**
@@ -102,23 +101,22 @@ class AttendanceDataAccess extends SundewTableGateway{
      * @return \Zend\Db\ResultSet\ResultSet
      */
     public function getWorkHours($from, $to){
-        $gateWay = new TableGateway($this->boardView, $this->adapter);
-        $results = $gateWay->select(function(Select $select) use ($from, $to){
-            $where = new Where();
-            $where->between('attendanceDate',$from, $to)
-                ->and->isNotNull('inTime')
-                ->and->isNotNull('outTime');
-            $select->columns(array('staffId', 'staffCode', 'staffName',
-                'year' => new Expression('YEAR(attendanceDate)'),
-                'month' => new Expression('MONTH(attendanceDate)'),
-                'hours' => new Expression("SUM(TIMEDIFF(IF(outTime > '18:00:00', '18:00:00', outTime),inTime) / 3600)")
-            ))->where($where)
-                ->group(array('staffId',
-                    new Expression('YEAR(attendanceDate)'),
-                    new Expression('MONTH(attendanceDate)')
-                ))->order('staffId, year, month');
-        });
-        return $results;
+        $select = new Select($this->boardView);
+        $where = new Where();
+        $where->between('attendanceDate',$from, $to)
+            ->and->isNotNull('inTime')
+            ->and->isNotNull('outTime');
+        $select->columns(array('staffId', 'staffCode', 'staffName',
+            'year' => new Expression('YEAR(attendanceDate)'),
+            'month' => new Expression('MONTH(attendanceDate)'),
+            'hours' => new Expression("SUM(TIMEDIFF(IF(outTime > '18:00:00', '18:00:00', outTime),inTime) / 3600)")
+        ))->where($where)
+            ->group(array('staffId',
+                new Expression('YEAR(attendanceDate)'),
+                new Expression('MONTH(attendanceDate)')
+            ))->order('staffId, year, month');
+
+        return $this->selectOther($select);
     }
 
 

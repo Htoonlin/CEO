@@ -14,10 +14,6 @@ use Core\SundewTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Where;
-use Zend\Db\TableGateway\AbstractTableGateway;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
@@ -57,8 +53,8 @@ class UserDataAccess extends SundewTableGateway
             return $this->paginate($filter, $orderBy, $order, $view);
         }
 
-        $userView = new TableGateway($view, $this->adapter);
-        return $userView->select();
+        $select = new Select($view);
+        return $this->selectOther($select);
     }
 
     /**

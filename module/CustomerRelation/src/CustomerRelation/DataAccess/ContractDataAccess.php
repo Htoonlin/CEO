@@ -13,7 +13,6 @@ use CustomerRelation\Entity\Contract;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
-use Zend\Db\TableGateway\TableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
 /**
@@ -64,8 +63,8 @@ class ContractDataAccess extends SundewTableGateway
         if($paginated){
            return $this->paginate($filter, $orderBy, $order, $view);
         }
-        $contractView=new TableGateway($view, $this->adapter);
-        return $contractView->select();
+        $select = new Select($view);
+        return $this->selectOther($select);
     }
 
     /**

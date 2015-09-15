@@ -15,6 +15,7 @@ use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
+
 class PaymentDataAccess extends SundewTableGateway
 {
     /**
@@ -58,7 +59,8 @@ class PaymentDataAccess extends SundewTableGateway
         if($paginated){
             return $this->paginate($filter, $orderBy, $order, $view);
         }
-        return $paymentView=new TableGateway($view, $this->adapter);
+        $select = new Select($view);
+        return $this->selectOther($select);
     }
 
     /**

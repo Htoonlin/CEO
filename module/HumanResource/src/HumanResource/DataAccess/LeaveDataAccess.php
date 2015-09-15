@@ -12,7 +12,7 @@ use Core\SundewTableGateway;
 use HumanResource\Entity\Leave;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
-use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Select;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
 /**
@@ -49,8 +49,8 @@ class LeaveDataAccess extends SundewTableGateway
         if($paginated){
             return $this->paginate($filter, $orderBy, $order, $view);
         }
-        $tableGateway = new TableGateway($view, $this->adapter);
-        return $tableGateway->select();
+        $select = new Select($view);
+        return $this->selectOther($select);
     }
 
     /**

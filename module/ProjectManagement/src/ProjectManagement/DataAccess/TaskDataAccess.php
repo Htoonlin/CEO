@@ -5,12 +5,9 @@ use Core\SundewTableGateway;
 use ProjectManagement\Entity\Task;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
-use Zend\Db\Sql\Expression;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Db\Sql\Where;
 use Zend\Db\Sql\Select;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Predicate\Predicate;
 
 /**
  * System Generated Code
@@ -66,32 +63,31 @@ class TaskDataAccess extends SundewTableGateway
         	return $this->paginateWith($select);
         }
 
-        $gateway = new TableGateway($this->view, $this->adapter);
-        return $gateway->select(array('projectId' => $projectId));
+        $select = new Select($this->view);
+        $select->where(array('projectId' => $projectId));
+        return $this->selectOther($select);
     }
 
     public function getTaskListByDate($staffId, $start, $end){
-        $gateway = new TableGateway($this->view, $this->adapter);
-        $result = $gateway->select(function(Select $select) use ($staffId, $start, $end){
-            $where = new Where();
-            $where->equalTo('staffId', $staffId)
-                ->AND->greaterThanOrEqualTo('fromTime', $start)
-                ->AND->lessThan('toTime', $end);
-            $select->where($where)->order('priority ASC');
-        });
-        return $result;
+        $select = new Select($this->view);
+        $where = new Where();
+        $where->equalTo('staffId', $staffId)
+            ->AND->greaterThanOrEqualTo('fromTime', $start)
+            ->AND->lessThan('toTime', $end);
+        $select->where($where)->order('priority ASC');
+
+        return $this->selectOther($select);
     }
 
     public function getToDoList($staffId)
     {
-        $result = $this->select(function(Select $select) use ($staffId){
-            $where = new Where();
-            $where->equalTo('staffId', $staffId)
-                ->AND->lessThanOrEqualTo('fromTime', date('Y-m-d H:m:s'))
-                ->AND->in('status', array('A', 'P'));
-            $select->where($where)->order('toTime ASC, priority ASC');
-        });
-        return $result;
+        $select = new Select($this->view);
+        $where = new Where();
+        $where->equalTo('staffId', $staffId)
+            ->AND->lessThanOrEqualTo('fromTime', date('Y-m-d H:m:s'))
+            ->AND->in('status', array('A', 'P'));
+        $select->where($where)->order('toTime ASC, priority ASC');
+        return $this->selectOther($select);
     }
 
     /**
@@ -101,8 +97,9 @@ class TaskDataAccess extends SundewTableGateway
      */
     public function getTaskByStaff($id, $staffId)
     {
-        $gateway = new TableGateway($this->view, $this->adapter);
-        $results = $gateway->select(array('taskId' => $id, 'staffId' => $staffId));
+        $select = new Select($this->view);
+        $select->where(array('taskId' => $id, 'staffId' => $staffId));
+        $results = $this->selectOther($select);
         if(!$results){
             return null;
         }
@@ -117,8 +114,9 @@ class TaskDataAccess extends SundewTableGateway
         return $result->current();
     }
     public function getTaskView($id){
-        $gateway = new TableGateway($this->view, $this->adapter);
-        $results = $gateway->select(array('taskId' => $id));
+        $select = new Select($this->view);
+        $select->where(array('taskId' => $id));
+        $results = $this->selectOther($select);
         if(!$results){
             return null;
         }

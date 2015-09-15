@@ -8,12 +8,11 @@
 
 namespace Core;
 
-use Zend\Db\Exception\InvalidArgumentException;
 use Zend\Db\Metadata\Metadata;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
-use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\AbstractTableGateway;
@@ -131,6 +130,20 @@ class SundewTableGateway extends AbstractTableGateway
         }
         $paginatorAdapter = new DbSelect($select, $this->adapter);
         return new Paginator($paginatorAdapter);
+    }
+
+    public function selectOther(Select $select){
+        if($this->useSoftDelete){
+            $where = $select->where;
+            $where->isNull($this->deletedDate)
+                ->and->isNull($this->deletedBy);
+            $select->where($where);
+        }
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $resultSet = new ResultSet();
+        $resultSet->initialize($result);
+        return $resultSet;
     }
 
     /**

@@ -11,7 +11,7 @@ namespace HumanResource\DataAccess;
 use Core\SundewTableGateway;
 use HumanResource\Entity\Payroll;
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Select;
 
 /**
  * Class PayrollDataAccess
@@ -48,8 +48,8 @@ class PayrollDataAccess extends SundewTableGateway{
             return $this->paginate($filter, $orderBy, $order, $this->view);
         }
 
-        $staffView=new TableGateway($this->view, $this->adapter);
-        return $staffView->select();
+        $select = new Select($this->view);
+        return $this->selectOther($select);
     }
 
     /**
@@ -57,9 +57,9 @@ class PayrollDataAccess extends SundewTableGateway{
      * @return array|\ArrayObject|null
      */
     public function getPayroll($id){
-        $view = new TableGateway($this->view, $this->adapter);
-        $result = $view->select(array('payrollId' => $id));
-        return $result->current();
+        $select = new Select($this->view);
+        $select->where(array('payrollId' => $id));
+        return $this->selectOther($select)->current();
     }
 
     /**
@@ -69,13 +69,13 @@ class PayrollDataAccess extends SundewTableGateway{
      * @return array|\ArrayObject|null
      */
     public function getPayrollByDate($fromDate, $toDate, $staffId){
-        $view = new TableGateway($this->view, $this->adapter);
-        $result = $view->select(array(
+        $select = new Select($this->view);
+        $select->where(array(
             'staffId' => $staffId,
             'fromDate' => $fromDate,
             'toDate' => $toDate
         ));
-        return $result->current();
+        return $this->selectOther($select)->current();
     }
 
     /**

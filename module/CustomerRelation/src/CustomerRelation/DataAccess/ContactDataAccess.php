@@ -9,9 +9,9 @@ namespace CustomerRelation\DataAccess;
 
 use Core\SundewTableGateway;
 use CustomerRelation\Entity\Contact;
+use Zend\Db\Sql\Select;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\HydratingResultSet;
-use Zend\Db\TableGateway\TableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
 /**
@@ -52,8 +52,8 @@ class ContactDataAccess extends SundewTableGateway
             return $this->paginate($filter, $orderBy, $order, $view);
         }
 
-        $contactView=new TableGateway($view, $this->adapter);
-        return $contactView->select();
+        $select = new Select($view);
+        return $this->selectOther($select);
     }
 
     /**
