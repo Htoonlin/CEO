@@ -13,8 +13,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use HumanResource\DataAccess\StaffDataAccess;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
-use Zend\View\Helper\ViewModel;
-use Zend\View\View;
 
 /**
  * Class SundewController
@@ -22,9 +20,19 @@ use Zend\View\View;
  */
 class SundewController extends AbstractActionController
 {
+    /**
+     * @var AdapterInterface
+     */
     private $dbAdapter;
-
+    /**
+     * @var string
+     */
     private $pageSize_NS = 'sundew_grid_size';
+
+    /**
+     * @param int $default
+     * @return int|mixed
+     */
     protected function getPageSize($default = 10){
         $grid_size = new Container($this->pageSize_NS);
 
@@ -34,6 +42,10 @@ class SundewController extends AbstractActionController
 
         return $grid_size->pageSize;
     }
+
+    /**
+     * @param $size
+     */
     protected function setPageSize($size){
         $grid_size = new Container($this->pageSize_NS);
         $grid_size->pageSize = $size;
@@ -50,6 +62,9 @@ class SundewController extends AbstractActionController
         return $this->dbAdapter;
     }
 
+    /**
+     * @var ArrayObject
+     */
     private $user;
 
     /**
@@ -63,6 +78,9 @@ class SundewController extends AbstractActionController
         return $this->user;
     }
 
+    /**
+     * @var
+     */
     private $staff;
 
     /**
@@ -72,7 +90,7 @@ class SundewController extends AbstractActionController
     {
         if(!$this->staff){
             $userId = $this->getAuthUser()->userId;
-            $staffDataAccess = new StaffDataAccess($this->getDbAdapter());
+            $staffDataAccess = new StaffDataAccess($this->getDbAdapter(), $userId);
             $staff = $staffDataAccess->getStaffByUser($userId);
             if(!$staff){
                 $staff = new Staff();
@@ -84,6 +102,9 @@ class SundewController extends AbstractActionController
         return $this->staff;
     }
 
+    /**
+     * @return array
+     */
     public function notFoundAction(){
 
         return $this->indexAction();

@@ -26,7 +26,7 @@ class RouteController extends SundewController
      */
     private function routeTable()
     {
-        return new RouteDataAccess($this->getDbAdapter());
+        return new RouteDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -51,7 +51,7 @@ class RouteController extends SundewController
      */
     private function roleTreeData()
     {
-        $dataAccess = new RoleDataAccess($this->getDbAdapter());
+        $dataAccess = new RoleDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getChildren();
     }
 

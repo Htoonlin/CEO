@@ -24,13 +24,17 @@ class AccountTypeDataAccess extends SundewTableGateway
 {
     /**
      * @param Adapter $dbAdapter
+     * @param Int $userId
      */
-    public function __construct(Adapter $dbAdapter)
+    public function __construct(Adapter $dbAdapter, $userId)
     {
         $this->table = 'tbl_account_type';
         $this->adapter = $dbAdapter;
         $this->resultSetPrototype = new HydratingResultSet(new ClassMethods(), new AccountType());
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**

@@ -161,7 +161,7 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface
                     },
                     'constantConverter' => function($sm){
                         $dbAdapter = $sm->getServiceLocator()->get('SundewDbAdapter');
-                        $constantDA = new ConstantDataAccess($dbAdapter);
+                        $constantDA = new ConstantDataAccess($dbAdapter, 0);
                         return new ConstantConverter($constantDA);
                     }
                 ),
@@ -194,10 +194,10 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface
                     'RouteData' => function($sm)
                     {
                         $dbAdapter = $sm->get('SundewDbAdapter');
-                        $routeDataAccess = new RouteDataAccess($dbAdapter);
                         $authService = $sm->get('AuthService');
                         if($authService->hasIdentity()){
                             $userId = $authService->getIdentity()->userId;
+                            $routeDataAccess = new RouteDataAccess($dbAdapter, $userId);
                             $cache_ns = 'route_cache_' . $userId;
                             $routeData = $routeDataAccess->getCache()->getItem($cache_ns);
                             if(empty($routeData) || $routeData == null){

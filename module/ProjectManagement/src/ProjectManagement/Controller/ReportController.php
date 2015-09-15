@@ -44,7 +44,7 @@ class ReportController extends SundewController
      * @return mixed
      */
     private function statusConverter($status){
-        $constantDA = new ConstantDataAccess($this->getDbAdapter());
+        $constantDA = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         $converter = new ConstantConverter($constantDA);
         return $converter($status, 'task_status');
     }
@@ -87,7 +87,7 @@ class ReportController extends SundewController
      */
     private function reportTable()
     {
-        return new ReportDataAccess($this->getDbAdapter());
+        return new ReportDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**

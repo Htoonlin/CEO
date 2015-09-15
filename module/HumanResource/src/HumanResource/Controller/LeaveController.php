@@ -29,7 +29,7 @@ class LeaveController extends SundewController
      */
     private function leaveTable()
     {
-        return new LeaveDataAccess($this->getDbAdapter());
+        return new LeaveDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -37,7 +37,7 @@ class LeaveController extends SundewController
      */
     private function staffTable()
     {
-        return new StaffDataAccess($this->getDbAdapter());
+        return new StaffDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
     private $annualLeave;
     private $staffList;
@@ -46,8 +46,8 @@ class LeaveController extends SundewController
 
     private function initCombo()
     {
-        $staffDA = new StaffDataAccess($this->getDbAdapter());
-        $constantDA = new ConstantDataAccess($this->getDbAdapter());
+        $staffDA = new StaffDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
+        $constantDA = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         $this->staffList = $staffDA->getComboData('staffId', 'staffCode');
         $this->statusList = $constantDA->getComboByName('leave_status');
         unset($this->statusList['R']);

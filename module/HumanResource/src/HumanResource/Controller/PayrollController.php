@@ -34,7 +34,7 @@ class PayrollController extends SundewController{
 
     private function init_data(){
         if(!$this->staffTable)
-            $this->staffTable = new StaffDataAccess($this->getDbAdapter());
+            $this->staffTable = new StaffDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
 
         if(!$this->staffId){
             $staff = $this->getCurrentStaff();
@@ -42,12 +42,12 @@ class PayrollController extends SundewController{
         }
 
         if(!$this->payrollTable)
-            $this->payrollTable = new PayrollDataAccess($this->getDbAdapter());
+            $this->payrollTable = new PayrollDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
 
         if(!$this->calendarTable)
-            $this->calendarTable = new CalendarDataAccess($this->getDbAdapter());
+            $this->calendarTable = new CalendarDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
 
-        $constantTable = new ConstantDataAccess($this->getDbAdapter());
+        $constantTable = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
 
         if(!$this->formulaList){
             $this->formulaList = $constantTable->getComboByName('payroll_formula', 'payroll');
@@ -58,7 +58,7 @@ class PayrollController extends SundewController{
             $this->leaveValues = $constant->getValue();
         }
 
-        $constantDataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $constantDataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         if(!$this->lateList){
             $lateData = $constantDataAccess->getConstantByName('late_condition','payroll');
             $lateList = Json::decode($lateData->getValue());

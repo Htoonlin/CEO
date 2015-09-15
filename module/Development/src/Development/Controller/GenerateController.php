@@ -49,7 +49,7 @@ class GenerateController extends SundewController
      */
     private function getTypeList()
     {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboByName('generate_types');
     }
 

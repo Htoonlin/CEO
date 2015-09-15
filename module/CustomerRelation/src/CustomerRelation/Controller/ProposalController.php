@@ -26,18 +26,12 @@ use Zend\View\Model\ViewModel;
  */
 class ProposalController extends SundewController
 {
-    private $staffId;
-
     /**
      * @return ProposalDataAccess
      */
     private function proposalTable()
     {
-        if(!$this->staffId){
-            $staff = $this->getCurrentStaff();
-            $this->staffId=boolval($staff)?$staff->getStaffId():0;
-        }
-        return new ProposalDataAccess($this->getDbAdapter(),$this->staffId);
+        return new ProposalDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
     private $currencyList;
     private $companyList;
@@ -47,22 +41,22 @@ class ProposalController extends SundewController
     private function init_combos()
     {
         if(!$this->currencyList){
-            $currencyDataAccess = new CurrencyDataAccess($this->getDbAdapter());
+            $currencyDataAccess = new CurrencyDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
             $this->currencyList = $currencyDataAccess->getComboData('currencyId', 'code');
         }
 
         if(!$this->companyList){
-            $companyDataAccess = new CompanyDataAccess($this->getDbAdapter());
+            $companyDataAccess = new CompanyDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
             $this->companyList = $companyDataAccess->getComboData('companyId', 'name');
         }
 
         if(!$this->contactList){
-            $contactDataAccess = new ContactDataAccess($this->getDbAdapter());
+            $contactDataAccess = new ContactDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
             $this->contactList = $contactDataAccess->getComboData('contactId', 'name');
         }
 
         if(!$this->statusList){
-            $constantDataAccess = new ConstantDataAccess($this->getDbAdapter());
+            $constantDataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
             $this->statusList = $constantDataAccess->getComboByName('default_status');
         }
     }

@@ -116,10 +116,7 @@ class UserHelper
                             'table' => 'tbl_user',
                             'field' => 'userName',
                             'adapter' => $this->dbAdapter,
-                            'exclude' => array(
-                                'field' => 'userId',
-                                'value' => $userId
-                            ),
+                            'exclude' => "(userId != $userId AND deletedDate IS NULL AND deletedBY IS NULL)",
                             'message' => 'This user name is already exist.',
                         )
                     ),

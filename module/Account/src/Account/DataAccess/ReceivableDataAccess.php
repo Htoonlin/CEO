@@ -31,15 +31,19 @@ class ReceivableDataAccess extends SundewTableGateway
 
     /**
      * @param Adapter $dbAdapter
-     * @param $staffId
+     * @param Int $staffId
+     * @param Int $userId
      */
-    public function __construct(Adapter $dbAdapter, $staffId)
+    public function __construct(Adapter $dbAdapter, $staffId, $userId)
     {
         $this->staffId = $staffId;
         $this->table = "tbl_account_receivable";
         $this->adapter = $dbAdapter;
         $this->resultSetPrototype = new HydratingResultSet(new ClassMethods(), new Receivable());
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**

@@ -36,9 +36,9 @@ class AuthController extends SundewController
     /**
      * @return UserDataAccess
      */
-    private function userTable()
+    private function userTable($userId)
     {
-        return new UserDataAccess($this->getDbAdapter());
+        return new UserDataAccess($this->getDbAdapter(), $userId);
     }
 
     const SESSION_NS = 'ceo_auth_session';
@@ -139,7 +139,7 @@ class AuthController extends SundewController
                     $user = new User();
                     $user->exchangeArray($data);
                     $user->setLastLogin(date('Y-m-d H:i:s'));
-                    $this->userTable()->saveUser($user);
+                    $this->userTable($data['userId'])->saveUser($user);
                     $columnsToOmit = array('password');
                     $authUser = $authAdapter->getResultRowObject(null, $columnsToOmit);
                     $userRoles = array();

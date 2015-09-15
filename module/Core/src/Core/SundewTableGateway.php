@@ -8,17 +8,41 @@
 
 namespace Core;
 
+use Zend\Db\Exception\InvalidArgumentException;
 use Zend\Db\Metadata\Metadata;
 use Zend\Db\Sql\Delete;
+use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\TableIdentifier;
+use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use Zend\Cache\StorageFactory;
 
+/**
+ * Class SundewTableGateway
+ * @package Core
+ */
 class SundewTableGateway extends AbstractTableGateway
 {
+    protected $useSoftDelete = false;
+    protected $deletedDate = "deletedDate";
+    protected $deletedBy = "deletedBy";
+    protected $createdDate = "createdDate";
+    protected $createdBy = "createdBy";
+    protected $modifiedDate = "modifiedDate";
+    protected $modifiedBy = "modifiedBy";
+    protected $userId = 0;
+
+    /**
+     * @param $userId
+     */
+    public function __construct($userId = 0){
+        $this->userId = $userId;
+    }
+
     /**
      * @param $key
      * @param $value
@@ -99,8 +123,48 @@ class SundewTableGateway extends AbstractTableGateway
      * @return Paginator
      */
     public function paginateWith(Select $select){
+        if($this->useSoftDelete){
+            $where = $select->where;
+            $where->isNull($this->deletedDate)
+                ->and->isNull($this->deletedBy);
+            $select->where($where);
+        }
         $paginatorAdapter = new DbSelect($select, $this->adapter);
         return new Paginator($paginatorAdapter);
+    }
+
+    /**
+     * @param Select $select
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
+    public function executeSelect(Select $select){
+        if($this->useSoftDelete){
+            $where = $select->where;
+            $where->isNull($this->deletedDate)
+                ->and->isNull($this->deletedBy);
+            $select->where($where);
+        }
+        return parent::executeSelect($select);
+    }
+
+    public function executeInsert(Insert $insert){
+        if($this->useSoftDelete){
+            $insert->values(array(
+                $this->createdDate => date('Y-m-d H:i:s', time()),
+                $this->createdBy => $this->userId,
+            ), Insert::VALUES_MERGE);
+        }
+        return parent::executeInsert($insert);
+    }
+
+    public function executeUpdate(Update $update){
+        if($this->useSoftDelete){
+            $update->set(array(
+                $this->modifiedDate => date('Y-m-d H:i:s', time()),
+                $this->modifiedBy => $this->userId,
+            ), Update::VALUES_MERGE);
+        }
+        return parent::executeUpdate($update);
     }
 
     /**
@@ -108,9 +172,13 @@ class SundewTableGateway extends AbstractTableGateway
      * @param Delete $delete
      * @return int
      */
-    /*
     public function executeDelete(Delete $delete){
-        return 0;
+        if($this->useSoftDelete){
+            return $this->update(array(
+                $this->deletedDate => date('Y-m-d H:i:s', time()),
+                $this->deletedBy => $this->userId,
+            ), $delete->where);
+        }
+        return parent::executeDelete($delete);
     }
-    */
 }

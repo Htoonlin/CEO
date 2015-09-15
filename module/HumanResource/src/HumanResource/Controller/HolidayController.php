@@ -28,7 +28,7 @@ class HolidayController extends SundewController
      */
     private function calendarTable()
     {
-        return new CalendarDataAccess($this->getDbAdapter());
+        return new CalendarDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -36,7 +36,7 @@ class HolidayController extends SundewController
      */
     private function holidayTypeCombo()
     {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboByName('holiday_type');
     }
 

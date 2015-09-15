@@ -30,7 +30,7 @@ class TaskController extends SundewController
      */
     private function getProjectList()
     {
-        $dataAccess = new ProjectDataAccess($this->getDbAdapter());
+        $dataAccess = new ProjectDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboData('projectId', 'name');
     }
 
@@ -40,7 +40,7 @@ class TaskController extends SundewController
      */
     private function getCurrencyList()
     {
-        $dataAccess = new CurrencyDataAccess($this->getDbAdapter());
+        $dataAccess = new CurrencyDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboData('currencyId', 'code');
     }
 
@@ -50,7 +50,7 @@ class TaskController extends SundewController
      */
     private function getStaffList()
     {
-        $dataAccess = new StaffDataAccess($this->getDbAdapter());
+        $dataAccess = new StaffDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboData('staffId', 'staffName');
     }
 
@@ -60,7 +60,7 @@ class TaskController extends SundewController
      */
     private function getStatusList()
     {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboByName('task_status');
     }
 

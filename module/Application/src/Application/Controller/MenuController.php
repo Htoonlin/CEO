@@ -25,7 +25,7 @@ class MenuController extends SundewController
      */
     private function menuTable()
     {
-        return new MenuDataAccess($this->getDbAdapter());
+        return new MenuDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -33,7 +33,7 @@ class MenuController extends SundewController
      */
     private function urlTypeCombo()
     {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboByName('routing_url_type');
     }
 
@@ -42,7 +42,7 @@ class MenuController extends SundewController
      */
     private function roleTreeData()
     {
-        $dataAccess = new RoleDataAccess($this->getDbAdapter());
+        $dataAccess = new RoleDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getChildren();
     }
 

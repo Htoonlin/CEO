@@ -24,7 +24,7 @@ class CompanyController extends SundewController
      */
     private function companyTable()
     {
-        return new CompanyDataAccess($this->getDbAdapter());
+        return new CompanyDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     private $statusList;
@@ -35,7 +35,7 @@ class CompanyController extends SundewController
      */
     private function init_combos()
     {
-        $constant = new ConstantDataAccess($this->getDbAdapter());
+        $constant = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
 
         if(!$this->statusList)
             $this->statusList = $constant->getComboByName('default_status');

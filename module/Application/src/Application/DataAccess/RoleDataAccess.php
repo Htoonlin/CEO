@@ -24,13 +24,17 @@ class RoleDataAccess extends SundewTableGateway
 {
     /**
      * @param Adapter $dbAdapter
+     * @param Int $userId
      */
-    public function __construct(Adapter $dbAdapter)
+    public function __construct(Adapter $dbAdapter, $userId)
     {
         $this->table = 'tbl_role';
         $this->adapter = $dbAdapter;
         $this->resultSetPrototype = new HydratingResultSet(new ClassMethods(), new Role());
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**

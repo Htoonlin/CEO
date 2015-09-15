@@ -15,8 +15,15 @@ use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 
+/**
+ * Class ReportDataAccess
+ * @package ProjectManagement\DataAccess
+ */
 class ReportDataAccess extends SundewTableGateway
 {
+    /**
+     * @param Adapter $adapter
+     */
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
@@ -24,6 +31,10 @@ class ReportDataAccess extends SundewTableGateway
         $this->initialize();
     }
 
+    /**
+     * @param $projectId
+     * @return Where
+     */
     private function getWhereByProjectId($projectId){
         $where = new Where();
         if($projectId > 0){
@@ -35,6 +46,10 @@ class ReportDataAccess extends SundewTableGateway
         return $where;
     }
 
+    /**
+     * @param int $projectId
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function getTime($projectId = -1)
     {
         $results = $this->select(function(Select $select) use ($projectId){
@@ -46,6 +61,10 @@ class ReportDataAccess extends SundewTableGateway
         return $results;
     }
 
+    /**
+     * @param int $projectId
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function getProgress($projectId = -1)
     {
         $results = $this->select(function(Select $select) use ($projectId){
@@ -58,6 +77,10 @@ class ReportDataAccess extends SundewTableGateway
         return $results;
     }
 
+    /**
+     * @param int $projectId
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function getActiveStaffs($projectId = -1){
         $results = $this->select(function(Select $select) use ($projectId){
             $select->columns(array('staffId' => new Expression('Distinct staffId'), 'staffCode', 'staffName'))
@@ -67,6 +90,11 @@ class ReportDataAccess extends SundewTableGateway
         return $results;
     }
 
+    /**
+     * @param $staffId
+     * @param int $projectId
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function getWorkload($staffId, $projectId = -1)
     {
         $results = $this->select(function(Select $select) use($staffId,$projectId){

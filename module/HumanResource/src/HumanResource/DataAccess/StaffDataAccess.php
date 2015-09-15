@@ -28,13 +28,17 @@ class StaffDataAccess extends SundewTableGateway {
 
     /**
      * @param Adapter $dpAdapter
+     * @param Int $userId
      */
-    public function __construct(Adapter $dpAdapter)
+    public function __construct(Adapter $dpAdapter, $userId)
     {
         $this->table="tbl_hr_staff";
         $this->adapter=$dpAdapter;
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Staff());
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     public function getComboData($key, $value){

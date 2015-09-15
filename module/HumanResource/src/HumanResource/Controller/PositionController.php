@@ -22,14 +22,14 @@ class PositionController extends SundewController
      */
     private function positionTable()
     {
-        return new PositionDataAccess($this->getDbAdapter());
+        return new PositionDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
      * @return array
      */
     private function currencyCombo(){
-        $dataAccess = new CurrencyDataAccess($this->getDbAdapter());
+        $dataAccess = new CurrencyDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboData('currencyId', 'code');
     }
 
@@ -38,7 +38,7 @@ class PositionController extends SundewController
      */
     private function statusCombo()
     {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboByName('default_status');
     }
 

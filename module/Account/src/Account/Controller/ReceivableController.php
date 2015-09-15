@@ -39,7 +39,7 @@ class ReceivableController extends SundewController
             $this->staffName = boolval($staff) ? $staff->getStaffName() : '';
         }
 
-        return new ReceivableDataAccess($this->getDbAdapter(), $this->staffId);
+        return new ReceivableDataAccess($this->getDbAdapter(), $this->staffId, $this->getAuthUser()->userId);
     }
 
     /**
@@ -47,7 +47,7 @@ class ReceivableController extends SundewController
      */
     private function accountTypes()
     {
-        $dataAccess=new AccountTypeDataAccess($this->getDbAdapter());
+        $dataAccess=new AccountTypeDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getChildren("I");
     }
     private $currencyList;
@@ -56,11 +56,11 @@ class ReceivableController extends SundewController
     private function init_combos()
     {
         if(!$this->currencyList){
-            $currencyDataAccess = new CurrencyDataAccess($this->getDbAdapter());
+            $currencyDataAccess = new CurrencyDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
             $this->currencyList = $currencyDataAccess->getComboData('currencyId', 'code');
         }
         if(!$this->paymentTypeList){
-            $paymentTypeDataAccess = new ConstantDataAccess($this->getDbAdapter());
+            $paymentTypeDataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
             $this->paymentTypeList = $paymentTypeDataAccess->getComboByName('payment_type');
         }
     }

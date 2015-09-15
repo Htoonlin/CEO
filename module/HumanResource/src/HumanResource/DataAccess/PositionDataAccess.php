@@ -24,13 +24,17 @@ class PositionDataAccess extends SundewTableGateway{
 
     /**
      * @param Adapter $dbAdapter
+     * @param Int $userId
      */
-    public function __construct(Adapter $dbAdapter)
+    public function __construct(Adapter $dbAdapter, $userId)
     {
         $this->table="tbl_hr_position";
         $this->adapter=$dbAdapter;
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Position());
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**

@@ -24,7 +24,7 @@ class CurrencyController extends SundewController
      */
     private function currencyTable()
     {
-        return new CurrencyDataAccess($this->getDbAdapter());
+        return new CurrencyDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -32,7 +32,7 @@ class CurrencyController extends SundewController
      */
     private function statusCombo()
     {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboByName('default_status');
     }
 

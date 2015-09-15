@@ -22,12 +22,16 @@ class PayrollDataAccess extends SundewTableGateway{
     protected $view = 'vw_hr_payroll';
     /**
      * @param Adapter $dpAdapter
+     * @param Int $userId
      */
-    public function __construct(Adapter $dpAdapter)
+    public function __construct(Adapter $dpAdapter, $userId)
     {
         $this->table="tbl_hr_payroll";
         $this->adapter=$dpAdapter;
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**

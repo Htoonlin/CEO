@@ -28,13 +28,17 @@ class ConstantDataAccess extends SundewTableGateway {
 
     /**
      * @param Adapter $dbAdapter
+     * @param Int $userId
      */
-    public function __construct(Adapter $dbAdapter)
+    public function __construct(Adapter $dbAdapter, $userId)
     {
         $this->table="tbl_constant";
         $this->adapter=$dbAdapter;
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Constant());
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**

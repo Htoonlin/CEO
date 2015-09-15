@@ -23,14 +23,14 @@ class ProjectController extends SundewController{
      * @return ProjectDataAccess
      */
     private function projectTable(){
-        return new ProjectDataAccess($this->getDbAdapter());
+        return new ProjectDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
      * @return array
      */
     private function userCombos(){
-        $dataAccess=new StaffDataAccess($this->getDbAdapter());
+        $dataAccess=new StaffDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboData('staffId', 'staffCode');
     }
 

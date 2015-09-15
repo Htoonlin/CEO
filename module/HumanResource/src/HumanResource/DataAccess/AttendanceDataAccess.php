@@ -28,13 +28,17 @@ class AttendanceDataAccess extends SundewTableGateway{
 
     /**
      * @param Adapter $dpAdapter
+     * @param Int $userId
      */
-    public function __construct(Adapter $dpAdapter)
+    public function __construct(Adapter $dpAdapter, $userId)
     {
         $this->table="tbl_hr_attendance";
         $this->adapter=$dpAdapter;
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Attendance());
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**

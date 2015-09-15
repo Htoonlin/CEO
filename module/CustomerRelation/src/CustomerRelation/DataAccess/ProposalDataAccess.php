@@ -21,19 +21,19 @@ use Zend\Stdlib\Hydrator\ClassMethods;
  */
 class ProposalDataAccess extends SundewTableGateway
 {
-    protected $staffId;
-
     /**
      * @param Adapter $dbAdapter
-     * @param $staffId
+     * @param Int $userId
      */
-    public function __construct(Adapter $dbAdapter,$staffId)
+    public function __construct(Adapter $dbAdapter,$userId)
     {
-        $this->staffId=$staffId;
         $this->table="tbl_cr_proposal";
         $this->adapter=$dbAdapter;
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Proposal());
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**
@@ -51,7 +51,7 @@ class ProposalDataAccess extends SundewTableGateway
            return $this->paginate($filter, $orderBy, $order, $view);
         }
         $proposalView=new TableGateway($view, $this->adapter);
-        return $proposalView->select(array('proposalBy'=>$this->staffId));
+        return $proposalView->select();
     }
 
     /**
@@ -61,8 +61,8 @@ class ProposalDataAccess extends SundewTableGateway
     public function getProposal($id)
     {
         $id=(int)$id;
-        $rowset=$this->select(array('proposalId'=>$id,'proposalBy'=>$this->staffId));
-        return $rowset->current();
+        $rowSet=$this->select(array('proposalId'=>$id));
+        return $rowSet->current();
     }
 
     /**
@@ -73,7 +73,6 @@ class ProposalDataAccess extends SundewTableGateway
     {
         $id=$proposal->getProposalId();
         $data=$proposal->getArrayCopy();
-        $data['proposalBy']=$this->staffId;
         if(is_array($proposal->getProposalFile())){
             $data['proposalFile']=$proposal->getProposalFile()['tmp_name'];
         }

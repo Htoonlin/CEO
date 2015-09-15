@@ -58,7 +58,7 @@ class BalanceController extends SundewController
      */
     private function currencyTable()
     {
-        return new CurrencyDataAccess($this->getDbAdapter());
+        return new CurrencyDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -66,7 +66,7 @@ class BalanceController extends SundewController
      */
     private function payableTable()
     {
-        return new PayableDataAccess($this->getDbAdapter(), $this->getStaffId());
+        return new PayableDataAccess($this->getDbAdapter(), $this->getStaffId(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -74,7 +74,7 @@ class BalanceController extends SundewController
      */
     private function receivableTable()
     {
-        return new ReceivableDataAccess($this->getDbAdapter(), $this->getStaffId());
+        return new ReceivableDataAccess($this->getDbAdapter(), $this->getStaffId(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -82,7 +82,7 @@ class BalanceController extends SundewController
      */
     private function closingTable()
     {
-        return new ClosingDataAccess($this->getDbAdapter());
+        return new ClosingDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -91,7 +91,7 @@ class BalanceController extends SundewController
      */
     private function getClosingTypes($type)
     {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         $result = json_decode($dataAccess->getConstantByName('closing_type_id')->getValue());
 
         if($result){
@@ -108,7 +108,7 @@ class BalanceController extends SundewController
      */
     private function currencyCombo($useAllCurrency = false, $selected = 0)
     {
-        $dataAccess = new CurrencyDataAccess($this->getDbAdapter());
+        $dataAccess = new CurrencyDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         $data = $dataAccess->getComboData('currencyId', 'name');
         $currencyCombo = new Element\Select('currency');
         if($useAllCurrency){

@@ -23,7 +23,7 @@ class AccountTypeController extends SundewController
      */
     private function accountTypeTable()
     {
-        return new AccountTypeDataAccess($this->getDbAdapter());
+        return new AccountTypeDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -31,7 +31,7 @@ class AccountTypeController extends SundewController
      */
     private function baseTypeCombo()
     {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboByName('account_base_type');
     }
 
@@ -40,7 +40,7 @@ class AccountTypeController extends SundewController
      */
     private function defaultStatusCombo()
     {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboByName('default_status');
     }
 

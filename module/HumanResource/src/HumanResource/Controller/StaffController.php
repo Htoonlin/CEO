@@ -38,17 +38,17 @@ class StaffController extends SundewController
      */
     private function staffTable()
     {
-        return new StaffDataAccess($this->getDbAdapter());
+        return new StaffDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
 
     private function taskTable(){
-        return new TaskDataAccess($this->getDbAdapter());
+        return new TaskDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     private function getTaskStatus()
     {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getConstantByName('task_status')->getValue();
     }
 
@@ -57,7 +57,7 @@ class StaffController extends SundewController
      */
     private function userCombos()
     {
-        $dataAccess=new UserDataAccess($this->getDbAdapter());
+        $dataAccess=new UserDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboData('userId', 'userName');
     }
 
@@ -66,7 +66,7 @@ class StaffController extends SundewController
      */
     private function statusCombo()
     {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboByName('default_status');
     }
 
@@ -75,7 +75,7 @@ class StaffController extends SundewController
      */
     private function positionCombos()
     {
-        $dataAccess=new PositionDataAccess($this->getDbAdapter());
+        $dataAccess=new PositionDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboData('positionId', 'name');
     }
 
@@ -84,7 +84,7 @@ class StaffController extends SundewController
      */
     private function departments()
     {
-        $dataAccess=new DepartmentDataAccess($this->getDbAdapter());
+        $dataAccess=new DepartmentDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getChildren();
     }
 
@@ -92,7 +92,7 @@ class StaffController extends SundewController
      * @return array
      */
     private function currencyCombo(){
-        $dataAccess = new CurrencyDataAccess($this->getDbAdapter());
+        $dataAccess = new CurrencyDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboData('currencyId', 'code');
     }
 

@@ -22,7 +22,7 @@ class ReportController extends SundewController
      */
     private function getSkipTypes()
     {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         $result = json_decode($dataAccess->getConstantByName('closing_type_id')->getValue());
         return array_unique(array($result->open, $result->close));
     }

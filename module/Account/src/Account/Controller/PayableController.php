@@ -40,7 +40,7 @@ class PayableController extends SundewController
             $this->staffId=boolval($staff) ? $staff->getStaffId():0;
             $this->staffName=boolval($staff) ? $staff->getStaffName():'';
         }
-        return new PayableDataAccess($this->getDbAdapter(), $this->staffId);
+        return new PayableDataAccess($this->getDbAdapter(), $this->staffId, $this->getAuthUser()->userId);
     }
 
     /**
@@ -48,7 +48,7 @@ class PayableController extends SundewController
      */
     private function accountTypes()
     {
-        $dataAccess=new AccountTypeDataAccess($this->getDbAdapter());
+        $dataAccess=new AccountTypeDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getChildren("E");
     }
 
@@ -67,11 +67,11 @@ class PayableController extends SundewController
     private function init_combos()
     {
         if(!$this->currencyList){
-            $currencyDataAccess = new CurrencyDataAccess($this->getDbAdapter());
+            $currencyDataAccess = new CurrencyDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
             $this->currencyList = $currencyDataAccess->getComboData('currencyId', 'code');
         }
         if(!$this->paymentList){
-            $paymentDataAccess = new ConstantDataAccess($this->getDbAdapter());
+            $paymentDataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
             $this->paymentList = $paymentDataAccess->getComboByName('payment_type');
         }
     }

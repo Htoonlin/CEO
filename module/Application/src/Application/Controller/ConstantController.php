@@ -18,7 +18,7 @@ class ConstantController extends SundewController
      */
     private function constantTable()
     {
-        return new ConstantDataAccess($this->getDbAdapter());
+        return new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**

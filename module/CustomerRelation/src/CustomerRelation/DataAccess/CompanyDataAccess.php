@@ -26,13 +26,17 @@ class CompanyDataAccess extends SundewTableGateway
 {
     /**
      * @param Adapter $dbAdapter
+     * @param Int $userId
      */
-    public function __construct(Adapter $dbAdapter)
+    public function __construct(Adapter $dbAdapter, $userId)
     {
         $this->table='tbl_cr_company';
         $this->adapter=$dbAdapter;
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(), new Company());
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**

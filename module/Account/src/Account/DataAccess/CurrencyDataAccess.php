@@ -29,13 +29,17 @@ class CurrencyDataAccess extends SundewTableGateway
 {
     /**
      * @param Adapter $dbAdapter
+     * @param Int $userId
      */
-    public function __construct(Adapter $dbAdapter)
+    public function __construct(Adapter $dbAdapter, $userId)
     {
         $this->table='tbl_account_currency';
         $this->adapter=$dbAdapter;
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(), new Currency());
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**

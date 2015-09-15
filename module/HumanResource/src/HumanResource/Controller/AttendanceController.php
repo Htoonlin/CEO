@@ -31,7 +31,7 @@ class AttendanceController extends SundewController
      */
     private function attendanceTable()
     {
-        return new AttendanceDataAccess($this->getDbAdapter());
+        return new AttendanceDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -39,7 +39,7 @@ class AttendanceController extends SundewController
      */
     private function staffCombo()
     {
-        $dataAccess = new StaffDataAccess($this->getDbAdapter());
+        $dataAccess = new StaffDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboData('staffId', 'staffCode');
     }
 

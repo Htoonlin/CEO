@@ -35,12 +35,19 @@ abstract class CalendarType
  */
 class CalendarDataAccess extends SundewTableGateway
 {
-    public function __construct(Adapter $dbAdapter)
+    /**
+     * @param Adapter $dbAdapter
+     * @param $userId
+     */
+    public function __construct(Adapter $dbAdapter, $userId)
     {
         $this->table = 'tbl_calendar';
         $this->adapter = $dbAdapter;
         $this->resultSetPrototype = new HydratingResultSet(new ClassMethods(), new Calendar());
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**

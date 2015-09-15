@@ -44,7 +44,7 @@ class VoucherController extends SundewController
             $this->staffId = boolval($staff) ? $staff->getStaffId() : 0;
         }
 
-        return new ReceivableDataAccess($this->getDbAdapter(), $this->staffId);
+        return new ReceivableDataAccess($this->getDbAdapter(), $this->staffId, $this->getAuthUser()->userId);
     }
 
     /**
@@ -57,7 +57,7 @@ class VoucherController extends SundewController
             $this->staffId = boolval($staff) ? $staff->getStaffId() : 0;
         }
 
-        return new PayableDataAccess($this->getDbAdapter(), $this->staffId);
+        return new PayableDataAccess($this->getDbAdapter(), $this->staffId, $this->getAuthUser()->userId);
     }
 
     private function prevController($uri)

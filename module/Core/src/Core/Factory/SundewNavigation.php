@@ -21,13 +21,13 @@ class SundewNavigation extends DefaultNavigationFactory
     {
         if(null === $this->pages){
 
-            $dbAdapter = $serviceLocatorInterface->get('SundewDbAdapter');
-            $menuTable = new MenuDataAccess($dbAdapter);
             $userId = 0;
             $authService = $serviceLocatorInterface->get('AuthService');
+            $dbAdapter = $serviceLocatorInterface->get('SundewDbAdapter');
             if($authService->hasIdentity()){
                 $userId = $authService->getIdentity()->userId;
             }
+            $menuTable = new MenuDataAccess($dbAdapter, $userId);
             $cache_ns = 'menu_cache_' . $userId;
             $menuList = $menuTable->getCache()->getItem($cache_ns);
             if(!$menuList){

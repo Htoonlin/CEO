@@ -28,20 +28,11 @@ use Zend\View\Model\ViewModel;
 class PaymentController extends SundewController
 {
     /**
-     * @var
-     */
-    private $staffId;
-    /**
-     * @var
-     */
-    private $staffName;
-
-    /**
      * @return ContractDataAccess
      */
     private function contractTable()
     {
-        return new ContractDataAccess($this->getDbAdapter(),$this->staffId);
+        return new ContractDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
 
     }
 
@@ -50,12 +41,7 @@ class PaymentController extends SundewController
      */
     private function paymentTable()
     {
-        if(!$this->staffId){
-            $staff = $this->getCurrentStaff();
-            $this->staffId = boolval($staff)?$staff->getStaffId():0;
-            $this->staffName = boolval($staff)?$staff->getStaffName():'';
-        }
-        return new PaymentDataAccess($this->getDbAdapter(), $this->staffId);
+        return new PaymentDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -81,19 +67,19 @@ class PaymentController extends SundewController
     private function init_combos()
     {
         if(!$this->currencyList){
-            $currencyDataAccess = new CurrencyDataAccess($this->getDbAdapter());
+            $currencyDataAccess = new CurrencyDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
             $this->currencyList = $currencyDataAccess->getComboData('currencyId', 'code');
         }
         if(!$this->contactList){
-            $contactDataAccess = new ContactDataAccess($this->getDbAdapter());
+            $contactDataAccess = new ContactDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
             $this->contactList = $contactDataAccess->getComboData('contactId', 'name');
         }
         if(!$this->contractList){
-            $contractDataAccess = new ContractDataAccess($this->getDbAdapter(),$this->staffId);
+            $contractDataAccess = new ContractDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
             $this->contractList = $contractDataAccess->getComboData('contractId', 'code');
         }
         if(!$this->statusList){
-            $constantDataAccess = new ConstantDataAccess($this->getDbAdapter());
+            $constantDataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
             $this->statusList = $constantDataAccess->getComboByName('default_status');
         }
     }

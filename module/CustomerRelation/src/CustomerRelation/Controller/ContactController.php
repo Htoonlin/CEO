@@ -28,7 +28,7 @@ class ContactController extends SundewController{
      */
     private function contactTable()
     {
-        return new ContactDataAccess($this->getDbAdapter());
+        return new ContactDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -36,7 +36,7 @@ class ContactController extends SundewController{
      */
     private function companyCombos()
     {
-        $dataAccess=new CompanyDataAccess($this->getDbAdapter());
+        $dataAccess=new CompanyDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboData('companyId', 'name');
     }
 

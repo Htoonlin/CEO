@@ -21,7 +21,7 @@ class RoleController extends SundewController
      */
     private function roleTable()
     {
-        return new RoleDataAccess($this->getDbAdapter());
+        return new RoleDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**

@@ -26,7 +26,7 @@ class DepartmentController extends SundewController
      */
     private function departmentTable()
     {
-        $dataAccess=new DepartmentDataAccess($this->getDbAdapter());
+        $dataAccess=new DepartmentDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess;
     }
 

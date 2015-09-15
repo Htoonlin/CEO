@@ -36,11 +36,11 @@ class DashboardController extends SundewController
      */
     private function attendanceTable()
     {
-        return new AttendanceDataAccess($this->getDbAdapter());
+        return new AttendanceDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
     private function taskTable()
     {
-        return new TaskDataAccess($this->getDbAdapter());
+        return new TaskDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
     private $staffTable;
     private $calendarTable;
@@ -74,19 +74,19 @@ class DashboardController extends SundewController
 
     private function init_data(){
         if(!$this->staffTable)
-            $this->staffTable = new StaffDataAccess($this->getDbAdapter());
+            $this->staffTable = new StaffDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
 
         if(!$this->staff){
             $this->staff = $this->getCurrentStaff();
         }
 
         if(!$this->leaveTable)
-            $this->leaveTable = new LeaveDataAccess($this->getDbAdapter());
+            $this->leaveTable = new LeaveDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
 
         if(!$this->calendarTable)
-            $this->calendarTable = new CalendarDataAccess($this->getDbAdapter());
+            $this->calendarTable = new CalendarDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
 
-        $constantTable = new ConstantDataAccess($this->getDbAdapter());
+        $constantTable = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
 
         if(!$this->formulaList){
             $this->formulaList = $constantTable->getComboByName('payroll_formula', 'payroll');
@@ -126,7 +126,7 @@ class DashboardController extends SundewController
      */
     public function payrollTable()
     {
-        return new PayrollDataAccess($this->getDbAdapter());
+        return new PayrollDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     public function indexAction()

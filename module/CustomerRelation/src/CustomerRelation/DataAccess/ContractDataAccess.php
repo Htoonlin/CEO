@@ -22,19 +22,19 @@ use Zend\Stdlib\Hydrator\ClassMethods;
  */
 class ContractDataAccess extends SundewTableGateway
 {
-    protected $staffId;
-
     /**
      * @param Adapter $dbAdapter
-     * @param $staffId
+     * @param $userId
      */
-    public function __construct(Adapter $dbAdapter,$staffId)
+    public function __construct(Adapter $dbAdapter,$userId)
     {
-        $this->staffId=$staffId;
         $this->table="tbl_cr_contract";
         $this->adapter=$dbAdapter;
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Contract());
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**
@@ -44,7 +44,7 @@ class ContractDataAccess extends SundewTableGateway
     public function getContractView($id)
     {
         $select=new Select('vw_cr_contract');
-        $select->where(array('contractId'=>$id,'contractBy'=>$this->staffId));
+        $select->where(array('contractId'=>$id));
         $statement=$this->sql->prepareStatementForSqlObject($select);
         $result=$statement->execute();
         return $result->current();
@@ -65,7 +65,7 @@ class ContractDataAccess extends SundewTableGateway
            return $this->paginate($filter, $orderBy, $order, $view);
         }
         $contractView=new TableGateway($view, $this->adapter);
-        return $contractView->select(array('contractBy'=>$this->staffId));
+        return $contractView->select();
     }
 
     /**

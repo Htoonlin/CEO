@@ -21,7 +21,7 @@ class UserController extends SundewController
      */
     private function userTable()
     {
-        return new UserDataAccess($this->getDbAdapter());
+        return new UserDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
     }
 
     /**
@@ -46,7 +46,7 @@ class UserController extends SundewController
      */
     private function statusCombo()
     {
-        $dataAccess = new ConstantDataAccess($this->getDbAdapter());
+        $dataAccess = new ConstantDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getComboByName('default_status');
     }
 
@@ -55,7 +55,7 @@ class UserController extends SundewController
      */
     private function roleTreeview()
     {
-        $dataAccess = new RoleDataAccess($this->getDbAdapter());
+        $dataAccess = new RoleDataAccess($this->getDbAdapter(), $this->getAuthUser()->userId);
         return $dataAccess->getChildren();
     }
 

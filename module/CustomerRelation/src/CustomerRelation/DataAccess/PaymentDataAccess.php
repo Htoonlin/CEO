@@ -17,18 +17,18 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Stdlib\Hydrator\ClassMethods;
 class PaymentDataAccess extends SundewTableGateway
 {
-    protected $staffId;
-
     /**
      * @param Adapter $dbAdapter
-     * @param $staffId
+     * @param Int $userId
      */
-    public function __construct(Adapter $dbAdapter,$staffId)
+    public function __construct(Adapter $dbAdapter,$userId)
     {
-        $this->staffId=$staffId;
         $this->table="tbl_cr_payment";
         $this->adapter=$dbAdapter;
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(),new Payment());
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**
@@ -37,7 +37,7 @@ class PaymentDataAccess extends SundewTableGateway
      */
     public function getPaymentView($id)
     {
-        $select=new Select('vw_payment');
+        $select=new Select('vw_cr_payment');
         $select->where(array('paymentId'=>$id));
         $statement=$this->sql->prepareStatementForSqlObject($select);
         $result=$statement->execute();
@@ -68,8 +68,8 @@ class PaymentDataAccess extends SundewTableGateway
     public function getPayment($id)
     {
         $id=(int)$id;
-        $rowset=$this->select(array('paymentId'=>$id));
-        return $rowset->current();
+        $rowSet=$this->select(array('paymentId'=>$id));
+        return $rowSet->current();
     }
 
     /**
@@ -80,7 +80,6 @@ class PaymentDataAccess extends SundewTableGateway
     {
         $id = $payment->getPaymentId();
         $data = $payment->getArrayCopy();
-        $data['staffId']=$this->staffId;
         if($id > 0){
             $this->update($data, array('paymentId' => $id));
         }else{

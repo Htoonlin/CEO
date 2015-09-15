@@ -22,8 +22,9 @@ class ContactDataAccess extends SundewTableGateway
 {
     /**
      * @param Adapter $dbAdapter
+     * @param Int $userId
      */
-    public function __construct(Adapter $dbAdapter)
+    public function __construct(Adapter $dbAdapter, $userId)
     {
         $this->table="tbl_cr_contact";
 
@@ -31,6 +32,9 @@ class ContactDataAccess extends SundewTableGateway
 
         $this->resultSetPrototype=new HydratingResultSet(new ClassMethods(), new Contact());
         $this->initialize();
+
+        $this->useSoftDelete = true;
+        parent::__construct($userId);
     }
 
     /**
