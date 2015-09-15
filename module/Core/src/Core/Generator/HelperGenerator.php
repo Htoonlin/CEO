@@ -70,6 +70,10 @@ class HelperGenerator extends SundewGenerator
         foreach($columns as $col)
         {
             $name = $col->getName();
+            if(in_array($name, $this->skipFields)){
+                continue;
+            }
+
             $type = $col->getDataType();
             $maxLength = $col->getCharacterMaximumLength();
             $primary = $this->dbMeta->isPrimary($this->tbl_name, $name);

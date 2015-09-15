@@ -95,7 +95,7 @@ class CompanyHelper{
                 )
             ));
 
-            $exclude="(companyId != $companyId AND status='A')";
+            $exclude = "(companyId != $companyId AND deletedDate IS NULL and deletedBy IS NULL)";
             $filter->add(array(
                 'name'=>'name',
                 'required'=>true,

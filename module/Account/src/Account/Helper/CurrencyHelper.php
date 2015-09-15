@@ -89,7 +89,7 @@ class CurrencyHelper{
                )
            ));
 
-           $exclude = "(currencyId != $currencyId AND status = 'A')";
+           $exclude = "(currencyId != $currencyId AND status = 'A' AND deletedDate IS NULL AND deletedBy IS NULL)";
            $filter->add(array(
                'name'=>'name',
                'required'=>true,

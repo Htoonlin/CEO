@@ -165,10 +165,7 @@ class ProposalHelper extends Form
                             'table' => 'tbl_cr_proposal',
                             'field' => 'code',
                             'adapter' => $this->dbAdapter,
-                            'exclude' => array(
-                                'field' => 'proposalId',
-                                'value' => $proposalId
-                            ),
+                            'exclude' => "(proposalId != $proposalId AND deletedDate IS NULL and deletedBy IS NULL)",
                             'message' => 'This proposal code is already exists.',
                         ),
                     ),

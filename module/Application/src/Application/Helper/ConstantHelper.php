@@ -91,10 +91,7 @@ class ConstantHelper {
                             'table' => 'tbl_constant',
                             'field' => 'name',
                             'adapter' => $this->dbAdapter,
-                            'exclude' => array(
-                                'field' => 'constantId',
-                                'value' => $constantId
-                            ),
+                            'exclude' => "(constantId != $constantId AND deletedDate IS NULL AND deletedBy IS NULL)",
                             'message' => 'This constant  name is already exist.',
                         )
                     ),

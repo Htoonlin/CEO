@@ -100,10 +100,7 @@ class RouteHelper {
                           'table'=>'tbl_route',
                           'field'=>'name',
                           'adapter'=>$this->dbAdapter,
-                          'exclude'=>array(
-                              'field'=>'routeId',
-                              'value'=>$routeId
-                          ),
+                          'exclude'=> "(routeId != $routeId AND deletedDate IS NULL AND deletedBy IS NULL)",
                           'message'=>'This route name is already exist.',
                       )
                   ),

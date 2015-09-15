@@ -59,6 +59,9 @@ class EntityGenerator extends SundewGenerator
         $toCamelCase = new UnderscoreToCamelCase();
         foreach($columns as $col)
         {
+            if(in_array($col, $this->skipFields)){
+                continue;
+            }
             $name = $toCamelCase->filter($col);
             $property = lcfirst($name);
             $class->addProperty($property, null, PropertyGenerator::FLAG_PROTECTED);

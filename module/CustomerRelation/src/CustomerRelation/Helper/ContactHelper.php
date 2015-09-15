@@ -138,10 +138,7 @@ class ContactHelper{
                             'table'=>'tbl_cr_contact',
                             'field'=>'name',
                             'adapter'=>$this->dbAdapter,
-                            'exclude'=>array(
-                                'field'=>'contactId',
-                                'value'=>$contactId
-                            ),
+                            'exclude'=>"(contactId != $contactId AND deletedDate IS NULL and deletedBy IS NULL)",
                             'message'=>'This contact name is already exist.',
                         )
                     ),

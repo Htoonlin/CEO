@@ -17,6 +17,8 @@ abstract class SundewGenerator implements GeneratorInterface
     public abstract function generate();
     public abstract function getClassName();
 
+    protected $skipFields = array('deletedDate', 'deletedBy', 'createdDate', 'createdBy','modifiedDate','modifiedBy');
+
     protected $typeNum = array('int', 'tinyint', 'smallint', 'mediumint', 'bigint');
     protected $typeFloat = array('decimal', 'float', 'double', 'real');
     protected $typeDate = array('date', 'datetime', 'timestamp');

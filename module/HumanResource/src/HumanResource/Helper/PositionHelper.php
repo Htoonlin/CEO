@@ -98,10 +98,7 @@ class PositionHelper
                             'table' => 'tbl_hr_position',
                             'field' => 'name',
                             'adapter' => $this->dbAdapter,
-                            'exclude' => array(
-                                'field' => 'positionId',
-                                'value' => $positionId
-                            ),
+                            'exclude' => "(positionId != $positionId AND deletedDate IS NULL AND deletedBy IS NULL)",
                             'message' => 'This position  name is already exist.',
                         )
                     ),

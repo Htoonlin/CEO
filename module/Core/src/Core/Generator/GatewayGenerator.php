@@ -53,11 +53,14 @@ class GatewayGenerator extends SundewGenerator
         $constructorBody = '$this->table = "' . $this->tbl_name . '";' . PHP_EOL;
         $constructorBody .= '$this->adapter = $dbAdapter;' . PHP_EOL;
         $constructorBody .= '$this->resultSetPrototype = new HydratingResultSet(new ClassMethods(), new ' . $entity . '());' . PHP_EOL;
-        $constructorBody .= '$this->initialize();';
+        $constructorBody .= '$this->initialize();' . PHP_EOL;
+        $constructorBody .= '$this->useSoftDelete = true;' . PHP_EOL;
+        $constructorBody .= 'parent::__construct($userId);';
         $constructor = MethodGenerator::fromArray(array(
             'name' => '__construct',
             'parameters' => array(
-                array('type' => 'Adapter', 'name' => 'dbAdapter')
+                array('type' => 'Adapter', 'name' => 'dbAdapter'),
+                array('name' => 'userId'),
             ),
             'body' => $constructorBody,
         ));
