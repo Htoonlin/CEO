@@ -46,7 +46,7 @@ class ContactController extends SundewController{
     public function indexAction()
     {
         $page = (int)$this->params()->fromQuery('page',1);
-        $sort = $this->params()->fromQuery('sort','contactName');
+        $sort = $this->params()->fromQuery('sort','name');
         $sortBy = $this->params()->fromQuery('by', 'asc');
         $filter = $this->params()->fromQuery('filter', '');
         $pageSize = (int)$this->params()->fromQuery('size', $this->getPageSize());

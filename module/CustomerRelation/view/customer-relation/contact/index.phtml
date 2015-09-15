@@ -144,25 +144,25 @@ $this->headTitle($title);
                         </td>
                         <td>
                             <a href="<?php echo $this->url('cr_contact', array('action'=>'detail', 'id'=>$contact->contactId));?>" title="edit">
-                                <?php echo $this->escapeHtml($contact->contactName);?>
+                                <?php echo $this->escapeHtml($contact->name);?>
                             </a>
                         </td>
                         <td>
-                            <?php echo $this->escapeHtml($contact->Phone);?>
+                            <?php echo $this->escapeHtml($contact->phone);?>
                         </td>
                         <td>
-                            <a href="mailto:<?php echo $this->escapeHtml($contact->Email);?>" title="edit">
-                                <?php echo $this->escapeHtml($contact->Email);?>
+                            <a href="mailto:<?php echo $this->escapeHtml($contact->email);?>" title="edit">
+                                <?php echo $this->escapeHtml($contact->email);?>
                             </a>
                         </td>
                         <td>
                             <?php echo $this->escapeHtml($contact->companyname);?>
                         </td>
                         <td>
-                            <?php echo $this->escapeHtml($contact->Tag);?>
+                            <?php echo $this->escapeHtml($contact->tag);?>
                         </td>
                         <td>
-                            <?php echo $this->constantConverter($contact->Status, 'default_status'); ?>
+                            <?php echo $this->constantConverter($contact->status, 'default_status'); ?>
                         </td>
 
                     </tr>

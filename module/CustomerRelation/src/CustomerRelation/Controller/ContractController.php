@@ -19,7 +19,6 @@ use CustomerRelation\Helper\ContractHelper;
 use CustomerRelation\DataAccess\CompanyDataAccess;
 use CustomerRelation\DataAccess\ContactDataAccess;
 use ProjectManagement\DataAccess\ProjectDataAccess;
-use Symfony\Component\Yaml\Tests\A;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -146,7 +145,7 @@ class ContractController extends SundewController
                 if(empty($contract->getContractFile()['name']) && $isEdit){
                     $contract->setContractFile($previousFile);
                 }
-                $contract->setContractBy($this->staffId);
+                $contract->setContractBy($this->getCurrentStaff()->getStaffId());
                 $this->contractTable()->saveContract($contract);
                 $this->flashMessenger()->addSuccessMessage('Save successful');
                 return $this->redirect()->toRoute('cr_contract');

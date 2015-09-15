@@ -123,7 +123,7 @@ class ProposalController extends SundewController
                 if(empty($proposal->getProposalFile()['name']) && $isEdit){
                     $proposal->setProposalFile($previousFile);
                 }
-                $proposal->setProposalBy($this->staffId);
+                $proposal->setProposalBy($this->getCurrentStaff()->getStaffId());
                 $this->proposalTable()->saveProposal($proposal);
                 $this->flashMessenger()->addSuccessMessage('Save successful.');
                 return $this->redirect()->toRoute('cr_proposal');
