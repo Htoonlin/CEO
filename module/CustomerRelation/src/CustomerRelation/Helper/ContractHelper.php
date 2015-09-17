@@ -69,7 +69,7 @@ class ContractHelper extends Form
                 ->setAttributes(array(
                     'min'=>'100',
                     'max'=>'99999999999',
-                    'step'=>'100'
+                    'step'=>'0.01'
                 ));
 
             $selectCurrency=new Element\Select();
@@ -187,6 +187,13 @@ class ContractHelper extends Form
                         'min' => 1,
                         'encoding' => 'UTF-8',
                     ),
+                ),
+            ));
+            $filter->add(array(
+                'name' => 'amount',
+                'required' => true,
+                'validators' => array(
+                    array('name' => 'Zend\I18n\Validator\IsFloat')
                 ),
             ));
             $filter->add(array(

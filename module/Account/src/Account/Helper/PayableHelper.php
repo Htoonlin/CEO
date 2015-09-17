@@ -60,7 +60,7 @@ class PayableHelper extends Form
                 ->setAttributes(array(
                     'min'=>'10',
                     'max'=>'99999999999',
-                    'step'=>'1'
+                    'step'=>'0.01'
                 ));
 
             $cboPaymentType=new Element\Select();

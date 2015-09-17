@@ -133,11 +133,11 @@ class HelperGenerator extends SundewGenerator
                 $code .= "\t\t'max' => '99999999999',\n";
                 $code .= "\t\t'step' => '1',\n";
                 $code .= "\t));\n";
-            }elseif(in_array($type, $this->typeNum)){
+            }elseif(in_array($type, $this->typeFloat)){
                 $code .= "\t\${$var}->setAttributes(array(\n";
                 $code .= "\t\t'min' => '0',\n";
                 $code .= "\t\t'max' => '99999999999',\n";
-                $code .= "\t\t'step' => '0.5',\n";
+                $code .= "\t\t'step' => '0.01',\n";
                 $code .= "\t));\n";
             }
         }else if(in_array($type, $this->typeDate)){

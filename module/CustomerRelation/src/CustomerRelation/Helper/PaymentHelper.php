@@ -51,7 +51,7 @@ class PaymentHelper extends Form
             $amount->setAttributes(array(
                 'min' => '0',
                 'max' => '99999999999',
-                'step' => '1',
+                'step' => '0.01',
             ));
             $amount->setLabel('Amount');
             $form->add($amount);

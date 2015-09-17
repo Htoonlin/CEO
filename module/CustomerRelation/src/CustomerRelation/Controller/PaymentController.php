@@ -154,7 +154,7 @@ class PaymentController extends SundewController
         }
         return new ViewModel(array(
             'form'=>$form,
-            'staffName'=>$this->staffName,
+            'staffName'=>$this->getCurrentStaff()->getStaffName(),
             'id' => $id,
             'isEdit' => $isEdit,
         ));

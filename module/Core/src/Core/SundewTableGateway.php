@@ -26,13 +26,37 @@ use Zend\Cache\StorageFactory;
  */
 class SundewTableGateway extends AbstractTableGateway
 {
+    /**
+     * @var bool
+     */
     protected $useSoftDelete = false;
+    /**
+     * @var string
+     */
     protected $deletedDate = "deletedDate";
+    /**
+     * @var string
+     */
     protected $deletedBy = "deletedBy";
+    /**
+     * @var string
+     */
     protected $createdDate = "createdDate";
+    /**
+     * @var string
+     */
     protected $createdBy = "createdBy";
+    /**
+     * @var string
+     */
     protected $modifiedDate = "modifiedDate";
+    /**
+     * @var string
+     */
     protected $modifiedBy = "modifiedBy";
+    /**
+     * @var int
+     */
     protected $userId = 0;
 
     /**
@@ -57,6 +81,9 @@ class SundewTableGateway extends AbstractTableGateway
         return $selectData;
     }
 
+    /**
+     * @var
+     */
     protected $cache;
     /**
      * @return \Zend\Cache\Storage\StorageInterface
@@ -82,6 +109,9 @@ class SundewTableGateway extends AbstractTableGateway
         return $this->cache;
     }
 
+    /**
+     * @var
+     */
     protected $executeUser;
 
     /**
@@ -132,6 +162,10 @@ class SundewTableGateway extends AbstractTableGateway
         return new Paginator($paginatorAdapter);
     }
 
+    /**
+     * @param Select $select
+     * @return ResultSet
+     */
     public function selectOther(Select $select){
         if($this->useSoftDelete){
             $where = $select->where;
@@ -160,6 +194,10 @@ class SundewTableGateway extends AbstractTableGateway
         return parent::executeSelect($select);
     }
 
+    /**
+     * @param Insert $insert
+     * @return mixed
+     */
     public function executeInsert(Insert $insert){
         if($this->useSoftDelete){
             $insert->values(array(
@@ -170,6 +208,10 @@ class SundewTableGateway extends AbstractTableGateway
         return parent::executeInsert($insert);
     }
 
+    /**
+     * @param Update $update
+     * @return mixed
+     */
     public function executeUpdate(Update $update){
         if($this->useSoftDelete){
             $update->set(array(

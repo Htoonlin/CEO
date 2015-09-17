@@ -62,7 +62,7 @@ class ProposalHelper extends Form
                 ->setAttributes(array(
                     'min'=>'100',
                     'max'=>'99999999999',
-                    'step'=>'100'
+                    'step'=>'0.01'
                 ));
 
             $selectCurrency=new Element\Select();
