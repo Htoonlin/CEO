@@ -174,7 +174,9 @@ $flashMesssages=$this->flashMessenger()->getMessages();
     </div>
     <div class="panel-footer">
         <div class="text-center">
-            <?php echo $this->paginationControl($paginator, 'Sliding', 'shared/paginator.phtml', array('route'=>'cr_proposal', 'sort'=>$sort, 'sortBy'=>$sortBy));
+            <?php
+            echo $this->paginationControl($paginator, 'Sliding', 'shared/paginator.phtml', array(
+                'route'=>'cr_proposal', 'sort'=>$sort, 'sortBy'=>$sortBy, 'filter' => $filter));
             ?>
         </div>
     </div>
