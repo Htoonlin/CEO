@@ -36,65 +36,9 @@ class ApiModel extends JsonModel
     protected $responseData;
 
     /**
-     * @var bool
-     */
-    protected $ajaxOnly = false;
-    /**
      * @var int
      */
     protected $statusCode = 200;
-    /**
-     * @var InputFilter
-     */
-    protected $inputFilter;
-    /**
-     * @var array
-     */
-    protected $allowMethods = ['GET' , 'POST'];
-
-    /**
-     * @var bool
-     */
-    protected $allowFlashRequest = false;
-
-    protected $allowMediaTypes = ['application/json'];#,'application/x-www-form-urlencoded'];
-    public function getAllowMediaTypes(){
-        return $this->allowMediaTypes;
-    }
-
-    public function setAllowMediaTypes(array $types){
-        if(!empty($types)){
-            $this->allowMediaTypes = $types;
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    public function getAllowFlashRequest(){
-        return $this->allowFlashRequest;
-    }
-
-    /**
-     * @param $allow
-     */
-    public function setAllowFlashRequest($allow){
-        $this->allowFlashRequest = $allow;
-    }
-
-    /**
-     * @param $is
-     */
-    public function setAjaxOnly($is){
-        $this->ajaxOnly = $is;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAjaxOnly(){
-        return $this->ajaxOnly;
-    }
 
     /**
      * @param $data
@@ -143,35 +87,5 @@ class ApiModel extends JsonModel
      */
     public function getStatusMessage(){
         return $this->statusMessage;
-    }
-
-    /**
-     * @param InputFilter $filter
-     */
-    public function setInputFilter(InputFilter $filter){
-        $this->inputFilter = $filter;
-    }
-
-    /**
-     * @return InputFilter
-     */
-    public function getInputFilter(){
-        return $this->inputFilter;
-    }
-
-    /**
-     * @param array $allowMethods
-     */
-    public function setAllowMethods(array $allowMethods){
-        if(!empty($allowMethods)){
-            $this->allowMethods = $allowMethods;
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getAllowMethods(){
-        return $this->allowMethods;
     }
 }

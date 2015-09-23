@@ -63,6 +63,8 @@ return array(
             'Application\Controller\RoutePermission' => 'Application\Controller\RoutePermissionController',
             'Application\Controller\Dashboard' => 'Application\Controller\DashboardController',
             'Application\Controller\Preferences' => 'Application\Controller\PreferencesController',
+
+            'Application\Api\User' => 'Application\ApiController\UserApiController',
         ),
     ),
     'view_manager' => array(

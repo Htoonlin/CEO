@@ -135,7 +135,9 @@ class SundewApiRenderer extends JsonRenderer
         return array(
             'code' => $nameOrModel->getStatusCode(),
             'message' => $message,
-            'referenceLink' => $this->referenceLink,
+            'reference' => array(
+                '_link' => $this->referenceLink,
+            ),
         );
     }
 
@@ -196,7 +198,6 @@ class SundewApiRenderer extends JsonRenderer
                 $options['filter'] = $request->getQuery('filter', '');
             }
         }
-
 
         $result = array(
             'options' => $options,
