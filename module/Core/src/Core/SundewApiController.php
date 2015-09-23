@@ -12,9 +12,8 @@ use Application\DataAccess\UserDataAccess;
 use Application\Entity\User;
 use Core\Model\ApiModel;
 use Zend\Crypt\BlockCipher;
-use Zend\Http\Header\Authorization;
+use Zend\File\Transfer\Adapter\Http;
 use Zend\Json\Json;
-use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Exception\DomainException;
 use Zend\Mvc\Exception\InvalidArgumentException;
@@ -157,30 +156,49 @@ class SundewApiController extends AbstractController
             $request = $this->getRequest();
             $authContent = $request->getHeader('authorization', array());
             if(!$authContent){
-                throw new \Exception('Sorry! This request need authorization.', 400);
+                $model->setStatusCode(400);
+                $model->setStatusMessage('Sorry! This request need authorization.');
+                return $model;
             }
             $authData = Json::decode($authContent->getFieldValue(), self::CONTENT_TYPE_JSON);
             if(empty($authData)){
-                throw new \Exception("Sorry! Invalid authorization data.", 401);
+                $model->setStatusCode(401);
+                $model->setStatusMessage("Sorry! Invalid authorization data.");
+                return $model;
             }
+
             $userDataAccess = new UserDataAccess($this->getDbAdapter(), $authData['userId']);
             $user = $userDataAccess->getUser($authData['userId']);
+            if($user == null || empty($user->getTokenKey())){
+                $model->setStatusCode(401);
+                $model->setStatusMessage("Sorry! Invalid authorization data.");
+                return $model;
+            }
             $blockCipher = $this->getBlockCipher($user->getTokenKey());
             $data = $blockCipher->decrypt($authData['token']);
+
             if(!$data){
-                throw new \Exception("Sorry! Invalid authorization data.", 401);
+                $model->setStatusCode(401);
+                $model->setStatusMessage("Sorry! Invalid authorization data.");
+                return $model;
             }
             $data = Json::decode($data, self::CONTENT_TYPE_JSON);
             if(!isset($data['expire']) || !isset($data['userId'])){
-                throw new \Exception("Sorry! Invalid authorization data.", 401);
+                $model->setStatusCode(401);
+                $model->setStatusMessage("Sorry! Invalid authorization data.");
+                return $model;
             }
 
             $current = date('YmdHis', time());
             if($current > $data['expire']){
-                throw new \Exception("Sorry! Token has expired.", 401);
+                $model->setStatusCode(401);
+                $model->setStatusMessage("Sorry! Token has expired.");
+                return $model;
             }
             if($data['userId'] != $user->getUserId() || $data['userName'] != $user->getUserName()){
-                throw new \Exception("Sorry! Invalid authorization data.");
+                $model->setStatusCode(401);
+                $model->setStatusMessage("Sorry! Invalid authorization data.");
+                return $model;
             }
             $this->user = $user;
             return true;
@@ -240,31 +258,24 @@ class SundewApiController extends AbstractController
         if(!$routeMatch){
             throw new DomainException('Missing route matches; unsure how to retrieve action');
         }
-
         $request = $e->getRequest();
         $action = $routeMatch->getParam('action', false);
-        $method = $this->getMethodByType($request->getMethod(), $action);
 
+        $method = $this->getMethodByType($request->getMethod(), $action);
         if(!method_exists($this, $method)){
             $method = 'notFoundAction';
-            $actionResponse = $this->$method();
-            $e->setResult($actionResponse);
-            return $actionResponse;
-        }
+        }else{
+            $jsonContent = $request->getContent();
+            $content = Json::decode($jsonContent, self::CONTENT_TYPE_JSON);
+            if($content == null){
+                $content = array();
+            }
+            $postParam = $request->getPost()->toArray();
+            $getParam = $request->getQuery()->toArray();
+            $fileParam = $request->getFiles()->toArray();
 
-        $jsonContent = $request->getContent();
-        $content = Json::decode($jsonContent, self::CONTENT_TYPE_JSON);
-        if($content == null){
-            $content = array();
+            $this->contentData = array_merge($getParam, $postParam, $content, $fileParam);
         }
-
-        if($request->isPost()){
-            $param = $request->getPost()->toArray();
-        }else if($request->isGet()){
-            $param = $request->getQuery()->toArray();
-        }
-
-        $this->contentData = array_merge($content, $param);
 
         $actionResponse = $this->ValidateRequest($this->$method());
         $e->setResult($actionResponse);

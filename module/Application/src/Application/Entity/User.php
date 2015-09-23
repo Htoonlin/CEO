@@ -7,7 +7,7 @@ use Zend\Stdlib\ArraySerializableInterface;
  * System Generated Code
  *
  * User : Htoonlin
- * Date : 2015-09-22 17:56:53
+ * Date : 2015-09-23 16:03:44
  *
  * @package Application\Entity
  */
@@ -29,8 +29,6 @@ class User implements ArraySerializableInterface
     protected $lastLogin = null;
 
     protected $tokenKey = null;
-
-    protected $userRole = null;
 
     public function getUserId()
     {
@@ -112,16 +110,6 @@ class User implements ArraySerializableInterface
         $this->tokenKey = $value;
     }
 
-    public function getUserRole()
-    {
-        return $this->userRole;
-    }
-
-    public function setUserRole($value)
-    {
-        $this->userRole = $value;
-    }
-
     public function exchangeArray(array $data)
     {
         $this->userId = (!empty($data['userId'])) ? $data['userId'] : null;
@@ -130,9 +118,8 @@ class User implements ArraySerializableInterface
         $this->description = (!empty($data['description'])) ? $data['description'] : null;
         $this->image = (!empty($data['image'])) ? $data['image'] : null;
         $this->status = (!empty($data['status'])) ? $data['status'] : null;
-        $this->lastLogin = (!empty($data['lastLogin'])) ? $data['lastLogin'] : date('Y-m-d H:i:s', time());
+        $this->lastLogin = (!empty($data['lastLogin'])) ? $data['lastLogin'] : null;
         $this->tokenKey = (!empty($data['tokenKey'])) ? $data['tokenKey'] : null;
-        $this->userRole = (!empty($data['userRole'])) ? $data['userRole'] : null;
     }
 
     public function getArrayCopy()
@@ -146,7 +133,6 @@ class User implements ArraySerializableInterface
             'status' => $this->status,
             'lastLogin' => $this->lastLogin,
             'tokenKey' => $this->tokenKey,
-            'userRole' => $this->userRole,
         );
     }
 

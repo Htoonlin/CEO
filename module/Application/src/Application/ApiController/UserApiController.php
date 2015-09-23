@@ -6,7 +6,6 @@ use Application\Entity\User;
 use Application\Helper\AuthHelper;
 use Core\Model\ApiModel;
 use Core\SundewApiController;
-use Zend\Crypt\BlockCipher;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Json\Json;
 use Zend\Math\Rand;
@@ -44,7 +43,7 @@ class UserApiController extends SundewApiController
     /**
      * @return ApiModel
      */
-    public function postIndex()
+    public function getIndex()
     {
         $page = (int) $this->getContent('page', 1);
         $sort = $this->getContent('sort', 'userName');
@@ -60,6 +59,7 @@ class UserApiController extends SundewApiController
         return $paginator;
     }
 
+    protected $requireToken = false;
     public function postToken()
     {
         $api = new ApiModel();
