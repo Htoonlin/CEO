@@ -20,6 +20,8 @@ use HumanResource\DataAccess\StaffDataAccess;
 use HumanResource\Entity\Attendance;
 use HumanResource\Entity\Leave;
 use HumanResource\Helper\PayrollHelper;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\TemplateProcessor;
 use Zend\Json\Json;
 use Zend\View\Model\ViewModel;
 use HumanResource\Entity\Staff;
@@ -192,7 +194,6 @@ class DashboardController extends SundewController
     {
         $id = (int)$this->params()->fromRoute("id", 0);
 
-        $task = new Task();
         $task = $this->taskTable()->getTaskByStaff($id, $this->getCurrentStaff()->getStaffId());
         if(!$task){
             $this->flashmessenger()->addErrorMessage('Invalid Task.');
@@ -201,7 +202,6 @@ class DashboardController extends SundewController
 
         $request = $this->getRequest();
         if($request->isPost()){
-            $post_data = $request->getPost();
             $current = $request->getPost('current', 0);
             $status = $request->getPost('status', 'A');
 

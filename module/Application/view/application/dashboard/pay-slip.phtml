@@ -146,6 +146,11 @@ $lateList = json_decode($payroll->Late);
     </div>
     <div class="panel-footer">
         <div class="text-right">
+            <a href="<?= $this->url("dashboard", array('action' => 'printSlip')); ?>"
+               title="Print Pay Slip" type="button" class="btn btn-primary">
+                <span class="glyphicon glyphicon-print"></span>
+                Print
+            </a>
             <?php echo $this->backButton(); ?>
         </div>
     </div>

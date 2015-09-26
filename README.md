@@ -9,10 +9,10 @@ Password  : sundew
 
 ## Current Modules (Finished)
     - Application (100%)
-    - Account (50%)
+    - Account (80%)
     - Human Resource (80%)
-    - CRM (20%)
-    - Project Management (20%)
-    - Development (5%)
+    - CRM (40%)
+    - Project Management (60%)
+    - Development (50%)
 
 If you want to contribute for this project. Please send email to wizard.htoon@gmail.com
