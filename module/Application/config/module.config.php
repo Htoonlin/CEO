@@ -64,6 +64,7 @@ return array(
             'Application\Controller\Dashboard' => 'Application\Controller\DashboardController',
             'Application\Controller\Preferences' => 'Application\Controller\PreferencesController',
 
+            'Application\Api\Auth' => 'Application\ApiController\AuthApiController',
             'Application\Api\User' => 'Application\ApiController\UserApiController',
         ),
     ),

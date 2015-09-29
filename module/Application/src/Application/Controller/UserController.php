@@ -59,11 +59,6 @@ class UserController extends SundewController
         return $dataAccess->getChildren();
     }
 
-    public function apiAction()
-    {
-
-    }
-
     /**
      * @return ViewModel
      */

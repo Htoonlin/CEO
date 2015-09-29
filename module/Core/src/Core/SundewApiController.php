@@ -45,12 +45,12 @@ class SundewApiController extends AbstractController
     }
 
     /**
-     * @var ArrayObject
+     * @var User
      */
     private $user;
 
     /**
-     * @return AdapterInterface
+     * @return User
      */
     protected function getUser()
     {

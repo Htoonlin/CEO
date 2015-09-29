@@ -18,26 +18,12 @@ use Zend\Math\Rand;
  */
 class UserApiController extends SundewApiController
 {
-    private $authService;
-
-    /**
-     * @return array|object
-     */
-    public function getAuthService()
-    {
-        if(!$this->authService){
-            $this->authService = $this->getServiceLocator()->get('AuthService');
-        }
-
-        return $this->authService;
-    }
-
     /**
      * @return UserDataAccess
      */
     private function userTable()
     {
-        return new UserDataAccess($this->getDbAdapter(), 0);
+        return new UserDataAccess($this->getDbAdapter(), $this->getUser()->getUserId());
     }
 
     /**
@@ -57,53 +43,5 @@ class UserApiController extends SundewApiController
         $paginator->setItemCountPerPage($pageSize);
 
         return $paginator;
-    }
-
-    protected $requireToken = false;
-    public function postToken()
-    {
-        $api = new ApiModel();
-        $helper = new AuthHelper();
-        $inputFilter = $helper->getInputFilter();
-        $inputFilter->setData($this->getContent());
-        $inputFilter->setValidationGroup(InputFilterInterface::VALIDATE_ALL);
-
-        if($inputFilter->isValid()){
-            $user = $this->getContent('username');
-            $pass = $this->getContent('password');
-            $authAdapter = $this->getAuthService()->getAdapter();
-            $authAdapter->setIdentity($user)->setCredential($pass);
-            $result = $authAdapter->authenticate();
-            if($result->isValid()){
-                $key = Rand::getString(32);
-                $authData = (array)$authAdapter->getResultRowObject();
-                $user = new User();
-                $user->exchangeArray($authData);
-                $expire = date('YmdHis', strtotime("+1 month"));
-                $data = Json::encode(array(
-                    'userId' => $user->getUserId(),
-                    'userName' => $user->getUserName(),
-                    'expire' => $expire,
-                ));
-                $user->setTokenKey($key);
-                $tokenString = $this->getBlockCipher($key)->encrypt($data);
-                $this->userTable()->saveUser($user);
-                $api->setStatusCode(201);
-                $api->setStatusMessage('Token has been created.');
-                $api->setResponseData(array(
-                    'userId' => $user->getUserId(),
-                    'username' => $user->getUserName(),
-                    'token' => $tokenString,
-                    'expire' => $expire
-                ));
-            }else{
-                $api->setStatusCode(401);
-                $api->setStatusMessage('Invalid user or password.');
-            }
-        }else{
-            $api->setResponseData($inputFilter->getMessages());
-        }
-
-        return $api;
     }
 }
