@@ -53,6 +53,10 @@ class RouteHelper {
                 ->setName('constraints')
                 ->setAttribute('class','form-control');
 
+            $isApi = new Element\Checkbox('isApi');
+            $isApi->setAttribute('class', 'form-control');
+            $isApi->setLabel('Is Api?');
+
             $form=new Form();
             $form->setAttribute('class','form-horizontal');
             $form->add($hidId);
@@ -61,6 +65,7 @@ class RouteHelper {
             $form->add($txtModule);
             $form->add($cboController);
             $form->add($txtConstraints);
+            $form->add($isApi);
 
             $this->form=$form;
         }
@@ -146,6 +151,11 @@ class RouteHelper {
                       ),
                   ),
               ),
+          ));
+
+          $filter->add(array(
+              'name' => 'isApi',
+              'required' => true,
           ));
           $this->inputFilter=$filter;
       }

@@ -121,6 +121,14 @@ $this->headTitle($title);
                             'col' => 'controller',
                         )
                     ),
+                    array(
+                        'type' => 'db',
+                        'value' => array(
+                            'title' => 'Is Api?',
+                            'col' => 'isApi'
+                        ),
+                        'attr' => array('width' => '80px', 'class' => 'text-center'),
+                    )
                 );
 
                 echo $this->gridHeader($columns);
@@ -148,6 +156,9 @@ $this->headTitle($title);
                         </td>
                         <td>
                             <?php echo $this->escapeHtml($route->controller); ?>
+                        </td>
+                        <td class="text-center">
+                            <?php echo $route->isApi ? 'Yes' : 'No'; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

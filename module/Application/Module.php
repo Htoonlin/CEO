@@ -56,6 +56,9 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface
             $router = $e->getRouter();
             foreach($this->cacheRouteData as $data)
             {
+                if($data["is_api"] == 1){
+                    array_push($this->publicRoutes, $data['name']);
+                }
                 $constraints = json_decode($data['constraints'], true);
                 $data['constraints'] = $constraints;
                 $data['defaults'] = array(
@@ -195,9 +198,10 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface
                     {
                         $dbAdapter = $sm->get('SundewDbAdapter');
                         $authService = $sm->get('AuthService');
+                        $routeDataAccess = new RouteDataAccess($dbAdapter, 0);
+                        $routeData = $routeDataAccess->getRouteApi()->toArray();
                         if($authService->hasIdentity()){
                             $userId = $authService->getIdentity()->userId;
-                            $routeDataAccess = new RouteDataAccess($dbAdapter, $userId);
                             $cache_ns = 'route_cache_' . $userId;
                             $routeData = $routeDataAccess->getCache()->getItem($cache_ns);
                             if(empty($routeData) || $routeData == null){
@@ -209,10 +213,8 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface
                                 $routeData = $routeDataAccess->getRouteData($roles)->toArray();
                                 $routeDataAccess->getCache()->setItem($cache_ns, $routeData);
                             }
-                            return $routeData;
                         }
-
-                        return array();
+                        return $routeData;
                     },
                     'AppErrorHandling' =>  function($sm) {
                         $authStorage = $sm->get('SundewAuthStorage');

@@ -59,6 +59,10 @@ class RouteDataAccess  extends SundewTableGateway
         return $results;
     }
 
+    public function getRouteApi(){
+        return $this->select(array('isApi' => 1));
+    }
+
     /**
      * @param bool $paginated
      * @param string $filter
