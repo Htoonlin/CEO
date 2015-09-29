@@ -151,7 +151,7 @@
                 'async': false,
                 'success': function (response) {
                     var data = response.data;
-                    $.each(data, function (idx, leave) {
+                    $.each(payroll_data.leaveValues, function (idx, leave) {
                         if (leave.id == data.leaveType) {
 
                             //Update and increment leave count

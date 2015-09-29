@@ -117,7 +117,7 @@ $this->headScript()
                 <tbody>
                 <?php
                     foreach($paginator as $payroll):
-                    if($payroll->s_wd <= 0) $payroll->s_wd = 1;
+                    if($payroll->m_wd <= 0) $payroll->m_wd = 1;
                 ?>
                     <tr>
                         <td class="text-center"><?= $payroll->fromDate ?></td>
@@ -133,7 +133,7 @@ $this->headScript()
                                 var data = {
                                     S: <?= $payroll->salary ?>,
                                     M: <?= $payroll->m_wd; ?>,
-                                    P: parseFloat(<?= $payroll->salary / $payroll->s_wd; ?>),
+                                    P: parseFloat(<?= $payroll->salary / $payroll->m_wd; ?>),
                                     W: parseFloat(<?= $payroll->s_wd ?>),
                                     L: parseFloat(<?= $payroll->leave ?>),
                                     A: parseFloat(<?= $payroll->absent ?>)
@@ -142,7 +142,8 @@ $this->headScript()
                                 $.each(<?= $payroll->Late ?>, function(key, value){
                                     data[key] = parseInt(value);
                                 });
-
+                                console.log(data);
+                                console.log('<?= $payroll->formula ?>');
                                 var result = math.eval('<?= $payroll->formula ?>', data);
                                 document.write(math.round(result, 2) + ' ' + '<?= $payroll->Currency ?>');
                             </script>
