@@ -154,12 +154,13 @@ class VoucherDataAccess extends SundewTableGateway
     public function getReportData(array $skipTypes)
     {
         $results = $this->select(function(Select $select) use($skipTypes){
+            $from = date('Y-m-01 00:00:01', strtotime("-1 year"));
             $where = new Where();
             $where->equalTo('status', 'A')
-                ->AND->notIn('accountTypeId', $skipTypes);
-
+                ->AND->notIn('accountTypeId', $skipTypes)
+                ->AND->between('voucherDate', $from, date('Y-m-d 23:59:59', time()));
             $select->where($where)->columns(array(
-                'date' => new Expression("DATE_FORMAT(approvedDate, '%Y-%m')"),
+                'date' => new Expression("DATE_FORMAT(voucherDate, '%Y-%m')"),
                 'type' => 'type',
                 'amount' => new Expression('SUM(amount * rate)')))
                 ->group(array('type', 'date'))->order('date');
