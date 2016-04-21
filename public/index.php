@@ -3,6 +3,7 @@
  * This makes our life easier when dealing with paths. Everything is relative
  * to the application root now.
  */
+error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 chdir(dirname(__DIR__));
 define('APP_PATH', dirname(__DIR__));
 // Decline static file requests back to the PHP built-in webserver

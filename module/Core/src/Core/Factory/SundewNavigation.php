@@ -11,19 +11,21 @@ namespace Core\Factory;
 
 use Application\DataAccess\MenuDataAccess;
 use Application\DataAccess\UserRoleDataAccess;
+use Interop\Container\ContainerInterface;
 use Zend\Navigation\Service\DefaultNavigationFactory;
 use Zend\ServiceManager\Exception\InvalidArgumentException;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 class SundewNavigation extends DefaultNavigationFactory
 {
-    protected function getPages(ServiceLocatorInterface $serviceLocatorInterface)
+
+    protected function getPages(ContainerInterface $containerInterface)
     {
         if(null === $this->pages){
 
             $userId = 0;
-            $authService = $serviceLocatorInterface->get('AuthService');
-            $dbAdapter = $serviceLocatorInterface->get('SundewDbAdapter');
+            $authService = $containerInterface->get('AuthService');
+            $dbAdapter = $containerInterface->get('SundewDbAdapter');
             if($authService->hasIdentity()){
                 $userId = $authService->getIdentity()->userId;
             }
@@ -53,7 +55,7 @@ class SundewNavigation extends DefaultNavigationFactory
             }
 
             $pages = $this->getPagesFromConfig($configuration['NavigationManager'][$this->getName()]);
-            $this->pages = $this->preparePages($serviceLocatorInterface, $pages);
+            $this->pages = $this->preparePages($containerInterface, $pages);
         }
 
         return $this->pages;

@@ -14,7 +14,7 @@ config/autoload/*.local.php
 *.mpp
 Accounting.txt
 Payroll.txt
-sundew.sql
+sundew.sql0
 
 # Data
 data/captcha

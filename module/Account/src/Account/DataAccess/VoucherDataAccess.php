@@ -154,7 +154,7 @@ class VoucherDataAccess extends SundewTableGateway
     public function getReportData(array $skipTypes)
     {
         $results = $this->select(function(Select $select) use($skipTypes){
-            $from = '2011-05-01';//date('Y-m-01 00:00:01', strtotime("-1 year"));
+            $from = date('Y-m-01 00:00:01', strtotime("-1 year"));
             $where = new Where();
             $where->equalTo('status', 'A')
                 ->AND->notIn('accountTypeId', $skipTypes)
