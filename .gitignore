@@ -10,6 +10,12 @@ config/autoload/*.local.php
 # Binary gettext files
 *.mo
 
+# Project Management and notes
+*.mpp
+Accounting.txt
+Payroll.txt
+sundew.sql
+
 # Data
 data/captcha
 data/logs/

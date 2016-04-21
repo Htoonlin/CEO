@@ -233,6 +233,7 @@
         var s_wd = parseFloat($(this).find('td#S_WD').html());
         var leave = parseFloat($(this).find('td#Leave').html());
         var absent = parseFloat($(this).find('td#Absent').html());
+		var net_salary = parseFloat($(this).find('td#Net').html());
 
         $.each(payroll_data.lateList, function(idx, late){
             var ptr = '#' + late.code + '-' + staffId;
@@ -261,7 +262,8 @@
                 leave:leave,
                 absent:absent,
                 formula:settings.formula,
-                late:lateList
+                late:lateList,
+				netSalary: net_salary
             },
             'type': 'POST',
             'async': true,
